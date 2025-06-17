@@ -1,0 +1,72 @@
+
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+// import Index from "./pages/Index";
+import Login from "./pages/Login";
+import AdminDashboard from "./pages/AdminDashboard";
+import AgentDashboard from "./pages/AgentDashboard";
+import AgentPage from "./pages/AgentPage";
+import AgentProfile from "./components/AgentProfile";
+// import AgentPageVariation1 from "./pages/AgentPageVariation1";
+// import AgentPageVariation2 from "./pages/AgentPageVariation2";
+// import AgentPageVariation3 from "./pages/AgentPageVariation3";
+// import AgentPageVariation4 from "./pages/AgentPageVariation4";
+// import AgentPageVariation5 from "./pages/AgentPageVariation5";
+// import AgentPageVariation6 from "./pages/AgentPageVariation6";
+import ProjectDetail from "./pages/ProjectDetail";
+import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
+// import AgentFarsi from "./pages/AgentFarsi";
+import HomePage from "./pages/HomePage"
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
+            <Route 
+              path="/admin/dashboard" 
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute role="agent">
+                  <AgentDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/projects/:slug" element={<ProjectDetail />} />
+            <Route path="/:agentUsername" element={<AgentPage />} />
+            {/* <Route path="/:agentUsername/farsi" element={<AgentFarsi/> } /> */}
+            <Route path="/agentProfile" element={<AgentProfile/>}/>
+            {/* <Route path="/:agentUsername/v1" element={<AgentPageVariation1 />} />
+            <Route path="/:agentUsername/v2" element={<AgentPageVariation2 />} />
+            <Route path="/:agentUsername/v3" element={<AgentPageVariation3 />} />
+            <Route path="/:agentUsername/v4" element={<AgentPageVariation4 />} />
+            <Route path="/:agentUsername/v5" element={<AgentPageVariation5 />} />
+            <Route path="/:agentUsername/v6" element={<AgentPageVariation6 />} /> */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
+  </QueryClientProvider>
+);
+
+export default App;
