@@ -14,7 +14,7 @@ import PropertyFilters from '@/components/PropertyFilters';
 import ProjectListing from '@/components/ProjectListing';
 import AgentProfile from '@/components/AgentProfile';
 import Footer from '@/components/Footer';
-import HeroVideo from '../assets/Sahar.mp4';
+// import HeroVideo from '../assets/Sahar.mp4';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -263,7 +263,7 @@ const AgentPage = () => {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src={HeroVideo} type="video/mp4" />
+          <source src="https://offplanmarket.netlify.app/assets/Unlock%20Dubai%E2%80%99s%20Best%20Off-Plan%20Deals%20with%20Nasser%20Dehghan%20(2)-Cfbi3Qj3.mp4" type="video/mp4" />
         </video>
 
         {/* Dark Overlay */}
