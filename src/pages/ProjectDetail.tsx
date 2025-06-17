@@ -204,9 +204,9 @@ const ProjectDetail = () => {
       </header>
 
       {/* Watermark Overlay */}
-      <div className="fixed inset-0 z-40 pointer-events-none">
-        <div className="flex items-center justify-center h-full w-full backdrop-blur-sm">
-          <div className="pointer-events-none select-none opacity-50 text-6xl font-bold text-gray-900 whitespace-nowrap z-50">
+      <div className="flex fixed inset-0 z-40 pointer-events-none box-border">
+        <div className="flex items-center justify-center h-full w-full backdrop-blur-sm box-border">
+          <div className="flex box-border pointer-events-none select-none opacity-50 text-4xl font-bold text-gray-900 whitespace-nowrap z-50 ">
             <center><p>API Integration<br />
               under Development</p></center>
           </div>

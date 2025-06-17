@@ -30,6 +30,9 @@ const ProjectListing = ({ onRequestInfo }: ProjectListingProps) => {
   const [loading, setLoading] = useState(true);
   const [to, setTo] = useState(0);
   const [total, setTotal] = useState(0);
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [prevPageUrl, setPrevPageUrl] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1); // new
 
   const filterTabs = [t('Ready'), t('Offplan'), t('Pre launch')];
 
@@ -37,51 +40,70 @@ const ProjectListing = ({ onRequestInfo }: ProjectListingProps) => {
     document.dir = i18n.language === 'fa' ? 'rtl' : 'ltr';
   }, [i18n.language]);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch('https://panel.estaty.app/api/v1/getProperties', {
-          method: 'POST',
-          headers: {
-            'App-key': import.meta.env.VITE_ESTATY_API_KEY,
-            'Content-Type': 'application/json'
-          }
-        });
-        const data = await res.json();
-        // Correct mapping path!
-        const mapped = (data.properties.data || []).map(item => ({
-          id: item.id,
-          title: item.title,
-          price: item.low_price ? item.low_price : 'N/A',
-          location: `${item.city?.name || ''}${item.district?.name ? ', ' + item.district.name : ''}`,
-          image: item.cover || 'https://via.placeholder.com/500x300?text=No+Image',
-          tags: [
-            item.property_status?.name || t('Off Plan'),
-            item.sales_status?.name || t('Pre Launch')
-          ],
-          handoverDate: item.delivery_date
-            ? new Date(Number(item.delivery_date) * 1000).getFullYear().toString()
-            : 'N/A'
-        }));
-        setProjects(mapped);
-        setTo(data.properties.to || mapped.length);
-        setTotal(data.properties.total || mapped.length);
-      } catch (err) {
-        setProjects([]);
-        setTo(0);
-        setTotal(0);
-      }
+  const fetchProjects = async (url: string, page: number) => {
+    setLoading(true);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'App-key': import.meta.env.VITE_ESTATY_API_KEY,
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      const mapped = (data.properties.data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        price: item.low_price ? item.low_price : 'N/A',
+        location: `${item.city?.name || ''}${item.district?.name ? ', ' + item.district.name : ''}`,
+        image: item.cover || 'https://via.placeholder.com/500x300?text=No+Image',
+        tags: [
+          item.property_status?.name || t('Off Plan'),
+          item.sales_status?.name || t('Pre Launch')
+        ],
+        handoverDate: item.delivery_date
+          ? new Date(Number(item.delivery_date) * 1000).getFullYear().toString()
+          : 'N/A',
+      }));
+
+      setProjects(mapped); // Append instead of replace
+      setTo(data.properties.to || (to + mapped.length));
+      setTotal(data.properties.total || (to + mapped.length));
+      setNextPageUrl(data.properties.next_page_url || null);
+      setPrevPageUrl(data.properties.prev_page_url);
+      setCurrentPage(page);
+
+    } catch (err) {
+      console.error('Error fetching projects:', err);
+      setProjects([]);
+      setTo(0);
+      setTotal(0);
+    } finally {
       setLoading(false);
-    };
-    fetchProjects();
+    }
+  };
+
+  useEffect(() => {
+    const firstPage = 'https://panel.estaty.app/api/v1/getProperties?page=1';
+    fetchProjects(firstPage, 1);
+    setCurrentPage(1); // Reset to first page
   }, [i18n.language]);
 
-  const projectsToShow = projects.slice(0, displayedProjects);
-  const hasMoreProjects = displayedProjects < projects.length;
-
   const handleLoadMore = () => {
-    setDisplayedProjects(prev => Math.min(prev + 12, projects.length));
+    if (nextPageUrl) {
+      // setDisplayedProjects(prev => Math.min(prev + 12, projects.length));
+      const nextPage = currentPage + 1;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      fetchProjects(nextPageUrl, nextPage);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (prevPageUrl) {
+      const prevPage = currentPage - 1;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      fetchProjects(prevPageUrl, prevPage);
+    }
   };
 
   const handleProjectClick = (project: Property) => {
@@ -89,6 +111,17 @@ const ProjectListing = ({ onRequestInfo }: ProjectListingProps) => {
     navigate(`/projects/${slug}`);
     window.scrollTo(0, 0);
   };
+
+  useEffect(() => {
+    if (loading) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [loading]);
 
   return (
     <section className="py-5 bg-gray-50">
@@ -123,10 +156,18 @@ const ProjectListing = ({ onRequestInfo }: ProjectListingProps) => {
 
         {/* Projects Grid */}
         {loading ? (
-          <div className="text-center py-12 text-lg text-gray-500">{t('Loading...')}</div>
+          <>
+            {window.scrollTo({ top: 0, behavior: 'smooth' })}
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70 backdrop-blur-sm">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#f24ca0] border-opacity-50"></div>
+                <span className="text-[#f24ca0] font-semibold text-lg">{t("Loading Projects...")}</span>
+              </div>
+            </div>
+          </>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-            {projectsToShow.map((project) => (
+            {projects.map((project) => (
               <Card
                 key={project.id}
                 className="overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer border-0 shadow-md group transform hover:-translate-y-2"
@@ -189,18 +230,27 @@ const ProjectListing = ({ onRequestInfo }: ProjectListingProps) => {
         )}
 
         {/* Load More Button */}
-        {hasMoreProjects && !loading && (
-          <div className="text-center">
+        {!loading && (
+          <div className="flex justify-center space-x-4 my-6 box-border">
             <Button
-              onClick={handleLoadMore}
-              size="lg"
-              className="bg-gradient-to-r from-[#f24ca0] to-[#f24ca0]/90 hover:from-[#f24ca0]/90 hover:to-[#f24ca0] text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1"
+              onClick={handlePrevPage}
+              disabled={!prevPageUrl}
+              className="bg-gray-300 text-gray-800 hover:bg-gray-400 disabled:opacity-50 box-border"
             >
-              {t("Load More Projects")}
-              <span className="ml-2 bg-white/20 px-3 py-1 rounded-lg text-sm">
-                {projects.length - displayedProjects} {t("remaining")}
-              </span>
+              ← {t("Previous")}
             </Button>
+            <div className="text-center box-border">
+              <Button
+                onClick={handleLoadMore}
+                size="lg"
+                className="bg-gradient-to-r from-[#f24ca0] to-[#f24ca0]/90 hover:from-[#f24ca0]/90 hover:to-[#f24ca0] text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 box-border"
+              >
+                {t("Load More")}
+                {/* <span className="ml-2 bg-white/20 px-3 py-1 rounded-lg text-sm">
+                  {total - displayedProjects} {t("remaining")}
+                </span> */}
+              </Button>
+            </div>
           </div>
         )}
 
