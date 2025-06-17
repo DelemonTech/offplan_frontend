@@ -23,7 +23,6 @@ const PropertyFilters = ({ onFiltersChange }: PropertyFiltersProps) => {
   const [priceRange, setPriceRange] = useState([0, 10000000]);
   const [areaRange, setAreaRange] = useState([0, 5000]);
   const [bedrooms, setBedrooms] = useState('');
-  const [bathrooms, setBathrooms] = useState('');
 
   const propertySubTypes = [
     { id: 'apartment', name: t('Apartment'), icon: Building },
@@ -44,48 +43,6 @@ const PropertyFilters = ({ onFiltersChange }: PropertyFiltersProps) => {
     <div className="bg-white rounded-2xl shadow-lg p-4 mb-8 overflow-hidden box-border">
       <h3 className="text-lg font-bold text-gray-900 mb-6">{t("🔍 Still searching? Use the filters below to find your dream home — Sahar is here to help")}</h3>
       <p className="text-gray text-sm md:text-lg">{t("Search with more precision below — and remember, I’m Sahar and I’m here to help you every step of the way.")}</p>
-
-      {/* Main Tabs */}
-      {/* <div className="flex gap-2 mb-6">
-        <Button
-          variant={activeTab === 'Properties' ? 'default' : 'outline'}
-          onClick={() => setActiveTab('Properties')}
-          className={`px-6 py-2 rounded-full ${
-            activeTab === 'Properties'
-              ? 'bg-[#1DB584] hover:bg-[#1DB584]/90 text-white'
-              : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-          }`}
-        >
-          Properties
-        </Button>
-        <Button
-          variant={activeTab === 'New Projects' ? 'default' : 'outline'}
-          onClick={() => setActiveTab('New Projects')}
-          className={`px-6 py-2 rounded-full ${
-            activeTab === 'New Projects'
-              ? 'bg-[#1DB584] hover:bg-[#1DB584]/90 text-white'
-              : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-          }`}
-        >
-          New Projects
-        </Button>
-      </div>
-
-      {/* Buy/Rent Toggle }
-      <div className="flex gap-2 mb-6">
-        <Button
-          variant="outline"
-          className="px-6 py-2 rounded-full border-gray-300 text-gray-600 hover:bg-gray-50"
-        >
-          Buy
-        </Button>
-        <Button
-          variant="default"
-          className="px-6 py-2 rounded-full bg-[#1DB584] hover:bg-[#1DB584]/90 text-white"
-        >
-          Rent
-        </Button>
-      </div> */}
 
       {/* Location */}
       <div className="mb-0 py-6">
@@ -162,24 +119,7 @@ const PropertyFilters = ({ onFiltersChange }: PropertyFiltersProps) => {
             </div>
 
             {/* Bathrooms */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">{t("Bathrooms")} 🚿</label>
-              <div className="flex gap-1 overflow-x-auto">
-                {['1', '2', '3', '4', '5', '6+'].map((bath) => (
-                  <Button
-                    key={bath}
-                    variant={bathrooms === bath ? 'default' : 'outline'}
-                    onClick={() => setBathrooms(bath)}
-                    className={`px-4 py-2 rounded-lg flex-shrink-0 ${bathrooms === bath
-                        ? 'bg-[#6084ee] hover:bg-[#6084ee]/90 text-white'
-                        : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-                      }`}
-                  >
-                    {bath}
-                  </Button>
-                ))}
-              </div>
-            </div>
+
           </div>
         </>
       )}
