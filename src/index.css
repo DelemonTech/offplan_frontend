@@ -130,4 +130,9 @@
   .agent-card {
     @apply bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 min-w-[280px] hover:scale-105;
   }
+  .freeze-scroll {
+  overflow: hidden !important;
+  /* position: fixed;     */
+  width: 100%;
+}
 }

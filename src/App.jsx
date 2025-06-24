@@ -9,8 +9,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import AgentDashboard from "./pages/AgentDashboard";
-import AgentPage from "./pages/AgentPage";
-import AgentProfile from "./components/AgentProfile";
+import AgentPage from "./pages/Agent/AgentPage";
+import AgentProfile from "./components/AgentProfile1";
 // import AgentPageVariation1 from "./pages/AgentPageVariation1";
 // import AgentPageVariation2 from "./pages/AgentPageVariation2";
 // import AgentPageVariation3 from "./pages/AgentPageVariation3";
@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 // import AgentFarsi from "./pages/AgentFarsi";
 import HomePage from "./pages/HomePage"
+import Sample from "./pages/Sample";
 
 const queryClient = new QueryClient();
 
@@ -52,9 +53,10 @@ const App = () => (
               } 
             />
             <Route path="/projects/:slug" element={<ProjectDetail />} />
-            <Route path="/:agentUsername" element={<AgentPage />} />
+            <Route path="/agent/:username" element={<AgentPage />} />
             {/* <Route path="/:agentUsername/farsi" element={<AgentFarsi/> } /> */}
             <Route path="/agentProfile" element={<AgentProfile/>}/>
+            <Route path="/sample/:username" element={<Sample />} />
             {/* <Route path="/:agentUsername/v1" element={<AgentPageVariation1 />} />
             <Route path="/:agentUsername/v2" element={<AgentPageVariation2 />} />
             <Route path="/:agentUsername/v3" element={<AgentPageVariation3 />} />

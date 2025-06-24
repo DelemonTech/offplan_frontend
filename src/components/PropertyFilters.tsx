@@ -95,10 +95,10 @@ const PropertyFilters = ({ onFiltersChange }: PropertyFiltersProps) => {
       </div>
 
       {/* Bedrooms & Bathrooms (only for Residential) */}
-      {propertyType === t('Residential') && (
+      {/*{propertyType === t('Residential') && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Bedrooms */}
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Bedrooms /}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">{t("Bedrooms")} 🛏️</label>
               <div className="flex gap-1 overflow-x-auto">
@@ -118,11 +118,30 @@ const PropertyFilters = ({ onFiltersChange }: PropertyFiltersProps) => {
               </div>
             </div>
 
-            {/* Bathrooms */}
+            {/* Bathrooms /}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">{t("Bathrooms")} 🚽</label>
+              <div className="flex gap-1 overflow-x-auto">
+                {['1', '2', '3', '4', '5', '6+'].map((bath) => (
+                  <Button
+                    key={bath}
+                    variant={bathrooms === bath ? 'default' : 'outline'}
+                    onClick={() => setBathrooms(bath)}
+                    className={`px-4 py-2 rounded-lg flex-shrink-0 ${bathrooms === bath
+                        ? 'bg-[#6084ee] hover:bg-[#6084ee]/90 text-white'
+                        : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                      }`}
+                  >
+                    {bath}
+                  </Button>
+                ))}
+              </div>
+            </div>
 
           </div>
         </>
       )}
+        */}
 
       {/* Price Range */}
       {/* Price Range and Area Range - Side by side on desktop */}
