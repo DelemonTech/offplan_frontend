@@ -110,9 +110,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     }
   };
 
-  const handleViewDetails = (projectId: number) => {
-    navigate(`/project/${projectId}`);
-  };
+  // const handleViewDetails = (projectId: number) => {
+  //   navigate(`/project/${projectId}`);
+  // };
 
   const handleProjectSummary = (project: any) => {
     console.log('FeaturedProjects - Setting project for summary:', project);
@@ -195,7 +195,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
               <Card
                 key={project.id}
                 className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
-                onClick={() => handleProjectSummary(project)}
+                // onClick={() => handleProjectSummary(project)}
               >
                 <div className="relative overflow-hidden">
                   <img
@@ -275,10 +275,10 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
                     <div className="flex gap-2 pt-2">
                       <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewDetails(project.id);
-                        }}
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   handleViewDetails(project.id);
+                        // }}
                         className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm py-2.5 rounded-xl"
                       >
                         View Details
