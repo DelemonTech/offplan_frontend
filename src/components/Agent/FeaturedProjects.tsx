@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Calendar, Check, Loader2, RefreshCw,Lock, Building2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock } from 'lucide-react';
+import { MapPin, Calendar, Check, Loader2, RefreshCw, Lock, Building2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ProjectSummaryModal from './ProjectSummaryModal';
 import { set } from 'date-fns';
 
 const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNextPageUrl, statusName, setStatusName }) => {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState('ready');
+  // const [activeFilter, setActiveFilter] = useState('ready');
   const [visibleCount, setVisibleCount] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProjectForSummary, setSelectedProjectForSummary] = useState(null);
@@ -38,7 +38,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   { id: 'soldout', label: 'Sold Out', icon: LucideEarthLock }
   // ];
 
-  
+
   const formatAED = (value: string | number | null | undefined): string => {
     const number = typeof value === 'string' ? parseInt(value) : value;
 
@@ -51,12 +51,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     }
   };
 
- const [totalInventory, setTotalInventory] = useState({
-  ready: 0,
-  offplan: 0,
-  soldout: 0,
-  total: 0
-});
+  const [totalInventory, setTotalInventory] = useState({
+    ready: 0,
+    offplan: 0,
+    soldout: 0,
+    total: 0
+  });
 
   const visibleProjects = properties.slice(0, visibleCount);
 
@@ -87,53 +87,53 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   };
 
   const loadMore = async () => {
-  if (!nextPageUrl || isLoading) return;
+    if (!nextPageUrl || isLoading) return;
 
-  document.body.classList.add('freeze-scroll');
-  setIsLoading(true);
+    document.body.classList.add('freeze-scroll');
+    setIsLoading(true);
 
-  try {
-    const secureUrl = nextPageUrl.replace('http://', 'https://');
+    try {
+      const secureUrl = nextPageUrl.replace('http://', 'https://');
 
-    const response = await fetch(secureUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(
-  activeFilter === 'soldout'
-    ? { sales_status: 'Sold Out' }
-    : { property_status: activeFilter === 'ready' ? 'Ready' : 'Off Plan' }
-)
-    });
+      const response = await fetch(secureUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+          statusName === 'soldout'
+            ? { sales_status: 'Sold Out' }
+            : { property_status: statusName === 'ready' ? 'Ready' : 'Off Plan' }
+        )
+      });
 
-    const result = await response.json();
-    console.log("Load More Response:", result);
-    if (result.status && result.data) {
-      const newProperties = result.data.results || [];
-      const newNextPageUrl = result.data.next_page_url || null;
+      const result = await response.json();
+      console.log("Load More Response:", result);
+      if (result.status && result.data) {
+        const newProperties = result.data.results || [];
+        const newNextPageUrl = result.data.next_page_url || null;
 
-      const startIndex = properties.length;
-      setProperties(prev => [...prev, ...newProperties]);
-      setNextPageUrl(newNextPageUrl);
+        const startIndex = properties.length;
+        setProperties(prev => [...prev, ...newProperties]);
+        setNextPageUrl(newNextPageUrl);
 
-      setTimeout(() => {
-        const el = document.getElementById(`property-${startIndex}`);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        setTimeout(() => {
+          const el = document.getElementById(`property-${startIndex}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          document.body.classList.remove('freeze-scroll');
+        }, 500);
+      } else {
         document.body.classList.remove('freeze-scroll');
-      }, 500);
-    } else {
+      }
+    } catch (error) {
+      console.error('Failed to load more properties:', error);
       document.body.classList.remove('freeze-scroll');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error('Failed to load more properties:', error);
-    document.body.classList.remove('freeze-scroll');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
 
   // const handleViewDetails = (projectId: number) => {
@@ -168,86 +168,94 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     }
   };
 
-  setTimeout(() => {
-    const scrollOptions = {
-      behavior: 'smooth',
-      block: 'start',
-      inline: 'nearest',
-    };
-
-    if (firstNewCardRef.current) {
-      firstNewCardRef.current.scrollIntoView(scrollOptions);
-    }
-    document.body.style.overflow = '';
-  }, 500);
+  useEffect(() => {
+    console.log('📦 [FeaturedProjects] statusName changed to:', statusName);
+  }, [statusName]);
 
   useEffect(() => {
-  const fetchFilteredProperties = async () => {
-    try {
-      setIsLoading(true);
+    const timer = setTimeout(() => {
+      const scrollOptions = {
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest',
+      };
 
-      const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(
-  statusName === 'Sold Out'
-    ? { sales_status: 'Sold Out' }
-    : { property_status: statusName === 'ready' ? 'Ready' : 'Off Plan' }
-),
-      });
-
-      const result = await response.json();
-
-      if (result?.status && result?.data) {
-        setProperties(result.data.results || []);
-        setNextPageUrl(result.data.next_page_url || null);
+      if (firstNewCardRef.current) {
+        firstNewCardRef.current.scrollIntoView(scrollOptions);
       }
-    } catch (error) {
-      console.error('Error fetching filtered properties:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      document.body.style.overflow = '';
+    }, 500);
 
-  if (statusName) {
-    console.log('Fetching properties for statusName:', statusName);
-    fetchFilteredProperties();
-  }
-}, [statusName]);
-  
+    return () => clearTimeout(timer);
+  }, [properties]);
+
+  useEffect(() => {
+    const fetchFilteredProperties = async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(
+            statusName === 'Sold Out'
+              ? { sales_status: 'Sold Out' }
+              : { property_status: statusName === 'ready' ? 'Ready' : 'Off Plan' }
+          ),
+        });
+
+        const result = await response.json();
+
+        if (result?.status && result?.data) {
+          setProperties(result.data.results || []);
+          setNextPageUrl(result.data.next_page_url || null);
+        }
+      } catch (error) {
+        console.error('Error fetching filtered properties:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (statusName) {
+      console.log('Fetching properties for statusName:', statusName);
+      fetchFilteredProperties();
+    }
+  }, [statusName]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-  setActiveFilter(statusName);
-}, [statusName]);
+  //   useEffect(() => {
+  //   setActiveFilter(statusName);
+  // }, [statusName]);
 
   useEffect(() => {
-  const fetchStatusCounts = async () => {
-    try {
-      const res = await fetch('https://offplan-backend.onrender.com/properties/status-counts/');
-      const json = await res.json();
+    const fetchStatusCounts = async () => {
+      try {
+        const res = await fetch('https://offplan-backend.onrender.com/properties/status-counts/');
+        const json = await res.json();
 
-      if (json.status && json.data) {
-        const { ready, offplan, sold } = json.data;
+        if (json.status && json.data) {
+          const { ready, offplan, sold } = json.data;
 
-        setTotalInventory({
-          ready,
-          offplan,
-          soldout: sold,
-          total: ready + offplan + sold
-        });
+          setTotalInventory({
+            ready,
+            offplan,
+            soldout: sold,
+            total: ready + offplan + sold
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch property status counts:', error);
       }
-    } catch (error) {
-      console.error('Failed to fetch property status counts:', error);
-    }
-  };
+    };
 
-  fetchStatusCounts();
-}, []);
+    fetchStatusCounts();
+  }, []);
 
 
   return (
@@ -288,8 +296,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   key={filter.label}
                   onClick={() => setStatusName(filter.label)}
                   className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${statusName === filter.label
-                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
                     }`}
                 >
                   <div className="flex items-center gap-5">
@@ -303,8 +311,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                         {filter.label}
                       </div>
                       <div className={`text-2xl font-bold ${statusName === filter.label
-                          ? 'text-white'
-                          : 'text-gray-800'
+                        ? 'text-white'
+                        : 'text-gray-800'
                         }`}>
                         {filterCount.toLocaleString()}
                       </div>
@@ -324,8 +332,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   key={filter.label}
                   onClick={() => setStatusName(filter.label)}
                   className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${statusName === filter.label
-                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
                     }`}
                 >
                   <IconComponent
@@ -337,8 +345,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                     {filter.label}
                   </span>
                   <span className={`text-lg font-bold ${statusName === filter.label
-                      ? 'text-white'
-                      : 'text-gray-800'
+                    ? 'text-white'
+                    : 'text-gray-800'
                     }`}>
                     {filterCount > 999 ? `${Math.floor(filterCount / 1000)}k` : filterCount}
                   </span>
@@ -350,34 +358,41 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
           {properties.map((project, index) => {
-            const displayStatus = project.sales_status === 3 ? 3 : project.property_status;
-            return(
-            (
-            <div
-              key={project.id}
-              id={`property-${index}`} // ✅ Give each wrapper a unique id
-            >
-              <Card
-                key={project.id}
-                className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
-              // onClick={() => handleProjectSummary(project)}
-              >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={project.cover}
-                    alt={project.title}
-                    className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
+            const displayStatus = (() => {
+              const normalizedStatus = statusName.toLowerCase();
+              if (normalizedStatus === 'ready') return 2;
+              if (normalizedStatus === 'off plan') return 1;
+              else return 3;
+              return project.property_status;
+            })();
+            console.log("Project Status:", project.sales_status, "Display Status:", displayStatus);
+            return (
+              (
+                <div
+                  key={project.id}
+                  id={`property-${index}`} // ✅ Give each wrapper a unique id
+                >
+                  <Card
+                    key={project.id}
+                    className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
+                  // onClick={() => handleProjectSummary(project)}
+                  >
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={project.cover}
+                        alt={project.title}
+                        className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                  <div className="absolute top-4 right-4">
-                    <Badge className={`${getStatusBadgeStyle(displayStatus)} font-semibold px-3 py-2 text-sm flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20`}>
-                      {getStatusBadgeContent(displayStatus)}
-                    </Badge>
-                  </div>
+                      <div className="absolute top-4 right-4">
+                        <Badge className={`${getStatusBadgeStyle(displayStatus)} font-semibold px-3 py-2 text-sm flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20`}>
+                          {getStatusBadgeContent(displayStatus)}
+                        </Badge>
+                      </div>
 
-                  {/* <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+                      {/* <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
                   {project.badges.slice(0, 2).map((badge, index) => (
                     <Badge
                       key={index}
@@ -388,94 +403,95 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   ))}
                 </div> */}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center">
-                    <div className="text-white text-center p-4 space-y-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      <div className="flex items-center justify-center gap-4 text-sm">
-                        <div className="flex items-center gap-1">
-                          <Calendar size={14} />
-                          <span>{formatDeliveryDate(project.delivery_date)}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <CreditCard size={14} />
-                          <span>Payment</span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center">
+                        <div className="text-white text-center p-4 space-y-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <div className="flex items-center justify-center gap-4 text-sm">
+                            <div className="flex items-center gap-1">
+                              <Calendar size={14} />
+                              <span>{formatDeliveryDate(project.delivery_date)}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <CreditCard size={14} />
+                              <span>Payment</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
 
-                <CardContent className="p-4 sm:p-6">
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
-                        {project.title}
-                      </h3>
-                      <div className="flex items-center text-gray-600">
-                        <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
-                        <span className="font-medium text-sm sm:text-base truncate">{project.city.name}, {project.district.name}</span>
-                      </div>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
-                      <div className="text-xs sm:text-sm text-gray-600 mb-1">Starting from</div>
-                      <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                        AED {project.low_price && formatAED((project.low_price))}
-                      </div>
-
-                      <div className="flex flex-wrap gap-3 text-xs text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <Ruler size={12} className="text-pink-500" />
-                          <span>From {project.min_area} ft²</span>
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
+                            {project.title}
+                          </h3>
+                          <div className="flex items-center text-gray-600">
+                            <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
+                            <span className="font-medium text-sm sm:text-base truncate">{project.city.name}, {project.district.name}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar size={12} className="text-blue-500" />
-                          <span>{formatDeliveryDate(project.delivery_date)}</span>
-                        </div>
-                        {/* <div className="flex items-center gap-1">
+
+                        <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
+                          <div className="text-xs sm:text-sm text-gray-600 mb-1">Starting from</div>
+                          <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                            AED {project.low_price && formatAED((project.low_price))}
+                          </div>
+
+                          <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                            <div className="flex items-center gap-1">
+                              <Ruler size={12} className="text-pink-500" />
+                              <span>From {project.min_area} ft²</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Calendar size={12} className="text-blue-500" />
+                              <span>{formatDeliveryDate(project.delivery_date)}</span>
+                            </div>
+                            {/* <div className="flex items-center gap-1">
                         <CreditCard size={12} className="text-purple-500" />
                         <span>Payment</span>
                       </div> */}
-                      </div>
-                    </div>
+                          </div>
+                        </div>
 
-                    <div className="flex gap-2 pt-2">
-                      <Button
-                        // onClick={(e) => {
-                        //   e.stopPropagation();
-                        //   handleViewDetails(project.id);
-                        // }}
-                        className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm py-2.5 rounded-xl"
-                      >
-                        View Details
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleWhatsApp(project);
-                        }}
-                      >
-                        <MessageCircle size={18} className="text-green-600" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 rounded-xl border-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleShare(project);
-                        }}
-                      >
-                        <Share size={18} className="text-blue-500" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          ))})}
+                        <div className="flex gap-2 pt-2">
+                          <Button
+                            // onClick={(e) => {
+                            //   e.stopPropagation();
+                            //   handleViewDetails(project.id);
+                            // }}
+                            className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm py-2.5 rounded-xl"
+                          >
+                            View Details
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleWhatsApp(project);
+                            }}
+                          >
+                            <MessageCircle size={18} className="text-green-600" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 rounded-xl border-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShare(project);
+                            }}
+                          >
+                            <Share size={18} className="text-blue-500" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))
+          })}
         </div>
 
         {/* {hasMoreProjects && ( */}

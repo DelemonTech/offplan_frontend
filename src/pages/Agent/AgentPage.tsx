@@ -70,6 +70,10 @@ useEffect(() => {
   fetchAll();
 }, [username, statusName]);
 
+useEffect(() => {
+  console.log('👀 statusName changed in parent:', statusName);
+}, [statusName]);
+
   if (loading) {
     return (
       <div className="text-center py-20 text-gray-500 text-lg">
