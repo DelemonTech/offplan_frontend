@@ -49,7 +49,7 @@ const RatingBox = ({agent}) => {
     <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200/50 shadow-lg">
       <div className="text-center mb-6">
         <h3 className="text-xl font-bold text-gray-800 mb-2">
-          ⭐ How would you rate {agent.data.name}'s consultation?
+          ⭐ How would you rate {agent.name}'s consultation?
         </h3>
         <p className="text-gray-600 text-sm">
           Share your experience with others

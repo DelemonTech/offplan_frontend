@@ -43,7 +43,7 @@ const HeroSection = ({agent}) => {
             aspectRatio: 'auto',
           }}
         >
-          <source src={agent.data.introduction_video_url} type="video/mp4" />
+          <source src={agent.introduction_video_url} type="video/mp4" />
           <source src="/path-to-your-video.webm" type="video/webm" />
           {/* Fallback image */}
           {/* <img 
@@ -82,12 +82,14 @@ const HeroSection = ({agent}) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="text-center space-y-3 lg:space-y-8">
             {/* Main Headline - Simplified for Mobile */}
-            <div className="space-y-1 lg:space-y-4">
-              <h1 className="text-2xl sm:text-3xl lg:text-7xl font-bold text-white leading-tight">
-                {agent.data.name}
+            <div className="space-y-1 lg:space-y-4 text-white text-center font-semibold">
+              <h1 className="text-4xl sm:text-3xl lg:text-7xl font-bold bg-gradient-to-r from-pink-700 to-blue-500 bg-clip-text text-transparent leading-tight">
+                {agent.name}
               </h1>
-              <p className="text-sm sm:text-base lg:text-2xl text-white/90 font-light max-w-2xl mx-auto px-2">
-                Your Trusted Off-Plan Expert in the UAE
+              <div className='text-white/90 lg: text-2xl'>Off-Plan & Ready Property Expert | Dubai & UAE</div>
+              <p className="text-sm sm:text-base lg:text-2xl text-white/90 font-light  max-w-2xl mx-auto px-2">
+                
+Helping you find the right ready and off-plan properties in Dubai, Abu Dhabi, and across the UAE.
               </p>
             </div>
 
@@ -108,7 +110,7 @@ const HeroSection = ({agent}) => {
                 className="hidden lg:inline-flex ml-4 border-2 border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg transition-all duration-300"
               >
                 <MessageCircle size={16} className="mr-2" />
-                Chat with {agent.data.name}
+                Chat with {agent.name}
               </Button>
             </div>
 
@@ -120,11 +122,11 @@ const HeroSection = ({agent}) => {
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-white rounded-full"></div>
-                <span className="text-sm text-white/80 font-medium">{agent.data.total_business_deals}  Deals Closed</span>
+                <span className="text-sm text-white/80 font-medium">{agent.total_business_deals}  Deals Closed</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-white rounded-full"></div>
-                <span className="text-sm text-white/80 font-medium">{agent.data.years_of_experience} of Experience</span>
+                <span className="text-sm text-white/80 font-medium">{agent.years_of_experience} of Experience</span>
               </div>
             </div>
           </div>

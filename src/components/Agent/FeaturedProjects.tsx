@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Calendar, Check, Loader2, RefreshCw, Building2, Repeat, MessageCircle, Ruler, CreditCard, Share } from 'lucide-react';
+import { MapPin, Calendar, Check, Loader2, RefreshCw,Lock, Building2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ProjectSummaryModal from './ProjectSummaryModal';
 import { set } from 'date-fns';
 
-const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNextPageUrl }) => {
+const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNextPageUrl, statusName, setStatusName }) => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('ready');
   const [visibleCount, setVisibleCount] = useState(12);
@@ -15,6 +15,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [selectedProjectForSummary, setSelectedProjectForSummary] = useState(null);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const firstNewCardRef = useRef(null);
+
+  const filters = [
+    { id: 2, key: 'ready', label: 'Ready', icon: Check },
+    { id: 1, key: 'offplan', label: 'Off Plan', icon: Building2 },
+    { id: 3, key: "soldout", label: 'Sold Out', icon: LucideEarthLock },
+  ];
 
   const formatDeliveryDate = (unixTimestamp: string | number) => {
     if (!unixTimestamp) return "N/A";
@@ -26,6 +32,13 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     return date.toLocaleDateString("en-US", options);
   };
 
+  // const filters = [
+  //   { id: 'ready', label: 'Ready', icon: Check },
+  //   { id: 'offplan', label: 'Offplan', icon: Building2 },
+  //   { id: 'soldout', label: 'Sold Out', icon: LucideEarthLock }
+  // ];
+
+  
   const formatAED = (value: string | number | null | undefined): string => {
     const number = typeof value === 'string' ? parseInt(value) : value;
 
@@ -38,23 +51,23 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     }
   };
 
-  const totalInventory = {
-    ready: 349,
-    offplan: 1180,
-    prelaunch: 285,
-    total: 1529
-  };
+ const [totalInventory, setTotalInventory] = useState({
+  ready: 0,
+  offplan: 0,
+  soldout: 0,
+  total: 0
+});
 
   const visibleProjects = properties.slice(0, visibleCount);
 
   const getStatusBadgeContent = (status: number) => {
     switch (status) {
       case 1:
-        return <Check size={16} className="text-white" />;
-      case 2:
         return <Building2 size={16} className="text-white" />;
+      case 2:
+        return <Check size={16} className="text-white" />;
       case 3:
-        return <Repeat size={16} className="text-white" />;
+        return <Lock size={16} className="text-white" />;
       default:
         return status;
     }
@@ -62,9 +75,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const getStatusBadgeStyle = (status: number) => {
     switch (status) {
-      case 1:
-        return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
       case 2:
+        return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
+      case 1:
         return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-lg';
       case 3:
         return 'bg-gradient-to-r from-purple-400 to-pink-500 text-white shadow-lg';
@@ -74,55 +87,68 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   };
 
   const loadMore = async () => {
-    if (!nextPageUrl || isLoading) return;
+  if (!nextPageUrl || isLoading) return;
 
-    document.body.classList.add('freeze-scroll');
-    setIsLoading(true);
+  document.body.classList.add('freeze-scroll');
+  setIsLoading(true);
 
-    try {
-      const secureUrl = nextPageUrl.replace('http://', 'https://');
-      const response = await fetch(secureUrl);
-      const result = await response.json();
+  try {
+    const secureUrl = nextPageUrl.replace('http://', 'https://');
 
-      if (result.status && result.data) {
-        const newProperties = result.data.results || [];
-        const newNextPageUrl = result.data.next_page_url || null;
+    const response = await fetch(secureUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+  activeFilter === 'soldout'
+    ? { sales_status: 'Sold Out' }
+    : { property_status: activeFilter === 'ready' ? 'Ready' : 'Off Plan' }
+)
+    });
 
-        const startIndex = properties.length;
-        setProperties(prev => [...prev, ...newProperties]);
-        setNextPageUrl(newNextPageUrl);
+    const result = await response.json();
+    console.log("Load More Response:", result);
+    if (result.status && result.data) {
+      const newProperties = result.data.results || [];
+      const newNextPageUrl = result.data.next_page_url || null;
 
-        setTimeout(() => {
-          const el = document.getElementById(`property-${startIndex}`);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-          document.body.classList.remove('freeze-scroll');
-        }, 500);
-      } else {
+      const startIndex = properties.length;
+      setProperties(prev => [...prev, ...newProperties]);
+      setNextPageUrl(newNextPageUrl);
+
+      setTimeout(() => {
+        const el = document.getElementById(`property-${startIndex}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
         document.body.classList.remove('freeze-scroll');
-      }
-    } catch (error) {
-      console.error('Failed to load more properties:', error);
+      }, 500);
+    } else {
       document.body.classList.remove('freeze-scroll');
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (error) {
+    console.error('Failed to load more properties:', error);
+    document.body.classList.remove('freeze-scroll');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   // const handleViewDetails = (projectId: number) => {
   //   navigate(`/project/${projectId}`);
   // };
 
   const handleProjectSummary = (project: any) => {
-    console.log('FeaturedProjects - Setting project for summary:', project);
+    // console.log('FeaturedProjects - Setting project for summary:', project);
     setSelectedProjectForSummary(project);
     setIsSummaryModalOpen(true);
   };
 
   const handleWhatsApp = (project: any) => {
     const message = `Hi Sahar! I'm interested in ${project.title} in ${project.location}. Starting from AED ${parseInt(project.price).toLocaleString()}. Can you share more details?`;
-    const whatsappUrl = `https://wa.me/${agent.data.whatsapp_number}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${agent.whatsapp_number}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -156,8 +182,72 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   }, 500);
 
   useEffect(() => {
+  const fetchFilteredProperties = async () => {
+    try {
+      setIsLoading(true);
+
+      const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+  statusName === 'Sold Out'
+    ? { sales_status: 'Sold Out' }
+    : { property_status: statusName === 'ready' ? 'Ready' : 'Off Plan' }
+),
+      });
+
+      const result = await response.json();
+
+      if (result?.status && result?.data) {
+        setProperties(result.data.results || []);
+        setNextPageUrl(result.data.next_page_url || null);
+      }
+    } catch (error) {
+      console.error('Error fetching filtered properties:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (statusName) {
+    console.log('Fetching properties for statusName:', statusName);
+    fetchFilteredProperties();
+  }
+}, [statusName]);
+  
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+  setActiveFilter(statusName);
+}, [statusName]);
+
+  useEffect(() => {
+  const fetchStatusCounts = async () => {
+    try {
+      const res = await fetch('https://offplan-backend.onrender.com/properties/status-counts/');
+      const json = await res.json();
+
+      if (json.status && json.data) {
+        const { ready, offplan, sold } = json.data;
+
+        setTotalInventory({
+          ready,
+          offplan,
+          soldout: sold,
+          total: ready + offplan + sold
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch property status counts:', error);
+    }
+  };
+
+  fetchStatusCounts();
+}, []);
 
 
   return (
@@ -175,7 +265,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           </h2>
           <div className="relative">
             <p className="text-xl lg:text-2xl text-gray-600 max-w-2xl mx-auto mb-4 font-medium">
-              Curated by {agent.data.name}, crafted for your future.
+              Buy Ready & Offplan Properties
+              in Dubai, Abu Dhabi, and Across the UAE
+              Curated for Smart Investors.
             </p>
             <div className="flex justify-center">
               <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full"></div>
@@ -186,8 +278,81 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           </p>
         </div>
 
+        <div className="flex justify-center mb-12">
+          <div className="hidden sm:flex gap-6">
+            {filters.map((filter) => {
+              const IconComponent = filter.icon;
+              const filterCount = totalInventory[filter.key];
+              return (
+                <button
+                  key={filter.label}
+                  onClick={() => setStatusName(filter.label)}
+                  className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${statusName === filter.label
+                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    }`}
+                >
+                  <div className="flex items-center gap-5">
+                    <IconComponent
+                      size={28}
+                      className={`${statusName === filter.label ? 'text-white' : 'text-gray-600'
+                        }`}
+                    />
+                    <div className="text-left">
+                      <div className="text-base font-semibold mb-1">
+                        {filter.label}
+                      </div>
+                      <div className={`text-2xl font-bold ${statusName === filter.label
+                          ? 'text-white'
+                          : 'text-gray-800'
+                        }`}>
+                        {filterCount.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="sm:hidden flex gap-3 px-4">
+            {filters.map((filter) => {
+              const IconComponent = filter.icon;
+              const filterCount = totalInventory[filter.key];
+              return (
+                <button
+                  key={filter.label}
+                  onClick={() => setStatusName(filter.label)}
+                  className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${statusName === filter.label
+                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    }`}
+                >
+                  <IconComponent
+                    size={18}
+                    className={`mb-1 ${statusName === filter.label ? 'text-white' : 'text-gray-600'
+                      }`}
+                  />
+                  <span className="text-xs font-semibold mb-1 text-center leading-tight">
+                    {filter.label}
+                  </span>
+                  <span className={`text-lg font-bold ${statusName === filter.label
+                      ? 'text-white'
+                      : 'text-gray-800'
+                    }`}>
+                    {filterCount > 999 ? `${Math.floor(filterCount / 1000)}k` : filterCount}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
-          {properties.map((project, index) => (
+          {properties.map((project, index) => {
+            const displayStatus = project.sales_status === 3 ? 3 : project.property_status;
+            return(
+            (
             <div
               key={project.id}
               id={`property-${index}`} // ✅ Give each wrapper a unique id
@@ -195,7 +360,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
               <Card
                 key={project.id}
                 className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
-                // onClick={() => handleProjectSummary(project)}
+              // onClick={() => handleProjectSummary(project)}
               >
                 <div className="relative overflow-hidden">
                   <img
@@ -207,8 +372,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                   <div className="absolute top-4 right-4">
-                    <Badge className={`${getStatusBadgeStyle(project.property_status)} font-semibold px-3 py-2 text-sm flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20`}>
-                      {getStatusBadgeContent(project.sales_status)}
+                    <Badge className={`${getStatusBadgeStyle(displayStatus)} font-semibold px-3 py-2 text-sm flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20`}>
+                      {getStatusBadgeContent(displayStatus)}
                     </Badge>
                   </div>
 
@@ -310,7 +475,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                 </CardContent>
               </Card>
             </div>
-          ))}
+          ))})}
         </div>
 
         {/* {hasMoreProjects && ( */}

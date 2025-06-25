@@ -29,16 +29,19 @@ const Header = () => {
             <span className="text-xl font-bold">
               {/* <span className="text-pink-500">OFFPLAN</span>
               <span className="text-blue-600">.MARKET</span> */}
-              <img src={Icon} alt="Logo" className="h-12" />
+              <>
+                <img src={Icon} alt="Logo" className="h-8 w-auto block md:hidden" />
+                <img src={Icon} alt="Logo" className="h-10 w-auto hidden md:block" />
+              </>
 
             </span>
           </Link>
-          
+
           <nav className="hidden md:flex items-center space-x-8">
             {navigationLinks.map((link) => (
-              <Link 
-                key={link.label} 
-                to={link.href} 
+              <Link
+                key={link.label}
+                to={link.href}
                 className="text-gray-600 hover:text-pink-500 transition-colors font-medium"
               >
                 {link.label}
@@ -46,7 +49,7 @@ const Header = () => {
             ))}
             <LanguageSwitcher />
           </nav>
-          
+
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
@@ -61,14 +64,14 @@ const Header = () => {
                 {/* Header with close button */}
                 <div className="flex items-center justify-between p-4 border-b">
                   <Link to="/" className="text-lg font-bold">
-                    <span className="text-pink-500">OFFPLAN</span>
-                    <span className="text-blue-600">.MARKET</span>
+                    <span className="text-pink-400">OFFPLAN</span>
+                    <span className="text-[#7d8bff]">.MARKET</span>
                   </Link>
-                  <SheetClose asChild>
+                  {/* <SheetClose asChild>
                     <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                       <X size={20} className="text-gray-600" />
                     </button>
-                  </SheetClose>
+                  </SheetClose> */}
                 </div>
 
                 {/* Navigation Links */}
@@ -84,7 +87,7 @@ const Header = () => {
                         {link.label}
                       </Link>
                     ))}
-                    
+
                     {/* Language Switcher */}
                     <LanguageSwitcher mobile />
                   </div>

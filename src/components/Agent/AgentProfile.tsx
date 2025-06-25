@@ -57,8 +57,8 @@ const AgentProfile = ({agent}) => {
               <div className="relative flex flex-col w-full max-w-sm">
                 <div className="relative w-full h-96 rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/50">
                   <img 
-                    src={agent.data.profile_image_url}
-                    alt={agent.data.name}
+                    src={agent.profile_image_url}
+                    alt={agent.name}
                     className="w-full h-full object-cover"
                   />
                   
@@ -76,19 +76,19 @@ const AgentProfile = ({agent}) => {
 
                 {/* Stats section - Below the image */}
                 <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 border border-gray-200/50 shadow-lg mt-4">
-                  <div className="flex items-center justify-between text-gray-700">
+                  <div className="flex items-center justify-around text-gray-700">
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-1">
                         <Briefcase className="w-4 h-4 mr-1" />
                       </div>
-                      <div className="text-2xl font-bold">{agent.data.total_business_deals}</div>
+                      <div className="text-2xl font-bold">{agent.total_business_deals}</div>
                       <div className="text-xs opacity-80">Deals</div>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-1">
                         <Clock className="w-4 h-4 mr-1" />
                       </div>
-                      <div className="text-2xl font-bold">{agent.data.years_of_experience.split(" ")[0]}</div>
+                      <div className="text-2xl font-bold">{agent.years_of_experience.split(" ")[0]}</div>
                       <div className="text-xs opacity-80">Years</div>
                     </div>
                     <div className="text-center">
@@ -107,7 +107,7 @@ const AgentProfile = ({agent}) => {
                 {/* Quick Contact Buttons - At the bottom */}
                 <div className="flex flex-col gap-4 mt-6">
                   <a
-                  href={`https://wa.me/${agent.data.whatsapp_number.replace(/\s+/g, '')}?text=Hi, I'm interested in your off-plan properties`}
+                  href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=Hi, I'm interested in your off-plan properties`}
                   target="_blank">
                   <Button 
                     className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
@@ -117,7 +117,7 @@ const AgentProfile = ({agent}) => {
                   </Button>
                   </a>
                   
-                  <a href={`tel:${agent.data.phone_number}`}>
+                  <a href={`tel:${agent.phone_number}`}>
                   <Button 
                     variant="outline" 
                     className="w-full h-12 border-2 border-gray-300 bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
@@ -136,7 +136,7 @@ const AgentProfile = ({agent}) => {
               {/* Name and Title */}
               <div className="mb-6">
                 <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  {agent.data.name}
+                  {agent.name}
                 </h2>
                 <p className="text-2xl text-gray-600 font-medium mb-4">
                   Your Trusted Off-Plan Expert
@@ -152,7 +152,7 @@ const AgentProfile = ({agent}) => {
               {/* Description with See more/less */}
               <div className="mb-6 flex-shrink-0">
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  {agent.data.description.substring(0, 200)}
+                  {agent.description.substring(0, 200)}
                   {!showFullText && (
                     <button
                       onClick={() => setShowFullText(true)}
@@ -163,7 +163,7 @@ const AgentProfile = ({agent}) => {
                   )}
                   {showFullText && (
                     <span>
-                      I help investors find the best opportunities with personalized guidance and market expertise. With over {agent.data.years_of_experience} years of experience in the real estate industry, I have successfully helped hundreds of clients achieve their investment goals. My expertise spans across various prestigious developments in Dubai, providing comprehensive market analysis and investment strategies tailored to each client's unique needs.{' '}
+                      I help investors find the best opportunities with personalized guidance and market expertise. With over {agent.years_of_experience} years of experience in the real estate industry, I have successfully helped hundreds of clients achieve their investment goals. My expertise spans across various prestigious developments in Dubai, providing comprehensive market analysis and investment strategies tailored to each client's unique needs.{' '}
                       <button
                         onClick={() => setShowFullText(false)}
                         className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 transition-colors"
