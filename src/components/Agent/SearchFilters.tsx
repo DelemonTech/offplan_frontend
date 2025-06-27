@@ -7,30 +7,83 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Switch } from '@/components/ui/switch';
+import { useNavigate } from 'react-router-dom';
 
-const SearchFilters = () => {
-  const [propertyType, setPropertyType] = useState('Residential');
-  const [selectedPropertySubtype, setSelectedPropertySubtype] = useState('Apartment');
-  const [bedrooms, setBedrooms] = useState('1');
-  const [priceRange, setPriceRange] = useState([0, 100000000]);
-  const [areaRange, setAreaRange] = useState([0, 50000]);
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
-  
-  // Dynamic max values (would come from API)
-  const [maxPrice, setMaxPrice] = useState(100000000); // 100M AED
-  const [maxArea, setMaxArea] = useState(50000); // 50K sq ft
-  
-  // Existing filter states
-  const [projectName, setProjectName] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
-  const [developer, setDeveloper] = useState('');
-  const [projectStatus, setProjectStatus] = useState('');
+const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUrl, setPropertyType,
+  setSelectedPropertySubtype,
+  setBedrooms,
+  setPriceRange,
+  setAreaRange,
+  setIsAdvancedOpen,
+  setMaxPrice,
+  setMaxArea,
+  setProjectName,
+  setCitiesData,
+  setSelectedCity,
+  setSelectedNeighborhood,
+  setDeveloper,
+  setProjectStatus,
+  setDeliveryYear,
+  citiesData,
+  selectedCity,
+  propertyType,
+  selectedPropertySubtype,
+  bedrooms,
+  priceRange,
+  areaRange,
+  isAdvancedOpen,
+  maxPrice,
+  maxArea,
+  projectName,
+  selectedNeighborhood,
+  developer,
+  projectStatus,
+  deliveryYear,
+  developers,
+  setDevelopers,
+  isSearchLoading,
+  setIsSearchLoading
 
-  // New filter states for missing filters
-  const [rentalGuarantee, setRentalGuarantee] = useState(false);
-  const [postHandoverPayment, setPostHandoverPayment] = useState(false);
-  const [deliveryYear, setDeliveryYear] = useState('');
+}) => {
+  // const [propertyType, setPropertyType] = useState('Residential');
+  // const [selectedPropertySubtype, setSelectedPropertySubtype] = useState('Apartment');
+  // const [bedrooms, setBedrooms] = useState('1');
+  // const [priceRange, setPriceRange] = useState([0, 100000000]);
+  // const [areaRange, setAreaRange] = useState([0, 50000]);
+  // const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+
+  // // Dynamic max values (would come from API)
+  // const [maxPrice, setMaxPrice] = useState(100000000); // 100M AED
+  // const [maxArea, setMaxArea] = useState(50000); // 50K sq ft
+
+  // // Existing filter states
+  // const [projectName, setProjectName] = useState('');
+  // const [citiesData, setCitiesData] = useState([]); // full data with districts
+  // const [selectedCity, setSelectedCity] = useState('');
+  // const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
+
+  // const [developer, setDeveloper] = useState('');
+  // const [projectStatus, setProjectStatus] = useState('');
+
+  // // New filter states for missing filters
+  // // const [rentalGuarantee, setRentalGuarantee] = useState(false);
+  // // const [postHandoverPayment, setPostHandoverPayment] = useState(false);
+  // const [deliveryYear, setDeliveryYear] = useState('');
+
+  // get list of city names for dropdown
+  const cityOptions = citiesData.map((city) => city.name);
+
+  // get the selected city object
+  const selectedCityData = citiesData.find((city) => city.name === selectedCity);
+
+  // get districts of selected city
+  const getFilteredNeighborhoods = () => {
+    console.log(selectedCity);
+    const city = citiesData.find((c) => c.name === selectedCity);
+    console.log(citiesData);
+    return city?.districts || [];
+  };
+
 
   // Simulate API call to get max values
   useEffect(() => {
@@ -43,7 +96,7 @@ const SearchFilters = () => {
       setPriceRange([0, 100000000]);
       setAreaRange([0, 50000]);
     };
-    
+
     fetchMaxValues();
   }, []);
 
@@ -87,125 +140,197 @@ const SearchFilters = () => {
     { name: 'Retail', icon: ShoppingCart }
   ];
 
-  const cities = [
-    'Dubai',
-    'Abu Dhabi',
-    'Sharjah',
-    'Ajman',
-    'Ras Al Khaimah',
-    'Fujairah',
-    'Umm Al Quwain'
-  ];
+  const [salesStatus, setSalesStatus] = useState('');
+  const [propertyStatus, setPropertyStatus] = useState('');
+
+  const resetFilters = () => {
+    setSelectedCity('');
+    setSelectedNeighborhood('');
+    setPropertyType('Residential');
+    setSelectedPropertySubtype('Apartment');
+    setBedrooms('');
+    setDeliveryYear('');
+    setPriceRange([0, maxPrice]); // or default range
+    setAreaRange([0, maxArea]);   // or default range
+    setDeveloper('');
+    setProjectName('');
+    setProjectStatus('');
+  };
+
+  const handleSearch = async () => {
+    setIsSearchLoading(true);
+
+    const filters = {
+      city: selectedCity || '',
+      district: selectedNeighborhood || '',
+      property_type: propertyType || '',
+      unit_type: selectedPropertySubtype || '',
+      rooms: propertyType === 'Residential' ? bedrooms?.toString() : '',
+      delivery_year: deliveryYear ? parseInt(deliveryYear) : 0,
+      min_price: priceRange[0],
+      max_price: priceRange[1],
+      min_area: areaRange[0],
+      max_area: areaRange[1],
+      property_status: '',
+      sales_status: '',
+      title: projectName || '',           // ✅ Include project name
+      developer: developer || '',                // ✅ Include developer
+      project_status: projectStatus || '',       // ✅ Include project status
+    };
+
+    // Decide status based on `statusName`
+    if (statusName.toLowerCase() === 'sold out') {
+      filters.sales_status = 'Sold Out';
+    } else if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
+      filters.property_status = statusName;
+    }
+
+    // 👉 Optional: log the final request body
+    console.log("🔍 Sending search filters:", filters);
+
+    try {
+      const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(filters),
+      });
+
+      const result = await response.json();
+
+      if (result?.status && result?.data) {
+        setProperties(result.data.results || []);
+        setNextPageUrl(result.data.next_page_url || null);
+      }
+    } catch (error) {
+      console.error('❌ Search error:', error);
+    }
+    finally {
+    setIsSearchLoading(false); // ✅ Stop loading
+  }
+  };
+  
+
+  // const cities = [
+  //   'Dubai',
+  //   'Abu Dhabi',
+  //   'Sharjah',
+  //   'Ajman',
+  //   'Ras Al Khaimah',
+  //   'Fujairah',
+  //   'Umm Al Quwain'
+  // ];
 
   // Neighborhoods organized by city
-  const neighborhoodsByCity = {
-    'dubai': [
-      'JVC (Jumeirah Village Circle)',
-      'Dubai Hills Estate',
-      'Downtown Dubai',
-      'Dubai Marina',
-      'Business Bay',
-      'DIFC (Dubai International Financial Centre)',
-      'Jumeirah Beach Residence (JBR)',
-      'Palm Jumeirah',
-      'Arabian Ranches',
-      'Emirates Living',
-      'Motor City',
-      'Sports City',
-      'Al Furjan',
-      'Dubailand',
-      'Mirdif'
-    ],
-    'abu dhabi': [
-      'Al Reem Island',
-      'Saadiyat Island',
-      'Yas Island',
-      'Al Raha Beach',
-      'Corniche Area',
-      'Al Khalidiyah',
-      'Al Mushrif',
-      'Al Reef',
-      'Khalifa City',
-      'Marina Village'
-    ],
-    'sharjah': [
-      'Al Majaz',
-      'Al Khan',
-      'Al Nahda',
-      'Muwailih',
-      'Al Taawun',
-      'Al Qasimia',
-      'Al Fisht',
-      'University City',
-      'Al Ramla',
-      'Al Buhaira'
-    ],
-    'ajman': [
-      'Al Nuaimiya',
-      'Al Rashidiya',
-      'Al Jurf',
-      'Al Hamidiyah',
-      'Al Corniche',
-      'China Mall Area',
-      'Ajman Marina',
-      'Al Zahra',
-      'Al Rumailah',
-      'Al Helio'
-    ],
-    'ras al khaimah': [
-      'Al Hamra',
-      'Mina Al Arab',
-      'Al Marjan Island',
-      'Corniche Al Qawasim',
-      'Al Nakheel',
-      'Flamingo Villas',
-      'Julphar',
-      'Al Rams',
-      'Al Mairid',
-      'Khuzam'
-    ],
-    'fujairah': [
-      'Corniche Fujairah',
-      'Al Faseel',
-      'Dibba',
-      'Kalba',
-      'Al Bidyah',
-      'Masafi',
-      'Al Hayl',
-      'Qidfa',
-      'Al Aqah',
-      'Madhab'
-    ],
-    'umm al quwain': [
-      'Old Town',
-      'Al Raas',
-      'Falaj Al Mualla',
-      'Al Salam City',
-      'Dreams Land',
-      'Al Humra',
-      'UAQ Marina',
-      'Al Boom',
-      'Al Dur',
-      'Al Rafaah'
-    ]
-  };
+  // const neighborhoodsByCity = {
+  //   'dubai': [
+  //     'JVC (Jumeirah Village Circle)',
+  //     'Dubai Hills Estate',
+  //     'Downtown Dubai',
+  //     'Dubai Marina',
+  //     'Business Bay',
+  //     'DIFC (Dubai International Financial Centre)',
+  //     'Jumeirah Beach Residence (JBR)',
+  //     'Palm Jumeirah',
+  //     'Arabian Ranches',
+  //     'Emirates Living',
+  //     'Motor City',
+  //     'Sports City',
+  //     'Al Furjan',
+  //     'Dubailand',
+  //     'Mirdif'
+  //   ],
+  //   'abu dhabi': [
+  //     'Al Reem Island',
+  //     'Saadiyat Island',
+  //     'Yas Island',
+  //     'Al Raha Beach',
+  //     'Corniche Area',
+  //     'Al Khalidiyah',
+  //     'Al Mushrif',
+  //     'Al Reef',
+  //     'Khalifa City',
+  //     'Marina Village'
+  //   ],
+  //   'sharjah': [
+  //     'Al Majaz',
+  //     'Al Khan',
+  //     'Al Nahda',
+  //     'Muwailih',
+  //     'Al Taawun',
+  //     'Al Qasimia',
+  //     'Al Fisht',
+  //     'University City',
+  //     'Al Ramla',
+  //     'Al Buhaira'
+  //   ],
+  //   'ajman': [
+  //     'Al Nuaimiya',
+  //     'Al Rashidiya',
+  //     'Al Jurf',
+  //     'Al Hamidiyah',
+  //     'Al Corniche',
+  //     'China Mall Area',
+  //     'Ajman Marina',
+  //     'Al Zahra',
+  //     'Al Rumailah',
+  //     'Al Helio'
+  //   ],
+  //   'ras al khaimah': [
+  //     'Al Hamra',
+  //     'Mina Al Arab',
+  //     'Al Marjan Island',
+  //     'Corniche Al Qawasim',
+  //     'Al Nakheel',
+  //     'Flamingo Villas',
+  //     'Julphar',
+  //     'Al Rams',
+  //     'Al Mairid',
+  //     'Khuzam'
+  //   ],
+  //   'fujairah': [
+  //     'Corniche Fujairah',
+  //     'Al Faseel',
+  //     'Dibba',
+  //     'Kalba',
+  //     'Al Bidyah',
+  //     'Masafi',
+  //     'Al Hayl',
+  //     'Qidfa',
+  //     'Al Aqah',
+  //     'Madhab'
+  //   ],
+  //   'umm al quwain': [
+  //     'Old Town',
+  //     'Al Raas',
+  //     'Falaj Al Mualla',
+  //     'Al Salam City',
+  //     'Dreams Land',
+  //     'Al Humra',
+  //     'UAQ Marina',
+  //     'Al Boom',
+  //     'Al Dur',
+  //     'Al Rafaah'
+  //   ]
+  // };
 
   // Get filtered neighborhoods based on selected city
-  const getFilteredNeighborhoods = () => {
-    if (!selectedCity) return [];
-    return neighborhoodsByCity[selectedCity.toLowerCase()] || [];
-  };
+  // const getFilteredNeighborhoods = () => {
+  //   if (!selectedCity) return [];
+  //   return neighborhoodsByCity[selectedCity.toLowerCase()] || [];
+  // };
 
-  const developers = [
-    'Emaar Properties',
-    'Dubai Properties',
-    'DAMAC Properties',
-    'Nakheel',
-    'Meraas',
-    'Sobha Realty',
-    'Ellington Properties',
-    'Azizi Developments'
-  ];
+  // const developers = [
+  //   'Emaar',
+  //   'Dubai Properties',
+  //   'DAMAC Properties',
+  //   'Nakheel',
+  //   'Meraas',
+  //   'Sobha Realty',
+  //   'Ellington Properties',
+  //   'Azizi Developments'
+  // ];
 
   const projectStatuses = [
     'Off-plan',
@@ -233,6 +358,39 @@ const SearchFilters = () => {
     setSelectedPropertySubtype(type === 'Commercial' ? 'Office' : 'Apartment');
   };
 
+  useEffect(() => {
+    // Replace this with actual API fetch if needed
+    fetchCitiesFromAPI();
+  }, []);
+
+  const fetchCitiesFromAPI = async () => {
+    const response = await fetch('https://offplan-backend.onrender.com/cities'); // or use your endpoint
+    const result = await response.json();
+    if (result.status) {
+      setCitiesData(result.data);
+    }
+  };
+
+  useEffect(() => {
+    const fetchDevelopers = async () => {
+      try {
+        const response = await fetch("https://offplan-backend.onrender.com/developers/");
+        const result = await response.json();
+
+        if (result.status && Array.isArray(result.data)) {
+          setDevelopers(result.data.map(dev => dev.name)); // if you only want developer names
+        } else {
+          console.warn("Developer list empty or invalid");
+        }
+      } catch (error) {
+        console.error("Failed to fetch developers:", error);
+      }
+    };
+
+    fetchDevelopers();
+  }, []);
+
+
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Main Filters: City & Neighborhood */}
@@ -244,13 +402,13 @@ const SearchFilters = () => {
             <label className="text-sm font-semibold text-gray-700">City</label>
           </div>
           <Select value={selectedCity} onValueChange={setSelectedCity}>
-            <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
+            <SelectTrigger className="h-11 bg-white/70 border-gray-200 rounded-lg">
               <SelectValue placeholder="Select city" />
             </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200 shadow-lg">
-              {cities.map((city) => (
-                <SelectItem key={city} value={city.toLowerCase()}>
-                  {city}
+            <SelectContent>
+              {citiesData.map(city => (
+                <SelectItem key={city.id} value={city.name}>
+                  {city.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -263,18 +421,18 @@ const SearchFilters = () => {
             <MapPin className="mr-2 text-gray-600" size={18} />
             <label className="text-sm font-semibold text-gray-700">Neighborhood</label>
           </div>
-          <Select 
-            value={selectedNeighborhood} 
+          <Select
+            value={selectedNeighborhood}
             onValueChange={setSelectedNeighborhood}
             disabled={!selectedCity}
           >
             <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
               <SelectValue placeholder={selectedCity ? "Select area" : "Select city first"} />
             </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200 shadow-lg max-h-60">
-              {getFilteredNeighborhoods().map((neighborhood) => (
-                <SelectItem key={neighborhood} value={neighborhood.toLowerCase()}>
-                  {neighborhood}
+            <SelectContent className="bg-white border-gray-200 shadow-lg max-h-60 overflow-y-auto">
+              {getFilteredNeighborhoods().map(district => (
+                <SelectItem key={district} value={district}>
+                  {district}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -290,11 +448,10 @@ const SearchFilters = () => {
             <button
               key={type}
               onClick={() => handlePropertyTypeChange(type)}
-              className={`flex-1 py-3 px-4 sm:px-6 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                propertyType === type
-                  ? 'bg-gradient-to-r from-pink-500 to-blue-500 text-white shadow-lg transform scale-105'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
-              }`}
+              className={`flex-1 py-3 px-4 sm:px-6 rounded-lg text-sm font-semibold transition-all duration-300 ${propertyType === type
+                ? 'bg-gradient-to-r from-pink-500 to-blue-500 text-white shadow-lg transform scale-105'
+                : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
+                }`}
             >
               {type}
             </button>
@@ -314,11 +471,10 @@ const SearchFilters = () => {
               <button
                 key={subtype.name}
                 onClick={() => setSelectedPropertySubtype(subtype.name)}
-                className={`p-3 sm:p-4 rounded-xl border-2 text-center transition-all duration-300 hover:shadow-lg hover:scale-105 ${
-                  selectedPropertySubtype === subtype.name
-                    ? 'border-pink-400 bg-gradient-to-br from-pink-50 to-blue-50 text-pink-700 shadow-md'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-white/70 bg-white/50'
-                }`}
+                className={`p-3 sm:p-4 rounded-xl border-2 text-center transition-all duration-300 hover:shadow-lg hover:scale-105 ${selectedPropertySubtype === subtype.name
+                  ? 'border-pink-400 bg-gradient-to-br from-pink-50 to-blue-50 text-pink-700 shadow-md'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-white/70 bg-white/50'
+                  }`}
               >
                 <IconComponent className="mx-auto mb-2" size={20} />
                 <div className="text-xs sm:text-sm font-semibold">{subtype.name}</div>
@@ -340,11 +496,10 @@ const SearchFilters = () => {
               <button
                 key={num}
                 onClick={() => setBedrooms(num)}
-                className={`py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                  bedrooms === num
-                    ? 'bg-gradient-to-r from-pink-500 to-blue-500 text-white shadow-lg'
-                    : 'bg-white/70 text-gray-600 hover:bg-white hover:shadow-md'
-                }`}
+                className={`py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-300 ${bedrooms === num
+                  ? 'bg-gradient-to-r from-pink-500 to-blue-500 text-white shadow-lg'
+                  : 'bg-white/70 text-gray-600 hover:bg-white hover:shadow-md'
+                  }`}
               >
                 {num}
               </button>
@@ -366,7 +521,7 @@ const SearchFilters = () => {
             </span>
           </Button>
         </CollapsibleTrigger>
-        
+
         <CollapsibleContent className="space-y-6 mt-6 p-4 sm:p-6 bg-white/30 backdrop-blur-sm rounded-xl border border-white/20">
           {/* Project Name */}
           <div>
@@ -479,37 +634,6 @@ const SearchFilters = () => {
             </div>
           </div>
 
-          {/* New Filters: Rental Guarantee & Post Handover Payment */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white/50 rounded-xl p-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Shield className="mr-2 text-gray-600" size={18} />
-                  <label className="text-sm font-semibold text-gray-700">Rental Guarantee</label>
-                </div>
-                <Switch
-                  checked={rentalGuarantee}
-                  onCheckedChange={setRentalGuarantee}
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-2">Guaranteed rental income</p>
-            </div>
-
-            <div className="bg-white/50 rounded-xl p-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <CreditCard className="mr-2 text-gray-600" size={18} />
-                  <label className="text-sm font-semibold text-gray-700">Post Handover Payment</label>
-                </div>
-                <Switch
-                  checked={postHandoverPayment}
-                  onCheckedChange={setPostHandoverPayment}
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-2">Payment plan after handover</p>
-            </div>
-          </div>
-
           {/* Delivery Year */}
           <div>
             <div className="flex items-center mb-3">
@@ -534,13 +658,35 @@ const SearchFilters = () => {
 
       {/* Enhanced Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
-        <Button 
-          variant="outline" 
+        <Button
+          type="button"
+          variant="outline"
           className="flex-1 h-12 sm:h-14 text-gray-600 border-gray-300 hover:bg-white/80 rounded-xl font-semibold"
+          onClick={resetFilters}
         >
           Reset Filters
         </Button>
-        <Button className="flex-1 h-12 sm:h-14 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <Button
+          className="flex-1 h-12 sm:h-14 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+          onClick={() => {
+            const scrollTarget = document.getElementById('featured-projects');
+            if (scrollTarget) {
+              scrollTarget.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // 🔍 Choose based on known status fields
+            // if (salesStatus?.toLowerCase() === 'sold out') {
+            //   setStatusName('Sold Out');
+            // } else if (propertyStatus?.toLowerCase() === 'ready') {
+            //   setStatusName('Ready');
+            // } else if (propertyStatus?.toLowerCase() === 'off plan') {
+            //   setStatusName('Off Plan');
+            // } else {
+            //   setStatusName(''); // fallback if no valid match
+            // }
+            handleSearch();
+          }}
+        >
           🔍 Show Properties
         </Button>
       </div>

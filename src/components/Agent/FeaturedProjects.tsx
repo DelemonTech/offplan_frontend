@@ -6,15 +6,57 @@ import { MapPin, Calendar, Check, Loader2, RefreshCw, Lock, Building2, Repeat, M
 import { useNavigate } from 'react-router-dom';
 import ProjectSummaryModal from './ProjectSummaryModal';
 import { set } from 'date-fns';
+import { useLocation } from 'react-router-dom';
 
-const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNextPageUrl, statusName, setStatusName }) => {
+
+const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNextPageUrl, statusName, setStatusName, setPropertyType,
+  setSelectedPropertySubtype,
+  setBedrooms,
+  setPriceRange,
+  setAreaRange,
+  setIsAdvancedOpen,
+  setMaxPrice,
+  setMaxArea,
+  setProjectName,
+  setCitiesData,
+  setSelectedCity,
+  setSelectedNeighborhood,
+  setDeveloper,
+  setProjectStatus,
+  setDeliveryYear,
+  citiesData,
+  selectedCity,
+  propertyType,
+  selectedPropertySubtype,
+  bedrooms,
+  priceRange,
+  areaRange,
+  isAdvancedOpen,
+  maxPrice,
+  maxArea,
+  projectName,
+  selectedNeighborhood,
+  developer,
+  projectStatus,
+  deliveryYear,
+  developers,
+  setDevelopers,
+  isSearchLoading,
+  setIsSearchLoading }) => {
   const navigate = useNavigate();
+
   // const [activeFilter, setActiveFilter] = useState('ready');
   const [visibleCount, setVisibleCount] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProjectForSummary, setSelectedProjectForSummary] = useState(null);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const firstNewCardRef = useRef(null);
+
+  const location = useLocation();
+  const { showFilters } = location.state || {};
+
+
+  const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
 
   const filters = [
     { id: 2, key: 'ready', label: 'Ready', icon: Check },
@@ -58,6 +100,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     total: 0
   });
 
+
   const visibleProjects = properties.slice(0, visibleCount);
 
   const getStatusBadgeContent = (status: number) => {
@@ -92,6 +135,29 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     document.body.classList.add('freeze-scroll');
     setIsLoading(true);
 
+    // Construct full filters
+    const filters = {
+      city: selectedCity || '',
+      district: selectedNeighborhood || '',
+      property_type: propertyType || '',
+      unit_type: selectedPropertySubtype || '',
+      rooms: propertyType === 'Residential' ? bedrooms?.toString() : '',
+      delivery_year: deliveryYear ? parseInt(deliveryYear) : 0,
+      min_price: priceRange[0],
+      max_price: priceRange[1],
+      min_area: areaRange[0],
+      max_area: areaRange[1],
+      property_status: '',
+      sales_status: '',
+    };
+
+    // Apply the status filter
+    if (statusName.toLowerCase() === 'sold out') {
+      filters.sales_status = 'Sold Out';
+    } else if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
+      filters.property_status = statusName;
+    }
+
     try {
       const secureUrl = nextPageUrl.replace('http://', 'https://');
 
@@ -100,15 +166,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-          statusName === 'soldout'
-            ? { sales_status: 'Sold Out' }
-            : { property_status: statusName === 'ready' ? 'Ready' : 'Off Plan' }
-        )
+        body: JSON.stringify(filters), // ✅ pass complete filter object
       });
 
       const result = await response.json();
       console.log("Load More Response:", result);
+
       if (result.status && result.data) {
         const newProperties = result.data.results || [];
         const newNextPageUrl = result.data.next_page_url || null;
@@ -148,7 +211,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const handleWhatsApp = (project: any) => {
     const message = `Hi Sahar! I'm interested in ${project.title} in ${project.location}. Starting from AED ${parseInt(project.price).toLocaleString()}. Can you share more details?`;
-    const whatsappUrl = `https://wa.me/${agent.whatsapp_number}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -163,13 +226,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       });
     } else {
       navigator.clipboard.writeText(shareText).then(() => {
-        alert('خلاصه پروژه کپی شد!');
+        setCopiedProjectId(project.id); // 👈 track which icon to show check for
+        setTimeout(() => setCopiedProjectId(null), 2000); // ⏱ reset after 2s
       });
     }
   };
 
   useEffect(() => {
     console.log('📦 [FeaturedProjects] statusName changed to:', statusName);
+    setNextPageUrl(null);
   }, [statusName]);
 
   useEffect(() => {
@@ -202,7 +267,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           body: JSON.stringify(
             statusName === 'Sold Out'
               ? { sales_status: 'Sold Out' }
-              : { property_status: statusName === 'ready' ? 'Ready' : 'Off Plan' }
+              : { property_status: statusName === 'Ready' ? 'Ready' : 'Off Plan' }
           ),
         });
 
@@ -224,6 +289,38 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       fetchFilteredProperties();
     }
   }, [statusName]);
+
+
+  useEffect(() => {
+    const filters = location.state?.filters;
+    if (!filters) return;
+
+    const fetchFilteredProperties = async () => {
+      setIsSearchLoading(true);
+      try {
+        const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(filters),
+        });
+        const result = await response.json();
+        if (result.status && result.data) {
+          setProperties(result.data.results || []);
+          setNextPageUrl(result.data.next_page_url || null);
+
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setIsSearchLoading(false);
+      }
+    };
+
+    fetchFilteredProperties();
+  }, [location.state?.filters]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -252,6 +349,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       } catch (error) {
         console.error('Failed to fetch property status counts:', error);
       }
+      finally {
+        setIsLoading(false);
+      }
     };
 
     fetchStatusCounts();
@@ -268,7 +368,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+          <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 tracking-tight" id="featured-projects">
             Your Next Home <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">Starts Here</span>
           </h2>
           <div className="relative">
@@ -356,43 +456,54 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
-          {properties.map((project, index) => {
-            const displayStatus = (() => {
-              const normalizedStatus = statusName.toLowerCase();
-              if (normalizedStatus === 'ready') return 2;
-              if (normalizedStatus === 'off plan') return 1;
-              else return 3;
-              return project.property_status;
-            })();
-            console.log("Project Status:", project.sales_status, "Display Status:", displayStatus);
-            return (
-              (
-                <div
-                  key={project.id}
-                  id={`property-${index}`} // ✅ Give each wrapper a unique id
-                >
-                  <Card
+
+        {isSearchLoading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-pink-500 border-opacity-50" />
+          </div>
+        ) : properties.length === 0 ? (
+          <div className="text-center py-20">
+            <h3 className="text-2xl font-semibold text-gray-600 mb-4">Oh-Uh! 😕</h3>
+            <p className="text-gray-500 text-lg">No properties match your current search filters.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
+            {properties.map((project, index) => {
+              const displayStatus = (() => {
+                const normalizedStatus = statusName.toLowerCase();
+                if (normalizedStatus === 'ready') return 2;
+                if (normalizedStatus === 'off plan') return 1;
+                else return 3;
+                return project.property_status;
+              })();
+              console.log("Project Status:", project.sales_status, "Display Status:", displayStatus);
+              return (
+                (
+                  <div
                     key={project.id}
-                    className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
-                  // onClick={() => handleProjectSummary(project)}
+                    id={`property-${index}`} // ✅ Give each wrapper a unique id
                   >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={project.cover}
-                        alt={project.title}
-                        className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
+                    <Card
+                      key={project.id}
+                      className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
+                    // onClick={() => handleProjectSummary(project)}
+                    >
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={project.cover}
+                          alt={project.title}
+                          className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                      <div className="absolute top-4 right-4">
-                        <Badge className={`${getStatusBadgeStyle(displayStatus)} font-semibold px-3 py-2 text-sm flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20`}>
-                          {getStatusBadgeContent(displayStatus)}
-                        </Badge>
-                      </div>
+                        <div className="absolute top-4 right-4">
+                          <Badge className={`${getStatusBadgeStyle(displayStatus)} font-semibold px-3 py-2 text-sm flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20`}>
+                            {getStatusBadgeContent(displayStatus)}
+                          </Badge>
+                        </div>
 
-                      {/* <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+                        {/* <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
                   {project.badges.slice(0, 2).map((badge, index) => (
                     <Badge
                       key={index}
@@ -403,99 +514,113 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   ))}
                 </div> */}
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center">
-                        <div className="text-white text-center p-4 space-y-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                          <div className="flex items-center justify-center gap-4 text-sm">
-                            <div className="flex items-center gap-1">
-                              <Calendar size={14} />
-                              <span>{formatDeliveryDate(project.delivery_date)}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <CreditCard size={14} />
-                              <span>Payment</span>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center">
+                          <div className="text-white text-center p-4 space-y-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <div className="flex items-center justify-center gap-4 text-sm">
+                              <div className="flex items-center gap-1">
+                                <Calendar size={14} />
+                                <span>{formatDeliveryDate(project.delivery_date)}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <CreditCard size={14} />
+                                <span>Payment</span>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="space-y-4">
-                        <div>
-                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
-                            {project.title}
-                          </h3>
-                          <div className="flex items-center text-gray-600">
-                            <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
-                            <span className="font-medium text-sm sm:text-base truncate">{project.city.name}, {project.district.name}</span>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
-                          <div className="text-xs sm:text-sm text-gray-600 mb-1">Starting from</div>
-                          <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                            AED {project.low_price && formatAED((project.low_price))}
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="space-y-4">
+                          <div>
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
+                              {project.title}
+                            </h3>
+                            <div className="flex items-center text-gray-600">
+                              <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
+                              <span className="font-medium text-sm sm:text-base truncate">
+                                {project.city?.name || 'Unknown City'}, {project.district?.name || 'Unknown District'}
+                              </span>
+                            </div>
                           </div>
 
-                          <div className="flex flex-wrap gap-3 text-xs text-gray-600">
-                            <div className="flex items-center gap-1">
-                              <Ruler size={12} className="text-pink-500" />
-                              <span>From {project.min_area} ft²</span>
+                          <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
+                            <div className="text-xs sm:text-sm text-gray-600 mb-1">Starting from</div>
+                            <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                              {project.low_price ? `AED ${formatAED(project.low_price)}` : 'AED N/A'}
                             </div>
-                            <div className="flex items-center gap-1">
-                              <Calendar size={12} className="text-blue-500" />
-                              <span>{formatDeliveryDate(project.delivery_date)}</span>
-                            </div>
-                            {/* <div className="flex items-center gap-1">
+
+                            <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                              <div className="flex items-center gap-1">
+                                <Ruler size={12} className="text-pink-500" />
+                                <span>From {project.min_area} ft²</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Calendar size={12} className="text-blue-500" />
+                                <span>{formatDeliveryDate(project.delivery_date)}</span>
+                              </div>
+                              {/* <div className="flex items-center gap-1">
                         <CreditCard size={12} className="text-purple-500" />
                         <span>Payment</span>
                       </div> */}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2 pt-2">
+                            <Button
+                              // onClick={(e) => {
+                              //   e.stopPropagation();
+                              //   handleViewDetails(project.id);
+                              // }}
+                              className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm py-2.5 rounded-xl"
+                            >
+                              View Details
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleWhatsApp(project);
+                              }}
+                            >
+                              <MessageCircle size={18} className="text-green-600" />
+                            </Button>
+                            <div className="relative">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 rounded-xl border-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleShare(project);
+                                }}
+                              >
+                                {copiedProjectId === project.id ? (
+                                  <Check size={18} className="text-green-500 transition" />
+                                ) : (
+                                  <Share size={18} className="text-blue-500 transition" />
+                                )}
+                              </Button>
+
+                              {copiedProjectId === project.id && (
+                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#7d8bff] text-white text-xs px-2 py-1 rounded shadow">
+                                  Link Copied!
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-
-                        <div className="flex gap-2 pt-2">
-                          <Button
-                            // onClick={(e) => {
-                            //   e.stopPropagation();
-                            //   handleViewDetails(project.id);
-                            // }}
-                            className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm py-2.5 rounded-xl"
-                          >
-                            View Details
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleWhatsApp(project);
-                            }}
-                          >
-                            <MessageCircle size={18} className="text-green-600" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 rounded-xl border-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleShare(project);
-                            }}
-                          >
-                            <Share size={18} className="text-blue-500" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))
-          })}
-        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))
+            })}
+          </div>)}
 
         {/* {hasMoreProjects && ( */}
-        <div className="flex justify-center">
+        {nextPageUrl && <div className="flex justify-center">
           <Button
             onClick={loadMore}
             disabled={isLoading}
@@ -513,7 +638,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
               </>
             )}
           </Button>
-        </div>
+        </div>}
         {/* )} */}
       </div>
 

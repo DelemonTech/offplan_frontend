@@ -13,6 +13,39 @@ import NotFound from '../NotFound';
 import LoadingOverlay from '@/components/ui/LoadingOverlay';
 
 const AgentPageContent = () => {
+
+
+  const [propertyType, setPropertyType] = useState('Residential');
+    const [selectedPropertySubtype, setSelectedPropertySubtype] = useState('Apartment');
+    const [bedrooms, setBedrooms] = useState('1');
+    const [priceRange, setPriceRange] = useState([0, 100000000]);
+    const [areaRange, setAreaRange] = useState([0, 50000]);
+    const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  
+    // Dynamic max values (would come from API)
+    const [maxPrice, setMaxPrice] = useState(100000000); // 100M AED
+    const [maxArea, setMaxArea] = useState(50000); // 50K sq ft
+  
+    // Existing filter states
+    const [projectName, setProjectName] = useState('');
+    const [citiesData, setCitiesData] = useState([]); // full data with districts
+    const [selectedCity, setSelectedCity] = useState('');
+    const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
+  
+    const [developer, setDeveloper] = useState('');
+    const [projectStatus, setProjectStatus] = useState('');
+  
+    // New filter states for missing filters
+    // const [rentalGuarantee, setRentalGuarantee] = useState(false);
+    // const [postHandoverPayment, setPostHandoverPayment] = useState(false);
+    const [deliveryYear, setDeliveryYear] = useState('');
+    const [developers, setDevelopers] = useState([]);
+
+    const [isSearchLoading, setIsSearchLoading] = useState(false);
+
+
+
+
   const { username } = useParams();
   const [agentData, setAgentData] = useState(null);
   const [properties, setPropertiesData] = useState([]);
@@ -102,6 +135,41 @@ useEffect(() => {
         setNextPageUrl={setNextPageUrl}
         statusName={statusName}
         setStatusName={setStatusName}
+        setPropertyType={setPropertyType}
+        setSelectedPropertySubtype={setSelectedPropertySubtype}
+        setBedrooms={setBedrooms}
+        setPriceRange={setPriceRange}
+        setAreaRange={setAreaRange}
+        setIsAdvancedOpen={setIsAdvancedOpen}
+        setMaxPrice={setMaxPrice}
+        setMaxArea={setMaxArea}
+        setProjectName={setProjectName}
+        setCitiesData={setCitiesData}
+        setSelectedCity={setSelectedCity}
+        setSelectedNeighborhood={setSelectedNeighborhood}
+        setDeveloper={setDeveloper}
+        setProjectStatus={setProjectStatus}
+        setDeliveryYear={setDeliveryYear}
+        citiesData = {citiesData}
+        selectedCity = {selectedCity}
+        propertyType={propertyType}
+        selectedPropertySubtype={selectedPropertySubtype}
+        bedrooms={bedrooms}
+        priceRange={priceRange}
+        areaRange={areaRange}
+        isAdvancedOpen={isAdvancedOpen}
+        maxPrice={maxPrice}
+        maxArea={maxArea}
+        projectName={projectName}
+        selectedNeighborhood={selectedNeighborhood}
+        developer={developer}
+        projectStatus={projectStatus}
+        deliveryYear={deliveryYear}
+        developers={developers}
+        setDevelopers={setDevelopers}
+        setIsSearchLoading={setIsSearchLoading}
+        isSearchLoading={isSearchLoading}
+
       />
       <AgentProfile agent={agentData} />
 
@@ -143,7 +211,42 @@ useEffect(() => {
         <div className="lg:hidden py-12 sm:py-16">
           <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
             <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12 border border-white/20">
-              <SearchFilters />
+              <SearchFilters statusName={statusName} setStatusName={setStatusName} setNextPageUrl={setNextPageUrl} setProperties={setPropertiesData} 
+              setPropertyType={setPropertyType}
+        setSelectedPropertySubtype={setSelectedPropertySubtype}
+        setBedrooms={setBedrooms}
+        setPriceRange={setPriceRange}
+        setAreaRange={setAreaRange}
+        setIsAdvancedOpen={setIsAdvancedOpen}
+        setMaxPrice={setMaxPrice}
+        setMaxArea={setMaxArea}
+        setProjectName={setProjectName}
+        setCitiesData={setCitiesData}
+        setSelectedCity={setSelectedCity}
+        setSelectedNeighborhood={setSelectedNeighborhood}
+        setDeveloper={setDeveloper}
+        setProjectStatus={setProjectStatus}
+        setDeliveryYear={setDeliveryYear}
+        citiesData = {citiesData}
+        selectedCity = {selectedCity}
+        propertyType={propertyType}
+        selectedPropertySubtype={selectedPropertySubtype}
+        bedrooms={bedrooms}
+        priceRange={priceRange}
+        areaRange={areaRange}
+        isAdvancedOpen={isAdvancedOpen}
+        maxPrice={maxPrice}
+        maxArea={maxArea}
+        projectName={projectName}
+        selectedNeighborhood={selectedNeighborhood}
+        developer={developer}
+        projectStatus={projectStatus}
+        deliveryYear={deliveryYear}
+        developers={developers}
+        setDevelopers={setDevelopers}
+        setIsSearchLoading={setIsSearchLoading}
+        isSearchLoading={isSearchLoading}
+        />
             </div>
           </div>
         </div>
@@ -154,7 +257,41 @@ useEffect(() => {
             <div className="grid grid-cols-12 gap-8 items-stretch">
               <div className="col-span-8">
                 <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-12 border border-white/20 h-full">
-                  <SearchFilters />
+                  <SearchFilters statusName={statusName} setStatusName={setStatusName} setNextPageUrl={setNextPageUrl} setProperties={setPropertiesData} 
+              setPropertyType={setPropertyType}
+        setSelectedPropertySubtype={setSelectedPropertySubtype}
+        setBedrooms={setBedrooms}
+        setPriceRange={setPriceRange}
+        setAreaRange={setAreaRange}
+        setIsAdvancedOpen={setIsAdvancedOpen}
+        setMaxPrice={setMaxPrice}
+        setMaxArea={setMaxArea}
+        setProjectName={setProjectName}
+        setCitiesData={setCitiesData}
+        setSelectedCity={setSelectedCity}
+        setSelectedNeighborhood={setSelectedNeighborhood}
+        setDeveloper={setDeveloper}
+        setProjectStatus={setProjectStatus}
+        setDeliveryYear={setDeliveryYear}
+        citiesData = {citiesData}
+        selectedCity = {selectedCity}
+        propertyType={propertyType}
+        selectedPropertySubtype={selectedPropertySubtype}
+        bedrooms={bedrooms}
+        priceRange={priceRange}
+        areaRange={areaRange}
+        isAdvancedOpen={isAdvancedOpen}
+        maxPrice={maxPrice}
+        maxArea={maxArea}
+        projectName={projectName}
+        selectedNeighborhood={selectedNeighborhood}
+        developer={developer}
+        projectStatus={projectStatus}
+        deliveryYear={deliveryYear}
+        developers={developers}
+        setDevelopers={setDevelopers}
+        setIsSearchLoading={setIsSearchLoading}
+        isSearchLoading={isSearchLoading}/>
                 </div>
               </div>
               <div className="col-span-4 h-full">

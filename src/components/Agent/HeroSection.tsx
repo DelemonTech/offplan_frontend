@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { TrendingUp, MessageCircle, Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import HeroVideo from '@/static/Unlock Dubai’s Best Off-Plan Deals with Nasser Dehghan (2).mp4';
 
-const HeroSection = ({agent}) => {
+const HeroSection = ({ agent }) => {
   const [isVideoPlaying, setIsVideoPlaying] = React.useState(true);
   const [isMuted, setIsMuted] = React.useState(true);
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -25,6 +25,12 @@ const HeroSection = ({agent}) => {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
+  };
+
+  const handleWhatsApp = () => {
+    const message = `Hi Sahar! I'm interested in Offplan market properties. Can you share more details?`
+    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
@@ -88,25 +94,32 @@ const HeroSection = ({agent}) => {
               </h1>
               <div className='text-white/90 lg: text-2xl'>Off-Plan & Ready Property Expert | Dubai & UAE</div>
               <p className="text-sm sm:text-base lg:text-2xl text-white/90 font-light  max-w-2xl mx-auto px-2">
-                
-Helping you find the right ready and off-plan properties in Dubai, Abu Dhabi, and across the UAE.
+
+                Helping you find the right ready and off-plan properties in Dubai, Abu Dhabi, and across the UAE.
               </p>
             </div>
 
             {/* CTA Button - Single Button for Mobile */}
             <div className="flex justify-center items-center pt-3 lg:pt-6 px-4">
-              <Button 
-                size="lg" 
+              <Button
+                onClick={() => {
+                  const el = document.getElementById('featured-projects');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                size="lg"
                 className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0"
               >
                 <TrendingUp size={16} className="mr-2" />
                 Explore Projects
               </Button>
-              
+
               {/* Secondary CTA - Desktop Only */}
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+              onClick={handleWhatsApp}
+                variant="outline"
+                size="lg"
                 className="hidden lg:inline-flex ml-4 border-2 border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg transition-all duration-300"
               >
                 <MessageCircle size={16} className="mr-2" />
