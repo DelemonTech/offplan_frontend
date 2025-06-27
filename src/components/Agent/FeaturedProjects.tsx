@@ -290,6 +290,33 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     }
   }, [statusName]);
 
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    const fetchCityCounts = async () => {
+      try {
+        const status = statusName?.toLowerCase() === 'sold out' ? 'Sold Out'
+          : statusName?.toLowerCase() === 'ready' ? 'Ready'
+            : 'Off Plan';
+
+        const response = await fetch(
+          `https://offplan-backend.onrender.com/properties/city/count/?status=${encodeURIComponent(status)}`
+        );
+        const data = await response.json();
+
+        if (data?.status && data?.data) {
+          setCities(data.data); // assumes API returns [{ name, count }]
+        }
+      } catch (error) {
+        console.error("Failed to fetch city counts:", error);
+      }
+    };
+
+    if (statusName) {
+      fetchCityCounts();
+    }
+  }, [statusName]);
+
 
   useEffect(() => {
     const filters = location.state?.filters;
@@ -454,6 +481,28 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
               );
             })}
           </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-4 justify-center">
+          {cities
+            .filter(city => city && city.city_name && typeof city.property_count === 'number')
+            .map((city) => (
+              <div
+                key={city.city_id}
+                className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 ${city.property_count === 0 ? 'text-gray-400' : 'text-black'
+                  }`}
+              >
+                <h3 className="font-semibold text-md mb-1">{city.city_name}</h3>
+                <p
+                  className={`text-2xl font-bold ${city.property_count === 0
+                      ? 'text-gray-300'
+                      : 'bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text'
+                    }`}
+                >
+                  {city.property_count}
+                </p>
+              </div>
+            ))}
         </div>
 
 
