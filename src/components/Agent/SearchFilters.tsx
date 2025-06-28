@@ -211,6 +211,9 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   }
   };
   
+  useEffect(()=>{
+    window.scrollTo({ top: 930, behavior: 'smooth' });
+  })
 
   // const cities = [
   //   'Dubai',

@@ -3,10 +3,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Calendar, Check, Loader2, RefreshCw, Lock, Building2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ProjectSummaryModal from './ProjectSummaryModal';
 import { set } from 'date-fns';
-import { useLocation } from 'react-router-dom';
+import { useInView } from 'react-intersection-observer';
+import { useCountSequenceOnView } from '@/hooks/useCountSequenceOnView';
+import CountUp from 'react-countup';
+
+
 
 
 const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNextPageUrl, statusName, setStatusName, setPropertyType,
@@ -43,7 +47,10 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   setDevelopers,
   isSearchLoading,
   setIsSearchLoading }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+
+
+const [searchFilters, setSearchFilters] = useState(null);
 
   // const [activeFilter, setActiveFilter] = useState('ready');
   const [visibleCount, setVisibleCount] = useState(12);
@@ -52,7 +59,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const firstNewCardRef = useRef(null);
 
+  const navigate = useNavigate();
   const location = useLocation();
+
   const { showFilters } = location.state || {};
 
 
@@ -63,6 +72,16 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     { id: 1, key: 'offplan', label: 'Off Plan', icon: Building2 },
     { id: 3, key: "soldout", label: 'Sold Out', icon: LucideEarthLock },
   ];
+  const [totalInventory, setTotalInventory] = useState({
+    ready: 0,
+    offplan: 0,
+    soldout: 0,
+    total: 0
+  });
+  const counts = filters.map(f => totalInventory[f.key] || 0);
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
+  const animatedCounts = useCountSequenceOnView(counts, inView);
+
 
   const formatDeliveryDate = (unixTimestamp: string | number) => {
     if (!unixTimestamp) return "N/A";
@@ -93,28 +112,37 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     }
   };
 
-  const [totalInventory, setTotalInventory] = useState({
-    ready: 0,
-    offplan: 0,
-    soldout: 0,
-    total: 0
-  });
-
 
   const visibleProjects = properties.slice(0, visibleCount);
 
   const getStatusBadgeContent = (status: number) => {
     switch (status) {
       case 1:
-        return <Building2 size={16} className="text-white" />;
+        return (
+          <>
+            <Building2 size={16} className="text-white" />
+            <span className="ml-1">Off Plan</span>
+          </>
+        );
       case 2:
-        return <Check size={16} className="text-white" />;
+        return (
+          <>
+            <Check size={16} className="text-white" />
+            <span className="ml-1">Ready</span>
+          </>
+        );
       case 3:
-        return <Lock size={16} className="text-white" />;
+        return (
+          <>
+            <Lock size={16} className="text-white" />
+            <span className="ml-1">Sold Out</span>
+          </>
+        );
       default:
-        return status;
+        return <span>{status}</span>;
     }
   };
+
 
   const getStatusBadgeStyle = (status: number) => {
     switch (status) {
@@ -166,7 +194,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(filters), // ✅ pass complete filter object
+        body: JSON.stringify(searchFilters || filters), // ✅ pass complete filter object
       });
 
       const result = await response.json();
@@ -292,6 +320,41 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const [cities, setCities] = useState([]);
 
+  // const cities1 = [
+  //   { city_id: 1, city_name: 'Dubai', property_count: 120 },
+  //   { city_id: 2, city_name: 'Abu Dhabi', property_count: 85 },
+  //   { city_id: 3, city_name: 'Sharjah', property_count: 45 },
+  //   { city_id: 4, city_name: 'Ajman', property_count: 30 },
+  //   { city_id: 5, city_name: 'Al Ain', property_count: 20 },
+  //   { city_id: 6, city_name: 'Fujairah', property_count: 15 },
+  //   { city_id: 7, city_name: 'Umm Al Quwain', property_count: 10 },
+  //   { city_id: 8, city_name: 'Ras Al Khaimah', property_count: 5 },
+  //   { city_id: 9, city_name: 'Kalba', property_count: 3 },
+  //   { city_id: 10, city_name: 'Dibba', property_count: 2 },
+  //   // { city_id: 11, city_name: 'Khor Fakkan', property_count: 1 },
+  //   { city_id: 12, city_name: 'Hatta', property_count: 0 },
+  // ];
+
+  // const totalCities = cities.length;
+
+  // const firstRow =
+  //   totalCities <= 7 ? cities : cities.slice(0, 7);
+  // const secondRow =
+  //   totalCities > 7 ? cities.slice(7, 12) : [];
+
+  // const getColsClass = (length: number) => {
+  //   switch (length) {
+  //     case 1: return 'xl:grid-cols-1';
+  //     case 2: return 'xl:grid-cols-2';
+  //     case 3: return 'xl:grid-cols-3';
+  //     case 4: return 'xl:grid-cols-4';
+  //     case 5: return 'xl:grid-cols-5';
+  //     case 6: return 'xl:grid-cols-6';
+  //     case 7: return 'xl:grid-cols-7';
+  //     default: return 'xl:grid-cols-7';
+  //   }
+  // };
+
   useEffect(() => {
     const fetchCityCounts = async () => {
       try {
@@ -336,7 +399,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           setNextPageUrl(result.data.next_page_url || null);
 
           setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 930, behavior: 'smooth' });
           }, 100);
         }
       } catch (error) {
@@ -349,9 +412,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     fetchFilteredProperties();
   }, [location.state?.filters]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+   useEffect(()=>{
+      window.scrollTo({ top: 930, behavior: 'smooth' });
+    })
 
   //   useEffect(() => {
   //   setActiveFilter(statusName);
@@ -385,6 +448,45 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   }, []);
 
 
+  const chunkArray = (arr, chunkSize) => {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    chunks.push(arr.slice(i, i + chunkSize));
+  }
+  return chunks;
+};
+
+const maxPerRow = 6;
+const rows = chunkArray(cities, maxPerRow);
+
+const handleCityClick = (city) => {
+  const currentFilters = { ...(location.state?.filters || {}) };
+
+  // Remove unwanted keys
+  delete currentFilters.property_type;
+  delete currentFilters.propertyType;
+  delete currentFilters.property_status;
+  delete currentFilters.sales_status;
+
+  // Decide which status key to use
+  const propertyStatusLabels = ['Ready', 'Off Plan'];
+  const statusKey = propertyStatusLabels.includes(statusName) ? 'property_status' : 'sales_status';
+
+  const updatedFilters = {
+    ...currentFilters,
+    city: city.city_name, // or use city.city_id if needed
+    [statusKey]: statusName,
+  };
+
+  console.log("Updated filters:", updatedFilters);
+
+  setSearchFilters(updatedFilters);
+
+  navigate(location.pathname, {
+    state: { filters: updatedFilters },
+  });
+};
+
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
       <div className="absolute inset-0 opacity-10">
@@ -413,97 +515,116 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           </p>
         </div>
 
-        <div className="flex justify-center mb-12">
-          <div className="hidden sm:flex gap-6">
-            {filters.map((filter) => {
-              const IconComponent = filter.icon;
-              const filterCount = totalInventory[filter.key];
-              return (
-                <button
-                  key={filter.label}
-                  onClick={() => setStatusName(filter.label)}
-                  className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${statusName === filter.label
-                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
-                    }`}
-                >
-                  <div className="flex items-center gap-5">
-                    <IconComponent
-                      size={28}
-                      className={`${statusName === filter.label ? 'text-white' : 'text-gray-600'
-                        }`}
-                    />
-                    <div className="text-left">
-                      <div className="text-base font-semibold mb-1">
-                        {filter.label}
-                      </div>
-                      <div className={`text-2xl font-bold ${statusName === filter.label
-                        ? 'text-white'
-                        : 'text-gray-800'
-                        }`}>
-                        {filterCount.toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+        <div className="flex justify-center mb-5">
+  {/* Desktop */}
+  <div className="hidden sm:flex gap-6">
+    {filters.map((filter, index) => {
+      const IconComponent = filter.icon;
+      const filterCount = totalInventory[filter.key];
 
-          <div className="sm:hidden flex gap-3 px-4">
-            {filters.map((filter) => {
-              const IconComponent = filter.icon;
-              const filterCount = totalInventory[filter.key];
-              return (
-                <button
-                  key={filter.label}
-                  onClick={() => setStatusName(filter.label)}
-                  className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${statusName === filter.label
-                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
-                    }`}
-                >
-                  <IconComponent
-                    size={18}
-                    className={`mb-1 ${statusName === filter.label ? 'text-white' : 'text-gray-600'
-                      }`}
-                  />
-                  <span className="text-xs font-semibold mb-1 text-center leading-tight">
-                    {filter.label}
-                  </span>
-                  <span className={`text-lg font-bold ${statusName === filter.label
-                    ? 'text-white'
-                    : 'text-gray-800'
-                    }`}>
-                    {filterCount > 999 ? `${Math.floor(filterCount / 1000)}k` : filterCount}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-4 justify-center">
-          {cities
-            .filter(city => city && city.city_name && typeof city.property_count === 'number')
-            .map((city) => (
+      return (
+        <button
+          key={filter.label}
+          onClick={() => setStatusName(filter.label)}
+          className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${
+            statusName === filter.label
+              ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+              : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+          }`}
+        >
+          <div className="flex items-center gap-5">
+            <IconComponent
+              size={28}
+              className={`${
+                statusName === filter.label ? 'text-white' : 'text-gray-600'
+              }`}
+            />
+            <div className="text-left">
+              <div className="text-base font-semibold mb-1">{filter.label}</div>
               <div
-                key={city.city_id}
-                className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 ${city.property_count === 0 ? 'text-gray-400' : 'text-black'
-                  }`}
+                className={`text-2xl font-bold ${
+                  statusName === filter.label ? 'text-white' : 'text-gray-800'
+                }`}
               >
-                <h3 className="font-semibold text-md mb-1">{city.city_name}</h3>
-                <p
-                  className={`text-2xl font-bold ${city.property_count === 0
-                      ? 'text-gray-300'
-                      : 'bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text'
-                    }`}
-                >
-                  {city.property_count}
-                </p>
+                <CountUp end={filterCount} duration={1.75} delay={index} separator="," />
               </div>
-            ))}
-        </div>
+            </div>
+          </div>
+        </button>
+      );
+    })}
+  </div>
+
+  {/* Mobile */}
+  <div className="sm:hidden flex gap-3 px-4">
+    {filters.map((filter, index) => {
+      const IconComponent = filter.icon;
+      const filterCount = totalInventory[filter.key];
+
+      return (
+        <button
+          key={filter.label}
+          onClick={() => setStatusName(filter.label)}
+          className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${
+            statusName === filter.label
+              ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+              : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+          }`}
+        >
+          <IconComponent
+            size={18}
+            className={`mb-1 ${
+              statusName === filter.label ? 'text-white' : 'text-gray-600'
+            }`}
+          />
+          <span className="text-xs font-semibold mb-1 text-center leading-tight">
+            {filter.label}
+          </span>
+          <span
+            className={`text-lg font-bold ${
+              statusName === filter.label ? 'text-white' : 'text-gray-800'
+            }`}
+          >
+            <CountUp end={filterCount} duration={1.5} delay={index} separator="," />
+          </span>
+        </button>
+      );
+    })}
+  </div>
+</div>
+
+        <div className="flex flex-col items-center px-4 py-6 w-full">
+  {rows.map((row, rowIndex) => (
+    <div
+      key={rowIndex}
+      className={`grid 
+        grid-cols-2 
+        sm:grid-cols-2 
+        md:grid-cols-3 
+        lg:grid-cols-4 
+        xl:grid-cols-${Math.min(row.length, 7)}
+        gap-4 
+        w-full 
+        max-w-screen-xl 
+        mb-6`}
+    >
+      {row.map((city, index) => (
+        <button
+          key={city.city_id}
+          onClick={() => handleCityClick(city)}
+          className="border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none"
+        >
+          <h3 className="font-semibold text-md mb-1">{city.city_name}</h3>
+          <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
+            <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
+          </p>
+        </button>
+      ))}
+    </div>
+  ))}
+</div>
+
+
 
 
         {isSearchLoading ? (
@@ -525,7 +646,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                 else return 3;
                 return project.property_status;
               })();
-              console.log("Project Status:", project.sales_status, "Display Status:", displayStatus);
+              console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
               return (
                 (
                   <div
@@ -547,7 +668,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                         <div className="absolute top-4 right-4">
-                          <Badge className={`${getStatusBadgeStyle(displayStatus)} font-semibold px-3 py-2 text-sm flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20`}>
+                          <Badge className={`
+                            ${getStatusBadgeStyle(displayStatus)}
+                            inline-flex items-center gap-1 px-3 py-1.5
+                            rounded-full text-sm font-medium
+                            border-2 border-white/20 shadow-lg
+                          `}>
                             {getStatusBadgeContent(displayStatus)}
                           </Badge>
                         </div>
@@ -669,7 +795,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           </div>)}
 
         {/* {hasMoreProjects && ( */}
-        {nextPageUrl && <div className="flex justify-center">
+        {nextPageUrl && <div className="flex justify-center pt-8">
           <Button
             onClick={loadMore}
             disabled={isLoading}

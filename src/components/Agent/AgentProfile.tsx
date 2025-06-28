@@ -9,7 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import RatingBox from './RatingBox';
 import girl from '@/static/girl.jpg'
 
-const AgentProfile = ({agent}) => {
+const AgentProfile = ({ agent }) => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: '',
@@ -36,8 +36,15 @@ const AgentProfile = ({agent}) => {
     // Handle form submission here
   };
 
+  const truncateText = "From Dubai’s skyline dreams to smart investments — Mohammad brings";
+const truncateIndex = agent.description.indexOf(truncateText) + truncateText.length;
+
+const shortDescription = agent.description.slice(0, truncateIndex);
+const remainingDescription = agent.description.slice(truncateIndex);
+
+
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 relative overflow-hidden">
+    <section className="py-10 bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-20 w-72 h-72 bg-purple-200 rounded-full blur-3xl"></div>
@@ -46,25 +53,25 @@ const AgentProfile = ({agent}) => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Modern Agent Section */}
         <div className="max-w-7xl mx-auto">
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
             {/* Left Column - Agent Image, Stats, and Buttons */}
             <div className="lg:col-span-4 flex justify-center lg:justify-start">
               <div className="relative flex flex-col w-full max-w-sm">
                 <div className="relative w-full h-96 rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/50">
-                  <img 
+                  <img
                     src={agent.profile_image_url}
                     alt={agent.name}
                     className="w-full h-full object-cover"
                   />
-                  
+
                   {/* Modern gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-                  
+
                   {/* Top Agent Badge - Modern Design */}
                   <div className="absolute top-6 left-6 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm">
                     <div className="flex items-center gap-2">
@@ -107,24 +114,24 @@ const AgentProfile = ({agent}) => {
                 {/* Quick Contact Buttons - At the bottom */}
                 <div className="flex flex-col gap-4 mt-6">
                   <a
-                  href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=Hi, I'm interested in your off-plan properties`}
-                  target="_blank">
-                  <Button 
-                    className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    <MessageCircle size={18} className="mr-2" />
-                    WhatsApp Now
-                  </Button>
+                    href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=Hi, I'm interested in your off-plan properties`}
+                    target="_blank">
+                    <Button
+                      className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      <MessageCircle size={18} className="mr-2" />
+                      WhatsApp Now
+                    </Button>
                   </a>
-                  
+
                   <a href={`tel:${agent.phone_number}`}>
-                  <Button 
-                    variant="outline" 
-                    className="w-full h-12 border-2 border-gray-300 bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    <Phone size={18} className="mr-2" />
-                    Call Now
-                  </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full h-12 border-2 border-gray-300 bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      <Phone size={18} className="mr-2" />
+                      Call Now
+                    </Button>
                   </a>
                 </div>
               </div>
@@ -132,7 +139,7 @@ const AgentProfile = ({agent}) => {
 
             {/* Middle Column - Agent Info and Rating */}
             <div className="lg:col-span-4 flex flex-col text-center lg:text-left">
-              
+
               {/* Name and Title */}
               <div className="mb-6">
                 <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -152,25 +159,28 @@ const AgentProfile = ({agent}) => {
               {/* Description with See more/less */}
               <div className="mb-6 flex-shrink-0">
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  {agent.description.substring(0, 200)}
-                  {!showFullText && (
-                    <button
-                      onClick={() => setShowFullText(true)}
-                      className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 transition-colors"
-                    >
-                      See more <ChevronDown size={16} />
-                    </button>
+                  {shortDescription}
+                  {!showFullText && remainingDescription && (
+                    <>
+                      ...
+                      <button
+                        onClick={() => setShowFullText(true)}
+                        className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 transition-colors ml-1"
+                      >
+                        See more <ChevronDown size={16} />
+                      </button>
+                    </>
                   )}
                   {showFullText && (
-                    <span>
-                      I help investors find the best opportunities with personalized guidance and market expertise. With over {agent.years_of_experience} years of experience in the real estate industry, I have successfully helped hundreds of clients achieve their investment goals. My expertise spans across various prestigious developments in Dubai, providing comprehensive market analysis and investment strategies tailored to each client's unique needs.{' '}
+                    <>
+                      {remainingDescription}
                       <button
                         onClick={() => setShowFullText(false)}
-                        className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 transition-colors"
+                        className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 transition-colors ml-1"
                       >
                         See less <ChevronUp size={16} />
                       </button>
-                    </span>
+                    </>
                   )}
                 </p>
               </div>
@@ -178,7 +188,7 @@ const AgentProfile = ({agent}) => {
               {/* Rating Box - Takes up remaining space */}
               <div className="flex-grow flex items-start">
                 <div className="w-full">
-                  <RatingBox agent={agent}/>
+                  <RatingBox agent={agent} />
                 </div>
               </div>
             </div>
@@ -186,7 +196,7 @@ const AgentProfile = ({agent}) => {
             {/* Right Column - Consultation Form */}
             <div className="lg:col-span-4 flex">
               <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 rounded-3xl p-6 shadow-2xl border border-purple-400/20 w-full flex flex-col">
-                
+
                 <div className="text-center mb-6">
                   <div className="text-3xl mb-3">📬</div>
                   <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">
@@ -208,12 +218,11 @@ const AgentProfile = ({agent}) => {
                       onBlur={() => setFocusedField('')}
                       className="h-12 bg-white/10 backdrop-blur-sm border-white/30 text-white placeholder-transparent focus:border-white focus:ring-white/30 peer transition-all duration-200 rounded-xl"
                     />
-                    <label 
-                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-                        focusedField === 'fullName' || formData.fullName
+                    <label
+                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'fullName' || formData.fullName
                           ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
                           : 'top-3 text-white/70 transform scale-100'
-                      }`}
+                        }`}
                     >
                       Full Name
                     </label>
@@ -229,12 +238,11 @@ const AgentProfile = ({agent}) => {
                       onBlur={() => setFocusedField('')}
                       className="h-12 bg-white/10 backdrop-blur-sm border-white/30 text-white placeholder-transparent focus:border-white focus:ring-white/30 peer transition-all duration-200 rounded-xl"
                     />
-                    <label 
-                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-                        focusedField === 'email' || formData.email
+                    <label
+                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'email' || formData.email
                           ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
                           : 'top-3 text-white/70 transform scale-100'
-                      }`}
+                        }`}
                     >
                       Email Address
                     </label>
@@ -250,12 +258,11 @@ const AgentProfile = ({agent}) => {
                       onBlur={() => setFocusedField('')}
                       className="h-12 bg-white/10 backdrop-blur-sm border-white/30 text-white placeholder-transparent focus:border-white focus:ring-white/30 peer transition-all duration-200 rounded-xl"
                     />
-                    <label 
-                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-                        focusedField === 'whatsapp' || formData.whatsapp
+                    <label
+                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'whatsapp' || formData.whatsapp
                           ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
                           : 'top-3 text-white/70 transform scale-100'
-                      }`}
+                        }`}
                     >
                       WhatsApp Number
                     </label>
@@ -270,18 +277,17 @@ const AgentProfile = ({agent}) => {
                       onBlur={() => setFocusedField('')}
                       className="min-h-[120px] bg-white/10 backdrop-blur-sm border-white/30 text-white placeholder-transparent focus:border-white focus:ring-white/30 resize-none transition-all duration-200 rounded-xl h-full"
                     />
-                    <label 
-                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-                        focusedField === 'message' || formData.message
+                    <label
+                      className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'message' || formData.message
                           ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
                           : 'top-3 text-white/70 transform scale-100'
-                      }`}
+                        }`}
                     >
                       Your Message
                     </label>
                   </div>
 
-                  <Button 
+                  <Button
                     type="submit"
                     className="w-full h-12 bg-white text-purple-700 hover:bg-gray-100 font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-auto"
                   >

@@ -135,4 +135,12 @@
   /* position: fixed;     */
   width: 100%;
 }
+
+  /* Add this to your global CSS (e.g., styles.css or tailwind.css) */
+@media (max-width: 639px) {
+  .grid-cols-1:has(> div:nth-child(1):nth-last-child(1)) {
+    justify-content: center;
+  }
+}
+
 }

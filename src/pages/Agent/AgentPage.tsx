@@ -174,7 +174,7 @@ useEffect(() => {
       <AgentProfile agent={agentData} />
 
       {/* Still Searching Section */}
-      <div className="relative py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 overflow-hidden">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
@@ -192,7 +192,7 @@ useEffect(() => {
                 Haven’t found the right Offplan or Ready property yet?
               </h2>
             </div>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto mb-12 font-medium">
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto font-medium">
               Don’t worry — Just use the search bar to explore top investment opportunities in Dubai, Abu Dhabi, and beyond.
             </p>
           </div>
@@ -208,7 +208,7 @@ useEffect(() => {
         </div>
 
         {/* Mobile */}
-        <div className="lg:hidden py-12 sm:py-16">
+        <div className="lg:hidden py-12 sm:py-10">
           <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
             <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12 border border-white/20">
               <SearchFilters statusName={statusName} setStatusName={setStatusName} setNextPageUrl={setNextPageUrl} setProperties={setPropertiesData} 
