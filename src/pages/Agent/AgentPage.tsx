@@ -33,6 +33,8 @@ const AgentPageContent = () => {
     const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
   
     const [developer, setDeveloper] = useState('');
+    const [propertyStatus, setPropertyStatus] = useState('');
+
     const [projectStatus, setProjectStatus] = useState('');
   
     // New filter states for missing filters
@@ -148,7 +150,7 @@ useEffect(() => {
         setSelectedCity={setSelectedCity}
         setSelectedNeighborhood={setSelectedNeighborhood}
         setDeveloper={setDeveloper}
-        setProjectStatus={setProjectStatus}
+        setPropertyStatus={setPropertyStatus}
         setDeliveryYear={setDeliveryYear}
         citiesData = {citiesData}
         selectedCity = {selectedCity}
@@ -163,12 +165,14 @@ useEffect(() => {
         projectName={projectName}
         selectedNeighborhood={selectedNeighborhood}
         developer={developer}
-        projectStatus={projectStatus}
+        propertyStatus={propertyStatus}
         deliveryYear={deliveryYear}
         developers={developers}
         setDevelopers={setDevelopers}
         setIsSearchLoading={setIsSearchLoading}
         isSearchLoading={isSearchLoading}
+        projectStatus={projectStatus}
+        setProjectStatus={setProjectStatus}
 
       />
       <AgentProfile agent={agentData} />
@@ -225,7 +229,7 @@ useEffect(() => {
         setSelectedCity={setSelectedCity}
         setSelectedNeighborhood={setSelectedNeighborhood}
         setDeveloper={setDeveloper}
-        setProjectStatus={setProjectStatus}
+        setPropertyStatus={setPropertyStatus}
         setDeliveryYear={setDeliveryYear}
         citiesData = {citiesData}
         selectedCity = {selectedCity}
@@ -240,12 +244,14 @@ useEffect(() => {
         projectName={projectName}
         selectedNeighborhood={selectedNeighborhood}
         developer={developer}
-        projectStatus={projectStatus}
+        propertyStatus={propertyStatus}
         deliveryYear={deliveryYear}
         developers={developers}
         setDevelopers={setDevelopers}
         setIsSearchLoading={setIsSearchLoading}
         isSearchLoading={isSearchLoading}
+        projectStatus={projectStatus}
+        setProjectStatus={setProjectStatus}
         />
             </div>
           </div>
@@ -271,7 +277,7 @@ useEffect(() => {
         setSelectedCity={setSelectedCity}
         setSelectedNeighborhood={setSelectedNeighborhood}
         setDeveloper={setDeveloper}
-        setProjectStatus={setProjectStatus}
+        setPropertyStatus={setPropertyStatus}
         setDeliveryYear={setDeliveryYear}
         citiesData = {citiesData}
         selectedCity = {selectedCity}
@@ -286,12 +292,14 @@ useEffect(() => {
         projectName={projectName}
         selectedNeighborhood={selectedNeighborhood}
         developer={developer}
-        projectStatus={projectStatus}
+        propertyStatus={propertyStatus}
         deliveryYear={deliveryYear}
         developers={developers}
         setDevelopers={setDevelopers}
         setIsSearchLoading={setIsSearchLoading}
-        isSearchLoading={isSearchLoading}/>
+        isSearchLoading={isSearchLoading}
+        projectStatus={projectStatus}
+        setProjectStatus={setProjectStatus}/>
                 </div>
               </div>
               <div className="col-span-4 h-full">

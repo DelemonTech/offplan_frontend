@@ -50,7 +50,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   // const navigate = useNavigate();
 
 
-const [searchFilters, setSearchFilters] = useState(null);
+  const [searchFilters, setSearchFilters] = useState(null);
 
   // const [activeFilter, setActiveFilter] = useState('ready');
   const [visibleCount, setVisibleCount] = useState(12);
@@ -70,7 +70,7 @@ const [searchFilters, setSearchFilters] = useState(null);
   const filters = [
     { id: 2, key: 'ready', label: 'Ready', icon: Check },
     { id: 1, key: 'offplan', label: 'Off Plan', icon: Building2 },
-    { id: 3, key: "soldout", label: 'Sold Out', icon: LucideEarthLock },
+    // { id: 3, key: "Resale", label: 'Resale', icon: LucideEarthLock },
   ];
   const [totalInventory, setTotalInventory] = useState({
     ready: 0,
@@ -159,9 +159,10 @@ const [searchFilters, setSearchFilters] = useState(null);
 
   const loadMore = async () => {
     if (!nextPageUrl || isLoading) return;
-
+    
     document.body.classList.add('freeze-scroll');
     setIsLoading(true);
+    await Promise.resolve();
 
     // Construct full filters
     const filters = {
@@ -171,7 +172,7 @@ const [searchFilters, setSearchFilters] = useState(null);
       unit_type: selectedPropertySubtype || '',
       rooms: propertyType === 'Residential' ? bedrooms?.toString() : '',
       delivery_year: deliveryYear ? parseInt(deliveryYear) : 0,
-      min_price: priceRange[0],
+      low_price: priceRange[0],
       max_price: priceRange[1],
       min_area: areaRange[0],
       max_area: areaRange[1],
@@ -398,9 +399,9 @@ const [searchFilters, setSearchFilters] = useState(null);
           setProperties(result.data.results || []);
           setNextPageUrl(result.data.next_page_url || null);
 
-          setTimeout(() => {
-            window.scrollTo({ top: 930, behavior: 'smooth' });
-          }, 100);
+          // setTimeout(() => {
+          //   window.scrollTo({ top: 930, behavior: 'smooth' });
+          // }, 100);
         }
       } catch (error) {
         console.error('Error:', error);
@@ -412,9 +413,9 @@ const [searchFilters, setSearchFilters] = useState(null);
     fetchFilteredProperties();
   }, [location.state?.filters]);
 
-   useEffect(()=>{
-      window.scrollTo({ top: 930, behavior: 'smooth' });
-    })
+  // useEffect(() => {
+  //   window.scrollTo({ top: 930, behavior: 'smooth' });
+  // })
 
   //   useEffect(() => {
   //   setActiveFilter(statusName);
@@ -449,43 +450,43 @@ const [searchFilters, setSearchFilters] = useState(null);
 
 
   const chunkArray = (arr, chunkSize) => {
-  const chunks = [];
-  for (let i = 0; i < arr.length; i += chunkSize) {
-    chunks.push(arr.slice(i, i + chunkSize));
-  }
-  return chunks;
-};
-
-const maxPerRow = 6;
-const rows = chunkArray(cities, maxPerRow);
-
-const handleCityClick = (city) => {
-  const currentFilters = { ...(location.state?.filters || {}) };
-
-  // Remove unwanted keys
-  delete currentFilters.property_type;
-  delete currentFilters.propertyType;
-  delete currentFilters.property_status;
-  delete currentFilters.sales_status;
-
-  // Decide which status key to use
-  const propertyStatusLabels = ['Ready', 'Off Plan'];
-  const statusKey = propertyStatusLabels.includes(statusName) ? 'property_status' : 'sales_status';
-
-  const updatedFilters = {
-    ...currentFilters,
-    city: city.city_name, // or use city.city_id if needed
-    [statusKey]: statusName,
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+      chunks.push(arr.slice(i, i + chunkSize));
+    }
+    return chunks;
   };
 
-  console.log("Updated filters:", updatedFilters);
+  const maxPerRow = 6;
+  const rows = chunkArray(cities, maxPerRow);
 
-  setSearchFilters(updatedFilters);
+  const handleCityClick = (city) => {
+    const currentFilters = { ...(location.state?.filters || {}) };
 
-  navigate(location.pathname, {
-    state: { filters: updatedFilters },
-  });
-};
+    // Remove unwanted keys
+    delete currentFilters.property_type;
+    delete currentFilters.propertyType;
+    delete currentFilters.property_status;
+    delete currentFilters.sales_status;
+
+    // Decide which status key to use
+    const propertyStatusLabels = ['Ready', 'Off Plan'];
+    const statusKey = propertyStatusLabels.includes(statusName) ? 'property_status' : 'sales_status';
+
+    const updatedFilters = {
+      ...currentFilters,
+      city: city.city_name, // or use city.city_id if needed
+      [statusKey]: statusName,
+    };
+
+    console.log("Updated filters:", updatedFilters);
+
+    setSearchFilters(updatedFilters);
+
+    navigate(location.pathname, {
+      state: { filters: updatedFilters },
+    });
+  };
 
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
@@ -516,88 +517,82 @@ const handleCityClick = (city) => {
         </div>
 
         <div className="flex justify-center mb-5">
-  {/* Desktop */}
-  <div className="hidden sm:flex gap-6">
-    {filters.map((filter, index) => {
-      const IconComponent = filter.icon;
-      const filterCount = totalInventory[filter.key];
+          {/* Desktop */}
+          <div className="hidden sm:flex gap-6">
+            {filters.map((filter, index) => {
+              const IconComponent = filter.icon;
+              const filterCount = totalInventory[filter.key];
 
-      return (
-        <button
-          key={filter.label}
-          onClick={() => setStatusName(filter.label)}
-          className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${
-            statusName === filter.label
-              ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-              : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
-          }`}
-        >
-          <div className="flex items-center gap-5">
-            <IconComponent
-              size={28}
-              className={`${
-                statusName === filter.label ? 'text-white' : 'text-gray-600'
-              }`}
-            />
-            <div className="text-left">
-              <div className="text-base font-semibold mb-1">{filter.label}</div>
-              <div
-                className={`text-2xl font-bold ${
-                  statusName === filter.label ? 'text-white' : 'text-gray-800'
-                }`}
-              >
-                <CountUp end={filterCount} duration={1.75} delay={index} separator="," />
-              </div>
-            </div>
+              return (
+                <button
+                  key={filter.label}
+                  onClick={() => setStatusName(filter.label)}
+                  className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${statusName === filter.label
+                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    }`}
+                >
+                  <div className="flex items-center gap-5">
+                    <IconComponent
+                      size={28}
+                      className={`${statusName === filter.label ? 'text-white' : 'text-gray-600'
+                        }`}
+                    />
+                    <div className="text-left">
+                      <div className="text-base font-semibold mb-1">{filter.label}</div>
+                      <div
+                        className={`text-2xl font-bold ${statusName === filter.label ? 'text-white' : 'text-gray-800'
+                          }`}
+                      >
+                        <CountUp end={filterCount} duration={1.75} delay={index} separator="," />
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
-        </button>
-      );
-    })}
-  </div>
 
-  {/* Mobile */}
-  <div className="sm:hidden flex gap-3 px-4">
-    {filters.map((filter, index) => {
-      const IconComponent = filter.icon;
-      const filterCount = totalInventory[filter.key];
+          {/* Mobile */}
+          <div className="sm:hidden flex gap-3 px-4">
+            {filters.map((filter, index) => {
+              const IconComponent = filter.icon;
+              const filterCount = totalInventory[filter.key];
 
-      return (
-        <button
-          key={filter.label}
-          onClick={() => setStatusName(filter.label)}
-          className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${
-            statusName === filter.label
-              ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-              : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
-          }`}
-        >
-          <IconComponent
-            size={18}
-            className={`mb-1 ${
-              statusName === filter.label ? 'text-white' : 'text-gray-600'
-            }`}
-          />
-          <span className="text-xs font-semibold mb-1 text-center leading-tight">
-            {filter.label}
-          </span>
-          <span
-            className={`text-lg font-bold ${
-              statusName === filter.label ? 'text-white' : 'text-gray-800'
-            }`}
-          >
-            <CountUp end={filterCount} duration={1.5} delay={index} separator="," />
-          </span>
-        </button>
-      );
-    })}
-  </div>
-</div>
+              return (
+                <button
+                  key={filter.label}
+                  onClick={() => setStatusName(filter.label)}
+                  className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${statusName === filter.label
+                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    }`}
+                >
+                  <IconComponent
+                    size={18}
+                    className={`mb-1 ${statusName === filter.label ? 'text-white' : 'text-gray-600'
+                      }`}
+                  />
+                  <span className="text-xs font-semibold mb-1 text-center leading-tight">
+                    {filter.label}
+                  </span>
+                  <span
+                    className={`text-lg font-bold ${statusName === filter.label ? 'text-white' : 'text-gray-800'
+                      }`}
+                  >
+                    <CountUp end={filterCount} duration={1.5} delay={index} separator="," />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="flex flex-col items-center px-4 py-6 w-full">
-  {rows.map((row, rowIndex) => (
-    <div
-      key={rowIndex}
-      className={`grid 
+          {rows.map((row, rowIndex) => (
+            <div
+              key={rowIndex}
+              className={`grid 
         grid-cols-2 
         sm:grid-cols-2 
         md:grid-cols-3 
@@ -607,22 +602,22 @@ const handleCityClick = (city) => {
         w-full 
         max-w-screen-xl 
         mb-6`}
-    >
-      {row.map((city, index) => (
-        <button
-          key={city.city_id}
-          onClick={() => handleCityClick(city)}
-          className="border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none"
-        >
-          <h3 className="font-semibold text-md mb-1">{city.city_name}</h3>
-          <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
-            <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
-          </p>
-        </button>
-      ))}
-    </div>
-  ))}
-</div>
+            >
+              {row.map((city, index) => (
+                <button
+                  key={city.city_id}
+                  onClick={() => handleCityClick(city)}
+                  className="border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none"
+                >
+                  <h3 className="font-semibold text-md mb-1">{city.city_name}</h3>
+                  <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
+                    <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
+                  </p>
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
 
 
 

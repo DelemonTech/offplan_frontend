@@ -22,7 +22,6 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   setSelectedCity,
   setSelectedNeighborhood,
   setDeveloper,
-  setProjectStatus,
   setDeliveryYear,
   citiesData,
   selectedCity,
@@ -38,6 +37,9 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   selectedNeighborhood,
   developer,
   projectStatus,
+  setProjectStatus,
+  propertyStatus,
+  setPropertyStatus,
   deliveryYear,
   developers,
   setDevelopers,
@@ -141,7 +143,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   ];
 
   const [salesStatus, setSalesStatus] = useState('');
-  const [propertyStatus, setPropertyStatus] = useState('');
+  // const [propertyStatus, setPropertyStatus] = useState('');
 
   const resetFilters = () => {
     setSelectedCity('');
@@ -154,10 +156,11 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     setAreaRange([0, maxArea]);   // or default range
     setDeveloper('');
     setProjectName('');
-    setProjectStatus('');
+    setPropertyStatus('');
   };
 
   const handleSearch = async () => {
+    // window.scrollTo({ top: 930, behavior: 'smooth' });
     setIsSearchLoading(true);
 
     const filters = {
@@ -167,21 +170,24 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       unit_type: selectedPropertySubtype || '',
       rooms: propertyType === 'Residential' ? bedrooms?.toString() : '',
       delivery_year: deliveryYear ? parseInt(deliveryYear) : 0,
-      min_price: priceRange[0],
+      low_price: priceRange[0],
       max_price: priceRange[1],
       min_area: areaRange[0],
       max_area: areaRange[1],
-      property_status: '',
+      property_status: propertyStatus || '',
       sales_status: '',
       title: projectName || '',           // ✅ Include project name
       developer: developer || '',                // ✅ Include developer
-      project_status: projectStatus || '',       // ✅ Include project status
+      // project_status: projectStatus || '',       // ✅ Include project status
     };
 
+
     // Decide status based on `statusName`
-    if (statusName.toLowerCase() === 'sold out') {
-      filters.sales_status = 'Sold Out';
-    } else if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
+    // if (statusName.toLowerCase() === 'sold out') {
+    //   filters.sales_status = 'Sold Out';
+    // } 
+    setStatusName(propertyStatus);
+    if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
       filters.property_status = statusName;
     }
 
@@ -203,17 +209,20 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
         setProperties(result.data.results || []);
         setNextPageUrl(result.data.next_page_url || null);
       }
+      setTimeout(() => {
+        window.scrollTo({ top: 930, behavior: 'smooth' });
+      }, 100);
     } catch (error) {
       console.error('❌ Search error:', error);
     }
     finally {
-    setIsSearchLoading(false); // ✅ Stop loading
-  }
+      setIsSearchLoading(false); // ✅ Stop loading
+    }
   };
-  
-  useEffect(()=>{
-    window.scrollTo({ top: 930, behavior: 'smooth' });
-  })
+
+  // useEffect(()=>{
+  //   window.scrollTo({ top: 930, behavior: 'smooth' });
+  // })
 
   // const cities = [
   //   'Dubai',
@@ -336,11 +345,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   // ];
 
   const projectStatuses = [
-    'Off-plan',
-    'Ready',
-    'Handover Soon',
-    'Under Construction',
-    'Completed'
+    'Off Plan',
+    'Ready'
   ];
 
   const deliveryYears = [
@@ -564,15 +570,20 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <div>
             <div className="flex items-center mb-3">
               <Calendar className="mr-2 text-gray-600" size={18} />
-              <label className="text-sm font-semibold text-gray-700">Project Status</label>
+              <label className="text-sm font-semibold text-gray-700">Property Status</label>
             </div>
-            <Select value={projectStatus} onValueChange={setProjectStatus}>
+            <Select
+              onValueChange={(value) => {
+                setPropertyStatus(value);
+                console.log("property status: ", value);
+              }}
+            >
               <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent className="bg-white border-gray-200 shadow-lg">
                 {projectStatuses.map((status) => (
-                  <SelectItem key={status} value={status.toLowerCase()}>
+                  <SelectItem key={status} value={status}>
                     {status}
                   </SelectItem>
                 ))}
@@ -672,6 +683,15 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
         <Button
           className="flex-1 h-12 sm:h-14 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
           onClick={() => {
+
+            // if (propertyStatus?.toLowerCase() === 'ready') {
+            //   setStatusName('Ready');
+            // } else if (propertyStatus?.toLowerCase() === 'off plan') {
+            //   setStatusName('Off Plan');
+            // } else {
+            //   setStatusName('');
+            // }
+
             const scrollTarget = document.getElementById('featured-projects');
             if (scrollTarget) {
               scrollTarget.scrollIntoView({ behavior: 'smooth' });
@@ -688,7 +708,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             //   setStatusName(''); // fallback if no valid match
             // }
             handleSearch();
-          }}
+          }
+          }
         >
           🔍 Show Properties
         </Button>
