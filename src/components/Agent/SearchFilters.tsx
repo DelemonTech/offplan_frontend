@@ -148,8 +148,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   const resetFilters = () => {
     setSelectedCity('');
     setSelectedNeighborhood('');
-    setPropertyType('Residential');
-    setSelectedPropertySubtype('Apartment');
+    setPropertyType('');
+    setSelectedPropertySubtype('');
     setBedrooms('');
     setDeliveryYear('');
     setPriceRange([0, maxPrice]); // or default range
