@@ -47,32 +47,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   setIsSearchLoading
 
 }) => {
-  // const [propertyType, setPropertyType] = useState('Residential');
-  // const [selectedPropertySubtype, setSelectedPropertySubtype] = useState('Apartment');
-  // const [bedrooms, setBedrooms] = useState('1');
-  // const [priceRange, setPriceRange] = useState([0, 100000000]);
-  // const [areaRange, setAreaRange] = useState([0, 50000]);
-  // const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
-  // // Dynamic max values (would come from API)
-  // const [maxPrice, setMaxPrice] = useState(100000000); // 100M AED
-  // const [maxArea, setMaxArea] = useState(50000); // 50K sq ft
-
-  // // Existing filter states
-  // const [projectName, setProjectName] = useState('');
-  // const [citiesData, setCitiesData] = useState([]); // full data with districts
-  // const [selectedCity, setSelectedCity] = useState('');
-  // const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
-
-  // const [developer, setDeveloper] = useState('');
-  // const [projectStatus, setProjectStatus] = useState('');
-
-  // // New filter states for missing filters
-  // // const [rentalGuarantee, setRentalGuarantee] = useState(false);
-  // // const [postHandoverPayment, setPostHandoverPayment] = useState(false);
-  // const [deliveryYear, setDeliveryYear] = useState('');
-
-  // get list of city names for dropdown
   const cityOptions = citiesData.map((city) => city.name);
 
   // get the selected city object
@@ -157,6 +132,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     setDeveloper('');
     setProjectName('');
     setPropertyStatus('');
+    setStatusName('');
   };
 
   const handleSearch = async () => {
@@ -186,10 +162,12 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     // if (statusName.toLowerCase() === 'sold out') {
     //   filters.sales_status = 'Sold Out';
     // } 
+    if (propertyStatus) {
     setStatusName(propertyStatus);
-    if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
-      filters.property_status = statusName;
-    }
+    filters.property_status = propertyStatus;
+  } else {
+    setStatusName('');
+  }
 
     // 👉 Optional: log the final request body
     console.log("🔍 Sending search filters:", filters);
@@ -219,130 +197,6 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       setIsSearchLoading(false); // ✅ Stop loading
     }
   };
-
-  // useEffect(()=>{
-  //   window.scrollTo({ top: 930, behavior: 'smooth' });
-  // })
-
-  // const cities = [
-  //   'Dubai',
-  //   'Abu Dhabi',
-  //   'Sharjah',
-  //   'Ajman',
-  //   'Ras Al Khaimah',
-  //   'Fujairah',
-  //   'Umm Al Quwain'
-  // ];
-
-  // Neighborhoods organized by city
-  // const neighborhoodsByCity = {
-  //   'dubai': [
-  //     'JVC (Jumeirah Village Circle)',
-  //     'Dubai Hills Estate',
-  //     'Downtown Dubai',
-  //     'Dubai Marina',
-  //     'Business Bay',
-  //     'DIFC (Dubai International Financial Centre)',
-  //     'Jumeirah Beach Residence (JBR)',
-  //     'Palm Jumeirah',
-  //     'Arabian Ranches',
-  //     'Emirates Living',
-  //     'Motor City',
-  //     'Sports City',
-  //     'Al Furjan',
-  //     'Dubailand',
-  //     'Mirdif'
-  //   ],
-  //   'abu dhabi': [
-  //     'Al Reem Island',
-  //     'Saadiyat Island',
-  //     'Yas Island',
-  //     'Al Raha Beach',
-  //     'Corniche Area',
-  //     'Al Khalidiyah',
-  //     'Al Mushrif',
-  //     'Al Reef',
-  //     'Khalifa City',
-  //     'Marina Village'
-  //   ],
-  //   'sharjah': [
-  //     'Al Majaz',
-  //     'Al Khan',
-  //     'Al Nahda',
-  //     'Muwailih',
-  //     'Al Taawun',
-  //     'Al Qasimia',
-  //     'Al Fisht',
-  //     'University City',
-  //     'Al Ramla',
-  //     'Al Buhaira'
-  //   ],
-  //   'ajman': [
-  //     'Al Nuaimiya',
-  //     'Al Rashidiya',
-  //     'Al Jurf',
-  //     'Al Hamidiyah',
-  //     'Al Corniche',
-  //     'China Mall Area',
-  //     'Ajman Marina',
-  //     'Al Zahra',
-  //     'Al Rumailah',
-  //     'Al Helio'
-  //   ],
-  //   'ras al khaimah': [
-  //     'Al Hamra',
-  //     'Mina Al Arab',
-  //     'Al Marjan Island',
-  //     'Corniche Al Qawasim',
-  //     'Al Nakheel',
-  //     'Flamingo Villas',
-  //     'Julphar',
-  //     'Al Rams',
-  //     'Al Mairid',
-  //     'Khuzam'
-  //   ],
-  //   'fujairah': [
-  //     'Corniche Fujairah',
-  //     'Al Faseel',
-  //     'Dibba',
-  //     'Kalba',
-  //     'Al Bidyah',
-  //     'Masafi',
-  //     'Al Hayl',
-  //     'Qidfa',
-  //     'Al Aqah',
-  //     'Madhab'
-  //   ],
-  //   'umm al quwain': [
-  //     'Old Town',
-  //     'Al Raas',
-  //     'Falaj Al Mualla',
-  //     'Al Salam City',
-  //     'Dreams Land',
-  //     'Al Humra',
-  //     'UAQ Marina',
-  //     'Al Boom',
-  //     'Al Dur',
-  //     'Al Rafaah'
-  //   ]
-  // };
-
-  // Get filtered neighborhoods based on selected city
-  // const getFilteredNeighborhoods = () => {
-  //   if (!selectedCity) return [];
-  //   return neighborhoodsByCity[selectedCity.toLowerCase()] || [];
-  // };
-
-  // const developers = [
-  //   'Emaar',
-  //   'Dubai Properties',
-  //   'DAMAC Properties',
-  //   'Nakheel',
-  //   'Meraas',
-  //   'Sobha Realty',
-  //   'Ellington Properties',
-  //   'Azizi Developments'
-  // ];
 
   const projectStatuses = [
     'Off Plan',
@@ -696,17 +550,6 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             if (scrollTarget) {
               scrollTarget.scrollIntoView({ behavior: 'smooth' });
             }
-
-            // 🔍 Choose based on known status fields
-            // if (salesStatus?.toLowerCase() === 'sold out') {
-            //   setStatusName('Sold Out');
-            // } else if (propertyStatus?.toLowerCase() === 'ready') {
-            //   setStatusName('Ready');
-            // } else if (propertyStatus?.toLowerCase() === 'off plan') {
-            //   setStatusName('Off Plan');
-            // } else {
-            //   setStatusName(''); // fallback if no valid match
-            // }
             handleSearch();
           }
           }
