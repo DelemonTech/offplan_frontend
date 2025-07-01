@@ -1,13 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Globe, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
-import Icon from '@/static/OFFPLAN.MARKET new.png';
 
-const Header = () => {
+const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useLanguage();
 
@@ -30,8 +29,8 @@ const Header = () => {
               {/* <span className="text-pink-500">OFFPLAN</span>
               <span className="text-blue-600">.MARKET</span> */}
               <>
-                <img src={Icon} alt="Logo" className="h-8 w-auto block md:hidden" />
-                <img src={Icon} alt="Logo" className="h-10 w-auto hidden md:block" />
+                <img src={logo} alt="Logo" className="h-8 w-auto block md:hidden" />
+                <img src={logo} alt="Logo" className="h-10 w-auto hidden md:block" />
               </>
 
             </span>

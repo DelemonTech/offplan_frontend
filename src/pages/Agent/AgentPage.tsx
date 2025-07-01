@@ -11,8 +11,29 @@ import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { Search, Sparkles } from 'lucide-react';
 import NotFound from '../NotFound';
 import LoadingOverlay from '@/components/ui/LoadingOverlay';
+import maleLogo from '@/assets/OFFPLAN_MARKET_male.png';
+import femaleLogo from '@/assets/OFFPLAN_MARKET_female.png';
+import defaultLogo from '@/assets/OFFPLAN_MARKET.png';
 
 const AgentPageContent = () => {
+
+  function setFavicon(gender: string) {
+  let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement | null;
+
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "icon";
+    document.head.appendChild(link);
+  }
+
+  link.type = "image/x-icon";
+  link.href =
+    gender === "male"
+      ? "/favicon_male.ico"
+      : gender === "female"
+      ? "/favicon_female.ico"
+      : "/favicon.ico";
+}
 
 
   const [propertyType, setPropertyType] = useState('Residential');
@@ -46,6 +67,24 @@ const AgentPageContent = () => {
     const [isSearchLoading, setIsSearchLoading] = useState(false);
 
 
+    const [gender, setGender] = useState(null);
+    const [logoPath, setLogoPath] = useState("@/assets/OFFPLAN_MARKET.png");
+
+useEffect(() => {
+  if (gender) {
+    setFavicon(gender);
+    if (gender === 'male') {
+      setLogoPath(maleLogo);
+    } else if (gender === 'female') {
+      setLogoPath(femaleLogo);
+    } else {
+      setLogoPath(defaultLogo);
+    }
+  }
+  console.log("gender : ",logoPath)
+}, [gender]);
+
+
 
 
   const { username } = useParams();
@@ -66,6 +105,11 @@ useEffect(() => {
       if (agentRes.ok && agentJson.status) {
         const agent = agentJson.data;
         setAgentData(agent);
+
+        if (agent.gender) {
+          setFavicon(agent.gender);
+          setGender(agent.gender.toLowerCase());
+        }
 
         // Now fetch properties with agent_id + status_id
         const propertiesRes = await fetch(`https://offplan-backend.onrender.com/properties/filter/`, {
@@ -125,9 +169,16 @@ useEffect(() => {
     );
   }
 
+//   useEffect(() => {
+//   if (agentData?.gender) {
+//     console.log("gender: ",agentData.gender)
+//     setFavicon(agentData.gender);
+//   }
+// }, [agentData?.gender]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header logo={logoPath}/>
       <HeroSection agent={agentData} />
       <FeaturedProjects
         agent={agentData}
@@ -173,7 +224,6 @@ useEffect(() => {
         isSearchLoading={isSearchLoading}
         projectStatus={projectStatus}
         setProjectStatus={setProjectStatus}
-
       />
       <AgentProfile agent={agentData} />
 
