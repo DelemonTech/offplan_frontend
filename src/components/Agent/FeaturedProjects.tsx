@@ -77,7 +77,6 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [totalInventory, setTotalInventory] = useState({
     ready: 0,
     offplan: 0,
-    soldout: 0,
     total: 0
   });
   const counts = filters.map(f => totalInventory[f.key] || 0);
@@ -179,13 +178,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       min_area: areaRange[0],
       max_area: areaRange[1],
       property_status: '',
-      sales_status: '',
+      // sales_status: '',
     };
 
     // Apply the status filter
-    if (statusName.toLowerCase() === 'sold out') {
-      filters.sales_status = 'Sold Out';
-    } else if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
+    // if (statusName.toLowerCase() === 'sold out') {
+    //   filters.sales_status = 'Sold Out';
+    // } else 
+    if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
       filters.property_status = statusName;
     }
 
@@ -296,9 +296,10 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(
-            statusName === 'Sold Out'
-              ? { sales_status: 'Sold Out' }
-              : { property_status: statusName === 'Ready' ? 'Ready' : 'Off Plan' }
+            // statusName === 'Sold Out'
+            //   ? { sales_status: 'Sold Out' }
+            //   : 
+              { property_status: statusName === 'Ready' ? 'Ready' : 'Off Plan' }
           ),
         });
 
@@ -435,8 +436,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           setTotalInventory({
             ready,
             offplan,
-            soldout: sold,
-            total: ready + offplan + sold
+            total: ready + offplan
           });
         }
       } catch (error) {
@@ -469,11 +469,11 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     delete currentFilters.property_type;
     delete currentFilters.propertyType;
     delete currentFilters.property_status;
-    delete currentFilters.sales_status;
+    // delete currentFilters.sales_status;
 
     // Decide which status key to use
     const propertyStatusLabels = ['Ready', 'Off Plan'];
-    const statusKey = propertyStatusLabels.includes(statusName) ? 'property_status' : 'sales_status';
+    const statusKey = propertyStatusLabels.includes(statusName) ? 'property_status' : '';
 
     const updatedFilters = {
       ...currentFilters,
@@ -640,7 +640,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                 const normalizedStatus = statusName.toLowerCase();
                 if (normalizedStatus === 'ready') return 2;
                 if (normalizedStatus === 'off plan') return 1;
-                else return 3;
+                else return 'General';
                 return project.property_status;
               })();
               console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
