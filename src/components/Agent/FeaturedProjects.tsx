@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Calendar, Check, Loader2, RefreshCw, Lock, Building2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock } from 'lucide-react';
+import { MapPin, Calendar, Check, Loader2, RefreshCw, Lock, Building2, Globe2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock, Globe } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProjectSummaryModal from './ProjectSummaryModal';
 import { set } from 'date-fns';
@@ -70,14 +70,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
 
   const filters = [
-    { id: 2, key: 'ready', label: 'Ready', icon: Check },
-    { id: 1, key: 'offplan', label: 'Off Plan', icon: Building2 },
-    // { id: 3, key: "Resale", label: 'Resale', icon: LucideEarthLock },
+    { id: 1, key: 'ready', label: 'Ready', icon: Check },
+    { id: 2, key: 'offplan', label: 'Off Plan', icon: Building2 },
+    { id: 3, key: "all", label: 'All', icon: Globe2 },
   ];
   const [totalInventory, setTotalInventory] = useState({
     ready: 0,
     offplan: 0,
-    total: 0
+    all: 0
   });
   const counts = filters.map(f => totalInventory[f.key] || 0);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
@@ -116,51 +116,62 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const visibleProjects = properties.slice(0, visibleCount);
 
-  const getStatusBadgeContent = (status: number) => {
-    switch (status) {
-      case 1:
-        return (
-          <>
-            <Building2 size={16} className="text-white" />
-            <span className="ml-1">Off Plan</span>
-          </>
-        );
-      case 2:
-        return (
-          <>
-            <Check size={16} className="text-white" />
-            <span className="ml-1">Ready</span>
-          </>
-        );
-      case 3:
-        return (
-          <>
-            <Lock size={16} className="text-white" />
-            <span className="ml-1">Sold Out</span>
-          </>
-        );
-      default:
-        return <span>{status}</span>;
+  const getStatusBadgeContent = (status: number, property?: any) => {
+    const actualStatus = property?.property_status;
+
+    const resolveByStatus = (statusValue: number) => {
+      switch (statusValue) {
+        case 1:
+          return (
+            <>
+              <Building2 size={16} className="text-white" />
+              <span className="ml-1">Off Plan</span>
+            </>
+          );
+        case 2:
+          return (
+            <>
+              <Check size={16} className="text-white" />
+              <span className="ml-1">Ready</span>
+            </>
+          );
+        default:
+          return (
+            <>
+              <span className="ml-1">{property?.property_status || 'General'}</span>
+            </>
+          );
+      }
+    };
+
+    if (status === 3) {
+      return resolveByStatus(actualStatus);
     }
+
+    return resolveByStatus(status);
   };
 
 
-  const getStatusBadgeStyle = (status: number) => {
-    switch (status) {
-      case 2:
-        return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
-      case 1:
-        return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-lg';
-      case 3:
-        return 'bg-gradient-to-r from-purple-400 to-pink-500 text-white shadow-lg';
-      default:
-        return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg';
-    }
-  };
+
+  const getStatusBadgeStyle = (status: number, property?: any) => {
+  const effectiveStatus = status === 3 ? property?.property_status : status;
+
+  switch (effectiveStatus) {
+    case 1: // Off Plan
+      return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-lg';
+    case 2: // Ready
+      return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
+    default:
+      return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg';
+  }
+};
+
+
+
 
   const loadMore = async () => {
     if (!nextPageUrl || isLoading) return;
-    
+
     document.body.classList.add('freeze-scroll');
     setIsLoading(true);
     await Promise.resolve();
@@ -299,7 +310,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
             // statusName === 'Sold Out'
             //   ? { sales_status: 'Sold Out' }
             //   : 
-              { property_status: statusName === 'Ready' ? 'Ready' : 'Off Plan' }
+            { property_status: statusName === 'Ready' ? 'Ready' : 'Off Plan' }
           ),
         });
 
@@ -431,12 +442,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         const json = await res.json();
 
         if (json.status && json.data) {
-          const { ready, offplan, sold } = json.data;
+          const { ready, offplan } = json.data;
 
           setTotalInventory({
             ready,
             offplan,
-            total: ready + offplan
+            all: ready + offplan
           });
         }
       } catch (error) {
@@ -530,8 +541,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   key={filter.label}
                   onClick={() => setStatusName(filter.label)}
                   className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${statusName === filter.label
-                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
                     }`}
                 >
                   <div className="flex items-center gap-5">
@@ -566,8 +577,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   key={filter.label}
                   onClick={() => setStatusName(filter.label)}
                   className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${statusName === filter.label
-                      ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                      : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
                     }`}
                 >
                   <IconComponent
@@ -640,8 +651,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                 const normalizedStatus = statusName.toLowerCase();
                 if (normalizedStatus === 'ready') return 2;
                 if (normalizedStatus === 'off plan') return 1;
-                else return 'General';
-                return project.property_status;
+                else return 3;
+                // return project.property_status;
               })();
               console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
               return (
@@ -671,7 +682,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                             rounded-full text-sm font-medium
                             border-2 border-white/20 shadow-lg
                           `}>
-                            {getStatusBadgeContent(displayStatus)}
+                            {getStatusBadgeContent(displayStatus, project)}
                           </Badge>
                         </div>
 
