@@ -9,7 +9,8 @@ import { set } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
 import { useCountSequenceOnView } from '@/hooks/useCountSequenceOnView';
 import CountUp from 'react-countup';
-
+import PropertyDetailsModal from "@/components/Agent/PropertyDetails"
+import IconWhatsapp from "@/assets/icon-whatsapp.svg"
 
 
 
@@ -51,6 +52,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   setIsSearchLoading }) => {
   // const navigate = useNavigate();
 
+  const [selectedProperty, setSelectedProperty] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [searchFilters, setSearchFilters] = useState(null);
 
@@ -65,6 +68,13 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const location = useLocation();
 
   const { showFilters } = location.state || {};
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  const handleOpenModal = () => {
+  setCurrentImageIndex(0); // call before opening
+  setIsModalOpen(true);
+};
 
 
   const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
@@ -154,17 +164,17 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
 
   const getStatusBadgeStyle = (status: number, property?: any) => {
-  const effectiveStatus = status === 3 ? property?.property_status : status;
+    const effectiveStatus = status === 3 ? property?.property_status : status;
 
-  switch (effectiveStatus) {
-    case 1: // Off Plan
-      return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-lg';
-    case 2: // Ready
-      return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
-    default:
-      return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg';
-  }
-};
+    switch (effectiveStatus) {
+      case 1: // Off Plan
+        return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-lg';
+      case 2: // Ready
+        return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
+      default:
+        return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg';
+    }
+  };
 
 
 
@@ -245,6 +255,26 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   navigate(`/project/${projectId}`);
   // };
 
+  const handleViewDetails = async (projectId) => {
+    try {
+      const res = await fetch(`https://panel.estaty.app/api/v1/getProperty?id=${projectId}`, {
+        method: 'POST',
+        headers: {
+          'App-key': import.meta.env.VITE_ESTATY_API_KEY,
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log("project ID : ",projectId);
+
+      const data = await res.json()
+      console.log("data : ", data);
+      setSelectedProperty(data.property)
+      setIsModalOpen(true)
+    } catch (error) {
+      console.error("Error fetching property details:", error)
+    }
+  }
+
   const handleProjectSummary = (project: any) => {
     // console.log('FeaturedProjects - Setting project for summary:', project);
     setSelectedProjectForSummary(project);
@@ -252,7 +282,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   };
 
   const handleWhatsApp = (project: any) => {
-    const message = `Hi Sahar! I'm interested in ${project.title} in ${project.location}. Starting from AED ${parseInt(project.price).toLocaleString()}. Can you share more details?`;
+    const message = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.location}. Starting from AED ${parseInt(project.price).toLocaleString()}. Can you share more details?`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -606,15 +636,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
             <div
               key={rowIndex}
               className={`grid 
-        grid-cols-2 
-        sm:grid-cols-2 
-        md:grid-cols-3 
-        lg:grid-cols-4 
-        xl:grid-cols-${Math.min(row.length, 7)}
-        gap-4 
-        w-full 
-        max-w-screen-xl 
-        mb-6`}
+                grid-cols-2 
+                sm:grid-cols-2 
+                md:grid-cols-3 
+                lg:grid-cols-4 
+                xl:grid-cols-${Math.min(row.length, 7)}
+                gap-4 
+                w-full 
+                max-w-screen-xl 
+                mb-6`}
             >
               {row.map((city, index) => (
                 <button
@@ -687,15 +717,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                         </div>
 
                         {/* <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-                  {project.badges.slice(0, 2).map((badge, index) => (
-                    <Badge
-                      key={index}
-                      className={`${getBadgeStyle(badge)} font-medium shadow-md text-xs px-3 py-1 rounded-full border backdrop-blur-sm`}
-                    >
-                      {badge}
-                    </Badge>
-                  ))}
-                </div> */}
+                          {project.badges.slice(0, 2).map((badge, index) => (
+                            <Badge
+                              key={index}
+                              className={`${getBadgeStyle(badge)} font-medium shadow-md text-xs px-3 py-1 rounded-full border backdrop-blur-sm`}
+                            >
+                              {badge}
+                            </Badge>
+                          ))}
+                        </div> */}
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center">
                           <div className="text-white text-center p-4 space-y-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
@@ -751,6 +781,10 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
                           <div className="flex gap-2 pt-2">
                             <Button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleViewDetails(project.id)
+                              }}
                               // onClick={(e) => {
                               //   e.stopPropagation();
                               //   handleViewDetails(project.id);
@@ -768,7 +802,11 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                                 handleWhatsApp(project);
                               }}
                             >
-                              <MessageCircle size={18} className="text-green-600" />
+                              <img
+                                src={IconWhatsapp}
+                                alt="WhatsApp"
+                                className="w-8 h-8 object-contain" // ✅ consistent sizing
+                              />
                             </Button>
                             <div className="relative">
                               <Button
@@ -799,7 +837,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                     </Card>
                   </div>
                 ))
-            })}
+            }
+            )}
           </div>)}
 
         {/* {hasMoreProjects && ( */}
@@ -834,10 +873,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       <div className="fixed bottom-6 right-6 z-50 md:hidden">
         <Button
           onClick={() => handleWhatsApp(visibleProjects[0] || {})}
-          className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl animate-pulse"
+          className="bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl animate-pulse"
           size="icon"
         >
-          <MessageCircle size={24} />
+          <img
+            src={IconWhatsapp}
+            alt="WhatsApp"
+            className="w-8 h-8 object-contain" // ✅ consistent sizing
+          />
         </Button>
       </div>
 
@@ -858,6 +901,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         }
         `}
       </style>
+      <PropertyDetailsModal
+        property={selectedProperty}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)
+        }
+        agent = {agent}
+        setCurrentImageIndex = {setCurrentImageIndex}
+        currentImageIndex = {currentImageIndex}
+      />
     </section>
   );
 };
