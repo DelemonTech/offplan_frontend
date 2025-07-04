@@ -143,7 +143,7 @@ const PropertyDetails1 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://192.168.1.50:8000/property/${projectId}/`);
+        const response = await fetch(`https://offplan-backend.onrender.com/property/${projectId}/`);
         const data = await response.json();
         if (data?.status && data?.data) {
           setProjectData(data.data);
