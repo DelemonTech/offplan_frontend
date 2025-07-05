@@ -18,11 +18,13 @@ import AgentProfile from "./components/AgentProfile1";
 // import AgentPageVariation5 from "./pages/AgentPageVariation5";
 // import AgentPageVariation6 from "./pages/AgentPageVariation6";
 import ProjectDetail from "./pages/ProjectDetail";
+// import AgentDetail from "./components/Agent/AgentPropDetail"
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 // import AgentFarsi from "./pages/AgentFarsi";
 import HomePage from "./pages/HomePage"
 import Sample from "./pages/Sample";
+import PropDetail from "./components/Agent/PropertyDetails"
 
 const queryClient = new QueryClient();
 
@@ -53,9 +55,11 @@ const App = () => (
               } 
             />
             <Route path="/projects/:slug" element={<ProjectDetail />} />
+            {/* <Route path="/projects/:slug" element={<AgentDetail />} />/ */}
             <Route path="/agent/:username" element={<AgentPage />} />
             {/* <Route path="/:agentUsername/farsi" element={<AgentFarsi/> } /> */}
             <Route path="/agentProfile" element={<AgentProfile/>}/>
+            <Route path="/propertydetail/:slug" element={<PropDetail/>}/>
             <Route path="/sample/:username" element={<Sample />} />
             {/* <Route path="/:agentUsername/v1" element={<AgentPageVariation1 />} />
             <Route path="/:agentUsername/v2" element={<AgentPageVariation2 />} />
