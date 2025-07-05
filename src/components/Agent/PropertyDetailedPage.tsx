@@ -1,21 +1,81 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Home, Ruler, Calendar, MapPin, Car, Eye, Download, Phone, MessageCircle, Star } from 'lucide-react';
+import { ArrowLeft, Home, Ruler, Calendar, MapPin, Car, Eye, Download, Phone, MessageCircle, Star, DollarSign } from 'lucide-react';
 import Header from '../Agent/Header';
 import logoPath from '@/assets/OFFPLAN_MARKET_female.png'
 import Footer from '../Agent/Footer';
 import { Button } from '@/components/ui/button'
 import { Image, FileText, CreditCard, CalendarClock } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PropertyDetailedPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { unit, projectData, agent } = location.state || {};
+
+  if (!unit) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <p className="text-gray-500">No unit data provided.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
+  const formatPrice = (price: string | number) => {
+    // Handle string inputs like "AED 1,200,000"
+    const numericPrice =
+      typeof price === "string"
+        ? parseInt(price.replace(/[^\d]/g, ""), 10)
+        : price;
+
+    if (numericPrice >= 1_000_000) {
+      return `${(numericPrice / 1_000_000).toFixed(1)}M`;
+    } else if (numericPrice >= 1_000) {
+      return `${(numericPrice / 1_000).toFixed(0)}K`;
+    }
+    return numericPrice.toString();
+  };
+
   const [activeTab, setActiveTab] = useState('floor-plan');
 
+  const [showModal, setShowModal] = useState(false);
+
+  const handover = (() => {
+    const delivery = projectData?.delivery_date;
+
+    if (!delivery) return "N/A";
+
+    // If it's a number (UNIX timestamp)
+    if (typeof delivery === "number") {
+      const date = new Date(delivery * 1000);
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      // Compute quarter
+      const quarter = Math.ceil(month / 3);
+      return `Q${quarter} ${year}`;
+    }
+
+    // If it's already a string (like "Q4 2024")
+    if (typeof delivery === "string") {
+      return delivery;
+    }
+
+    return "N/A";
+  })();
+
   const unitSpecs = [
-    { icon: Home, label: 'Room', value: 'Studio', color: 'bg-purple-100 text-purple-600' },
-    { icon: Ruler, label: 'Area', value: '450 sq ft', color: 'bg-blue-100 text-blue-600' },
-    { icon: Calendar, label: 'Handover', value: 'Q4 2025', color: 'bg-green-100 text-green-600' },
-    { icon: MapPin, label: 'Floor', value: '12th', color: 'bg-teal-100 text-teal-600' },
-    { icon: Car, label: 'Parking', value: '1', color: 'bg-red-100 text-red-600' },
-    { icon: Eye, label: 'View', value: 'Marina View', color: 'bg-cyan-100 text-cyan-600' }
+    { icon: Home, label: 'Room', value: `${unit.apartmentType}`, color: 'bg-purple-200 text-purple-600' },
+    { icon: Ruler, label: 'Area', value: `${(unit.size)}`, color: 'bg-blue-200 text-blue-600' },
+    { icon: Calendar, label: 'Handover', value: `${handover}`, color: 'bg-green-200 text-green-600' },
+    // { icon: MapPin, label: 'Floor', value: '12th', color: 'bg-teal-100 text-teal-600' },
+    { icon: DollarSign, label: 'Payment', value: `${formatPrice(unit.price)}`, color: 'bg-red-200 text-red-600' },
+    // { icon: Eye, label: 'View', value: 'Marina View', color: 'bg-cyan-100 text-cyan-600' }
   ];
 
   const unitFeatures = [
@@ -88,19 +148,19 @@ const PropertyDetailedPage = () => {
         <div className="relative rounded-2xl overflow-hidden mb-8 h-80 lg:h-[500px]">
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/20 z-10"></div>
           <img
-            src="https://panel.estaty.app/images/UYg2XEsJ6pPNQ9fZ-1747329506.webp"
+            src={projectData.cover}
             alt="Unit Hero"
             className="absolute inset-0 w-full h-full object-cover z-0"
           />
 
           <div className="absolute inset-0 z-20 flex flex-col lg:flex-row lg:items-end justify-between px-8 py-6">
             <div className="text-white space-y-3">
-              <h1 className="text-3xl lg:text-5xl font-bold">Azure Marina Residences</h1>
-              <p className="text-lg lg:text-2xl">Unit A-1205</p>
-              <div className="text-3xl font-bold">AED 850<span className="text-xl font-normal">K</span></div>
+              <h1 className="flex flex-row text-3xl lg:text-5xl font-bold">{projectData.title} - Unit ID : {unit.id}</h1>
+              <p className="flex flex-row flex items-center gap-2 text-lg lg:text-2xl"><MapPin className="w-5 h-5" />{projectData.city?.name}, {projectData.district?.name}</p>
+              <div className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">AED {formatPrice(unit.price)}</div>
             </div>
             <div className="absolute bottom-3 right-2 bg-green-500 text-white px-5 py-2 rounded-full font-semibold lg:mb-8">
-              Available
+              {unit.status}
             </div>
           </div>
         </div>
@@ -110,7 +170,7 @@ const PropertyDetailedPage = () => {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Specifications */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {unitSpecs.map((spec, index) => (
                 <div
                   key={index}
@@ -131,32 +191,61 @@ const PropertyDetailedPage = () => {
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center">
                   Floor Plan
                 </h2>
-                <div className="flex space-x-2">
-                  <button className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors">
-                    <Download className="w-4 h-4" />
-                  </button>
-                  <button className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                </div>
+                {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
+                  <div className="flex space-x-2">
+                    {/* Download Button */}
+                    <button
+                      onClick={() => {
+                        const link = document.createElement("a");
+                        link.href = unit.floorPlan;
+                        link.download = "floor-plan.jpg"; // you can set a filename here
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                      className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+
+                    {/* Preview Button */}
+                    <a
+                      href={unit.floorPlan}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </a>
+                  </div>
+                ) : (
+                  <span className="text-gray-500 text-sm">No Floor Plan Available</span>
+                )}
               </div>
 
               <div className="relative rounded-xl overflow-hidden">
-                <img src="/api/placeholder/600/400" alt="Floor Plan" className="w-full h-72 object-cover" />
+                {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
+                  <img
+                    src={unit.floorPlan}
+                    alt="Floor Plan"
+                    className="w-full h-72 object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-72 bg-gray-100 text-gray-500 rounded-xl">
+                    No Floor Plan Image
+                  </div>
+                )}
               </div>
             </div>
+
 
             {/* Description */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="text-2xl font-bold mb-4">Unit Description</h3>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                Modern studio unit with smart design, featuring ceiling windows and stunning marina views.
-              </p>
-              <ul className="list-disc list-inside text-gray-600">
-                {unitFeatures.map((feature, i) => (
-                  <li key={i}>{feature}</li>
-                ))}
-              </ul>
+              <div
+                className="text-gray-600 prose prose-p"
+                dangerouslySetInnerHTML={{ __html: projectData.description }}
+              ></div>
             </div>
           </div>
 
@@ -178,16 +267,32 @@ const PropertyDetailedPage = () => {
                 </div>
 
                 <div className="flex flex-col md:flex-row justify-center gap-4">
-                  <button className="flex items-center justify-center flex-1 bg-white text-blue-600 font-semibold py-4 rounded-xl hover:bg-blue-400 transition-colors hover:text-white">
+                  <a
+                    href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties and would like to visit ${projectData.title} (${unit.apartmentType}, Unit ${unit.id}).`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center bg-white text-blue-600 font-semibold py-4 rounded-xl hover:bg-blue-400 transition-colors hover:text-white"
+                  >
                     <CalendarClock className="w-5 h-5 mr-2" /> Book a Visit
-                  </button>
-                  <button className="flex items-center justify-center flex-1 bg-white text-green-600 font-semibold py-4 rounded-xl hover:bg-green-400 transition-colors hover:text-white">
+                  </a>
+
+                  <a
+                    href={`tel:${agent?.phone_number || ""}`}
+                    className="flex-1 flex items-center justify-center bg-white text-green-600 font-semibold py-4 rounded-xl hover:bg-green-400 transition-colors hover:text-white"
+                  >
                     <Phone className="w-5 h-5 mr-2" /> Call Now
-                  </button>
-                  <button className="flex items-center justify-center flex-1 bg-green-500 text-white font-semibold py-4 rounded-xl hover:bg-green-600 transition-colors">
+                  </a>
+
+                  <a
+                    href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center bg-green-500 text-white font-semibold py-4 rounded-xl hover:bg-green-600 transition-colors"
+                  >
                     <MessageCircle className="w-5 h-5 mr-2" /> WhatsApp
-                  </button>
+                  </a>
                 </div>
+
               </div>
             </div>
 
@@ -232,23 +337,34 @@ const PropertyDetailedPage = () => {
             </div>
             <div className="bg-white rounded-2xl shadow-xl text-center p-8 mt-10 max-w-2xl mx-auto border border-gray-100">
               <img
-                src="https://via.placeholder.com/100"
+                src={agent.profile_image_url}
                 alt="Sahar Kalhor"
                 className="w-24 h-24 mx-auto rounded-full mb-4 shadow-md"
               />
-              <h3 className="text-2xl font-bold">Sahar Kalhor</h3>
+              <h3 className="text-2xl font-bold">{agent.name}</h3>
               <p className="text-sm text-gray-500 mb-3">Your Property Advisor</p>
               <p className="text-gray-700 mb-5 text-sm leading-relaxed">
-                Speak directly with Sahar for pricing, viewing, and exclusive offers.
+                Speak directly with {agent.name} for pricing, viewing, and exclusive offers.
               </p>
               <div className="flex gap-3">
-  <Button className="bg-green-500 hover:bg-green-600 text-white flex-1 rounded-xl font-semibold">
-    Chat with Sahar
-  </Button>
-  <Button className="flex items-center justify-center flex-1 bg-purple-400 text-purple-600 font-semibold py-4 rounded-xl hover:bg-gray-100 transition-colors hover:bg-purple-500 text-white">
-    <Phone className="w-5 h-5 mr-2" /> Call Now
-  </Button>
-</div>
+                <a
+                  href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+                  target="_blank"
+                  className="flex-1"
+                >
+                  <Button className="bg-green-500 hover:bg-green-600 text-white flex-1 rounded-xl font-semibold">
+                    Chat with Sahar
+                  </Button>
+                </a>
+                <a
+                  href={`tel:${agent?.phone_number || ""}`}
+                  className="flex-1"
+                >
+                  <Button className="flex items-center justify-center flex-1 bg-purple-400 text-purple-600 font-semibold py-4 rounded-xl hover:bg-gray-100 transition-colors hover:bg-purple-500 text-white">
+                    <Phone className="w-5 h-5 mr-2" /> Call Now
+                  </Button>
+                </a>
+              </div>
 
             </div>
           </div>

@@ -70,7 +70,7 @@ const App = () => (
             <Route path="/:agentUsername/v6" element={<AgentPageVariation6 />} /> */}
             <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />
-            <Route path="/agent/property-detailed" element={<PropertyDetailed />} />
+            <Route path="/agent/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
