@@ -14,7 +14,8 @@ import { useLocation } from "react-router-dom";
 const PropertyDetails1 = () => {
 
   const location = useLocation();
-  const agent = location.state?.agent;
+  const [agent, setAgent] = useState<any>(location.state?.agent || null);
+
 
   const facilityIconMap = {
     "Library": { icon: "BookOpen", color: "text-blue-500" },
@@ -141,6 +142,25 @@ const PropertyDetails1 = () => {
   };
 
   useEffect(() => {
+  if (!agent && projectData?.agent_id) {
+    // Fallback: fetch agent details by projectData.agent_id
+    const fetchAgent = async () => {
+      try {
+        const response = await fetch(`https://offplan-backend.onrender.com/agent/${projectData.agent_id}/`);
+        const data = await response.json();
+        if (data?.status && data?.data) {
+          setAgent(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch agent:', err);
+      }
+    };
+    fetchAgent();
+  }
+}, [agent, projectData]);
+
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`https://offplan-backend.onrender.com/property/${projectId}/`);
@@ -175,36 +195,80 @@ const PropertyDetails1 = () => {
     );
   }
 
-  // Group property_units by room type
-  const groupedUnits = projectData.property_units.reduce((acc, unit) => {
-    const roomKey = `${unit.apartment_id} Bedroom Apartment`; // Group by apartment_id or customize
-    if (!acc[roomKey]) {
-      acc[roomKey] = [];
-    }
-    acc[roomKey].push(unit);
-    return acc;
-  }, {});
+console.log(
+  "grouped_apartment : ",
+  projectData.grouped_apartments.map((item) => item.unit_type)
+);
+ // Build a map of property_id to unit_type
+// const apartmentTypeMap = projectData.grouped_apartments.reduce(
+//   (acc, item) => {
+//     if (!acc[item.id]) {
+//       // Store unit type description by grouped_apartments.id
+//       acc[item.id] = `${item.rooms} Bedroom ${item.unit_type}`;
+//     }
+//     return acc;
+//   },
+//   {} as Record<number, string>
+// );
 
-  // Map groupedUnits into unitTypes array
-  const unitTypes = Object.entries(groupedUnits).map(([type, units]: [string, any[]]) => ({
-    type,
+const getUnitTypeName = (apartment) => {
+  const rooms = apartment.rooms?.toString().trim();
+  if (!isNaN(Number(rooms))) {
+    return `${rooms} Bedroom ${apartment.unit_type}`;
+  }
+  if (rooms?.toLowerCase() === "studio") {
+    return `Studio ${apartment.unit_type}`;
+  }
+  return apartment.unit_type;
+};
+
+
+
+// Group property_units by apartment_id
+const groupedUnits = projectData.property_units.reduce((acc, unit) => {
+  const roomKey = `${unit.apartment_id}`; // Group by apartment_id
+  if (!acc[roomKey]) {
+    acc[roomKey] = [];
+  }
+  acc[roomKey].push(unit);
+  return acc;
+}, {});
+
+// Map groupedUnits into unitTypes array
+// Map grouped_apartments by apartment_id (property_units.apartment_id)
+const apartmentNameMap = projectData.grouped_apartments.reduce(
+  (acc, item) => {
+    acc[item.id] = `${item.rooms} Bedroom ${item.unit_type}`;
+    return acc;
+  },
+  {} as Record<number, string>
+);
+
+const unitTypes = Object.entries(groupedUnits).map(([apartmentId, units]: [string, any[]], index) => {
+  // const unitTypeName = apartmentNameMap[Number(apartmentId)] || `Apartment ID ${apartmentId}`;
+  const groupedApartment = projectData.grouped_apartments[index];
+  return {
+    type: getUnitTypeName(groupedApartment),
     available: units.length,
-    startingPrice: Math.min(...units.map((u) => u.price)), // Find min price in this group
+    startingPrice: Math.min(...units.map((u) => u.price)),
     icon: <Bed className="text-blue-500" />,
     color: "bg-purple-50",
     subUnits: units.map((unit) => ({
       id: unit.apt_no || `Unit ${unit.id}`,
       floor: unit.floor_no,
       size: `${unit.area} sq.ft`,
-      view: unit.view || "N/A",
       price: unit.price,
       floorPlan:
         unit.floor_plan_image?.length > 0
           ? JSON.parse(unit.floor_plan_image)[0]
           : null,
-      status: unit.status || "Available", // Default to Available if null
+      status: unit.status || "Available",
     })),
-  }));
+  };
+});
+
+
+
 
 
 
@@ -257,7 +321,7 @@ const PropertyDetails1 = () => {
           </motion.h1>
           <div className="flex items-center text-white font-semibold mt-3">
             <MapPin className="w-5 h-5 mr-2" />
-            {projectData.district?.name}, {projectData.city?.name}
+            {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}
           </div>
         </div>
       </motion.div>
@@ -344,7 +408,7 @@ const PropertyDetails1 = () => {
               {/* Top Row */}
               <div className="flex justify-between mb-2">
                 <span className="text-sm font-semibold text-gray-800">
-                  Apt {sub.id}
+                  ID: {sub.id}
                 </span>
                 <span
                   className={`text-xs font-semibold ${
@@ -361,7 +425,7 @@ const PropertyDetails1 = () => {
               <ul className="text-gray-500 text-xs mb-2">
                 <li>Floor: {sub.floor || "N/A"}</li>
                 <li>Size: {sub.size}</li>
-                <li>View: {sub.view}</li>
+               {/* <li>View: {sub.view}</li>*/}
               </ul>
 
               {/* Price */}
@@ -429,7 +493,7 @@ const PropertyDetails1 = () => {
         <div className="mb-8 rounded-2xl bg-white p-6 shadow">
           <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> Location & Address</h3>
           <p className="text-gray-700 font-semibold">{projectData.title}</p>
-          <p className="text-gray-500 mb-4">{projectData.city.name}, {projectData.district.name}</p>
+          <p className="text-gray-500 mb-4">{projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</p>
           <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
             <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-200">
               <iframe
@@ -512,13 +576,13 @@ const PropertyDetails1 = () => {
       {/* CTA */}
       <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-t-2xl p-8 text-center text-white">
         <h3 className="text-2xl font-bold mb-2">Ready to Make This Your Home?</h3>
-        <p className="mb-4 text-white/90">Contact {agent.name} today for exclusive access and personalized assistance</p>
+        <p className="mb-4 text-white/90">Contact {agent?.name || "our team"} today for exclusive access and personalized assistance</p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
 
-          <a href={`tel:${agent.phone_number}`}>
+          <a href={`tel:${agent?.phone_number || ''}`}>
             <button className="bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">📞 Call Now</button></a>
           <a
-            href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=Hi, I'm interested in your off-plan properties`}
+            href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
             target="_blank">
             <button className="bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">💬 Chat on WhatsApp</button></a>
         </div>
