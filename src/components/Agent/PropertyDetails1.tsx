@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MapPin, ChevronDown, ChevronUp, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building } from 'lucide-react';
+import { MapPin, ChevronDown, ChevronUp, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Header from '../Agent/Header';
 import Footer from '../Agent/Footer';
@@ -9,12 +9,15 @@ import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 import logoPath from "@/assets/OFFPLAN_MARKET.png"
 import * as LucideIcons from 'lucide-react';
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import CallToAction from "@/components/Agent/CallToAction"
 
 const PropertyDetails1 = () => {
 
+  const navigate = useNavigate();
+
   const location = useLocation();
-  const agent = location.state?.agent;
+  const [agent, setAgent] = useState<any>(location.state?.agent || null);
 
   const facilityIconMap = {
     "Library": { icon: "BookOpen", color: "text-blue-500" },
@@ -147,10 +150,18 @@ const PropertyDetails1 = () => {
         const data = await response.json();
         if (data?.status && data?.data) {
           setProjectData(data.data);
-          console.log(data.data)
+          console.log(data.data);
+
+          if (!agent && data.data.agent_id) {
+            const agentResponse = await fetch(`https://offplan-backend.onrender.com/agent/${data.data.agent_id}/`);
+            const agentData = await agentResponse.json();
+            if (agentData?.status && agentData?.data) {
+              setAgent(agentData.data);
+            }
+          }
         }
       } catch (err) {
-        console.error('Failed to fetch project:', err);
+        console.error('Failed to fetch project/agent:', err);
       } finally {
         setLoading(false);
       }
@@ -158,8 +169,66 @@ const PropertyDetails1 = () => {
 
     fetchData();
   }, [projectId]);
+
   console.log('projectttt',projectData);
   
+
+
+  const units = projectData?.property_units || [];
+  const prices = units.map((unit) => unit.price).filter(Boolean);
+  const areas = units.map((unit) => unit.area).filter(Boolean);
+
+  const minPrice = prices.length ? Math.min(...prices) : 0;
+  const maxPrice = prices.length ? Math.max(...prices) : 0;
+
+  const minArea = areas.length ? Math.min(...areas) : 0;
+  const maxArea = areas.length ? Math.max(...areas) : 0;
+
+  const priceRange =
+    minPrice && maxPrice
+      ? `AED ${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
+      : "Price Not Available";
+
+  const areaRange =
+    minArea && maxArea
+      ? `${minArea} – ${maxArea} sq.ft.`
+      : "Area Not Available";
+
+  const handover = (() => {
+    const delivery = projectData?.delivery_date;
+
+    if (!delivery) return "N/A";
+
+    // If it's a number (UNIX timestamp)
+    if (typeof delivery === "number") {
+      const date = new Date(delivery * 1000);
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      // Compute quarter
+      const quarter = Math.ceil(month / 3);
+      return `Q${quarter} ${year}`;
+    }
+
+    // If it's already a string (like "Q4 2024")
+    if (typeof delivery === "string") {
+      return delivery;
+    }
+
+    return "N/A";
+  })();
+
+  const downPayment = (() => {
+    const dpPercent = projectData?.payment_minimum_down_payment;
+
+    if (dpPercent && dpPercent > 0 && dpPercent <= 100) {
+      return `${dpPercent}%`;
+    }
+
+    return "N/A"; // fallback
+  })();
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-500">
@@ -176,9 +245,38 @@ const PropertyDetails1 = () => {
     );
   }
 
-  // Group property_units by room type
+  console.log(
+    "grouped_apartment : ",
+    projectData.grouped_apartments.map((item) => item.unit_type)
+  );
+  // Build a map of property_id to unit_type
+  // const apartmentTypeMap = projectData.grouped_apartments.reduce(
+  //   (acc, item) => {
+  //     if (!acc[item.id]) {
+  //       // Store unit type description by grouped_apartments.id
+  //       acc[item.id] = `${item.rooms} Bedroom ${item.unit_type}`;
+  //     }
+  //     return acc;
+  //   },
+  //   {} as Record<number, string>
+  // );
+
+  const getUnitTypeName = (apartment) => {
+    const rooms = apartment.rooms?.toString().trim();
+    if (!isNaN(Number(rooms))) {
+      return `${rooms} Bedroom ${apartment.unit_type}`;
+    }
+    if (rooms?.toLowerCase() === "studio") {
+      return `Studio ${apartment.unit_type}`;
+    }
+    return apartment.unit_type;
+  };
+
+
+
+  // Group property_units by apartment_id
   const groupedUnits = projectData.property_units.reduce((acc, unit) => {
-    const roomKey = `${unit.apartment_id} Bedroom Apartment`; // Group by apartment_id or customize
+    const roomKey = `${unit.apartment_id}`; // Group by apartment_id
     if (!acc[roomKey]) {
       acc[roomKey] = [];
     }
@@ -187,25 +285,41 @@ const PropertyDetails1 = () => {
   }, {});
 
   // Map groupedUnits into unitTypes array
-  const unitTypes = Object.entries(groupedUnits).map(([type, units]: [string, any[]]) => ({
-    type,
-    available: units.length,
-    startingPrice: Math.min(...units.map((u) => u.price)), // Find min price in this group
-    icon: <Bed className="text-blue-500" />,
-    color: "bg-purple-50",
-    subUnits: units.map((unit) => ({
-      id: unit.apt_no || `Unit ${unit.id}`,
-      floor: unit.floor_no,
-      size: `${unit.area} sq.ft`,
-      view: unit.view || "N/A",
-      price: unit.price,
-      floorPlan:
-        unit.floor_plan_image?.length > 0
-          ? JSON.parse(unit.floor_plan_image)[0]
-          : null,
-      status: unit.status || "Available", // Default to Available if null
-    })),
-  }));
+  // Map grouped_apartments by apartment_id (property_units.apartment_id)
+  const apartmentNameMap = projectData.grouped_apartments.reduce(
+    (acc, item) => {
+      acc[item.id] = `${item.rooms} Bedroom ${item.unit_type}`;
+      return acc;
+    },
+    {} as Record<number, string>
+  );
+
+  const unitTypes = Object.entries(groupedUnits).map(([apartmentId, units]: [string, any[]], index) => {
+    // const unitTypeName = apartmentNameMap[Number(apartmentId)] || `Apartment ID ${apartmentId}`;
+    const groupedApartment = projectData.grouped_apartments[index];
+    return {
+      type: getUnitTypeName(groupedApartment),
+      available: units.length,
+      startingPrice: Math.min(...units.map((u) => u.price)),
+      icon: <Bed className="text-blue-500" />,
+      color: "bg-purple-50",
+      subUnits: units.map((unit) => ({
+        id: unit.apt_no || `Unit ${unit.id}`,
+        floor: unit.floor_no,
+        size: `${unit.area} sq.ft`,
+        price: unit.price,
+        floorPlan:
+          unit.floor_plan_image && unit.floor_plan_image.length > 0
+            ? JSON.parse(unit.floor_plan_image)[0]
+            : "NO_FLOOR_PLAN",
+        status: unit.status || "Available",
+        apartmentType: getUnitTypeName(groupedApartment),
+      })),
+    };
+  });
+
+
+
 
 
 
@@ -234,7 +348,7 @@ const PropertyDetails1 = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative rounded-3xl overflow-hidden mb-10 shadow-lg h-[500px]"
+        className="relative rounded-3xl overflow-hidden mb-5 shadow-lg h-[500px]"
       >
         {/* Background image */}
         <img
@@ -258,7 +372,7 @@ const PropertyDetails1 = () => {
           </motion.h1>
           <div className="flex items-center text-white font-semibold mt-3">
             <MapPin className="w-5 h-5 mr-2" />
-            {projectData.district?.name}, {projectData.city?.name}
+            {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}
           </div>
         </div>
       </motion.div>
@@ -266,15 +380,83 @@ const PropertyDetails1 = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-4">
+        {/*  */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          {/* Heading */}
+          <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
+            <Compass className="w-5 h-5 text-primary-500" />
+            <span className="text-gray-800 font-semibold">
+              Explore This Exclusive Property in{" "}
+              {projectData.city?.name || "N/A"}
+            </span>
+          </h2>
+
+          {/* Property Info Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
+            {/* Price Range */}
+            <div className="flex items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm">
+              <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
+                <DollarSign className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Price Range</p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {priceRange}
+                </p>
+              </div>
+            </div>
+
+            {/* Area Range */}
+            <div className="flex items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm">
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
+                <Ruler className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Area Range</p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {areaRange}
+                </p>
+              </div>
+            </div>
+
+            {/* Handover */}
+            <div className="flex items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm">
+              <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
+                <Handshake className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Handover</p>
+                <p className="text-sm font-semibold text-gray-800">{handover}</p>
+              </div>
+            </div>
+
+            {/* Payment Plan */}
+            <div className="flex items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm">
+              <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
+                <BarChart2 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Payment Plan</p>
+                <p className="text-sm font-semibold text-gray-800">{downPayment}</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/*  */}
+
+
         {/* Unit Types */}
         {/*  */}
         <div className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-600 mb-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-600 mb-8">
             Available Unit Types
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {unitTypes.map((unit, index) => (
+
   <motion.div
     key={index}
     whileHover={{ scale: 1.02 }}
@@ -328,86 +510,154 @@ const PropertyDetails1 = () => {
       </button>
     </div>
 
-    {/* Expanded Sub-Units */}
-    {expandedUnit === unit.type && unit.subUnits.length > 0 && (
-      <div className="bg-gray-50 rounded-b-2xl p-4 border-t">
-        <div
-          className={`grid gap-4 ${
-            unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
-          }`}
-        >
-          {unit.subUnits.map((sub, subIndex) => (
-            <div
-              key={subIndex}
-              className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md transition"
-            >
-              {/* Top Row */}
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-semibold text-gray-800">
-                  Apt {sub.id}
-                </span>
-                <span
-                  className={`text-xs font-semibold ${
-                    sub.status === "Available"
-                      ? "text-green-600"
-                      : "text-red-500"
-                  }`}
-                >
-                  {sub.status || "N/A"}
-                </span>
-              </div>
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => toggleUnit(unit.type)}
+                ref={(el) => (unitRefs.current[unit.type] = el)}
+                className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer"
+              >
+                {/* Top: Unit Summary */}
+                <div className="flex justify-between items-center p-5">
+                  {/* Left: Icon & Details */}
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-14 h-14 rounded-full ${unit.color} flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition`}
+                    >
+                      {unit.icon}
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900">{unit.type}</h4>
+                      <p className="text-sm text-gray-500">{unit.available} units available</p>
+                    </div>
+                  </div>
 
-              {/* Details */}
-              <ul className="text-gray-500 text-xs mb-2">
-                <li>Floor: {sub.floor || "N/A"}</li>
-                <li>Size: {sub.size}</li>
-                <li>View: {sub.view}</li>
-              </ul>
 
-              {/* Price */}
-              <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text">
-                AED {formatPrice(sub.price)}
-              </p>
-
-              {/* Optional: Floor Plan Image */}
-              {sub.floorPlan && (
-                <div className="mt-2 rounded overflow-hidden">
-                  <img
-                    src={sub.floorPlan}
-                    alt={`Floor plan for ${sub.id}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
+                  {/* Right: Price */}
+                  <div className="flex flex-col items-end">
+                    <p className="text-xs text-gray-400">Starting from</p>
+                    <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
+                      AED {formatPrice(unit.startingPrice)}
+                    </p>
+                  </div>
                 </div>
-              )}
 
-              {/* View Details Button */}
-              <div className="mt-3 text-center">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent parent card click
-                    alert(`Viewing details for Apt ${sub.id}`);
-                    // Or navigate to details page
-                    // navigate(`/unit-details/${sub.id}`);
-                  }}
-                  className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
-                >
-                  View Details
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
+                {/* Expand/Collapse Button Row */}
+                <div className="flex justify-center py-2 border-t">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent parent onClick
+                      toggleUnit(unit.type);
+                    }}
+                    className="flex items-center gap-1 text-purple-600 font-medium hover:text-purple-800 transition"
+                  >
+                    {expandedUnit === unit.type ? (
+                      <>
+                        <ChevronUp className="w-4 h-4" />
+                        Hide Units
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" />
+                        View Units
+                      </>
+                    )}
+                  </button>
+                </div>
 
-    {/* Fallback if no sub-units */}
-    {expandedUnit === unit.type && unit.subUnits.length === 0 && (
-      <div className="bg-gray-50 rounded-b-2xl p-4 text-center text-gray-500 border-t">
-        No units available in this category
-      </div>
-    )}
-  </motion.div>
-))}
+                {/* Expanded Sub-Units */}
+                {expandedUnit === unit.type && unit.subUnits.length > 0 && (
+                  <div className="bg-gray-50 rounded-b-2xl p-4 border-t">
+                    <div
+                      className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
+                        }`}
+                    >
+                      {unit.subUnits.map((sub, subIndex) => (
+                        <div
+                          key={subIndex}
+                          className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md transition"
+                        >
+                          {/* Top Row */}
+                          <div className="flex justify-between mb-2">
+                            <span className="text-sm font-semibold text-gray-800">
+                              ID: {sub.id}
+                            </span>
+                            <span
+                              className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === "Available"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                                }`}
+                            >
+                              {sub.status || "N/A"}
+                            </span>
+
+                          </div>
+
+                          {/* Details */}
+                          <ul className="text-gray-500 text-xs mb-2">
+                            <li>Floor: {sub.floor || "N/A"}</li>
+                            <li>Size: {sub.size}</li>
+                            {/* <li>View: {sub.view}</li>*/}
+                          </ul>
+
+                          {/* Price */}
+                          <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
+                            AED {formatPrice(sub.price)}
+                          </p>
+
+                          {/* Optional: Floor Plan Image */}
+                          <div className="relative w-full h-32 rounded-lg overflow-hidden">
+                            <img
+                              src={sub.floorPlan}
+                              alt={`Floor plan for ${sub.id}`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Replace with fallback if the image fails to load
+                                e.currentTarget.src = "/no-floor-plan.png";
+                              }}
+                            />
+                            {/* Watermark Overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/15">
+                              <span className="text-white text-md font-bold opacity-70">
+                                OFFPLAN.MARKET
+                              </span>
+                            </div>
+                          </div>
+
+
+
+                          {/* View Details Button */}
+                          <div className="mt-3 text-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent parent card click
+                                navigate(`/agent/${agent.username}/property-detailed/${sub.id}`, {
+                                  state: {
+                                    unit: sub,               // Pass the unit data
+                                    projectData: projectData,    // Optionally pass the parent project too
+                                    agent: agent             // Pass agent details
+                                  }
+                                });
+                              }}
+                              className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
+                            >
+                              View Details
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Fallback if no sub-units */}
+                {expandedUnit === unit.type && unit.subUnits.length === 0 && (
+                  <div className="bg-gray-50 rounded-b-2xl p-4 text-center text-gray-500 border-t">
+                    No units available in this category
+                  </div>
+                )}
+              </motion.div>
+            ))}
 
 
           </div>
@@ -429,7 +679,7 @@ const PropertyDetails1 = () => {
         <div className="mb-8 rounded-2xl bg-white p-6 shadow">
           <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> Location & Address</h3>
           <p className="text-gray-700 font-semibold">{projectData.title}</p>
-          <p className="text-gray-500 mb-4">{projectData.city.name}, {projectData.district.name}</p>
+          <p className="text-gray-500 mb-4">{projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</p>
           <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
             <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-200">
               <iframe
@@ -512,17 +762,30 @@ const PropertyDetails1 = () => {
       {/* CTA */}
       <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-t-2xl p-8 text-center text-white">
         <h3 className="text-2xl font-bold mb-2">Ready to Make This Your Home?</h3>
-        <p className="mb-4 text-white/90">Contact {agent.name} today for exclusive access and personalized assistance</p>
+        <p className="mb-4 text-white/90">
+          Contact {agent?.name || "our team"} today for exclusive access and personalized assistance
+        </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-
-          <a href={`tel:${agent.phone_number}`}>
-            <button className="bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">📞 Call Now</button></a>
           <a
-            href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=Hi, I'm interested in your off-plan properties`}
-            target="_blank">
-            <button className="bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">💬 Chat on WhatsApp</button></a>
+            href={`tel:${agent?.phone_number || ""}`}
+            className="flex-1"
+          >
+            <button className="w-full bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">
+              📞 Call Now
+            </button>
+          </a>
+          <a
+            href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+            target="_blank"
+            className="flex-1"
+          >
+            <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
+              💬 Chat on WhatsApp
+            </button>
+          </a>
         </div>
       </div>
+
 
       {/* <CallToAction agent={agent} /> */}
 

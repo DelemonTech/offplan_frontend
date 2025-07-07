@@ -199,8 +199,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   };
 
   const projectStatuses = [
-    'Off Plan',
-    'Ready'
+    'Ready',
+    'Off Plan'
   ];
 
   const deliveryYears = [
