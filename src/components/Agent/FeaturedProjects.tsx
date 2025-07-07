@@ -11,6 +11,7 @@ import { useCountSequenceOnView } from '@/hooks/useCountSequenceOnView';
 import CountUp from 'react-countup';
 import PropertyDetailsModal from "@/components/Agent/PropertyDetails"
 import IconWhatsapp from "@/assets/icon-whatsapp.svg"
+import PropertyDetails1 from './PropertyDetails1';
 
 
 
@@ -50,6 +51,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   setDevelopers,
   isSearchLoading,
   setIsSearchLoading }) => {
+
   // const navigate = useNavigate();
 
   const [selectedProperty, setSelectedProperty] = useState(null)
@@ -72,9 +74,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const handleOpenModal = () => {
-  setCurrentImageIndex(0); // call before opening
-  setIsModalOpen(true);
-};
+    setCurrentImageIndex(0); // call before opening
+    setIsModalOpen(true);
+  };
 
 
   const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
@@ -264,12 +266,20 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           'Content-Type': 'application/json',
         },
       });
-      console.log("project ID : ",projectId);
+      console.log("project ID : ", projectId);
 
       const data = await res.json()
       console.log("data : ", data);
       setSelectedProperty(data.property)
-      setIsModalOpen(true)
+      // setIsModalOpen(true)
+      navigate(`/agent/${agent.username}/agent-detail/?id=${projectId}`, {
+        state: { agent }
+      });
+      // #--------- commented for testing original -----------#
+      // navigate(`/agent/${agent.username}/property-details/?id=${projectId}`, {
+      //   state: { agent }
+      // });
+      // #---------- ended original -------#
     } catch (error) {
       console.error("Error fetching property details:", error)
     }
@@ -906,9 +916,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)
         }
-        agent = {agent}
-        setCurrentImageIndex = {setCurrentImageIndex}
-        currentImageIndex = {currentImageIndex}
+        agent={agent}
+        setCurrentImageIndex={setCurrentImageIndex}
+        currentImageIndex={currentImageIndex}
       />
     </section>
   );
