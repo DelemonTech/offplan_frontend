@@ -17,10 +17,11 @@ import AgentProfile from "./components/AgentProfile1";
 // import AgentPageVariation4 from "./pages/AgentPageVariation4";
 // import AgentPageVariation5 from "./pages/AgentPageVariation5";
 // import AgentPageVariation6 from "./pages/AgentPageVariation6";
-import PropertyDetails1 from "@/components/Agent/PropertyDetails1";
+// import PropertyDetails1 from "@/components/Agent/PropertyDetails1";
 import PropertyDetails2 from "@/components/Agent/PropertyDetails2";
 import PropertyDetailed from "@/components/Agent/PropertyDetailedPage"
-import ProjectDetail from "./pages/ProjectDetail";
+// import ProjectDetail from "./pages/ProjectDetail";
+import AgentPropDetail from "./components/Agent/AgentPropDetail"
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 // import AgentFarsi from "./pages/AgentFarsi";
@@ -57,10 +58,12 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
-            <Route path="/projects/:slug" element={<ProjectDetail />} />
+            {/* <Route path="/projects/:slug" element={<ProjectDetail />} /> */}
+            {/* <Route path="/projects/:slug" element={<AgentDetail />} />/ */}
             <Route path="/agent/:username" element={<AgentPage />} />
             {/* <Route path="/:agentUsername/farsi" element={<AgentFarsi/> } /> */}
             <Route path="/agentProfile" element={<AgentProfile/>}/>
+            {/* <Route path="/propertydetail/:slug" element={<PropDetail/>}/> */}
             <Route path="/sample/:username" element={<Sample />} />
             {/* <Route path="/:agentUsername/v1" element={<AgentPageVariation1 />} />
             <Route path="/:agentUsername/v2" element={<AgentPageVariation2 />} />
@@ -68,8 +71,15 @@ const App = () => (
             <Route path="/:agentUsername/v4" element={<AgentPageVariation4 />} />
             <Route path="/:agentUsername/v5" element={<AgentPageVariation5 />} />
             <Route path="/:agentUsername/v6" element={<AgentPageVariation6 />} /> */}
+
+            {/* <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} /> Original     */}
+        
+            <Route path="/agent/property-details" element={<PropertyDetails2 />} />       
+            <Route path="/agent/:username/agent-detail" element={<AgentPropDetail />} />
+
             <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />
+
 
             <Route path="/agent/property-detailed" element={<PropertyDetailed />} />
             <Route path="/unitdetails" element={<UnitDetails1/>} />

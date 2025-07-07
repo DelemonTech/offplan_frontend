@@ -170,6 +170,10 @@ const PropertyDetails1 = () => {
     fetchData();
   }, [projectId]);
 
+  console.log('projectttt',projectData);
+  
+
+
   const units = projectData?.property_units || [];
   const prices = units.map((unit) => unit.price).filter(Boolean);
   const areas = units.map((unit) => unit.area).filter(Boolean);
@@ -452,6 +456,60 @@ const PropertyDetails1 = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {unitTypes.map((unit, index) => (
+
+  <motion.div
+    key={index}
+    whileHover={{ scale: 1.02 }}
+    onClick={() => toggleUnit(unit.type)}
+    ref={(el) => (unitRefs.current[unit.type] = el)}
+    className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer">
+    {/* Top: Unit Summary */}
+    <div className="flex justify-between items-center p-5">
+      {/* Left: Icon & Details */}
+      <div className="flex items-center gap-4">
+        <div
+          className={`w-14 h-14 rounded-full ${unit.color} flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition`}
+        >
+          {unit.icon}
+        </div>
+        <div>
+          <h4 className="text-lg font-semibold text-gray-900">{unit.type}</h4>
+          <p className="text-sm text-gray-500">{unit.available} units available</p>
+        </div>
+      </div>
+
+      {/* Right: Price */}
+      <div className="flex flex-col items-end">
+        <p className="text-xs text-gray-400">Starting from</p>
+        <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
+          AED {formatPrice(unit.startingPrice)}
+        </p>
+      </div>
+    </div>
+
+    {/* Expand/Collapse Button Row */}
+    <div className="flex justify-center py-2 border-t">
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent parent onClick
+          toggleUnit(unit.type);
+        }}
+        className="flex items-center gap-1 text-purple-600 font-medium hover:text-purple-800 transition"
+      >
+        {expandedUnit === unit.type ? (
+          <>
+            <ChevronUp className="w-4 h-4" />
+            Hide Units
+          </>
+        ) : (
+          <>
+            <ChevronDown className="w-4 h-4" />
+            View Units
+          </>
+        )}
+      </button>
+    </div>
+
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.02 }}
@@ -473,6 +531,7 @@ const PropertyDetails1 = () => {
                       <p className="text-sm text-gray-500">{unit.available} units available</p>
                     </div>
                   </div>
+
 
                   {/* Right: Price */}
                   <div className="flex flex-col items-end">

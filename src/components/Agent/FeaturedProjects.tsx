@@ -272,9 +272,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       console.log("data : ", data);
       setSelectedProperty(data.property)
       // setIsModalOpen(true)
-      navigate(`/agent/${agent.username}/property-details/?id=${projectId}`, {
+      navigate(`/agent/${agent.username}/agent-detail/?id=${projectId}`, {
         state: { agent }
       });
+      // #--------- commented for testing original -----------#
+      // navigate(`/agent/${agent.username}/property-details/?id=${projectId}`, {
+      //   state: { agent }
+      // });
+      // #---------- ended original -------#
     } catch (error) {
       console.error("Error fetching property details:", error)
     }
