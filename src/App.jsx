@@ -77,7 +77,7 @@ const App = () => (
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />       
             <Route path="/agent/:username/agent-detail" element={<AgentPropDetail />} />
 
-            <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />
+            {/* <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} /> */}
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />
 
 
