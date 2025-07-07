@@ -302,7 +302,7 @@ const AgentPropDetail = () => {
   initial={{ opacity: 0, y: -20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.8 }}
-  className="relative rounded-3xl overflow-hidden mb-5 max-w-7xl mx-auto shadow-lg h-[600px]"
+  className="relative rounded-xl overflow-hidden mb-5  mx-auto shadow-lg h-[600px]"
 >
   {/* Top Left - Units Left */}
   <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
@@ -391,7 +391,7 @@ const AgentPropDetail = () => {
     
     {/* Sales Status Badge inside the grid container */}
      <span
-    className={`absolute top-4 left-4 right-auto md:left-auto md:right-4 text-sm font-bold ${salesStatus.color} px-4 py-1.5 rounded-full shadow-md z-10`}
+    className={`absolute top-4 left-4 right-auto md:left-auto md:right-4 bg-gradient-to-r from-pink-500 to-purple-600  text-sm font-bold text-white px-4 py-1.5 rounded-full shadow-md z-10`}
     style={{ textShadow: '1px 1px 5px rgba(0,0,0,0.1)' }}
   >
     {salesStatus.name}
@@ -718,7 +718,7 @@ const AgentPropDetail = () => {
 </div>
     </div>
   )}
-  <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-3xl p-10 max-w-7xl mx-auto my-12 text-center">
+  <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-3xl p-10 max-w-5xl mx-auto my-12 text-center">
   <h2 className="text-2xl md:text-3xl font-extrabold mb-2">
     Ready to Make This Your Home?
   </h2>
