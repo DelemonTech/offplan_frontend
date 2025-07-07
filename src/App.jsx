@@ -27,7 +27,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage"
 import Sample from "./pages/Sample";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-
+import UnitDetails1 from "@/pages/Agent/UnitDetails1";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -70,7 +70,12 @@ const App = () => (
             <Route path="/:agentUsername/v6" element={<AgentPageVariation6 />} /> */}
             <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />
+
+            <Route path="/agent/property-detailed" element={<PropertyDetailed />} />
+            <Route path="/unitdetails" element={<UnitDetails1/>} />
+
             <Route path="/agent/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
