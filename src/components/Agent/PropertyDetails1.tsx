@@ -763,17 +763,20 @@ const PropertyDetails1 = () => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/agent/${agent.username}/property-detailed/${sub.id}`, {
+                                // navigate(`/agent/${agent.username}/property-detailed/${sub.id}`,
+                                navigate(`/agent/${agent.username}/unit-details/${sub.id}`,
+                                   {
                                   state: {
                                     unit: sub,
                                     projectData,
                                     agent,
                                   },
                                 });
+                                
                               }}
                               className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
                             >
-                              View Details
+                              View Detailss
                             </button>
                           </div>
                         </div>
