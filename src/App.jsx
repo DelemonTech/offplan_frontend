@@ -17,7 +17,7 @@ import AgentProfile from "./components/AgentProfile1";
 // import AgentPageVariation4 from "./pages/AgentPageVariation4";
 // import AgentPageVariation5 from "./pages/AgentPageVariation5";
 // import AgentPageVariation6 from "./pages/AgentPageVariation6";
-// import PropertyDetails1 from "@/components/Agent/PropertyDetails1";
+import PropertyDetails1 from "@/components/Agent/PropertyDetails1";
 import PropertyDetails2 from "@/components/Agent/PropertyDetails2";
 import PropertyDetailed from "@/components/Agent/PropertyDetailedPage"
 // import ProjectDetail from "./pages/ProjectDetail";
@@ -72,12 +72,12 @@ const App = () => (
             <Route path="/:agentUsername/v5" element={<AgentPageVariation5 />} />
             <Route path="/:agentUsername/v6" element={<AgentPageVariation6 />} /> */}
 
-            {/* <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} /> Original     */}
+            {/* <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />      */}
         
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />       
             <Route path="/agent/:username/agent-detail" element={<AgentPropDetail />} />
 
-            {/* <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} /> */}
+            <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />
 
 
