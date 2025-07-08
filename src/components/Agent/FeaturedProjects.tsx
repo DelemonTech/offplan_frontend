@@ -587,6 +587,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     });
   };
 
+  useEffect(() => {
+  if (rows.length > 0) {
+    setSelectedCity(rows[0]);
+  }
+}, [rows]);
+
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
       <div className="absolute inset-0 opacity-10">
@@ -688,7 +694,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         </div>
 
         <div className="flex flex-col items-center px-4 py-6 w-full">
-          {rows.map((row, rowIndex) => (
+          {rows.length > 0 && rows.map((row, rowIndex) => (
             <div
               key={rowIndex}
               className={`grid 

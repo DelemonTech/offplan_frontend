@@ -340,15 +340,18 @@ const PropertyDetails1 = () => {
   // );
 
   const getUnitTypeName = (apartment) => {
-    const rooms = apartment.rooms?.toString().trim();
-    if (!isNaN(Number(rooms))) {
-      return `${rooms} Bedroom ${apartment.unit_type}`;
-    }
-    if (rooms?.toLowerCase() === "studio") {
-      return `Studio ${apartment.unit_type}`;
-    }
-    return apartment.unit_type;
-  };
+  if (!apartment) return ""; // ⬅ Prevents error if apartment is undefined
+
+  const rooms = apartment.rooms?.toString().trim();
+
+  if (!isNaN(Number(rooms))) {
+    return `${rooms} Bedroom ${apartment.unit_type}`;
+  }
+  if (rooms?.toLowerCase() === "studio") {
+    return `Studio ${apartment.unit_type}`;
+  }
+  return apartment.unit_type || ""; // fallback to unit_type or empty
+};
 
 
 
