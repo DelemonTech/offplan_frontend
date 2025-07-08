@@ -57,6 +57,7 @@ const AgentPageContent = () => {
     const [propertyStatus, setPropertyStatus] = useState('');
 
     const [projectStatus, setProjectStatus] = useState('');
+    const [subunit_count, setSubUnitCount] = useState('');
   
     // New filter states for missing filters
     // const [rentalGuarantee, setRentalGuarantee] = useState(false);
@@ -224,6 +225,8 @@ useEffect(() => {
         isSearchLoading={isSearchLoading}
         projectStatus={projectStatus}
         setProjectStatus={setProjectStatus}
+        setSubUnitCount={setSubUnitCount}
+        subunit_count={subunit_count}
       />
       <AgentProfile agent={agentData} />
 

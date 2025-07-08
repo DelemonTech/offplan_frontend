@@ -97,9 +97,21 @@ module.exports = {
         'scale-in': 'scale-in 0.4s ease-out',
         'slide-up': 'slide-up 0.8s ease-out',
         'pulse-glow': 'pulse-glow 2s ease-in-out infinite'
-      }
+      },
+    keyframes: {
+      burn: {
+        '0%, 100%': { transform: 'scale(1) rotate(0deg)', opacity: 1 },
+        '25%': { transform: 'scale(1.1) rotate(-5deg)', opacity: 0.9 },
+        '50%': { transform: 'scale(0.95) rotate(5deg)', opacity: 0.8 },
+        '75%': { transform: 'scale(1.05) rotate(-3deg)', opacity: 0.95 },
+      },
+    },
+    animation: {
+      burn: 'burn 1s ease-in-out infinite',
+    },
     }
   },
   plugins: [require("tailwindcss-animate")],
+  
 };
 
