@@ -9,7 +9,7 @@ import forplan from '../../assets/forplan1.webp';
 import { useLocation } from 'react-router-dom';
 import Footer from '../../components/Agent/Footer'
 import { jsPDF } from "jspdf";
-
+import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 
 const UnitDetails1 = () => {
   const [showModal, setShowModal] = useState(false);
@@ -476,87 +476,64 @@ const colorClasses = [
 </div>
 
 {/* Section 2: Need Help or More Info */}
-<div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md text-center border border-gray-200">
-  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Need Help or More Info?</h2>
-  <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
-    Talk to our property advisor for pricing, viewing, and guidance.
-  </p>
 
- <div className="space-y-4 sm:space-y-0 sm:flex sm:flex-wrap sm:gap-4">
-  {/* Call Now */}
-  <a
-  href={`tel:${agent?.phone_number || ""}`}
-  className="w-full sm:w-[calc(50%-0.5rem)] bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition rounded-lg"
->
-  <span className="text-lg"><Phone /></span> Call Now
-</a>
+ <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md text-center border border-gray-200">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Need Help or More Info?</h2>
+          <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
+            Talk to our property advisor for pricing, viewing, and guidance.
+          </p>
+          <div className="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white shadow-md overflow-hidden">
+            <img
+              src={agent.profile_image_url}// Replace with actual image path or import
+              alt="Sahar Kalhor"
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-  {/* WhatsApp */}
-<a
-  href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-  target="_blank"
-  className="w-full sm:w-[calc(50%-0.5rem)] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
->
-  <span className="text-lg"><MessageCircle/></span> WhatsApp
-</a>
+          {/* Name and Title */}
+          <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-1">
+            {agent.name}
+          </h3>
+          <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
+          <div className="text-sm text-gray-700 font-medium mb-4">
+            <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full shadow">
+              Trusted Advisor – ⭐ 4.9 (38 reviews)
+            </span>
+          </div>
+          {/* Description */}
+          {/* <p className="text-gray-800 text-sm mb-6">
+            Speak directly with {agent.name} for pricing, viewings, and exclusive offers.
+          </p> */}
 
-  {/* Request Callback */}
-  <button className="w-full mt-4 sm:mt-4 bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 transition">
-    <span className="text-lg"><Calendar/></span> Request Callback
-  </button>
-</div>
+          <div className="space-y-4 sm:space-y-0 sm:flex sm:flex-wrap sm:gap-4">
+            {/* Call Now */}
+            <a
+              href={`tel:${agent?.phone_number || ""}`}
+              className="w-full sm:w-[calc(50%-0.5rem)] bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition rounded-lg"
+            >
+              <span className="text-lg"><Phone /></span> Call Now
+            </a>
 
-</div>
+            {/* WhatsApp */}
+            <a
+              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              target="_blank"
+              className="w-full sm:w-[calc(50%-0.5rem)] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
+            >
+              <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> WhatsApp
+            </a>
+
+            {/* Request Callback */}
+            <button className="w-full mt-4 sm:mt-4 bg-purple-200 text-gray-800 border border-gray-300 hover:bg-gray-100 font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 transition">
+              <span className="text-lg"><Calendar /></span> Request Callback
+            </button>
+          </div>
+
+        </div>
 
 
             {/* Property Advisor Card */}
-            <div className="max-w-xl mx-auto mt-10 p-8 bg-gradient-to-br from-white via-white/90 to-purple-50 rounded-2xl shadow-lg text-center">
-              {/* Avatar */}
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white shadow-md overflow-hidden">
-                <img
-                  src={agent.profile_image_url}// Replace with actual image path or import
-                  alt="Sahar Kalhor"
-                  className="w-full h-full object-cover"
-                />
-              </div>
             
-              {/* Name and Title */}
-              <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-1">
-                {agent.name}
-              </h3>
-              <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
-               {/* <div className="text-sm text-gray-700 font-medium mb-4">
-    <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full shadow">
-      Trusted Advisor – ⭐ 4.9 (38 reviews)
-    </span>
-  </div> */}
-              {/* Description */}
-              <p className="text-gray-800 text-sm mb-6">
-                Speak directly with {agent.name} for pricing, viewings, and exclusive offers.
-              </p>
-            
-              {/* Chat Button */}
-            <div className="flex justify-center gap-2 sm:gap-4 flex-wrap">
-  {/* WhatsApp Button */}
-  <a
-    href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-    target="_blank"
-    className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 rounded-full flex items-center justify-center gap-1 sm:gap-2 shadow text-sm sm:text-base whitespace-nowrap"
-  >
-    <span className="text-base sm:text-lg"><MessageCircle /></span> Chat with {agent.name}
-  </a>
-
-  {/* Call Now Button */}
-  <a
-    href={`tel:${agent?.phone_number || ""}`}
-    className="flex-1 bg-purple-400 hover:bg-purple-500 text-white px-4 sm:px-6 py-2 rounded-full flex items-center justify-center gap-1 sm:gap-2 shadow text-sm sm:text-base whitespace-nowrap"
-  >
-    <span className="text-base sm:text-lg"><Phone /></span> Call Now
-  </a>
-</div>
-
- 
-            </div>
         </div>   
         <Footer /> 
         {showModal && (
@@ -746,6 +723,85 @@ const colorClasses = [
     </div>
   </div>
 )}
+{modalType === "gallery" && showModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div className="bg-gradient-to-br from-white via-purple-50 to-pink-50 rounded-3xl w-full max-w-4xl relative shadow-2xl border border-purple-200 overflow-hidden">
+      
+      {/* Scrollable inner content */}
+      <div className="max-h-[90vh] overflow-y-auto p-6 sm:p-10">
+        
+        {/* Close Button */}
+        <button
+          onClick={() => setShowModal(false)}
+          className="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-3xl font-bold"
+        >
+          &times;
+        </button>
+
+        {/* Title */}
+        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 text-center mb-8">
+          Unit Image Gallery
+        </h2>
+
+        {/* Images Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+  {[projectData.cover, forplan].map((img, index) => (
+    <div
+      key={index}
+      className="bg-white rounded-xl border border-gray-300 shadow-sm hover:shadow-md transition-shadow duration-300"
+    >
+      <div className="relative">
+        {/* Image with rounded top corners */}
+        <img
+          src={img}
+          alt={`Gallery Image ${index + 1}`}
+          className="w-full h-64 object-cover rounded-t-xl"
+        />
+
+        {/* Gradient circle arrow */}
+        <a
+          href={img}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute top-3 right-3 p-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:scale-105 transition-all shadow-lg"
+        >
+          <svg
+            className="w-5 h-5 text-white"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M14 3h7m0 0v7m0-7L10 14"
+            />
+          </svg>
+        </a>
+      </div>
+
+      {/* Optional info block below image */}
+      {/* <div className="p-4 text-sm text-gray-600">Some detail here</div> */}
+    </div>
+  ))}
+</div>
+
+
+        {/* Footer Action */}
+        {/* <div className="mt-10 text-center">
+          <button
+            onClick={() => setShowModal(false)}
+            className="inline-block bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-medium shadow hover:shadow-md hover:opacity-90 transition-all"
+          >
+            Close Gallery
+          </button>
+        </div> */}
+      </div>
+    </div>
+  </div>
+)}
+
 
 
     </div>
