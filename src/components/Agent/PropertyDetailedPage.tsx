@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Home, Ruler, Calendar, MapPin, Car, Eye, Download, Phone, MessageCircle, Star, DollarSign } from 'lucide-react';
-import Header from '../Agent/Header';
-import logoPath from '@/assets/OFFPLAN_MARKET_female.png'
-import Footer from '../Agent/Footer';
-import { Button } from '@/components/ui/button'
-import { Image, FileText, CreditCard, CalendarClock } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from 'react'
+import Header from '../../components/Agent/Header'
+// import Header from "@/components/HomeHeader";
+import { ArrowLeft, MapPin, Ruler, Maximize, DollarSign, Building, Eye, Shield, Calendar, Flame, Bath, Bed, Phone, Mail, Download, Share2, MessageCircle, Home, CheckCircle, Image, FileText, CreditCard, BarChart2, Handshake, Maximize2, Compass } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import unit from '../../assets/unit.jpeg';
+import girl from '../../assets/girl.jpg'
+import forplan from '../../assets/forplan1.webp';
+import { useLocation } from 'react-router-dom';
+import logoPath from "@/assets/OFFPLAN_MARKET.png"
+import Footer from '../../components/Agent/Footer';
+import { useNavigate } from "react-router-dom";
+import IconWhatsapp from "@/assets/icon-whatsapp.svg";
+// import { jsPDF } from "jspdf";
+
 
 const PropertyDetailedPage = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("");
   const location = useLocation();
+  const [showReserveModal, setShowReserveModal] = useState(false);
+  const [showFloorPlanImage, setShowFloorPlanImage] = useState(false);
+
   const navigate = useNavigate();
+
   const { unit, projectData, agent } = location.state || {};
 
+  const unitData = location.state;
+  console.log(unitData);
+  const paymentPlans = projectData?.payment_plans || [];
   if (!unit) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -25,355 +41,782 @@ const PropertyDetailedPage = () => {
       </div>
     );
   }
-
-  const formatPrice = (price: string | number) => {
-    // Handle string inputs like "AED 1,200,000"
+  // Format price like 1.2M, 950K etc.
+  const formatPrice = (price) => {
     const numericPrice =
       typeof price === "string"
         ? parseInt(price.replace(/[^\d]/g, ""), 10)
         : price;
 
-    if (numericPrice >= 1_000_000) {
-      return `${(numericPrice / 1_000_000).toFixed(1)}M`;
-    } else if (numericPrice >= 1_000) {
-      return `${(numericPrice / 1_000).toFixed(0)}K`;
-    }
+    if (numericPrice >= 1_000_000) return `${(numericPrice / 1_000_000).toFixed(1)}M`;
+    if (numericPrice >= 1_000) return `${(numericPrice / 1_000).toFixed(0)}K`;
     return numericPrice.toString();
   };
 
-  const [activeTab, setActiveTab] = useState('floor-plan');
+  // const units = projectData?.property_units || [];
+  // const prices = units.map((unit) => unit.price).filter(Boolean);
+  // const areas = units.map((unit) => unit.area).filter(Boolean);
+  // const minPrice = prices.length ? Math.min(...prices) : 0;
+  // const maxPrice = prices.length ? Math.max(...prices) : 0;
 
-  const [showModal, setShowModal] = useState(false);
+  // const minArea = areas.length ? Math.min(...areas) : 0;
+  // const maxArea = areas.length ? Math.max(...areas) : 0;
 
+  // const priceRange =
+  //   minPrice && maxPrice
+  //     ? `AED ${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
+  //     : "Price Not Available";
+
+  // const areaRange =
+  //   minArea && maxArea
+  //     ? `${minArea} – ${maxArea} sq.ft.`
+      // : "Area Not Available";
+
+  const downPayment = (() => {
+    const dpPercent = projectData?.payment_minimum_down_payment;
+
+    if (dpPercent && dpPercent > 0 && dpPercent <= 100) {
+      return `${dpPercent}%`;
+    }
+
+    return "N/A"; // fallback
+  })();
+  // Calculate handover quarter
   const handover = (() => {
     const delivery = projectData?.delivery_date;
-
     if (!delivery) return "N/A";
 
-    // If it's a number (UNIX timestamp)
     if (typeof delivery === "number") {
       const date = new Date(delivery * 1000);
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
-
-      // Compute quarter
       const quarter = Math.ceil(month / 3);
       return `Q${quarter} ${year}`;
     }
 
-    // If it's already a string (like "Q4 2024")
-    if (typeof delivery === "string") {
-      return delivery;
-    }
+    if (typeof delivery === "string") return delivery;
 
     return "N/A";
   })();
 
-  const unitSpecs = [
-    { icon: Home, label: 'Room', value: `${unit.apartmentType}`, color: 'bg-purple-200 text-purple-600' },
-    { icon: Ruler, label: 'Area', value: `${(unit.size)}`, color: 'bg-blue-200 text-blue-600' },
-    { icon: Calendar, label: 'Handover', value: `${handover}`, color: 'bg-green-200 text-green-600' },
-    // { icon: MapPin, label: 'Floor', value: '12th', color: 'bg-teal-100 text-teal-600' },
-    { icon: DollarSign, label: 'Payment', value: `${formatPrice(unit.price)}`, color: 'bg-red-200 text-red-600' },
-    // { icon: Eye, label: 'View', value: 'Marina View', color: 'bg-cyan-100 text-cyan-600' }
+  //   const featureList = [
+  //   { label: 'Type', value: unitData.apartmentType, icon:  <Home />, gradient: 'from-pink-500 to-purple-500' },
+  //   { label: 'Size', value:unitData?.size || 'N/A', icon: <Ruler/>, gradient: 'from-blue-500 to-indigo-500' },
+  //   { label: 'Handover', value: 'Q4 2025', icon: <Calendar  />, gradient: 'from-pink-500 to-purple-500' },
+  //   { label: 'Payment', value: '60/40', icon: <DollarSign  />, gradient: 'from-green-400 to-blue-400' },
+  // ];
+  const featureList = [
+    {
+      label: 'Type',
+      value: unit.apartmentType || 'N/A',
+      icon: <Home />,
+      gradient: 'from-pink-500 to-purple-500',
+    },
+    {
+      label: 'Size',
+      value: unit?.size || 'N/A',
+      icon: <Ruler />,
+      gradient: 'from-blue-500 to-indigo-500',
+    },
+    {
+      label: 'Handover',
+      value: handover,
+      icon: <Calendar />,
+      gradient: 'from-purple-500 to-pink-500',
+    },
+    {
+      label: 'Payment',
+      value: `${formatPrice(unit.price)}`,
+      icon: <DollarSign />,
+      gradient: 'from-green-400 to-blue-400',
+    },
+  ];
+  const colorClasses = [
+    "text-pink-600",
+    "text-green-600",
+    "text-purple-600",
+    "text-blue-600",
+    "text-yellow-600",
+    "text-red-600",
   ];
 
-  const unitFeatures = [
-    'Premium flooring solutions',
-    'Built-in wardrobes',
-    'Balcony access',
-    'Modern kitchen',
-    'Ensuite views'
-  ];
-
-  const cards = [
-    {
-      title: "Gallery",
-      description: "View all unit images and renders",
-      button: "View Gallery",
-    },
-    {
-      title: "Floor Plan",
-      description: "Download detailed floor plan",
-      button: "Download Plan",
-    },
-    {
-      title: "Payment Plan",
-      description: "Flexible payment options",
-      button: "View Details",
-    },
-  ];
+  const handleWhatsApp = () => {
+    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?`;
+    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      {/* <header className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 lg:px-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">O</span>
-              </div>
-              <span className="font-bold text-xl text-gray-800">OFFPLAN.MARKET</span>
-            </div>
-
-            <nav className="hidden lg:flex space-x-6">
-              <a href="#" className="text-gray-600 hover:text-gray-800">Home</a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">Exclusive</a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">Latest</a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">About</a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">Contact</a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">Blog</a>
-            </nav>
-
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
-              <span>🇦🇪 AR</span>
-              <span>🇸🇦 SA</span>
-              <span>🇦🇪 AE</span>
-              <span>🇬🇧 EN</span>
-            </div>
-          </div>
-        </div>
-      </header> */}
+    <div className="bg-gray-50 min-h-screen">
       <Header logo={logoPath} />
-
-      <div className="max-w-7xl mx-auto px-4 py-6 lg:px-6">
-        {/* Back Button */}
-        {/* <button className="flex items-center text-gray-600 hover:text-gray-800 mb-6 bg-white px-4 py-2 rounded-lg shadow-sm transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-2" />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* <Button
+          variant="outline"
+          size="sm"
+          className="mb-7 rounded-lg flex items-center gap-2 hover:bg-pink-50 hover:text-violet-600 border-gray-300 text-violet-600 px-4 py-3 h-8 mt-2 text-sm"
+        >
+          <ArrowLeft size={14} />
           Back to Project
-        </button> */}
+        </Button> */}
 
-        {/* Unit Hero Section */}
-        <div className="relative rounded-2xl overflow-hidden mb-8 h-80 lg:h-[500px]">
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/20 z-10"></div>
-          <img
-            src={projectData.cover}
-            alt="Unit Hero"
-            className="absolute inset-0 w-full h-full object-cover z-0"
-          />
+        <div className="relative rounded-xl overflow-hidden shadow-lg mb-8 mt-6">
+          <div className="relative h-[350px] lg:h-[450px]">
+            <img
+              src={projectData.cover}
+              alt="Unit"
+              className="w-full h-full object-cover"
+            />
 
-          <div className="absolute inset-0 z-20 flex flex-col lg:flex-row lg:items-end justify-between px-8 py-6">
-            <div className="text-white space-y-3">
-              <h1 className="flex flex-row text-3xl lg:text-5xl font-bold">{projectData.title} - Unit ID : {unit.id}</h1>
-              <p className="flex flex-row flex items-center gap-2 text-lg lg:text-2xl"><MapPin className="w-5 h-5" />{projectData.city?.name}, {projectData.district?.name}</p>
-              <div className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">AED {formatPrice(unit.price)}</div>
+            {/* Price Tag Clipped to Top Right */}
+            <div className="absolute top-0 left-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-xs font-semibold px-4 py-1 rounded-rl-2xl rounded-br-2xl shadow-md">
+              <p className="text-2xl font-bold bg-gradient-to-r from-pink-100 to-purple-200 text-transparent bg-clip-text">
+                AED {formatPrice(unit.price)}
+              </p>
             </div>
-            <div className="absolute bottom-3 right-2 bg-green-500 text-white px-5 py-2 rounded-full font-semibold lg:mb-8">
-              {unit.status}
+
+            {/* Gradient overlay for better text visibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
+
+
+
+            {/* Text content over image */}
+            <div className="absolute bottom-4 left-4 z-10">
+
+              <h2 className="text-3xl text-white  lg:text-xl font-bold mb-1">
+                <div>{projectData.title}<br /><span className='text-2xl'> Unit ID : {unit.id}</span></div>
+              </h2>
+              <p className="text-sm flex text-white  items-center gap-1 mb-8">
+                <span className="material-icons text-sm"><MapPin /></span>{projectData.city?.name}, {projectData.district?.name}
+              </p>
+              {/* <div className='bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold'>
+                <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">AED {formatPrice(unit.price)}</p>
+              </div> */}
+              <p className="flex items-center text-sm font-medium text-white mt-1 gap-1 bg-red-400 rounded-2xl px-2">
+                <Flame className="text-white animate-burn" />
+                Reserve 24/7 –
+                <span className="text-1xl font-bold text-white text-transparent bg-clip-text py-1">
+                  No Down Payment Required !
+                </span>
+              </p>
+
+
+
+            </div>
+
+            
+
+            {/* Availability badge */}
+            <div className="absolute top-3 right-3">
+              <span className="bg-green-500 text-white text-sm font-semibold px-3 py-2 rounded-full shadow">
+                {unit.status}
+              </span>
             </div>
           </div>
         </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+              {/* Heading */}
+              <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
+                <Compass className="w-5 h-5 text-primary-500" />
+                <span className="text-gray-800 font-semibold">
+                  Explore This Exclusive Property in{" "}
+                  {projectData?.title || "N/A"}
+                </span>
+              </h2>
 
-        {/* Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Specifications */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {unitSpecs.map((spec, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-xl p-4 shadow hover:shadow-md transition-shadow duration-300 text-center"
-                >
-                  <div className={`w-12 h-12 rounded-full ${spec.color} flex items-center justify-center mx-auto mb-3`}>
-                    <spec.icon className="w-6 h-6" />
+              {/* Property Info Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
+                {/* Price Range */}
+                <div className="flex items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm">
+                  <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
+                    <Home className="w-5 h-5 text-white" />
                   </div>
-                  <p className="text-xs text-gray-500 mb-1">{spec.label}</p>
-                  <p className="font-semibold text-gray-800">{spec.value}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Floor Plan */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center">
-                  Floor Plan
-                </h2>
-                {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
-                  <div className="flex space-x-2">
-                    {/* Download Button */}
-                    <button
-                      onClick={() => {
-                        const link = document.createElement("a");
-                        link.href = unit.floorPlan;
-                        link.download = "floor-plan.jpg"; // you can set a filename here
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }}
-                      className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors"
-                    >
-                      <Download className="w-4 h-4" />
-                    </button>
-
-                    {/* Preview Button */}
-                    <a
-                      href={unit.floorPlan}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </a>
+                  <div>
+                    <p className="text-xs text-gray-600">Overview</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {unit.apartmentType}
+                    </p>
                   </div>
-                ) : (
-                  <span className="text-gray-500 text-sm">No Floor Plan Available</span>
-                )}
-              </div>
-
-              <div className="relative rounded-xl overflow-hidden">
-                {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
-                  <img
-                    src={unit.floorPlan}
-                    alt="Floor Plan"
-                    className="w-full h-72 object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center w-full h-72 bg-gray-100 text-gray-500 rounded-xl">
-                    No Floor Plan Image
-                  </div>
-                )}
-              </div>
-            </div>
-
-
-            {/* Description */}
-            {/* <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-2xl font-bold mb-4">Unit Description</h3>
-              <div
-                className="text-gray-600 prose prose-p"
-                dangerouslySetInnerHTML={{ __html: projectData.description }}
-              ></div>
-            </div> */}
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-6 lg:sticky lg:top-20">
-            {/* Contact Agent */}
-            <div className="w-full px-4 md:px-8 lg:px-16 py-10">
-              <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl px-8 py-10 text-white shadow-xl w-full max-w-6xl mx-auto">
-                <div className="text-center mb-8">
-                  {/* <div className="w-20 h-20 bg-white/20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl">
-            👤
-          </div> */}
-                  <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                    Interested in this unit?
-                  </h3>
-                  <p className="text-base md:text-lg opacity-90">
-                    Contact our property advisor for exclusive pricing and viewing
-                  </p>
                 </div>
 
-                <div className="flex flex-col md:flex-row justify-center gap-4">
-                  <a
-                    href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties and would like to visit ${projectData.title} (${unit.apartmentType}, Unit ${unit.id}).`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center bg-white text-blue-600 font-semibold py-4 rounded-xl hover:bg-blue-400 transition-colors hover:text-white"
-                  >
-                    <CalendarClock className="w-5 h-5 mr-2" /> Book a Visit
-                  </a>
-
-                  <a
-                    href={`tel:${agent?.phone_number || ""}`}
-                    className="flex-1 flex items-center justify-center bg-white text-green-600 font-semibold py-4 rounded-xl hover:bg-green-400 transition-colors hover:text-white"
-                  >
-                    <Phone className="w-5 h-5 mr-2" /> Call Now
-                  </a>
-
-                  <a
-                    href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center bg-green-500 text-white font-semibold py-4 rounded-xl hover:bg-green-600 transition-colors"
-                  >
-                    <MessageCircle className="w-5 h-5 mr-2" /> WhatsApp
-                  </a>
+                {/* Area Range */}
+                <div className="flex items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm">
+                  <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
+                    <Maximize2 className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600">Area</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {unit.size}
+                    </p>
+                  </div>
                 </div>
 
-              </div>
-            </div>
-
-            <div className="w-full px-4 md:px-8 lg:px-16 py-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {/* Gallery */}
-                <div className="flex flex-col items-center bg-purple-100 rounded-2xl shadow-md p-6 text-center">
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-full p-3 mb-4">
-                    <Image size={32} className="text-white" />
+                {/* Handover */}
+                <div className="flex items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm">
+                  <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
+                    <Handshake className="w-5 h-5 text-white" />
                   </div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-1">Gallery</h4>
-                  <p className="text-sm text-gray-600 mb-4">View all unit images and renders</p>
-                  <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold border hover:bg-purple-400 hover:text-white transition-colors">
-                    View Gallery
-                  </button>
-                </div>
-
-                {/* Floor Plan */}
-                <div className="flex flex-col items-center bg-blue-100 rounded-2xl shadow-md p-6 text-center">
-                  <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-full p-3 mb-4">
-                    <FileText size={32} className="text-white" />
+                  <div>
+                    <p className="text-xs text-gray-600">Handover</p>
+                    <p className="text-sm font-semibold text-gray-800">{handover}</p>
                   </div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-1">Floor Plan</h4>
-                  <p className="text-sm text-gray-600 mb-4">Download detailed floor plan</p>
-                  <button className="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold border hover:bg-blue-400 hover:text-white transition-colors">
-                    Download Plan
-                  </button>
                 </div>
 
                 {/* Payment Plan */}
-                <div className="flex flex-col items-center bg-green-100 rounded-2xl shadow-md p-6 text-center">
-                  <div className="bg-gradient-to-r from-green-500 to-blue-500 rounded-full p-3 mb-4">
-                    <CreditCard size={32} className="text-white" />
+                <div className="flex items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm">
+                  <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
+                    <BarChart2 className="w-5 h-5 text-white" />
                   </div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-1">Payment Plan</h4>
-                  <p className="text-sm text-gray-600 mb-4">Flexible payment options</p>
-                  <button className="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold border hover:bg-green-400 hover:text-white transition-colors">
-                    View Details
-                  </button>
+                  <div>
+                    <p className="text-xs text-gray-600">Payment Plan</p>
+                    <p className="text-sm font-semibold text-gray-800">{downPayment}</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+        {/* Feature Info Boxes */}
+        {/* <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-2 mt-4">
+
+          {featureList.map((item, idx) => (
+            <div
+              key={idx}
+              className={`rounded-xl p-4 shadow-md flex flex-col items-center text-center transition shadow-lg ${idx % 2 === 0 ? 'bg-gradient-to-r from-pink-400 to-purple-300' : 'bg-gradient-to-r from-purple-200 to-blue-300'
+                }`}
+            >
+              <div
+                className={`w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-gradient-to-br ${item.gradient} text-white text-lg`}
+              >
+                {item.icon}
+              </div>
+              <p className="text-sm text-white-500">{item.label}</p>
+              <p className="font-semibold text-white">{item.value}</p>
+            </div>
+          ))}
+        </div> */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mt-10">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-violet-600 mb-4">Floor Plan</h3>
+            {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
+              <div className="flex space-x-2">
+                {/* Download Button */}
+                <button
+                  onClick={() => {
+                    const link = document.createElement("a");
+                    link.href = unit.floorPlan;
+                    link.download = "floor-plan.jpg"; // you can set a filename here
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
+
+                {/* Preview Button */}
+                <a
+                  href={unit.floorPlan}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors"
+                >
+                  <Eye className="w-4 h-4" />
+                </a>
+              </div>
+            ) : (
+              <span className="text-gray-500 text-sm">No Floor Plan Available</span>
+            )}
+          </div>
+
+          <div className="relative rounded-xl overflow-hidden">
+            {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
+              <img
+                src={unit.floorPlan}
+                alt="Floor Plan"
+                className="w-full h-72 object-cover"
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-72 bg-gray-100 text-gray-500 rounded-xl">
+                No Floor Plan Image
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* <div className="bg-white rounded-2xl shadow-lg p-6 mt-10">
+              <h3 className="text-lg font-bold text-violet-600 mb-4">Floor Plan</h3>
+              <div className="bg-gray-50 rounded-xl shadow-inner p-4">
+                <img
+                  src={unitData.floorPlan || forplan}
+                  alt="Floor Plan"
+                 className="rounded-xl mx-auto max-h-[300px] object-contain"
+                />
+              </div>
+            </div> */}
+        {/* Unit Description Section */}
+        {/* <div className="bg-white rounded-2xl shadow-lg p-6 mt-10">
+              <h3 className="text-lg font-semibold text-blue-600 mb-3">Unit Description</h3>
+              <p className="text-gray-700 mb-6">
+                Modern studio unit with smart design, floor-to-ceiling windows and stunning marina views – perfect for investors or end users.
+              </p>
+            
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  'Floor-to-ceiling windows',
+                  'Built-in wardrobe',
+                  'Modern kitchen',
+                  'Marina views',
+                  'Balcony access',
+                ].map((feature, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 text-sm px-4 py-3 rounded-xl shadow-sm"
+                  >
+                    <span className="w-2 h-2 bg-violet-600 rounded-full"></span>
+                    <span className="text-gray-800">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div> */}
+        {/* Unit Price & Payment Plan Section */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mt-10">
+          <h3 className="text-xl font-bold text-blue-600 mb-5">
+            Unit Price & Payment Plan
+          </h3>
+
+          {/* Parent Grid: Unit Info & Payment Plan side by side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Unit Info */}
+            <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500">
+              <h4 className="text-xl font-bold text-purple-600 mb-4">Unit Details</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
+                  <p className="text-xs text-gray-500 font-bold mb-1">Unit ID</p>
+                  <p className="text-base font-medium bg-gradient-to-r from-pink-500 to-blue-400 text-transparent bg-clip-text">{unit.id}</p>
+
+                </div>
+                <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
+                  <p className="text-xs text-gray-500 font-bold mb-1">Status</p>
+                  <p className="text-base font-semibold text-green-600">{unit.status}</p>
+                </div>
+                <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
+                  <p className="text-xs text-gray-500 font-bold mb-1">Size</p>
+                  <p className="text-base font-medium text-blue-400">{unit.size}</p>
+                </div>
+                <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
+                  <p className="text-xs text-gray-500 font-bold mb-1">Unit Price</p>
+                  <p className="text-base font-bold text-purple-600">
+                    AED {formatPrice(unit.price)}
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl shadow-xl text-center p-8 mt-10 max-w-2xl mx-auto border border-gray-100">
-              <img
-                src={agent.profile_image_url}
-                alt="Sahar Kalhor"
-                className="w-24 h-24 mx-auto rounded-full mb-4 shadow-md"
-              />
-              <h3 className="text-2xl font-bold">{agent.name}</h3>
-              <p className="text-sm text-gray-500 mb-3">Your Property Advisor</p>
-              <p className="text-gray-700 mb-5 text-sm leading-relaxed">
-                Speak directly with {agent.name} for pricing, viewing, and exclusive offers.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-stretch sm:justify-around w-full">
-                <a
-                  href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-                  target="_blank"
-                  className="flex-1"
-                >
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">
-                    Chat with {agent.name}
-                  </Button>
-                </a>
-                <a
-                  href={`tel:${agent?.phone_number || ""}`}
-                  className="flex-1"
-                >
-                  <Button className="w-full bg-purple-400 text-purple-600 font-semibold py-4 rounded-xl hover:bg-purple-500 text-white">
-                    <Phone className="w-5 h-5 mr-2" /> Call Now
-                  </Button>
-                </a>
+
+            {/* Payment Plan */}
+            {paymentPlans.length > 0 && (
+              <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500">
+                <h4 className="text-xl font-bold text-purple-600 mb-4">
+                  Payment Plan
+                </h4>
+                <div className="space-y-4">
+                  {paymentPlans[0].values.map((val, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
+                    >
+                      {/* Left: Step Badge & Name */}
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
+                          {idx + 1}
+                        </span>
+                        <span className="text-gray-800 font-medium">{val.name}</span>
+                      </div>
+
+                      {/* Right: Value */}
+                      <span className="text-blue-700 font-bold">{val.value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
+            )}
+          </div>
+        </div>
+
+
+
+        {/* Action Cards Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+          {[
+            {
+              title: 'Gallery',
+              description: 'View all unit images and renders',
+              button: 'View Gallery',
+              icon: <Image />,
+              bg: 'bg-pink-100',
+              textColor: 'text-violet-600',
+              buttonColor: 'text-violet-600 border border-violet-200',
+            },
+            {
+              title: 'Floor Plan',
+              description: 'Download detailed floor plan',
+              button: 'Download Plan',
+              icon: <FileText />,
+              bg: 'bg-blue-50',
+              textColor: 'text-blue-600',
+              buttonColor: 'text-blue-600 border border-blue-200',
+            },
+            {
+              title: 'Payment Plan',
+              description: 'Flexible payment options',
+              button: 'View Details',
+              icon: <CreditCard />,
+              bg: 'bg-green-50',
+              textColor: 'text-green-600',
+              buttonColor: 'text-green-600 border border-green-200',
+            },
+          ].map((card, idx) => (
+            <div
+              key={idx}
+              className={`${card.bg} rounded-2xl shadow-md p-6 flex flex-col items-center text-center transition hover:shadow-lg`}
+            >
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white text-2xl mb-4 shadow">
+                {card.icon}
+              </div>
+
+              {/* Title and Description */}
+              <h4 className="text-lg font-semibold text-gray-800">{card.title}</h4>
+              <p className="text-sm text-gray-600 mb-4">{card.description}</p>
+
+              {/* Button */}
+              <button
+                onClick={() => {
+                  if (card.title === "Floor Plan") {
+                    // Programmatically open the floor plan image in new tab
+                    if (unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN") {
+                      window.open(unit.floorPlan, "_blank", "noopener,noreferrer");
+                    } else {
+                      alert("No floor plan available");
+                    }
+                  } else {
+                    setModalType(card.title.toLowerCase());
+                    setShowModal(true);
+                  }
+                }}
+                className={`w-full py-2 rounded-xl font-medium text-sm ${card.buttonColor} hover:bg-opacity-10`}
+              >
+                {card.button}
+              </button>
+
 
 
             </div>
+          ))}
+        </div>
+        {/* Section 1: Ready to Reserve */}
+        <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-pink-600 text-white rounded-2xl mt-12 p-6 sm:p-8 shadow-lg">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold">Ready to Reserve? </h2>
+              <p className="text-sm sm:text-base text-white/90 mt-1">
+                Secure this unit online now with a small deposit.
+              </p>
+            </div>
+            <div className="bg-white/20 p-2 rounded-full">
+              <span className="text-white text-lg"><Shield /></span>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
+            <button
+              onClick={() => setShowReserveModal(true)}
+              className="w-full sm:w-1/2 bg-white text-purple-700 font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-100 transition"
+            >
+              <span className="text-lg"><Shield /></span> Reserve Now
+            </button>
+
+            <button className="w-full sm:w-1/2 bg-gradient-to-r from-purple-300 via-pink-400 to-pink-300 text-white font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 border border-white/30 hover:opacity-90 transition">
+              <span className="text-lg"><Calendar /></span> <p className='font-semibold'>Pay Booking Fee</p>
+            </button>
           </div>
         </div>
+
+        {/* OR Divider */}
+        <div className="my-6 flex items-center justify-center gap-2 text-gray-400 text-sm font-medium">
+          <div className="h-px bg-gray-300 w-10" />
+          or
+          <div className="h-px bg-gray-300 w-10" />
+        </div>
+
+        {/* Section 2: Need Help or More Info */}
+        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md text-center border border-gray-200">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Need Help or More Info?</h2>
+          <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
+            Talk to our property advisor for pricing, viewing, and guidance.
+          </p>
+          <div className="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white shadow-md overflow-hidden">
+            <img
+              src={agent.profile_image_url}// Replace with actual image path or import
+              alt="Sahar Kalhor"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Name and Title */}
+          <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-1">
+            {agent.name}
+          </h3>
+          <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
+          <div className="text-sm text-gray-700 font-medium mb-4">
+            <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full shadow">
+              Trusted Advisor – ⭐ 4.9 (38 reviews)
+            </span>
+          </div>
+          {/* Description */}
+          {/* <p className="text-gray-800 text-sm mb-6">
+            Speak directly with {agent.name} for pricing, viewings, and exclusive offers.
+          </p> */}
+
+          <div className="space-y-4 sm:space-y-0 sm:flex sm:flex-wrap sm:gap-4">
+            {/* Call Now */}
+            <a
+              href={`tel:${agent?.phone_number || ""}`}
+              className="w-full sm:w-[calc(50%-0.5rem)] bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition rounded-lg"
+            >
+              <span className="text-lg"><Phone /></span> Call Now
+            </a>
+
+            {/* WhatsApp */}
+            <a
+              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              target="_blank"
+              className="w-full sm:w-[calc(50%-0.5rem)] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
+            >
+              <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> WhatsApp
+            </a>
+
+            {/* Request Callback */}
+            <button className="w-full mt-4 sm:mt-4 bg-purple-200 text-gray-800 border border-gray-300 hover:bg-gray-100 font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 transition">
+              <span className="text-lg"><Calendar /></span> Request Callback
+            </button>
+          </div>
+
+        </div>
+
+
+        {/* Property Advisor Card */}
+        {/* <div className="max-w-xl mx-auto mt-10 p-8 bg-gradient-to-br from-white via-white/90 to-purple-50 rounded-2xl shadow-lg text-center">
+          {/* Avatar /}
+          <div className="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white shadow-md overflow-hidden">
+            <img
+              src={agent.profile_image_url}// Replace with actual image path or import
+              alt="Sahar Kalhor"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Name and Title /}
+          <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-1">
+            {agent.name}
+          </h3>
+          <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
+          <div className="text-sm text-gray-700 font-medium mb-4">
+            <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full shadow">
+              Trusted Advisor – ⭐ 4.9 (38 reviews)
+            </span>
+          </div>
+          {/* Description /}
+          <p className="text-gray-800 text-sm mb-6">
+            Speak directly with {agent.name} for pricing, viewings, and exclusive offers.
+          </p>
+
+          {/* Chat Button /}
+          <div className="flex justify-center gap-2 sm:gap-4 flex-wrap">
+            {/* WhatsApp Button /}
+            <a
+              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              target="_blank"
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 rounded-full flex items-center justify-center gap-1 sm:gap-2 shadow text-sm sm:text-base whitespace-nowrap"
+            >
+              <span className="text-base sm:text-lg"><MessageCircle /></span> Chat with {agent.name}
+            </a>
+
+            {/* Call Now Button /}
+            <a
+              href={`tel:${agent?.phone_number || ""}`}
+              className="flex-1 bg-purple-400 hover:bg-purple-500 text-white px-4 sm:px-6 py-2 rounded-full flex items-center justify-center gap-1 sm:gap-2 shadow text-sm sm:text-base whitespace-nowrap"
+            >
+              <span className="text-base sm:text-lg"><Phone /></span> Call Now
+            </a>
+          </div>
+
+
+        </div> */}
       </div>
       <Footer />
-    </div>
-  );
-};
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-xl p-6 sm:p-8 w-full max-w-md relative shadow-xl">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-lg"
+            >
+              &times;
+            </button>
 
-export default PropertyDetailedPage;
+            <h2 className="text-xl font-bold text-purple-700 mb-2">
+              {/* {modalType === "floor plan" && <>Request <span className="text-pink-600">Floor Plan</span></>} */}
+              {modalType === "gallery" && <>Request <span className="text-green-600">Gallery Access</span></>}
+              {modalType === "payment plan" && <>Request <span className="text-blue-600">Payment Plan</span></>}
+            </h2>
+            <p className="text-gray-600 text-sm mb-4">
+              {/* {modalType === "floor plan" && "Enter your details to receive the floor plan for this unit."} */}
+              {modalType === "gallery" && "Enter your details to access the gallery and see all images."}
+              {modalType === "payment plan" && "Enter your details to get the full payment plan details."}
+            </p>
+
+            <form className="space-y-4">
+              <div>
+                <label className="text-sm font-bold text-gray-700">Name *</label>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-bold text-gray-700">WhatsApp Number *</label>
+                <input
+                  type="tel"
+                  placeholder="+971 50 123 4567"
+                  className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
+                />
+              </div>
+
+              <div className="flex justify-between gap-4 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="w-1/2 border border-purple-300 text-purple-700 py-2 rounded-lg hover:bg-purple-50 transition"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="w-1/2 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg shadow hover:opacity-90 transition"
+                >
+                  {/* {modalType === "floor plan" && "Send Floor Plan"} */}
+                  {modalType === "gallery" && "Send Gallery Access"}
+                  {modalType === "payment plan" && "Send Payment Plan"}
+                </button>
+
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showReserveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-xl p-6 sm:p-8 w-full max-w-md relative shadow-xl">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowReserveModal(false)}
+              className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-2xl"
+            >
+              &times;
+            </button>
+
+            {/* Title */}
+            <h2 className="text-xl font-bold text-purple-700 mb-2">
+              Reserve <span className="text-pink-600">This Unit</span>
+            </h2>
+
+            <p className="text-gray-600 text-sm mb-4">
+              Fill in your details and upload your ID to reserve this unit now.
+            </p>
+
+            {/* Reserve Form */}
+            <form className="space-y-4">
+              {/* Full Name */}
+              <div>
+                <label className="text-sm font-bold text-gray-700">Full Name *</label>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
+                />
+              </div>
+
+              {/* WhatsApp Number */}
+              <div>
+                <label className="text-sm font-bold text-gray-700">WhatsApp Number *</label>
+                <input
+                  type="tel"
+                  placeholder="+971 50 123 4567"
+                  className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
+                />
+              </div>
+
+              {/* ID Upload */}
+              <div>
+                <label className="text-sm font-bold text-gray-700">Upload ID (Passport/Emirates ID) *</label>
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">Accepted formats: JPG, PNG, PDF</p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-between gap-4 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowReserveModal(false)}
+                  className="w-1/2 border border-purple-300 text-purple-700 py-2 rounded-lg hover:bg-purple-50 transition"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="w-1/2 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg shadow hover:opacity-90 transition"
+                >
+                  Submit Reservation
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
+        {/* WhatsApp Button */}
+        <button
+          onClick={handleWhatsApp}
+          className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
+        >
+          <img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
+          WhatsApp
+        </button>
+
+        {/* Call Now Button */}
+
+        <button
+          onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
+          className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
+        >
+          <Phone className="w-5 h-5 mr-2" />
+          Call Now
+        </button>
+      </div>
+
+    </div>
+  )
+}
+
+export default PropertyDetailedPage

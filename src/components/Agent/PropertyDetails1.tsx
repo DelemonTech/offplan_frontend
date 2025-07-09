@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MapPin, ChevronDown, Building2, Check, Lock, ChevronUp, Maximize2, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass, Gift, ShieldCheck } from 'lucide-react';
+import { MapPin, ChevronDown, Building2, Check, Lock, ChevronUp, Maximize2, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass, Gift, ShieldCheck, Star, Phone } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '../Agent/Header';
 import Footer from '../Agent/Footer';
@@ -10,6 +10,8 @@ import logoPath from "@/assets/OFFPLAN_MARKET.png"
 import * as LucideIcons from 'lucide-react';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import IconGuarantee from "@/assets/guarantee.png";
+import IconShield from "@/assets/shield.png";
 // import CallToAction from "@/components/Agent/CallToAction"
 
 const PropertyDetails1 = () => {
@@ -202,23 +204,23 @@ const PropertyDetails1 = () => {
           //   }
           // }
 
-           // Generate dynamic messages with random times
-        const randomMessages = [
-          `Last unit sold ${getRandomNumber(1, 5)} hours ago`,
-          `Last viewed ${getRandomNumber(1, 30)} minutes ago`,
-          `Last inquiry received ${getRandomNumber(1, 60)} minutes ago`,
-          `Last offer negotiated ${getRandomNumber(1, 3)} hours ago`,
-          `Last down payment confirmed ${getRandomNumber(10, 50)} minutes ago`,
-        ];
+          // Generate dynamic messages with random times
+          const randomMessages = [
+            `Last unit sold ${getRandomNumber(1, 5)} hours ago`,
+            `Last viewed ${getRandomNumber(1, 30)} minutes ago`,
+            `Last inquiry received ${getRandomNumber(1, 60)} minutes ago`,
+            `Last offer negotiated ${getRandomNumber(1, 3)} hours ago`,
+            `Last down payment confirmed ${getRandomNumber(10, 50)} minutes ago`,
+          ];
 
-        setMessages(randomMessages);
+          setMessages(randomMessages);
 
-        // Start interval for rotating messages
-        intervalRef = setInterval(() => {
-          setCurrentMessageIndex((prevIndex) =>
-            randomMessages.length > 0 ? (prevIndex + 1) % randomMessages.length : 0
-          );
-        }, 10000);
+          // Start interval for rotating messages
+          intervalRef = setInterval(() => {
+            setCurrentMessageIndex((prevIndex) =>
+              randomMessages.length > 0 ? (prevIndex + 1) % randomMessages.length : 0
+            );
+          }, 10000);
 
 
           // Start interval for rotating messages
@@ -237,8 +239,8 @@ const PropertyDetails1 = () => {
 
 
     const getRandomNumber = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
 
     fetchData();
     return () => {
@@ -338,15 +340,18 @@ const PropertyDetails1 = () => {
   // );
 
   const getUnitTypeName = (apartment) => {
-    const rooms = apartment.rooms?.toString().trim();
-    if (!isNaN(Number(rooms))) {
-      return `${rooms} Bedroom ${apartment.unit_type}`;
-    }
-    if (rooms?.toLowerCase() === "studio") {
-      return `Studio ${apartment.unit_type}`;
-    }
-    return apartment.unit_type;
-  };
+  if (!apartment) return ""; // ⬅ Prevents error if apartment is undefined
+
+  const rooms = apartment.rooms?.toString().trim();
+
+  if (!isNaN(Number(rooms))) {
+    return `${rooms} Bedroom ${apartment.unit_type}`;
+  }
+  if (rooms?.toLowerCase() === "studio") {
+    return `Studio ${apartment.unit_type}`;
+  }
+  return apartment.unit_type || ""; // fallback to unit_type or empty
+};
 
 
 
@@ -466,8 +471,8 @@ const PropertyDetails1 = () => {
       >
         {/* Top Left - Units Left */}
         <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
-          <div className="bg-white rounded-full p-1">
-            <Check className="w-5 h-5 text-green-600 font-bold" strokeWidth={3} />
+          <div className="rounded-full">
+            <Star className="w-4 h-4 text-white-600 font-bold" strokeWidth={3} fill='white' />
           </div>
           {totalUnitsText}
         </div>
@@ -491,9 +496,9 @@ const PropertyDetails1 = () => {
                 }`}
             >
               {propertyStatus.name === "Ready" ? (
-                <Check className="w-5 h-5 font-bold" strokeWidth={3} />
+                <Check className="w-4 h-4 font-bold" strokeWidth={3} />
               ) : (
-                <Building2 className="w-5 h-5 font-bold" strokeWidth={3} />
+                <Building2 className="w-4 h-4 font-bold" strokeWidth={3} />
               )}
             </div>
             {propertyStatus.name}
@@ -510,7 +515,7 @@ const PropertyDetails1 = () => {
         />
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/15 to-black/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/60 flex items-center justify-center"></div>
 
         {/* Centered text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
@@ -534,27 +539,28 @@ const PropertyDetails1 = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
               onAnimationComplete={advanceMessage}
-              className="mt-8 bg-white/10 px-4 py-1 rounded-full mb-8 text-white text-xs md:text-sm font-medium shadow-md"
+              className="mt-8 bg-white/40 px-4 py-1 rounded-full mb-8 text-white text-sm md:text-sm font-medium shadow-md"
             >
               {messages[currentMessageIndex]}
             </motion.div>
           </AnimatePresence>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm md:text-base font-semibold mt-15 py-5">
             {[
-              { text: 'Guaranteed ROI Contract', color: 'bg-blue-200 text-blue-700', icon: <ShieldCheck className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} /> },
-              { text: 'Zero Risk – Escrow Protected', color: 'bg-purple-200 text-purple-700', icon: <Lock className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} /> },
+              { text: 'Guaranteed ROI Contract', color: 'bg-blue-50 text-blue-600', icon: IconGuarantee },
+              { text: 'Zero Risk – Escrow Protected', color: 'bg-green-50 text-green-600', icon: IconShield }
             ].map((item, index) => (
               <div
                 key={index}
                 className={`flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md ${item.color}`}
               >
                 <div className="bg-white rounded-full p-1">
-                  {item.icon}
+                  <img src={item.icon} alt="icon" className="w-5 h-5" />
                 </div>
                 <span>{item.text}</span>
               </div>
             ))}
           </div>
+
           {/* Bottom Right - Free DLD Label */}
           <div className="absolute bottom-0 right-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-tl-2xl flex items-center gap-2 shadow-lg z-20">
             <div className="bg-white rounded-full p-1">
@@ -801,7 +807,7 @@ const PropertyDetails1 = () => {
           {/* About Section */}
           {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">About This Project</h2> */}
           <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">About {projectData.title}</h2>
+            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600 pt-4">About {projectData.title}</h2>
             <div
               className="text-gray-600 prose prose-p"
               dangerouslySetInnerHTML={{ __html: projectData.description }}
@@ -904,7 +910,7 @@ const PropertyDetails1 = () => {
               className="flex-1"
             >
               <button className="w-full bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">
-                📞 Call Now
+                <div className='flex flex-row gap-2 justify-center'><Phone className='w-5 h-5'/> Call Now</div>
               </button>
             </a>
             <a
@@ -913,7 +919,7 @@ const PropertyDetails1 = () => {
               className="flex-1"
             >
               <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
-                💬 Chat on WhatsApp
+                <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6'/> Chat on WhatsApp</div>
               </button>
             </a>
           </div>
@@ -924,16 +930,27 @@ const PropertyDetails1 = () => {
 
         <Footer />
 
-        {/* WhatsApp Floating Button */}
-        <div className="fixed bottom-6 right-6 z-50 md:hidden">
-          <Button
+        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
+          {/* WhatsApp Button */}
+          <button
             onClick={handleWhatsApp}
-            className="bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl animate-pulse"
-            size="icon"
+            className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
           >
-            <img src={IconWhatsapp} alt="WhatsApp" className="w-8 h-8 object-contain" />
-          </Button>
+            <img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
+            WhatsApp
+          </button>
+
+          {/* Call Now Button */}
+          
+          <button
+            onClick={()=>{window.location.href = `tel:${agent.phone_number}`;}}
+            className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
+          >
+            <Phone className="w-5 h-5 mr-2" />
+            Call Now
+          </button>
         </div>
+
       </div>
     </div>
   );

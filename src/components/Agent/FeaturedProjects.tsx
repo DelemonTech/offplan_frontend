@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Calendar, Check, Loader2, RefreshCw, Lock, Building2, Globe2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock, Globe } from 'lucide-react';
+import { MapPin, Calendar, Check, Loader2, RefreshCw, Lock, Building2, Globe2, Repeat, MessageCircle, Ruler, CreditCard, Share, BookLock, EarthLock, LucideEarthLock, Globe, Star, Phone } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProjectSummaryModal from './ProjectSummaryModal';
 import { set } from 'date-fns';
@@ -11,6 +11,8 @@ import { useCountSequenceOnView } from '@/hooks/useCountSequenceOnView';
 import CountUp from 'react-countup';
 import PropertyDetailsModal from "@/components/Agent/PropertyDetails"
 import IconWhatsapp from "@/assets/icon-whatsapp.svg"
+import IconGuarantee from "@/assets/guarantee.png"
+import IconShield from "@/assets/shield.png"
 // import PropertyDetails1 from '../Agent/PropertyDetails1';
 
 
@@ -50,7 +52,10 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   developers,
   setDevelopers,
   isSearchLoading,
-  setIsSearchLoading }) => {
+  setIsSearchLoading,
+  subunit_count,
+  setSubUnitCount
+}) => {
 
   // const navigate = useNavigate();
 
@@ -82,14 +87,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
 
   const filters = [
-    { id: 1, key: 'ready', label: 'Ready', icon: Check },
-    { id: 2, key: 'offplan', label: 'Off Plan', icon: Building2 },
     { id: 3, key: "all", label: 'All', icon: Globe2 },
+    { id: 1, key: 'ready', label: 'Ready', icon: Check },
+    { id: 2, key: 'offplan', label: 'Off Plan', icon: Building2 }
   ];
   const [totalInventory, setTotalInventory] = useState({
+    all: 0,
     ready: 0,
-    offplan: 0,
-    all: 0
+    offplan: 0
   });
   const counts = filters.map(f => totalInventory[f.key] || 0);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
@@ -428,6 +433,21 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         if (data?.status && data?.data) {
           setCities(data.data); // assumes API returns [{ name, count }]
         }
+        if (data.data.length > 0) {
+          const firstCity = data.data[0];
+          setSelectedCity(firstCity);
+
+          const updatedFilters = {
+            city: firstCity.city_name,
+            property_status: statusName,
+          };
+
+          setSearchFilters(updatedFilters);
+
+          navigate(location.pathname, {
+            state: { filters: updatedFilters },
+          });
+        }
       } catch (error) {
         console.error("Failed to fetch city counts:", error);
       }
@@ -504,6 +524,27 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     fetchStatusCounts();
   }, []);
 
+  const [showFloatingBar, setShowFloatingBar] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const triggerPoint = 300; // adjust this value as needed
+
+      if (scrollY > triggerPoint) {
+        setShowFloatingBar(true);
+      } else {
+        setShowFloatingBar(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
 
   const chunkArray = (arr, chunkSize) => {
     const chunks = [];
@@ -537,12 +578,20 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
     console.log("Updated filters:", updatedFilters);
 
+    setSelectedCity(city);
+
     setSearchFilters(updatedFilters);
 
     navigate(location.pathname, {
       state: { filters: updatedFilters },
     });
   };
+
+  useEffect(() => {
+  if (rows.length > 0) {
+    setSelectedCity(rows[0]);
+  }
+}, [rows]);
 
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
@@ -645,7 +694,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         </div>
 
         <div className="flex flex-col items-center px-4 py-6 w-full">
-          {rows.map((row, rowIndex) => (
+          {rows.length > 0 && rows.map((row, rowIndex) => (
             <div
               key={rowIndex}
               className={`grid 
@@ -663,9 +712,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                 <button
                   key={city.city_id}
                   onClick={() => handleCityClick(city)}
-                  className="border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none"
+                  className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none 
+                  ${selectedCity.city_id === city.city_id ? "ring-2 ring-pink-500 bg-gradient-to-r from-pink-300 via-purple-100 to-purple-200" : "bg-white"}
+                  `}
                 >
-                  <h3 className="font-semibold text-md mb-1">{city.city_name}</h3>
+                  <h3 className={`font-semibold text-md mb-1 
+                  ${selectedCity.city_id === city.city_id ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text" : "text-gray-700"}`}>
+                    {city.city_name}
+                  </h3>
                   <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
                     <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
                   </p>
@@ -698,6 +752,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                 // return project.property_status;
               })();
               console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
+              // console.log("Subunit count: ",project.subunit_count);
               return (
                 (
                   <div
@@ -710,6 +765,13 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                     // onClick={() => handleProjectSummary(project)}
                     >
                       <div className="relative overflow-hidden">
+                        {/* Top Left - Units Left */}
+                        <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-2 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
+                          <div className="bg rounded-full pl-1">
+                            <Star className="w-3 h-3 text-white-600 font-bold" strokeWidth={4} fill='white' />
+                          </div>
+                          {project.subunit_count} <span className='pr-1'>left</span>
+                        </div>
                         <img
                           src={project.cover}
                           alt={project.title}
@@ -786,9 +848,19 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                                 <span>{formatDeliveryDate(project.delivery_date)}</span>
                               </div>
                               {/* <div className="flex items-center gap-1">
-                        <CreditCard size={12} className="text-purple-500" />
-                        <span>Payment</span>
-                      </div> */}
+                                    <CreditCard size={12} className="text-purple-500" />
+                                    <span>Payment</span>
+                                  </div> */}
+                            </div>
+                            <div className="pt-3 flex flex-row gap-1">
+                              <img src={IconGuarantee}
+                                className='h-5 w-5' />
+                              <span className='text-xs text-blue-500'>Guaranteed ROI Contract</span>
+                            </div>
+                            <div className='pt-2 flex flex-row gap-1'>
+                              <img src={IconShield}
+                                className='h-4 w-5' />
+                              <span className='text-xs text-green-500'>Zero Risk - Escrow Protected</span>
                             </div>
                           </div>
 
@@ -827,7 +899,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                                   Loading...
                                 </>
                               ) : (
-                                "View Details"
+                                "See Availability"
                               )}
                             </button>
 
@@ -908,19 +980,26 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         onClose={() => setIsSummaryModalOpen(false)}
       />
 
-      <div className="fixed bottom-6 right-6 z-50 md:hidden">
-        <Button
-          onClick={() => handleWhatsApp(visibleProjects[0] || {})}
-          className="bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl animate-pulse"
-          size="icon"
+      {showFloatingBar && (<div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
+        {/* WhatsApp Button */}
+        <button
+          onClick={handleWhatsApp}
+          className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
-          <img
-            src={IconWhatsapp}
-            alt="WhatsApp"
-            className="w-8 h-8 object-contain" // ✅ consistent sizing
-          />
-        </Button>
-      </div>
+          <img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
+          WhatsApp
+        </button>
+
+        {/* Call Now Button */}
+
+        <button
+          onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
+          className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
+        >
+          <Phone className="w-5 h-5 mr-2" />
+          Call Now
+        </button>
+      </div>)}
 
       <style>
         {`
