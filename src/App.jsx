@@ -30,6 +30,8 @@ import Sample from "./pages/Sample";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import UnitDetails1 from "@/pages/Agent/UnitDetails1";
 import UnitDetail from "@/pages/Agent/UnitDetailPage"
+import ScrollToTop from "./components/Agent/ScrollToTop";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -40,6 +42,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+        <ScrollToTop />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />

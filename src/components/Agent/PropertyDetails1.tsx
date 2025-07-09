@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MapPin, ChevronDown, Building2, Check, Lock, ChevronUp, Maximize2, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass, Gift, ShieldCheck } from 'lucide-react';
+import { MapPin, ChevronDown, Building2, Check, Lock, ChevronUp, Maximize2, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass, Gift, ShieldCheck, Star, Phone } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '../Agent/Header';
 import Footer from '../Agent/Footer';
@@ -10,6 +10,8 @@ import logoPath from "@/assets/OFFPLAN_MARKET.png"
 import * as LucideIcons from 'lucide-react';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import IconGuarantee from "@/assets/guarantee.png";
+import IconShield from "@/assets/shield.png";
 // import CallToAction from "@/components/Agent/CallToAction"
 
 const PropertyDetails1 = () => {
@@ -202,23 +204,23 @@ const PropertyDetails1 = () => {
           //   }
           // }
 
-           // Generate dynamic messages with random times
-        const randomMessages = [
-          `Last unit sold ${getRandomNumber(1, 5)} hours ago`,
-          `Last viewed ${getRandomNumber(1, 30)} minutes ago`,
-          `Last inquiry received ${getRandomNumber(1, 60)} minutes ago`,
-          `Last offer negotiated ${getRandomNumber(1, 3)} hours ago`,
-          `Last down payment confirmed ${getRandomNumber(10, 50)} minutes ago`,
-        ];
+          // Generate dynamic messages with random times
+          const randomMessages = [
+            `Last unit sold ${getRandomNumber(1, 5)} hours ago`,
+            `Last viewed ${getRandomNumber(1, 30)} minutes ago`,
+            `Last inquiry received ${getRandomNumber(1, 60)} minutes ago`,
+            `Last offer negotiated ${getRandomNumber(1, 3)} hours ago`,
+            `Last down payment confirmed ${getRandomNumber(10, 50)} minutes ago`,
+          ];
 
-        setMessages(randomMessages);
+          setMessages(randomMessages);
 
-        // Start interval for rotating messages
-        intervalRef = setInterval(() => {
-          setCurrentMessageIndex((prevIndex) =>
-            randomMessages.length > 0 ? (prevIndex + 1) % randomMessages.length : 0
-          );
-        }, 10000);
+          // Start interval for rotating messages
+          intervalRef = setInterval(() => {
+            setCurrentMessageIndex((prevIndex) =>
+              randomMessages.length > 0 ? (prevIndex + 1) % randomMessages.length : 0
+            );
+          }, 10000);
 
 
           // Start interval for rotating messages
@@ -237,8 +239,8 @@ const PropertyDetails1 = () => {
 
 
     const getRandomNumber = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
 
     fetchData();
     return () => {
@@ -338,14 +340,17 @@ const PropertyDetails1 = () => {
   // );
 
   const getUnitTypeName = (apartment) => {
+    if (!apartment) return ""; // ⬅ Prevents error if apartment is undefined
+
     const rooms = apartment.rooms?.toString().trim();
+
     if (!isNaN(Number(rooms))) {
       return `${rooms} Bedroom ${apartment.unit_type}`;
     }
     if (rooms?.toLowerCase() === "studio") {
       return `Studio ${apartment.unit_type}`;
     }
-    return apartment.unit_type;
+    return apartment.unit_type || ""; // fallback to unit_type or empty
   };
 
 
@@ -466,8 +471,8 @@ const PropertyDetails1 = () => {
       >
         {/* Top Left - Units Left */}
         <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
-          <div className="bg-white rounded-full p-1">
-            <Check className="w-5 h-5 text-green-600 font-bold" strokeWidth={3} />
+          <div className="rounded-full">
+            <Star className="w-4 h-4 text-white-600 font-bold" strokeWidth={3} fill='white' />
           </div>
           {totalUnitsText}
         </div>
@@ -491,9 +496,9 @@ const PropertyDetails1 = () => {
                 }`}
             >
               {propertyStatus.name === "Ready" ? (
-                <Check className="w-5 h-5 font-bold" strokeWidth={3} />
+                <Check className="w-4 h-4 font-bold" strokeWidth={3} />
               ) : (
-                <Building2 className="w-5 h-5 font-bold" strokeWidth={3} />
+                <Building2 className="w-4 h-4 font-bold" strokeWidth={3} />
               )}
             </div>
             {propertyStatus.name}
@@ -510,7 +515,7 @@ const PropertyDetails1 = () => {
         />
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/15 to-black/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/60 flex items-center justify-center"></div>
 
         {/* Centered text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
@@ -534,27 +539,56 @@ const PropertyDetails1 = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
               onAnimationComplete={advanceMessage}
-              className="mt-8 bg-white/10 px-4 py-1 rounded-full mb-8 text-white text-xs md:text-sm font-medium shadow-md"
+              className="mt-8 bg-white/40 px-4 py-1 rounded-full mb-8 text-white text-sm md:text-sm font-medium shadow-md"
             >
               {messages[currentMessageIndex]}
             </motion.div>
           </AnimatePresence>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm md:text-base font-semibold mt-15 py-5">
+          {projectData.guarantee_rental_guarantee ? (
+            <div className="flex flex-wrap gap-5 justify-center text-sm md:text-base font-semibold mt-15 py-5">
+              {[
+                { text: 'Guaranteed ROI Contract', color: 'bg-blue-50 text-blue-600', icon: IconGuarantee },
+                { text: 'Zero Risk – Escrow Protected', color: 'bg-green-50 text-green-600', icon: IconShield }
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md ${item.color}`}
+                >
+                  <div className="bg-white rounded-full p-1">
+                    <img src={item.icon} alt="icon" className="w-5 h-5" />
+                  </div>
+                  <span>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex justify-center py-5">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md bg-green-50 text-green-600 text-sm md:text-base font-semibold">
+                <div className="bg-white rounded-full p-1">
+                  <img src={IconShield} alt="icon" className="w-5 h-5" />
+                </div>
+                <span>Zero Risk – Escrow Protected</span>
+              </div>
+            </div>
+          )}
+
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm md:text-base font-semibold mt-15 py-5">
             {[
-              { text: 'Guaranteed ROI Contract', color: 'bg-blue-200 text-blue-700', icon: <ShieldCheck className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} /> },
-              { text: 'Zero Risk – Escrow Protected', color: 'bg-purple-200 text-purple-700', icon: <Lock className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} /> },
+              { text: 'Guaranteed ROI Contract', color: 'bg-blue-50 text-blue-600', icon: IconGuarantee },
+              { text: 'Zero Risk – Escrow Protected', color: 'bg-green-50 text-green-600', icon: IconShield }
             ].map((item, index) => (
               <div
                 key={index}
                 className={`flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md ${item.color}`}
               >
                 <div className="bg-white rounded-full p-1">
-                  {item.icon}
+                  <img src={item.icon} alt="icon" className="w-5 h-5" />
                 </div>
                 <span>{item.text}</span>
               </div>
             ))}
-          </div>
+          </div> */}
+
           {/* Bottom Right - Free DLD Label */}
           <div className="absolute bottom-0 right-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-tl-2xl flex items-center gap-2 shadow-lg z-20">
             <div className="bg-white rounded-full p-1">
@@ -577,41 +611,41 @@ const PropertyDetails1 = () => {
           <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-              Explore This Exclusive Property in{" "}
-              {projectData.city?.name || "N/A"}
+              Explore This Exclusive Property in {projectData.city?.name || "N/A"}
             </span>
           </h2>
 
           {/* Property Info Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
+          <div
+            className={`grid gap-4 py-4 ${amenities.length >= 2
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-6"
+              : "grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
+              }`}
+          >
             {/* Price Range */}
-            <div className="flex items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
                 <DollarSign className="w-5 h-5 text-white" />
               </div>
               <div>
                 <p className="text-xs text-gray-600">Price Range</p>
-                <p className="text-sm font-semibold text-gray-800">
-                  {priceRange}
-                </p>
+                <p className="text-sm font-semibold text-gray-800">{priceRange}</p>
               </div>
             </div>
 
             {/* Area Range */}
-            <div className="flex items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
                 <Maximize2 className="w-5 h-5 text-white" />
               </div>
               <div>
                 <p className="text-xs text-gray-600">Area Range</p>
-                <p className="text-sm font-semibold text-gray-800">
-                  {areaRange}
-                </p>
+                <p className="text-sm font-semibold text-gray-800">{areaRange}</p>
               </div>
             </div>
 
             {/* Handover */}
-            <div className="flex items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
                 <Handshake className="w-5 h-5 text-white" />
               </div>
@@ -622,7 +656,7 @@ const PropertyDetails1 = () => {
             </div>
 
             {/* Payment Plan */}
-            <div className="flex items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
                 <BarChart2 className="w-5 h-5 text-white" />
               </div>
@@ -631,9 +665,39 @@ const PropertyDetails1 = () => {
                 <p className="text-sm font-semibold text-gray-800">{downPayment}</p>
               </div>
             </div>
-          </div>
 
+            {/* Amenities (only if available) */}
+            {amenities.slice(0, 2).map((amenity, index) => {
+              const cardBg =
+                index === 0
+                  ? "bg-gradient-to-br from-yellow-100 to-yellow-200"
+                  : "bg-gradient-to-br from-purple-100 to-purple-200";
+
+              const iconBg =
+                index === 0
+                  ? "bg-gradient-to-br from-yellow-400 to-yellow-600"
+                  : "bg-gradient-to-br from-purple-500 to-purple-700";
+
+              return (
+                <div
+                  key={index}
+                  className={`flex flex-col sm:flex-row items-center gap-3 ${cardBg} rounded-2xl p-4 shadow-sm w-full`}
+                >
+                  <div className={`${iconBg} rounded-full p-2`}>
+                    <amenity.IconComponent className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600">{amenity.name}</p>
+                    <p className="text-sm font-semibold text-gray-800">Available</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
+
+
+
 
         {/*  */}
 
@@ -664,7 +728,7 @@ const PropertyDetails1 = () => {
                       {unit.icon}
                     </div>
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900">{unit.type}</h4>
+                      <h4 className="text-lg font-semibold text-gray-900">{unit.type || (unit.subUnits?.[0]?.id ?? 'N/A')}</h4>
                       <p className="text-sm text-gray-500">{unit.available} units available</p>
                     </div>
                   </div>
@@ -797,8 +861,8 @@ const PropertyDetails1 = () => {
 
           {/* About Section */}
           {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">About This Project</h2> */}
-          <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">About {projectData.title}</h2>
+          <div className="mb-8 mt-8 rounded-2xl bg-white p-6 shadow">
+            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600 pt-4">About {projectData.title}</h2>
             <div
               className="text-gray-600 prose prose-p"
               dangerouslySetInnerHTML={{ __html: projectData.description }}
@@ -842,6 +906,22 @@ const PropertyDetails1 = () => {
               </div>
             </div>
           )}
+          <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-200 p-6 shadow">
+            <h3 className="text-2xl md:text-3xl font-extrabold text-center mb-6 bg-gradient-to-br from-green-700 to-emerald-500 bg-clip-text text-transparent ">
+              Why Invest in {projectData.title}
+            </h3>
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-emerald-700 list-disc list-inside font-medium">
+              <li>Located in prime community of {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</li>
+              <li>Expected handover by {handover}</li>
+              <li>Free DLD + Escrow Protected (Zero Risk)</li>
+              <li>Flexible payment plan with only <span className="font-semibold">{projectData.payment_minimum_down_payment}%</span> down payment</li>
+              {amenities.length >= 4 && (
+                <li>
+                  Unique {amenities.slice(2, 4).map((a) => a.name.toLowerCase()).join(' and ')} onsite
+                </li>
+              )}
+            </ul>
+          </section>
 
           {/* Payment Plan */}
           {paymentPlans.length > 0 && (
@@ -901,7 +981,7 @@ const PropertyDetails1 = () => {
               className="flex-1"
             >
               <button className="w-full bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">
-                📞 Call Now
+                <div className='flex flex-row gap-2 justify-center'><Phone className='w-5 h-5' /> Call Now</div>
               </button>
             </a>
             <a
@@ -910,28 +990,39 @@ const PropertyDetails1 = () => {
               className="flex-1"
             >
               <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
-                💬 Chat on WhatsApp
+                <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6' /> Chat on WhatsApp</div>
               </button>
             </a>
           </div>
         </div>
-
-
-        {/* <CallToAction agent={agent} /> */}
-
-        <Footer />
-
-        {/* WhatsApp Floating Button */}
-        <div className="fixed bottom-6 right-6 z-50 md:hidden">
-          <Button
-            onClick={handleWhatsApp}
-            className="bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl animate-pulse"
-            size="icon"
-          >
-            <img src={IconWhatsapp} alt="WhatsApp" className="w-8 h-8 object-contain" />
-          </Button>
-        </div>
       </div>
+
+
+      {/* <CallToAction agent={agent} /> */}
+
+      <Footer />
+
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
+        {/* WhatsApp Button */}
+        <button
+          onClick={handleWhatsApp}
+          className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
+        >
+          <img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
+          WhatsApp
+        </button>
+
+        {/* Call Now Button */}
+
+        <button
+          onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
+          className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
+        >
+          <Phone className="w-5 h-5 mr-2" />
+          Call Now
+        </button>
+      </div>
+
     </div>
   );
 };
