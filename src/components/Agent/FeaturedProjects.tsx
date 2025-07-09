@@ -11,7 +11,7 @@ import { useCountSequenceOnView } from '@/hooks/useCountSequenceOnView';
 import CountUp from 'react-countup';
 import PropertyDetailsModal from "@/components/Agent/PropertyDetails"
 import IconWhatsapp from "@/assets/icon-whatsapp.svg"
-import PropertyDetails1 from './PropertyDetails1';
+// import PropertyDetails1 from '../Agent/PropertyDetails1';
 
 
 
@@ -257,8 +257,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   navigate(`/project/${projectId}`);
   // };
 
+  const [loadingProjectId, setLoadingProjectId] = useState(null);
+
   const handleViewDetails = async (projectId) => {
     try {
+      setLoadingProjectId(projectId); // show loader for this button
+
       const res = await fetch(`https://panel.estaty.app/api/v1/getProperty?id=${projectId}`, {
         method: 'POST',
         headers: {
@@ -266,24 +270,23 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           'Content-Type': 'application/json',
         },
       });
+
       console.log("project ID : ", projectId);
 
-      const data = await res.json()
+      const data = await res.json();
       console.log("data : ", data);
-      setSelectedProperty(data.property)
-      // setIsModalOpen(true)
-      navigate(`/agent/${agent.username}/agent-detail/?id=${projectId}`, {
+
+      setSelectedProperty(data.property);
+
+      navigate(`/agent/${agent.username}/property-details/?id=${projectId}`, {
         state: { agent }
       });
-      // #--------- commented for testing original -----------#
-      // navigate(`/agent/${agent.username}/property-details/?id=${projectId}`, {
-      //   state: { agent }
-      // });
-      // #---------- ended original -------#
     } catch (error) {
-      console.error("Error fetching property details:", error)
+      console.error("Error fetching property details:", error);
+    } finally {
+      setLoadingProjectId(null); // remove loader
     }
-  }
+  };
 
   const handleProjectSummary = (project: any) => {
     // console.log('FeaturedProjects - Setting project for summary:', project);
@@ -790,19 +793,44 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                           </div>
 
                           <div className="flex gap-2 pt-2">
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleViewDetails(project.id)
-                              }}
-                              // onClick={(e) => {
-                              //   e.stopPropagation();
-                              //   handleViewDetails(project.id);
-                              // }}
-                              className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm py-2.5 rounded-xl"
+                            <button
+                              onClick={() => handleViewDetails(project.id)}
+                              disabled={loadingProjectId === project.id} // disable button while loading
+                              className={`inline-flex items-center justify-center gap-2 text-sm font-medium text-white px-4 py-2 rounded-xl shadow 
+                                ${loadingProjectId === project.id
+                                  ? "bg-gray-400 cursor-not-allowed"
+                                  : "bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+                                } transition`}
                             >
-                              View Details
-                            </Button>
+                              {loadingProjectId === project.id ? (
+                                <>
+                                  <svg
+                                    className="animate-spin h-4 w-4 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-11v4a5 4 0 00-6 4H4z"
+                                    ></path>
+                                  </svg>
+                                  Loading...
+                                </>
+                              ) : (
+                                "View Details"
+                              )}
+                            </button>
+
                             <Button
                               variant="outline"
                               size="icon"

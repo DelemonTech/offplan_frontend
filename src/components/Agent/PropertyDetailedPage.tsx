@@ -240,13 +240,13 @@ const PropertyDetailedPage = () => {
 
 
             {/* Description */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            {/* <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="text-2xl font-bold mb-4">Unit Description</h3>
               <div
                 className="text-gray-600 prose prose-p"
                 dangerouslySetInnerHTML={{ __html: projectData.description }}
               ></div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column */}
@@ -346,25 +346,26 @@ const PropertyDetailedPage = () => {
               <p className="text-gray-700 mb-5 text-sm leading-relaxed">
                 Speak directly with {agent.name} for pricing, viewing, and exclusive offers.
               </p>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 justify-stretch sm:justify-around w-full">
                 <a
                   href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
                   target="_blank"
                   className="flex-1"
                 >
-                  <Button className="bg-green-500 hover:bg-green-600 text-white flex-1 rounded-xl font-semibold">
-                    Chat with Sahar
+                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">
+                    Chat with {agent.name}
                   </Button>
                 </a>
                 <a
                   href={`tel:${agent?.phone_number || ""}`}
                   className="flex-1"
                 >
-                  <Button className="flex items-center justify-center flex-1 bg-purple-400 text-purple-600 font-semibold py-4 rounded-xl hover:bg-gray-100 transition-colors hover:bg-purple-500 text-white">
+                  <Button className="w-full bg-purple-400 text-purple-600 font-semibold py-4 rounded-xl hover:bg-purple-500 text-white">
                     <Phone className="w-5 h-5 mr-2" /> Call Now
                   </Button>
                 </a>
               </div>
+
 
             </div>
           </div>

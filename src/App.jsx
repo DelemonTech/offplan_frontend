@@ -29,6 +29,7 @@ import HomePage from "./pages/HomePage"
 import Sample from "./pages/Sample";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import UnitDetails1 from "@/pages/Agent/UnitDetails1";
+import UnitDetail from "@/pages/Agent/UnitDetailPage"
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -72,7 +73,7 @@ const App = () => (
             <Route path="/:agentUsername/v5" element={<AgentPageVariation5 />} />
             <Route path="/:agentUsername/v6" element={<AgentPageVariation6 />} /> */}
 
-            {/* <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />      */}
+            <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} /> {/*Original*/}    
         
             <Route path="/agent/property-details" element={<PropertyDetails2 />} />       
             <Route path="/agent/:username/agent-detail" element={<AgentPropDetail />} />
@@ -85,6 +86,8 @@ const App = () => (
             <Route path="/unitdetails" element={<UnitDetails1/>} />
 
             <Route path="/agent/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
+
+            <Route path="/unit-detail" element={<UnitDetail />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

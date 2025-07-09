@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MapPin, ChevronDown, ChevronUp, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { MapPin, ChevronDown, Building2, Check, Lock, ChevronUp, Maximize2, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass, Gift, ShieldCheck } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import Header from '../Agent/Header';
 import Footer from '../Agent/Footer';
 import { Button } from '@/components/ui/button';
@@ -118,6 +118,8 @@ const PropertyDetails1 = () => {
   const [expandedUnit, setExpandedUnit] = useState<string | null>(null);
   const [showAllSubUnits, setShowAllSubUnits] = useState(false);
 
+  // const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
   const toggleUnit = (unitType: string) => {
     const clickedElement = unitRefs.current[unitType];
     const topBeforeToggle = clickedElement?.getBoundingClientRect().top ?? 0;
@@ -132,6 +134,16 @@ const PropertyDetails1 = () => {
     }, 50);
   };
 
+  // const groupedUnits = projectData.property_units.reduce((acc, unit) => {
+  //   const roomKey = `${unit.apartment_id} Bedroom Apartment`; // Group by apartment_id or customize
+  //   if (!acc[roomKey]) {
+  //     acc[roomKey] = [];
+  //   }
+  //   acc[roomKey].push(unit);
+  //   return acc;
+  // }, {});
+
+
   // const agent = {
   //   name: "Sahar",
   //   whatsapp_number: "+971 52 952 9687",
@@ -143,7 +155,14 @@ const PropertyDetails1 = () => {
     window.open(whatsappUrl, '_blank');
   };
 
+  const [messages, setMessages] = useState<string[]>([]);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+
   useEffect(() => {
+    if (!projectId) return;
+    let intervalRef: NodeJS.Timeout;
     const fetchData = async () => {
       try {
         const response = await fetch(`https://offplan-backend.onrender.com/property/${projectId}/`);
@@ -159,6 +178,55 @@ const PropertyDetails1 = () => {
               setAgent(agentData.data);
             }
           }
+          // if (data.data.id) {
+          //   try {
+          //     const messageResponse = await fetch(`https://offplan-backend.onrender.com/property/${data.data.id}/messages/`);
+          //     const messageData = await messageResponse.json();
+
+          //     if (messageData?.status && Array.isArray(messageData.data)) {
+          //       setMessages(messageData.data); // Set fetched messages
+          //     } else {
+          //       setMessages([
+          //         "Last unit sold 2 hours ago",
+          //         "Last viewed 5 minutes ago",
+          //         "Last inquiry received 10 minutes ago",
+          //       ]); // fallback messages
+          //     }
+          //   } catch (msgErr) {
+          //     console.error("Failed to fetch messages:", msgErr);
+          //     setMessages([
+          //       "Last unit sold 2 hours ago",
+          //       "Last viewed 5 minutes ago",
+          //       "Last inquiry received 10 minutes ago",
+          //     ]); // fallback messages
+          //   }
+          // }
+
+           // Generate dynamic messages with random times
+        const randomMessages = [
+          `Last unit sold ${getRandomNumber(1, 5)} hours ago`,
+          `Last viewed ${getRandomNumber(1, 30)} minutes ago`,
+          `Last inquiry received ${getRandomNumber(1, 60)} minutes ago`,
+          `Last offer negotiated ${getRandomNumber(1, 3)} hours ago`,
+          `Last down payment confirmed ${getRandomNumber(10, 50)} minutes ago`,
+        ];
+
+        setMessages(randomMessages);
+
+        // Start interval for rotating messages
+        intervalRef = setInterval(() => {
+          setCurrentMessageIndex((prevIndex) =>
+            randomMessages.length > 0 ? (prevIndex + 1) % randomMessages.length : 0
+          );
+        }, 10000);
+
+
+          // Start interval for rotating messages
+          // intervalRef = setInterval(() => {
+          //   setCurrentMessageIndex((prevIndex) =>
+          //     messages.length > 0 ? (prevIndex + 1) % messages.length : 0
+          //   );
+          // }, 10000);
         }
       } catch (err) {
         console.error('Failed to fetch project/agent:', err);
@@ -167,11 +235,19 @@ const PropertyDetails1 = () => {
       }
     };
 
+
+    const getRandomNumber = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
     fetchData();
+    return () => {
+      if (intervalRef) clearInterval(intervalRef);
+    };
   }, [projectId]);
 
-  console.log('projectttt',projectData);
-  
+  // console.log('projectttt', projectData);
+
 
 
   const units = projectData?.property_units || [];
@@ -284,6 +360,10 @@ const PropertyDetails1 = () => {
     return acc;
   }, {});
 
+  const totalUnits = Object.values(groupedUnits)
+    .map((units: any[]) => units.length)
+    .reduce((sum, len) => sum + len, 0);
+
   // Map groupedUnits into unitTypes array
   // Map grouped_apartments by apartment_id (property_units.apartment_id)
   const apartmentNameMap = projectData.grouped_apartments.reduce(
@@ -318,7 +398,17 @@ const PropertyDetails1 = () => {
     };
   });
 
+  const getTimeAgo = (minutesAgo: number) => {
+    const now = new Date();
+    const past = new Date(now.getTime() - minutesAgo * 60000);
+    const diffMinutes = Math.floor((now.getTime() - past.getTime()) / 60000);
+    const diffHours = Math.floor(diffMinutes / 60);
+    return diffMinutes < 60 ? `${diffMinutes} minutes ago` : `${diffHours} hours ago`;
+  };
 
+  const advanceMessage = () => {
+    setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+  };
 
 
 
@@ -339,6 +429,30 @@ const PropertyDetails1 = () => {
 
   const paymentPlans = projectData.payment_plans || [];
 
+  const totalUnitsText =
+    totalUnits > 9
+      ? "9+ units left"
+      : `${totalUnits} ${totalUnits === 1 ? "unit" : "units"} left`;
+
+  const propertyStatusMap = {
+    1: { name: "Ready", color: "text-green-600" },
+    2: { name: "Off Plan", color: "text-blue-600" },
+  };
+
+  const salesStatusMap = {
+    1: { name: "Available", color: "text-green-500" },
+    2: { name: "Pre Launch", color: "text-yellow-500" },
+    4: { name: "Sold Out", color: "text-red-500" },
+    5: { name: "Price On Demand", color: "text-blue-500" },
+  };
+
+  const propertyStatusId = projectData.property_status;
+  const salesStatusId = projectData.sales_status;
+
+  const propertyStatus = propertyStatusMap[propertyStatusId] || { name: "Unknown", color: "text-gray-500" };
+  const salesStatus = salesStatusMap[salesStatusId] || { name: "Unknown", color: "text-gray-500" };
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header logo={logoPath} />
@@ -350,11 +464,49 @@ const PropertyDetails1 = () => {
         transition={{ duration: 0.8 }}
         className="relative rounded-3xl overflow-hidden mb-5 shadow-lg h-[500px]"
       >
+        {/* Top Left - Units Left */}
+        <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
+          <div className="bg-white rounded-full p-1">
+            <Check className="w-5 h-5 text-green-600 font-bold" strokeWidth={3} />
+          </div>
+          {totalUnitsText}
+        </div>
+
+
+        {/* Bottom Right - 3 Labels */}
+
+
+        {/* Top Right - Property Status */}
+        <div
+          className={`absolute top-4 right-4 text-white text-sm font-semibold rounded-full flex items-center px-3 py-1.5 rounded-full shadow-lg z-20
+              ${propertyStatus.name === "Ready"
+              ? "bg-gradient-to-r from-green-500 to-emerald-800"
+              : "bg-gradient-to-r from-blue-500 to-indigo-700"
+            }`}
+        >
+          <div className="flex items-center gap-2">
+            {/* Icon bubble */}
+            <div
+              className={`bg-white rounded-full p-1 ${propertyStatus.name === "Ready" ? "text-green-600" : "text-blue-600"
+                }`}
+            >
+              {propertyStatus.name === "Ready" ? (
+                <Check className="w-5 h-5 font-bold" strokeWidth={3} />
+              ) : (
+                <Building2 className="w-5 h-5 font-bold" strokeWidth={3} />
+              )}
+            </div>
+            {propertyStatus.name}
+          </div>
+        </div>
+
+
         {/* Background image */}
         <img
           src={projectData.cover}
           alt={projectData.title}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
 
         {/* Gradient overlay */}
@@ -374,6 +526,45 @@ const PropertyDetails1 = () => {
             <MapPin className="w-5 h-5 mr-2" />
             {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}
           </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentMessageIndex}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+              onAnimationComplete={advanceMessage}
+              className="mt-8 bg-white/10 px-4 py-1 rounded-full mb-8 text-white text-xs md:text-sm font-medium shadow-md"
+            >
+              {messages[currentMessageIndex]}
+            </motion.div>
+          </AnimatePresence>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm md:text-base font-semibold mt-15 py-5">
+            {[
+              { text: 'Guaranteed ROI Contract', color: 'bg-blue-200 text-blue-700', icon: <ShieldCheck className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} /> },
+              { text: 'Zero Risk – Escrow Protected', color: 'bg-purple-200 text-purple-700', icon: <Lock className="w-4 h-4 md:w-5 md:h-5" strokeWidth={3} /> },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className={`flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md ${item.color}`}
+              >
+                <div className="bg-white rounded-full p-1">
+                  {item.icon}
+                </div>
+                <span>{item.text}</span>
+              </div>
+            ))}
+          </div>
+          {/* Bottom Right - Free DLD Label */}
+          <div className="absolute bottom-0 right-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-tl-2xl flex items-center gap-2 shadow-lg z-20">
+            <div className="bg-white rounded-full p-1">
+              <Gift className="w-4 h-4 md:w-5 md:h-5 text-pink-500" />
+            </div>
+            Free DLD – Today Only
+          </div>
+
+
+
         </div>
       </motion.div>
 
@@ -409,7 +600,7 @@ const PropertyDetails1 = () => {
             {/* Area Range */}
             <div className="flex items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm">
               <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
-                <Ruler className="w-5 h-5 text-white" />
+                <Maximize2 className="w-5 h-5 text-white" />
               </div>
               <div>
                 <p className="text-xs text-gray-600">Area Range</p>
@@ -456,60 +647,6 @@ const PropertyDetails1 = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {unitTypes.map((unit, index) => (
-
-  <motion.div
-    key={index}
-    whileHover={{ scale: 1.02 }}
-    onClick={() => toggleUnit(unit.type)}
-    ref={(el) => (unitRefs.current[unit.type] = el)}
-    className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer">
-    {/* Top: Unit Summary */}
-    <div className="flex justify-between items-center p-5">
-      {/* Left: Icon & Details */}
-      <div className="flex items-center gap-4">
-        <div
-          className={`w-14 h-14 rounded-full ${unit.color} flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition`}
-        >
-          {unit.icon}
-        </div>
-        <div>
-          <h4 className="text-lg font-semibold text-gray-900">{unit.type}</h4>
-          <p className="text-sm text-gray-500">{unit.available} units available</p>
-        </div>
-      </div>
-
-      {/* Right: Price */}
-      <div className="flex flex-col items-end">
-        <p className="text-xs text-gray-400">Starting from</p>
-        <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
-          AED {formatPrice(unit.startingPrice)}
-        </p>
-      </div>
-    </div>
-
-    {/* Expand/Collapse Button Row */}
-    <div className="flex justify-center py-2 border-t">
-      <button
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent parent onClick
-          toggleUnit(unit.type);
-        }}
-        className="flex items-center gap-1 text-purple-600 font-medium hover:text-purple-800 transition"
-      >
-        {expandedUnit === unit.type ? (
-          <>
-            <ChevronUp className="w-4 h-4" />
-            Hide Units
-          </>
-        ) : (
-          <>
-            <ChevronDown className="w-4 h-4" />
-            View Units
-          </>
-        )}
-      </button>
-    </div>
-
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.02 }}
@@ -531,7 +668,6 @@ const PropertyDetails1 = () => {
                       <p className="text-sm text-gray-500">{unit.available} units available</p>
                     </div>
                   </div>
-
 
                   {/* Right: Price */}
                   <div className="flex flex-col items-end">
@@ -590,14 +726,12 @@ const PropertyDetails1 = () => {
                             >
                               {sub.status || "N/A"}
                             </span>
-
                           </div>
 
                           {/* Details */}
                           <ul className="text-gray-500 text-xs mb-2">
                             <li>Floor: {sub.floor || "N/A"}</li>
                             <li>Size: {sub.size}</li>
-                            {/* <li>View: {sub.view}</li>*/}
                           </ul>
 
                           {/* Price */}
@@ -609,34 +743,32 @@ const PropertyDetails1 = () => {
                           <div className="relative w-full h-32 rounded-lg overflow-hidden">
                             <img
                               src={sub.floorPlan}
-                              alt={`Floor plan for ${sub.id}`}
+                              // alt={`Floor plan for ${sub.id}`}
                               className="w-full h-full object-cover"
+                              // loading="lazy"
                               onError={(e) => {
-                                // Replace with fallback if the image fails to load
                                 e.currentTarget.src = "/no-floor-plan.png";
                               }}
                             />
                             {/* Watermark Overlay */}
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/15">
-                              <span className="text-white text-md font-bold opacity-70">
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                              <span className="text-white text-md font-bold opacity-60">
                                 OFFPLAN.MARKET
                               </span>
                             </div>
                           </div>
 
-
-
                           {/* View Details Button */}
                           <div className="mt-3 text-center">
                             <button
                               onClick={(e) => {
-                                e.stopPropagation(); // Prevent parent card click
+                                e.stopPropagation();
                                 navigate(`/agent/${agent.username}/property-detailed/${sub.id}`, {
                                   state: {
-                                    unit: sub,               // Pass the unit data
-                                    projectData: projectData,    // Optionally pass the parent project too
-                                    agent: agent             // Pass agent details
-                                  }
+                                    unit: sub,
+                                    projectData,
+                                    agent,
+                                  },
                                 });
                               }}
                               className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
@@ -659,147 +791,146 @@ const PropertyDetails1 = () => {
               </motion.div>
             ))}
 
-
           </div>
-        </div>
 
-        {/*  */}
+          {/*  */}
 
-        {/* About Section */}
-        {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">About This Project</h2> */}
-        <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-          <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">About {projectData.title}</h2>
-          <div
-            className="text-gray-600 prose prose-p"
-            dangerouslySetInnerHTML={{ __html: projectData.description }}
-          ></div>
-        </div>
-
-        {/* Location Section */}
-        <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-          <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> Location & Address</h3>
-          <p className="text-gray-700 font-semibold">{projectData.title}</p>
-          <p className="text-gray-500 mb-4">{projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</p>
-          <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
-            <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-200">
-              <iframe
-                src={`https://maps.google.com/maps?q=${projectData.address}&z=15&output=embed`}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
-          </div>
-        </div>
-
-        {/* Amenities */}
-        {amenities.length > 0 && (
+          {/* About Section */}
+          {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">About This Project</h2> */}
           <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-            <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">Amenities</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {amenities.map((amenity, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 bg-gray-10 p-3 rounded-xl border hover:border-purple-300"
-                >
-                  <amenity.IconComponent className={`w-5 h-5 ${amenity.color}`} />
-                  <span className="sm:text-gray-800 font-medium">{amenity.name}</span>
-                </div>
-              ))}
+            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">About {projectData.title}</h2>
+            <div
+              className="text-gray-600 prose prose-p"
+              dangerouslySetInnerHTML={{ __html: projectData.description }}
+            ></div>
+          </div>
+
+          {/* Location Section */}
+          <div className="mb-8 rounded-2xl bg-white p-6 shadow">
+            <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> Location & Address</h3>
+            <p className="text-gray-700 font-semibold">{projectData.title}</p>
+            <p className="text-gray-500 mb-4">{projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</p>
+            <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
+              <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-200">
+                <iframe
+                  src={`https://maps.google.com/maps?q=${projectData.address}&z=15&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Payment Plan */}
-        {paymentPlans.length > 0 && (
-          <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
-            <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">
-              Payment Plans
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {paymentPlans.map((plan, index) => (
-                <div
-                  key={index}
-                  className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
-                >
-                  {/* Plan Header */}
-                  <div className="mb-5 border-b pb-3">
-                    <h4 className="text-xl font-bold text-purple-600">{plan.name}</h4>
-                    <p className="text-sm text-gray-500 italic">{plan.description}</p>
+          {/* Amenities */}
+          {amenities.length > 0 && (
+            <div className="mb-8 rounded-2xl bg-white p-6 shadow">
+              <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">Amenities</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {amenities.map((amenity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 bg-gray-10 p-3 rounded-xl border hover:border-purple-300"
+                  >
+                    <amenity.IconComponent className={`w-5 h-5 ${amenity.color}`} />
+                    <span className="sm:text-gray-800 font-medium">{amenity.name}</span>
                   </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-                  {/* Steps */}
-                  <div className="space-y-4">
-                    {plan.values.map((val, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
-                      >
-                        {/* Left: Step Badge & Name */}
-                        <div className="flex items-center gap-3">
-                          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
-                            {idx + 1}
-                          </span>
-                          <span className="text-gray-800 font-medium">{val.name}</span>
+          {/* Payment Plan */}
+          {paymentPlans.length > 0 && (
+            <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
+              <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">
+                Payment Plans
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {paymentPlans.map((plan, index) => (
+                  <div
+                    key={index}
+                    className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
+                  >
+                    {/* Plan Header */}
+                    <div className="mb-5 border-b pb-3">
+                      <h4 className="text-xl font-bold text-purple-600">{plan.name}</h4>
+                      <p className="text-sm text-gray-500 italic">{plan.description}</p>
+                    </div>
+
+                    {/* Steps */}
+                    <div className="space-y-4">
+                      {plan.values.map((val, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
+                        >
+                          {/* Left: Step Badge & Name */}
+                          <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
+                              {idx + 1}
+                            </span>
+                            <span className="text-gray-800 font-medium">{val.name}</span>
+                          </div>
+
+                          {/* Right: Value */}
+                          <span className="text-blue-700 font-bold">{val.value}</span>
                         </div>
-
-                        {/* Right: Value */}
-                        <span className="text-blue-700 font-bold">{val.value}</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-      </div>
-      {/* CTA */}
-      <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-t-2xl p-8 text-center text-white">
-        <h3 className="text-2xl font-bold mb-2">Ready to Make This Your Home?</h3>
-        <p className="mb-4 text-white/90">
-          Contact {agent?.name || "our team"} today for exclusive access and personalized assistance
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <a
-            href={`tel:${agent?.phone_number || ""}`}
-            className="flex-1"
-          >
-            <button className="w-full bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">
-              📞 Call Now
-            </button>
-          </a>
-          <a
-            href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-            target="_blank"
-            className="flex-1"
-          >
-            <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
-              💬 Chat on WhatsApp
-            </button>
-          </a>
         </div>
-      </div>
+        {/* CTA */}
+        <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-t-2xl p-8 text-center text-white">
+          <h3 className="text-2xl font-bold mb-2">Ready to Make This Your Home?</h3>
+          <p className="mb-4 text-white/90">
+            Contact {agent?.name || "our team"} today for exclusive access and personalized assistance
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href={`tel:${agent?.phone_number || ""}`}
+              className="flex-1"
+            >
+              <button className="w-full bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">
+                📞 Call Now
+              </button>
+            </a>
+            <a
+              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              target="_blank"
+              className="flex-1"
+            >
+              <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
+                💬 Chat on WhatsApp
+              </button>
+            </a>
+          </div>
+        </div>
 
 
-      {/* <CallToAction agent={agent} /> */}
+        {/* <CallToAction agent={agent} /> */}
 
-      <Footer />
+        <Footer />
 
-      {/* WhatsApp Floating Button */}
-      <div className="fixed bottom-6 right-6 z-50 md:hidden">
-        <Button
-          onClick={handleWhatsApp}
-          className="bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl animate-pulse"
-          size="icon"
-        >
-          <img src={IconWhatsapp} alt="WhatsApp" className="w-8 h-8 object-contain" />
-        </Button>
+        {/* WhatsApp Floating Button */}
+        <div className="fixed bottom-6 right-6 z-50 md:hidden">
+          <Button
+            onClick={handleWhatsApp}
+            className="bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl animate-pulse"
+            size="icon"
+          >
+            <img src={IconWhatsapp} alt="WhatsApp" className="w-8 h-8 object-contain" />
+          </Button>
+        </div>
       </div>
     </div>
   );
