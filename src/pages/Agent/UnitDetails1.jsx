@@ -17,6 +17,7 @@ const UnitDetails1 = () => {
   const location = useLocation();
   const [showReserveModal, setShowReserveModal] = useState(false);
   const [showFloorPlanImage, setShowFloorPlanImage] = useState(false);
+  const [showPaymentPlanModal, setShowPaymentPlanModal] = useState(false);
 
   const { unit, projectData, agent } = location.state || {};
 
@@ -269,23 +270,27 @@ const colorClasses = [
               
               {/* Unit Info */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-                <div className="border bg-purple-100 rounded-xl p-4">
-                  <p className="text-sm text-gray-600 mb-1">Unit ID</p>
-                  <p className="text-md font-semibold text-black">{unit.id}</p>
-                </div>
-                <div className="border  bg-purple-100 rounded-xl p-4">
-                  <p className="text-sm text-gray-600 mb-1">Status</p>
-                  <p className="text-md font-semibold text-green-600">{unit.status}</p>
-                </div>                
-                <div className="border  bg-purple-100 rounded-xl p-4">
-                  <p className="text-sm text-gray-600 mb-1">Size</p>
-                  <p className="text-md font-semibold text-black">{unit.size}</p>
-                </div>
-                <div className="border  bg-purple-100 rounded-xl p-4">
-                  <p className="text-sm text-gray-600 mb-1">Unit Price</p>
-                  <p className="text-md font-bold text-purple-600">AED {formatPrice(unit.price)}</p>
-                </div>
-              </div>
+  <div className="border bg-purple-100 rounded-xl p-4 hover:bg-purple-200 hover:border-purple-300 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+    <p className="text-sm text-gray-600 mb-1">Unit ID</p>
+    <p className="text-md font-semibold text-black">{unit.id}</p>
+  </div>
+
+  <div className="border bg-purple-100 rounded-xl p-4 hover:bg-purple-200 hover:border-purple-300 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+    <p className="text-sm text-gray-600 mb-1">Status</p>
+    <p className="text-md font-semibold text-green-600">{unit.status}</p>
+  </div>
+
+  <div className="border bg-purple-100 rounded-xl p-4 hover:bg-purple-200 hover:border-purple-300 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+    <p className="text-sm text-gray-600 mb-1">Size</p>
+    <p className="text-md font-semibold text-black">{unit.size}</p>
+  </div>
+
+  <div className="border bg-purple-100 rounded-xl p-4 hover:bg-purple-200 hover:border-purple-300 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+    <p className="text-sm text-gray-600 mb-1">Unit Price</p>
+    <p className="text-md font-bold text-purple-600">AED {formatPrice(unit.price)}</p>
+  </div>
+</div>
+
             
               {/* Payment Plan */}
               {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -307,7 +312,7 @@ const colorClasses = [
                 </div>
               </div> */}
               {/* Payment Plan */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mt-6">
+{/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mt-6">
   {paymentPlans.length > 0 ? (
     paymentPlans[0].values.map((val, idx) => (
       <div
@@ -325,7 +330,40 @@ const colorClasses = [
     <p className="text-gray-500 col-span-full">No payment plans available.</p>
   )}
 </div>
-
+ */}
+<div className="grid grid-cols-1 md:grid-cols-1 gap-8 mt-6">
+  {paymentPlans.length > 0 ? (
+    paymentPlans.map((plan, index) => (
+      <div
+        key={index}
+        className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
+      >
+        <div className="mb-5 border-b pb-3">
+          <h4 className="text-xl font-bold text-purple-600">{plan.name}</h4>
+          <p className="text-sm text-gray-500 italic">{plan.description}</p>
+        </div>
+        <div className="space-y-4">
+          {plan.values.map((val, idx) => (
+            <div
+              key={idx}
+              className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
+            >
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
+                  {idx + 1}
+                </span>
+                <span className="text-gray-800 font-medium">{val.name}</span>
+              </div>
+              <span className="text-blue-700 font-bold">{val.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500 col-span-full">No payment plans available.</p>
+  )}
+</div>
 
             </div>
 
@@ -375,19 +413,22 @@ const colorClasses = [
             
                   {/* Button */}
               <button
-  onClick={() => {
-    if (card.title === "Floor Plan") {
-      // Programmatically open the floor plan image in new tab
-      if (unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN") {
-        window.open(unit.floorPlan, "_blank", "noopener,noreferrer");
-      } else {
-        alert("No floor plan available");
-      }
+ onClick={() => {
+  if (card.title === "Floor Plan") {
+    if (unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN") {
+      window.open(unit.floorPlan, "_blank", "noopener,noreferrer");
     } else {
-      setModalType(card.title.toLowerCase());
-      setShowModal(true);
+      alert("No floor plan available");
     }
-  }}
+  } else if (card.title === "Payment Plan") {
+    setShowPaymentPlanModal(true);
+  } else {
+    setModalType(card.title.toLowerCase());
+    setShowModal(true);
+  }
+}}
+
+
   className={`w-full py-2 rounded-xl font-medium text-sm ${card.buttonColor} hover:bg-opacity-10`}
 >
   {card.button}
@@ -484,11 +525,11 @@ const colorClasses = [
                 {agent.name}
               </h3>
               <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
-               <div className="text-sm text-gray-700 font-medium mb-4">
+               {/* <div className="text-sm text-gray-700 font-medium mb-4">
     <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full shadow">
       Trusted Advisor – ⭐ 4.9 (38 reviews)
     </span>
-  </div>
+  </div> */}
               {/* Description */}
               <p className="text-gray-800 text-sm mb-6">
                 Speak directly with {agent.name} for pricing, viewings, and exclusive offers.
@@ -531,12 +572,12 @@ const colorClasses = [
      <h2 className="text-xl font-bold text-purple-700 mb-2">
   {/* {modalType === "floor plan" && <>Request <span className="text-pink-600">Floor Plan</span></>} */}
   {modalType === "gallery" && <>Request <span className="text-green-600">Gallery Access</span></>}
-  {modalType === "payment plan" && <>Request <span className="text-blue-600">Payment Plan</span></>}
+  {/* {modalType === "payment plan" && <>Request <span className="text-blue-600">Payment Plan</span></>} */}
 </h2>
 <p className="text-gray-600 text-sm mb-4">
   {/* {modalType === "floor plan" && "Enter your details to receive the floor plan for this unit."} */}
   {modalType === "gallery" && "Enter your details to access the gallery and see all images."}
-  {modalType === "payment plan" && "Enter your details to get the full payment plan details."}
+  {/* {modalType === "payment plan" && "Enter your details to get the full payment plan details."} */}
 </p>
 
       <form className="space-y-4">
@@ -573,7 +614,7 @@ const colorClasses = [
 >
   {/* {modalType === "floor plan" && "Send Floor Plan"} */}
   {modalType === "gallery" && "Send Gallery Access"}
-  {modalType === "payment plan" && "Send Payment Plan"}
+  {/* {modalType === "payment plan" && "Send Payment Plan"} */}
 </button>
 
         </div>
@@ -653,6 +694,55 @@ const colorClasses = [
           </button>
         </div>
       </form>
+    </div>
+  </div>
+)}
+{showPaymentPlanModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-y-auto p-4">
+    <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-3xl relative shadow-xl">
+      {/* Close Button */}
+      <button
+        onClick={() => setShowPaymentPlanModal(false)}
+        className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-2xl"
+      >
+        &times;
+      </button>
+
+      <h2 className="text-2xl font-bold text-purple-700 mb-6 text-center">Full Payment Plan</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
+        {paymentPlans.length > 0 ? (
+          paymentPlans.map((plan, index) => (
+            <div
+              key={index}
+              className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
+            >
+              <div className="mb-5 border-b pb-3">
+                <h4 className="text-xl font-bold text-purple-600">{plan.name}</h4>
+                <p className="text-sm text-gray-500 italic">{plan.description}</p>
+              </div>
+              <div className="space-y-4">
+                {plan.values.map((val, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
+                        {idx + 1}
+                      </span>
+                      <span className="text-gray-800 font-medium">{val.name}</span>
+                    </div>
+                    <span className="text-blue-700 font-bold">{val.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 col-span-full">No payment plans available.</p>
+        )}
+      </div>
     </div>
   </div>
 )}

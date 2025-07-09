@@ -763,7 +763,7 @@ const PropertyDetails1 = () => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                // navigate(`/agent/${agent.username}/property-detailed/${sub.id}`,
+                                //  navigate(`/agent/${agent.username}/property-detailed/${sub.id}`,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           k{agent.username}/property-detailed/${sub.id}`,
                                 navigate(`/agent/${agent.username}/unit-details/${sub.id}`,
                                    {
                                   state: {
