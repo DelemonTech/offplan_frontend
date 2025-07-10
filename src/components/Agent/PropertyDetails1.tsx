@@ -378,10 +378,13 @@ const PropertyDetails1 = () => {
     },
     {} as Record<number, string>
   );
+  
+
 
   const unitTypes = Object.entries(groupedUnits).map(([apartmentId, units]: [string, any[]], index) => {
     // const unitTypeName = apartmentNameMap[Number(apartmentId)] || `Apartment ID ${apartmentId}`;
     const groupedApartment = projectData.grouped_apartments[index];
+
     return {
       type: getUnitTypeName(groupedApartment),
       available: units.length,
@@ -402,6 +405,7 @@ const PropertyDetails1 = () => {
       })),
     };
   });
+  
 
   const getTimeAgo = (minutesAgo: number) => {
     const now = new Date();
@@ -747,7 +751,7 @@ const PropertyDetails1 = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent parent onClick
-                      toggleUnit(unit.type);
+                      toggleUnit(unit.type);                      
                     }}
                     className="flex items-center gap-1 text-purple-600 font-medium hover:text-purple-800 transition"
                   >
@@ -912,12 +916,15 @@ const PropertyDetails1 = () => {
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-emerald-700 list-disc list-inside font-medium">
               <li>Located in prime community of {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</li>
-              <li>Expected handover by {handover}</li>
+              {/* <li>Expected handover by {handover}</li> */}
+              {handover !== "N/A" && (
+                <li>Expected handover by {handover}</li>
+              )}
               <li>Free DLD + Escrow Protected (Zero Risk)</li>
               <li>Flexible payment plan with only <span className="font-semibold">{projectData.payment_minimum_down_payment}%</span> down payment</li>
               {amenities.length >= 4 && (
                 <li>
-                  Unique {amenities.slice(2, 4).map((a) => a.name.toLowerCase()).join(' and ')} onsite
+                  Unique {amenities.slice(1, 2).map((a) => a.name.toLowerCase()).join(' and ')} onsite
                 </li>
               )}
             </ul>

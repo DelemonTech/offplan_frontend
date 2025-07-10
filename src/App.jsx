@@ -31,6 +31,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import UnitDetails1 from "@/pages/Agent/UnitDetails1";
 import UnitDetail from "@/pages/Agent/UnitDetailPage"
 import ScrollToTop from "./components/Agent/ScrollToTop";
+import GalleryPage from "@/components/Agent/Gallery";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,7 @@ const App = () => (
             <Route path="/agent/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
 
             <Route path="/unit-detail" element={<UnitDetail />} />
+            <Route path="/gallery" element={<GalleryPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
