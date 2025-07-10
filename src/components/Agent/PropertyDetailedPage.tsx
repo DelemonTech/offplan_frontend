@@ -11,6 +11,9 @@ import logoPath from "@/assets/OFFPLAN_MARKET.png"
 import Footer from '../../components/Agent/Footer';
 import { useNavigate } from "react-router-dom";
 import IconWhatsapp from "@/assets/icon-whatsapp.svg";
+import * as LucideIcons from 'lucide-react';
+import GalleryPage from './Gallery';
+
 // import { jsPDF } from "jspdf";
 
 
@@ -20,6 +23,10 @@ const PropertyDetailedPage = () => {
   const location = useLocation();
   const [showReserveModal, setShowReserveModal] = useState(false);
   const [showFloorPlanImage, setShowFloorPlanImage] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
+  const [showGalleryModal, setShowGalleryModal] = useState(false);
+
+
 
   const navigate = useNavigate();
 
@@ -70,7 +77,7 @@ const PropertyDetailedPage = () => {
   // const areaRange =
   //   minArea && maxArea
   //     ? `${minArea} – ${maxArea} sq.ft.`
-      // : "Area Not Available";
+  // : "Area Not Available";
 
   const downPayment = (() => {
     const dpPercent = projectData?.payment_minimum_down_payment;
@@ -139,6 +146,90 @@ const PropertyDetailedPage = () => {
     "text-yellow-600",
     "text-red-600",
   ];
+  const facilityIconMap = {
+    "Library": { icon: "BookOpen", color: "text-blue-500" },
+    "Mall": { icon: "ShoppingBag", color: "text-pink-500" },
+    "Meeting Rooms": { icon: "Users", color: "text-green-500" },
+    "Mini Golf": { icon: "Flag", color: "text-lime-500" },
+    "Mosque": { icon: "Home", color: "text-emerald-500" },
+    "Multipurpose Hall": { icon: "LayoutGrid", color: "text-purple-500" },
+    "Music Room": { icon: "Music", color: "text-orange-500" },
+    "Nursery": { icon: "Baby", color: "text-pink-400" },
+    "Opera house": { icon: "Mic", color: "text-indigo-500" },
+    "Paddle playground": { icon: "Racket", color: "text-teal-500" },
+    "Pet Shop": { icon: "Dog", color: "text-yellow-500" },
+    "Pharmacy": { icon: "Cross", color: "text-red-500" },
+    "Playground": { icon: "TreePine", color: "text-green-500" },
+    "Private Cinema For Each Unit": { icon: "Clapperboard", color: "text-purple-500" },
+    "Private Gym For Each Unit": { icon: "Dumbbell", color: "text-pink-500" },
+    "Private Parking for Each unit": { icon: "ParkingCircle", color: "text-gray-500" },
+    "Restaurant": { icon: "Utensils", color: "text-red-400" },
+    "Retail Shops": { icon: "Store", color: "text-orange-400" },
+    "Sauna": { icon: "Steam", color: "text-yellow-500" },
+    "School": { icon: "School", color: "text-blue-400" },
+    "Security": { icon: "Shield", color: "text-red-600" },
+    "Sitting Area": { icon: "Sofa", color: "text-gray-400" },
+    "Skate Park": { icon: "Skull", color: "text-emerald-400" },
+    "Smart Homes": { icon: "Home", color: "text-purple-500" },
+    "Snow Rooms": { icon: "Snowflake", color: "text-cyan-400" },
+    "Squash Courts": { icon: "Racket", color: "text-teal-500" },
+    "Steam room": { icon: "Droplets", color: "text-blue-500" },
+    "Storage Rooms": { icon: "Package", color: "text-gray-400" },
+    "Sunken Seating Area": { icon: "Sofa", color: "text-orange-300" },
+    "Supermarket": { icon: "ShoppingCart", color: "text-green-600" },
+    "Table Tennis Court": { icon: "Racket", color: "text-indigo-500" },
+    "Tennis Playground": { icon: "Racket", color: "text-teal-600" },
+    "Theater": { icon: "Clapperboard", color: "text-pink-600" },
+    "Traverse climbing walls": { icon: "Mountain", color: "text-emerald-600" },
+    "VR Game Room": { icon: "Gamepad", color: "text-violet-600" },
+    "Veterinary Clinic": { icon: "Dog", color: "text-orange-500" },
+    "Volleyball Playground": { icon: "Volleyball", color: "text-yellow-500" },
+    "Water Fountain": { icon: "Droplet", color: "text-cyan-500" },
+    "Yuga Hall": { icon: "Leaf", color: "text-green-400" },
+    "Children's Play Area": { icon: "Baby", color: "text-pink-400" },
+    "Covered Parking": { icon: "ParkingCircle", color: "text-gray-400" },
+    "Gym": { icon: "Dumbbell", color: "text-pink-500" },
+    "Jacuzzi": { icon: "Droplets", color: "text-blue-400" },
+    "Swimming Pool": { icon: "Waves", color: "text-blue-500" },
+    "BBQ Area": { icon: "Flame", color: "text-orange-500" },
+    "Badminton Court": { icon: "Racket", color: "text-lime-500" },
+    "Basketball Playground": { icon: "Basketball", color: "text-orange-400" },
+    "Beach": { icon: "Waves", color: "text-cyan-500" },
+    "Beauty Saloon": { icon: "Scissors", color: "text-pink-400" },
+    "Bicycle parking": { icon: "Bike", color: "text-green-500" },
+    "Bocce Play Area": { icon: "Circle", color: "text-purple-400" },
+    "Cabana Seating": { icon: "Sofa", color: "text-yellow-400" },
+    "Cafe": { icon: "Coffee", color: "text-brown-500" },
+    "Children's Swimming Pool": { icon: "Waves", color: "text-cyan-400" },
+    "Cinema": { icon: "Clapperboard", color: "text-indigo-400" },
+    "Clinic": { icon: "Cross", color: "text-red-400" },
+    "Club House": { icon: "Building", color: "text-purple-400" },
+    "Co-Working Spaces": { icon: "Briefcase", color: "text-teal-400" },
+    "Concierge Service": { icon: "UserCheck", color: "text-pink-400" },
+    "Consult": { icon: "User", color: "text-indigo-400" },
+    "Cycling Track": { icon: "Bike", color: "text-green-400" },
+    "Dog Park": { icon: "Dog", color: "text-yellow-400" },
+    "Electric Vehicle Charging Stations": { icon: "Zap", color: "text-green-500" },
+    "Fitness Club": { icon: "Dumbbell", color: "text-pink-400" },
+    "Football Playground": { icon: "Football", color: "text-green-600" },
+    "Games Lounge Room": { icon: "Gamepad", color: "text-violet-500" },
+    "Garden": { icon: "Flower", color: "text-green-500" },
+    "Golf playground": { icon: "Flag", color: "text-lime-400" },
+    "Hospital": { icon: "Cross", color: "text-red-500" },
+    "Jogging Track": { icon: "Run", color: "text-orange-400" },
+    "Lake": { icon: "Droplet", color: "text-blue-400" }
+  };
+  const amenities = projectData.facilities?.map((fac: any) => {
+    console.log(fac.name);
+    const facilityName = fac?.name || "Unknown";
+    const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
+    const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon
+    return {
+      name: facilityName,
+      IconComponent,
+      color: iconInfo.color,
+    };
+  }) || [];
 
   const handleWhatsApp = () => {
     const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?`;
@@ -203,7 +294,7 @@ const PropertyDetailedPage = () => {
 
             </div>
 
-            
+
 
             {/* Availability badge */}
             <div className="absolute top-3 right-3">
@@ -214,67 +305,98 @@ const PropertyDetailedPage = () => {
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-              {/* Heading */}
-              <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
-                <Compass className="w-5 h-5 text-primary-500" />
-                <span className="text-gray-800 font-semibold">
-                  Explore This Exclusive Property in{" "}
-                  {projectData?.title || "N/A"}
-                </span>
-              </h2>
+          {/* Heading */}
+          <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
+            <Compass className="w-5 h-5 text-primary-500" />
+            <span className="text-gray-800 font-semibold">
+              Explore This Exclusive Property in{" "}
+              {projectData?.title || "N/A"}
+            </span>
+          </h2>
 
-              {/* Property Info Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
-                {/* Price Range */}
-                <div className="flex items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm">
-                  <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
-                    <Home className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Overview</p>
-                    <p className="text-sm font-semibold text-gray-800">
-                      {unit.apartmentType}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Area Range */}
-                <div className="flex items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm">
-                  <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
-                    <Maximize2 className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Area</p>
-                    <p className="text-sm font-semibold text-gray-800">
-                      {unit.size}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Handover */}
-                <div className="flex items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm">
-                  <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
-                    <Handshake className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Handover</p>
-                    <p className="text-sm font-semibold text-gray-800">{handover}</p>
-                  </div>
-                </div>
-
-                {/* Payment Plan */}
-                <div className="flex items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm">
-                  <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
-                    <BarChart2 className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Payment Plan</p>
-                    <p className="text-sm font-semibold text-gray-800">{downPayment}</p>
-                  </div>
-                </div>
+          {/* Property Info Cards */}
+          <div
+            className={`grid gap-4 py-4 ${amenities.length >= 2
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-6"
+              : "grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
+              }`}
+          >
+            {/* Overview */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
+              <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
+                <Home className="w-5 h-5 text-white" />
               </div>
-
+              <div>
+                <p className="text-xs text-gray-600">Overview</p>
+                <p className="text-sm font-semibold text-gray-800">{unit.apartmentType}</p>
+              </div>
             </div>
+
+            {/* Area */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
+                <Maximize2 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Area</p>
+                <p className="text-sm font-semibold text-gray-800">{unit.size}</p>
+              </div>
+            </div>
+
+            {/* Handover */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
+              <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
+                <Handshake className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Handover</p>
+                <p className="text-sm font-semibold text-gray-800">{handover}</p>
+              </div>
+            </div>
+
+            {/* Payment Plan */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
+              <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
+                <BarChart2 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Payment Plan</p>
+                <p className="text-sm font-semibold text-gray-800">{downPayment}</p>
+              </div>
+            </div>
+
+            {/* Amenities (if available) */}
+            {amenities.slice(0, 2).map((amenity, index) => {
+              const cardBg =
+                index === 0
+                  ? "bg-gradient-to-br from-yellow-100 to-yellow-200"
+                  : "bg-gradient-to-br from-purple-100 to-purple-200";
+
+              const iconBg =
+                index === 0
+                  ? "bg-gradient-to-br from-yellow-400 to-yellow-600"
+                  : "bg-gradient-to-br from-purple-500 to-purple-700";
+
+              return (
+                <div
+                  key={index}
+                  className={`flex flex-col sm:flex-row items-center gap-3 ${cardBg} rounded-2xl p-4 shadow-sm w-full`}
+                >
+                  <div className={`${iconBg} rounded-full p-2`}>
+                    <amenity.IconComponent className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600">{amenity.name}</p>
+                    <p className="text-sm font-semibold text-gray-800">Available</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+
+
+        </div>
         {/* Feature Info Boxes */}
         {/* <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-2 mt-4">
 
@@ -499,16 +621,61 @@ const PropertyDetailedPage = () => {
                     } else {
                       alert("No floor plan available");
                     }
-                  } else {
-                    setModalType(card.title.toLowerCase());
+                  }
+                  else if (card.title === "Gallery") {
+                    const imageUrls = projectData?.property_images?.map(img => img.image) || [];
+                    if (imageUrls.length > 0) {
+                      setShowGalleryModal(true);
+                    } else {
+                      alert("No gallery images available");
+                    }
+                  }
+                  else {
+                    setModalType(card.title.toLowerCase()); // e.g., 'payment plan'
                     setShowModal(true);
                   }
+
                 }}
                 className={`w-full py-2 rounded-xl font-medium text-sm ${card.buttonColor} hover:bg-opacity-10`}
               >
                 {card.button}
               </button>
+              {showGalleryModal && (
+                <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-start overflow-y-auto p-6">
+                  <div className="bg-white rounded-2xl shadow-lg max-w-6xl w-full mt-10 relative p-6">
+                    {/* Close Button */}
+                    <button
+                      onClick={() => setShowGalleryModal(false)}
+                      className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-xl font-bold"
+                    >
+                      &times;
+                    </button>
 
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">Project Gallery</h3>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto">
+                      {projectData?.property_images?.map((img, index) => (
+                        <div key={index} className="rounded-xl overflow-hidden shadow">
+                          <img
+                            src={img.image}
+                            alt={`Gallery ${index + 1}`}
+                            className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="text-center mt-6">
+                      <button
+                        onClick={() => setShowGalleryModal(false)}
+                        className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                      >
+                        Close Gallery
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
 
             </div>

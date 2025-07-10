@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
+import maleLogo from '@/assets/OFFPLAN_MARKET_male.png';
+import femaleLogo from '@/assets/OFFPLAN_MARKET_female.png';
+import defaultLogo from '@/assets/OFFPLAN_MARKET.png';
 
 const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +21,7 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
     { href: "/contact", label: t('nav.contact') },
     { href: "/blog", label: t('nav.blog') },
   ];
-
+ 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -62,9 +65,8 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
               <div className="flex flex-col h-full">
                 {/* Header with close button */}
                 <div className="flex items-center justify-between p-4 border-b">
-                  <Link to="/" className="text-lg font-bold">
-                    <span className="text-pink-400">OFFPLAN</span>
-                    <span className="text-[#7d8bff]">.MARKET</span>
+                  <Link to="/" className="md:hidden">
+                    <img src={logo} alt="Logo" className="h-8" />
                   </Link>
                   {/* <SheetClose asChild>
                     <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">

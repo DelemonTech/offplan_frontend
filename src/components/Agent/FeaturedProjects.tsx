@@ -631,6 +631,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   }
   // }, [rows]);
 
+
+  useEffect(() => {
+    if (!selectedCity && rows?.length > 0) {
+      const dubaiCity = rows.find(city => city.city_name.toLowerCase() === "dubai");
+      if (dubaiCity) setSelectedCity(dubaiCity);
+      else setSelectedCity(rows[0]); // fallback
+    }
+  }, [rows, selectedCity]);
+
   const [citiesReady, setCitiesReady] = useState(false);
 
 useEffect(() => {
@@ -638,6 +647,7 @@ useEffect(() => {
     setCitiesReady(true); // API gave cities
   }
 }, [cities]);
+
 
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
@@ -740,6 +750,64 @@ useEffect(() => {
         </div>
 
         <div className="flex flex-col items-center px-4 py-6 w-full">
+
+          {rows.length > 0 && rows.map((row, rowIndex) => (
+            <div
+              key={rowIndex}
+              className={`grid 
+                grid-cols-2 
+                sm:grid-cols-2 
+                md:grid-cols-3 
+                lg:grid-cols-4 
+                xl:grid-cols-${Math.min(row.length, 7)}
+                gap-4 
+                w-full 
+                max-w-screen-xl 
+                mb-6`}
+            >
+              {/* {row.map((city, index) => (
+                <button
+                  key={city.city_id}
+                  onClick={() => handleCityClick(city)}
+                  className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none 
+                  ${selectedCity.city_id === city.city_id ? "ring-2 ring-pink-500 bg-gradient-to-r from-pink-300 via-purple-100 to-purple-200" : "bg-white"}
+                  `}
+                >
+                  <h3 className={`font-semibold text-md mb-1 
+                  ${selectedCity.city_id === city.city_id ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text" : "text-gray-700"}`}>
+                    {city.city_name}
+                  </h3>
+                  <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
+                    <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
+                  </p>
+                </button>
+              ))} */}
+              {row.map((city, index) => {
+                const isSelected = selectedCity?.city_id === city.city_id;
+
+                return (
+                  <button
+                    key={city.city_id}
+                    onClick={() => handleCityClick(city)}
+                    className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none
+              ${isSelected ? "ring-2 ring-pink-300 bg-gradient-to-r from-pink-300 via-purple-200 to-purple-300" : "bg-white"}
+            `}
+                  >
+                    <h3 className={`font-semibold text-md mb-1 
+              ${isSelected ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text" : "text-gray-700"}`}>
+                      {city.city_name}
+                    </h3>
+                    <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
+                      <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
+                    </p>
+                  </button>
+                );
+              })}
+
+            </div>
+          ))}
+        </div>
+
   {!citiesReady ? (
     <div className="text-gray-500 text-center">Loading cities...</div>
   ) : (
@@ -780,6 +848,7 @@ useEffect(() => {
     </div>
   )}
 </div>
+
 
 
 
