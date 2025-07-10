@@ -55,9 +55,10 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
 
   // get districts of selected city
   const getFilteredNeighborhoods = () => {
-    console.log(selectedCity);
+    if (!selectedCity || citiesData.length === 0) {
+      return []; // ✅ Return an empty array, not undefined
+    }
     const city = citiesData.find((c) => c.name === selectedCity);
-    console.log(citiesData);
     return city?.districts || [];
   };
 
@@ -117,11 +118,14 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     { name: 'Retail', icon: ShoppingCart }
   ];
 
+  const [userSelectedCity, setUserSelectedCity] = useState("");
+
   const [salesStatus, setSalesStatus] = useState('');
   // const [propertyStatus, setPropertyStatus] = useState('');
 
   const resetFilters = () => {
     setSelectedCity('');
+    setUserSelectedCity('');
     setSelectedNeighborhood('');
     setPropertyType('');
     setSelectedPropertySubtype('');
@@ -133,6 +137,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     setProjectName('');
     setPropertyStatus('');
     setStatusName('');
+    setDeliveryYear('');
   };
 
   const handleSearch = async () => {
@@ -150,10 +155,10 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       max_price: priceRange[1],
       min_area: areaRange[0],
       max_area: areaRange[1],
-      property_status: propertyStatus || '',
       sales_status: '',
       title: projectName || '',           // ✅ Include project name
       developer: developer || '',                // ✅ Include developer
+      ...(statusName !== 'Total' && { property_status: statusName }),
       // project_status: projectStatus || '',       // ✅ Include project status
     };
 
@@ -163,11 +168,11 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     //   filters.sales_status = 'Sold Out';
     // } 
     if (propertyStatus) {
-    setStatusName(propertyStatus);
-    filters.property_status = propertyStatus;
-  } else {
-    setStatusName('');
-  }
+      setStatusName(propertyStatus);
+      filters.property_status = propertyStatus;
+    } else {
+      setStatusName('');
+    }
 
     // 👉 Optional: log the final request body
     console.log("🔍 Sending search filters:", filters);
@@ -221,18 +226,18 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     setSelectedPropertySubtype(type === 'Commercial' ? 'Office' : 'Apartment');
   };
 
-  useEffect(() => {
-    // Replace this with actual API fetch if needed
-    fetchCitiesFromAPI();
-  }, []);
+  // useEffect(() => {
+  //   // Replace this with actual API fetch if needed
+  //   fetchCitiesFromAPI();
+  // }, []);
 
-  const fetchCitiesFromAPI = async () => {
-    const response = await fetch('https://offplan-backend.onrender.com/cities'); // or use your endpoint
-    const result = await response.json();
-    if (result.status) {
-      setCitiesData(result.data);
-    }
-  };
+  // const fetchCitiesFromAPI = async () => {
+  //   const response = await fetch('https://offplan-backend.onrender.com/cities'); // or use your endpoint
+  //   const result = await response.json();
+  //   if (result.status) {
+  //     setCitiesData(result.data);
+  //   }
+  // };
 
   useEffect(() => {
     const fetchDevelopers = async () => {
@@ -253,6 +258,23 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     fetchDevelopers();
   }, []);
 
+  console.log("City : ", selectedNeighborhood, "!");
+
+  useEffect(() => {
+    if (selectedCity) {
+      const neighborhoods = getFilteredNeighborhoods();
+
+      if (neighborhoods.length > 0) {
+        // Optional: auto-select the first neighborhood
+        setSelectedNeighborhood("");
+      } else {
+        setSelectedNeighborhood(""); // Clear if no neighborhoods
+      }
+    } else {
+      setSelectedNeighborhood(""); // Clear if no city
+    }
+  }, [selectedCity, citiesData]);
+
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -264,18 +286,19 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             <Globe className="mr-2 text-gray-600" size={18} />
             <label className="text-sm font-semibold text-gray-700">City</label>
           </div>
-          <Select value={selectedCity} onValueChange={setSelectedCity}>
-            <SelectTrigger className="h-11 bg-white/70 border-gray-200 rounded-lg">
-              <SelectValue placeholder="Select city" />
-            </SelectTrigger>
-            <SelectContent>
-              {citiesData.map(city => (
-                <SelectItem key={city.id} value={city.name}>
-                  {city.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {citiesData.length > 0 && (
+            <Select value={userSelectedCity || ""} onValueChange={(value) => { setSelectedCity(value); setUserSelectedCity(value) }}>
+              <SelectTrigger className="h-11 bg-white/70 border-gray-200 rounded-lg">
+                <SelectValue placeholder="Select city" />
+              </SelectTrigger>
+              <SelectContent>
+                {citiesData.map(city => (
+                  <SelectItem key={city.id} value={city.name}>
+                    {city.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>)}
         </div>
 
         {/* Neighborhood */}
@@ -287,20 +310,29 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <Select
             value={selectedNeighborhood}
             onValueChange={setSelectedNeighborhood}
-            disabled={!selectedCity}
+            disabled={!selectedCity} // disable until city is selected
           >
             <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
               <SelectValue placeholder={selectedCity ? "Select area" : "Select city first"} />
             </SelectTrigger>
             <SelectContent className="bg-white border-gray-200 shadow-lg max-h-60 overflow-y-auto">
-              {getFilteredNeighborhoods().map(district => (
-                <SelectItem key={district} value={district}>
-                  {district}
-                </SelectItem>
-              ))}
+              {selectedCity ? (
+                getFilteredNeighborhoods().length > 0 ? (
+                  getFilteredNeighborhoods().map((district) => (
+                    <SelectItem key={district} value={district}>
+                      {district}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="p-2 text-gray-500 text-center text-xs">No neighborhoods found</div>
+                )
+              ) : (
+                <div className="p-2 text-gray-500 text-center">Select a city first</div>
+              )}
             </SelectContent>
           </Select>
         </div>
+
       </div>
 
       {/* Enhanced Property Type Toggle */}

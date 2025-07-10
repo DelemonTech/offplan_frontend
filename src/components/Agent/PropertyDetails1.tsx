@@ -623,7 +623,7 @@ const PropertyDetails1 = () => {
               }`}
           >
             {/* Price Range */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
                 <DollarSign className="w-5 h-5 text-white" />
               </div>
@@ -634,7 +634,7 @@ const PropertyDetails1 = () => {
             </div>
 
             {/* Area Range */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
                 <Maximize2 className="w-5 h-5 text-white" />
               </div>
@@ -645,7 +645,7 @@ const PropertyDetails1 = () => {
             </div>
 
             {/* Handover */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
                 <Handshake className="w-5 h-5 text-white" />
               </div>
@@ -656,7 +656,7 @@ const PropertyDetails1 = () => {
             </div>
 
             {/* Payment Plan */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
                 <BarChart2 className="w-5 h-5 text-white" />
               </div>
@@ -909,7 +909,7 @@ const PropertyDetails1 = () => {
               </div>
             </div>
           )}
-          <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-200 p-6 shadow">
+          <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-100 p-6 shadow">
             <h3 className="text-2xl md:text-3xl font-extrabold text-center mb-6 bg-gradient-to-br from-green-700 to-emerald-500 bg-clip-text text-transparent ">
               Why Invest in {projectData.title}
             </h3>

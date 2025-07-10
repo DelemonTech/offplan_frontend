@@ -54,7 +54,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   isSearchLoading,
   setIsSearchLoading,
   subunit_count,
-  setSubUnitCount
+  setSubUnitCount,
+  isCitiesLoading
 }) => {
 
   // const navigate = useNavigate();
@@ -87,12 +88,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
 
   const filters = [
-    { id: 3, key: "all", label: 'All', icon: Globe2 },
+    { id: 3, key: "total", label: 'All', icon: Globe2 },
     { id: 1, key: 'ready', label: 'Ready', icon: Check },
     { id: 2, key: 'offplan', label: 'Off Plan', icon: Building2 }
   ];
   const [totalInventory, setTotalInventory] = useState({
-    all: 0,
+    total: 0,
     ready: 0,
     offplan: 0
   });
@@ -205,10 +206,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       max_price: priceRange[1],
       min_area: areaRange[0],
       max_area: areaRange[1],
-      property_status: '',
+      ...(statusName !== 'All' && { property_status: statusName }),
       // sales_status: '',
     };
 
+    if (statusName === "All") {
+      setSelectedCity('');
+      setSelectedNeighborhood('');
+      setDeveloper('');
+    }
     // Apply the status filter
     // if (statusName.toLowerCase() === 'sold out') {
     //   filters.sales_status = 'Sold Out';
@@ -345,9 +351,66 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   }, [properties]);
 
   useEffect(() => {
+    const fetchCityCounts = async () => {
+      try {
+        let status;
+
+        if (statusName?.toLowerCase() === 'sold out') {
+          status = 'Sold Out';
+        } else if (statusName?.toLowerCase() === 'ready') {
+          status = 'Ready';
+        } else if (statusName?.toLowerCase() === 'off plan') {
+          status = 'Off Plan';
+        } else if (statusName?.toLowerCase() === 'all') {
+          status = 'Total'; // ✅ NEW: Handle Total status
+        } else {
+          console.warn("Unknown statusName:", statusName);
+          return; // Exit early for invalid status
+        }
+
+        const response = await fetch(
+          `https://offplan-backend.onrender.com//properties/city/count/?status=${encodeURIComponent(status)}`
+        );
+        const data = await response.json();
+
+        if (data?.status && data?.data) {
+          setCities(data.data); // API returns [{ city_id, city_name, property_count, ... }]
+          console.log("CITIES:", cities);
+        }
+
+        if (data?.data?.length > 0) {
+          const firstCity = data.data[0];
+          setSelectedCity(firstCity);
+
+          const updatedFilters = {
+            city: firstCity.city_name,
+            property_status: statusName,
+          };
+
+          setSearchFilters(updatedFilters);
+
+          navigate(location.pathname, {
+            state: { filters: updatedFilters },
+          });
+        }
+      } catch (error) {
+        console.error("❌ Failed to fetch city counts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (statusName) {
+      fetchCityCounts();
+    }
+  }, [statusName]);
+
+
+  useEffect(() => {
     const fetchFilteredProperties = async () => {
       try {
         setIsLoading(true);
+        document.body.style.overflow = 'hidden';
 
         const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
           method: 'POST',
@@ -358,7 +421,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
             // statusName === 'Sold Out'
             //   ? { sales_status: 'Sold Out' }
             //   : 
-            { property_status: statusName === 'Ready' ? 'Ready' : 'Off Plan' }
+            statusName === 'All' || statusName === 'Total'
+              ? {}
+              : { property_status: statusName }
           ),
         });
 
@@ -368,9 +433,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           setProperties(result.data.results || []);
           setNextPageUrl(result.data.next_page_url || null);
         }
+
+        const section = document.getElementById('featured-projects');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       } catch (error) {
         console.error('Error fetching filtered properties:', error);
       } finally {
+        document.body.style.overflow = 'auto';
         setIsLoading(false);
       }
     };
@@ -382,6 +453,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   }, [statusName]);
 
   const [cities, setCities] = useState([]);
+
 
   // const cities1 = [
   //   { city_id: 1, city_name: 'Dubai', property_count: 120 },
@@ -418,46 +490,6 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   }
   // };
 
-  useEffect(() => {
-    const fetchCityCounts = async () => {
-      try {
-        const status = statusName?.toLowerCase() === 'sold out' ? 'Sold Out'
-          : statusName?.toLowerCase() === 'ready' ? 'Ready'
-            : 'Off Plan';
-
-        const response = await fetch(
-          `https://offplan-backend.onrender.com/properties/city/count/?status=${encodeURIComponent(status)}`
-        );
-        const data = await response.json();
-
-        if (data?.status && data?.data) {
-          setCities(data.data); // assumes API returns [{ name, count }]
-        }
-        if (data.data.length > 0) {
-          const firstCity = data.data[0];
-          setSelectedCity(firstCity);
-
-          const updatedFilters = {
-            city: firstCity.city_name,
-            property_status: statusName,
-          };
-
-          setSearchFilters(updatedFilters);
-
-          navigate(location.pathname, {
-            state: { filters: updatedFilters },
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch city counts:", error);
-      }
-    };
-
-    if (statusName) {
-      fetchCityCounts();
-    }
-  }, [statusName]);
-
 
   useEffect(() => {
     const filters = location.state?.filters;
@@ -465,6 +497,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
     const fetchFilteredProperties = async () => {
       setIsSearchLoading(true);
+      document.body.style.overflow = 'hidden';
       try {
         const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
           method: 'POST',
@@ -480,9 +513,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           //   window.scrollTo({ top: 930, behavior: 'smooth' });
           // }, 100);
         }
+        const section = document.getElementById('featured-projects');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       } catch (error) {
         console.error('Error:', error);
       } finally {
+        document.body.style.overflow = 'auto';
         setIsSearchLoading(false);
       }
     };
@@ -510,7 +548,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           setTotalInventory({
             ready,
             offplan,
-            all: ready + offplan
+            total: ready + offplan,
           });
         }
       } catch (error) {
@@ -587,11 +625,19 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     });
   };
 
-  useEffect(() => {
-  if (rows.length > 0) {
-    setSelectedCity(rows[0]);
+  //   useEffect(() => {
+  //   if (rows.length > 0) {
+  //     setSelectedCity(rows[0]);
+  //   }
+  // }, [rows]);
+
+  const [citiesReady, setCitiesReady] = useState(false);
+
+useEffect(() => {
+  if (cities.length > 0) {
+    setCitiesReady(true); // API gave cities
   }
-}, [rows]);
+}, [cities]);
 
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
@@ -694,40 +740,48 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         </div>
 
         <div className="flex flex-col items-center px-4 py-6 w-full">
-          {rows.length > 0 && rows.map((row, rowIndex) => (
-            <div
-              key={rowIndex}
-              className={`grid 
-                grid-cols-2 
-                sm:grid-cols-2 
-                md:grid-cols-3 
-                lg:grid-cols-4 
-                xl:grid-cols-${Math.min(row.length, 7)}
-                gap-4 
-                w-full 
-                max-w-screen-xl 
-                mb-6`}
-            >
-              {row.map((city, index) => (
-                <button
-                  key={city.city_id}
-                  onClick={() => handleCityClick(city)}
-                  className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none 
-                  ${selectedCity.city_id === city.city_id ? "ring-2 ring-pink-500 bg-gradient-to-r from-pink-300 via-purple-100 to-purple-200" : "bg-white"}
-                  `}
-                >
-                  <h3 className={`font-semibold text-md mb-1 
-                  ${selectedCity.city_id === city.city_id ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text" : "text-gray-700"}`}>
-                    {city.city_name}
-                  </h3>
-                  <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
-                    <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
-                  </p>
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
+  {!citiesReady ? (
+    <div className="text-gray-500 text-center">Loading cities...</div>
+  ) : (
+    <div
+      className={`grid 
+      grid-cols-2
+      sm:grid-cols-3
+      md:grid-cols-4
+      lg:grid-cols-5
+      xl:grid-cols-6
+      2xl:grid-cols-7
+      gap-4
+      w-full
+      max-w-screen-xl pb-5`}
+    >
+      {cities.map((city, index) => (
+        <button
+          key={city.city_id}
+          onClick={() => handleCityClick(city)}
+          className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none 
+            ${selectedCity?.city_id === city.city_id
+              ? "ring-2 ring-pink-500 bg-gradient-to-r from-pink-300 via-purple-100 to-purple-200"
+              : "bg-white"}`}
+        >
+          <h3
+            className={`font-semibold text-md mb-1 
+                ${selectedCity?.city_id === city.city_id
+                  ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text"
+                  : "text-gray-700"}`}
+          >
+            {city.city_name}
+          </h3>
+          <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
+            <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
+          </p>
+        </button>
+      ))}
+    </div>
+  )}
+</div>
+
+
 
 
 

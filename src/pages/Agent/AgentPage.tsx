@@ -58,6 +58,8 @@ const AgentPageContent = () => {
 
     const [projectStatus, setProjectStatus] = useState('');
     const [subunit_count, setSubUnitCount] = useState('');
+
+    const [isCitiesLoading, setIsCitiesLoading] = useState(true);
   
     // New filter states for missing filters
     // const [rentalGuarantee, setRentalGuarantee] = useState(false);
@@ -84,8 +86,6 @@ useEffect(() => {
   }
   console.log("gender : ",logoPath)
 }, [gender]);
-
-
 
 
   const { username } = useParams();
@@ -150,9 +150,37 @@ useEffect(() => {
   fetchAll();
 }, [username, statusName]);
 
+  const fetchCitiesFromAPI = async () => {
+  try {
+    setIsCitiesLoading(true);
+    const response = await fetch('https://offplan-backend.onrender.com/cities');
+    const result = await response.json();
+    if (result.status && result.data) {
+      setCitiesData(result.data);
+    } else {
+      console.warn("No cities found");
+    }
+  } catch (err) {
+    console.error("Failed to fetch cities:", err);
+  } finally {
+    setIsCitiesLoading(false);
+  }
+};
+
+// useEffect(() => {
+//   fetchCitiesFromAPI();
+// }, []);
+
+// Only fetch cities if empty
 useEffect(() => {
-  console.log('👀 statusName changed in parent:', statusName);
-}, [statusName]);
+  if (citiesData.length > 0) return;
+  fetchCitiesFromAPI();
+}, []);
+
+
+// useEffect(() => {
+//   console.log('👀 statusName changed in parent:', statusName);
+// }, [statusName]);
 
   if (loading) {
     return (
@@ -227,6 +255,7 @@ useEffect(() => {
         setProjectStatus={setProjectStatus}
         setSubUnitCount={setSubUnitCount}
         subunit_count={subunit_count}
+        isCitiesLoading={isCitiesLoading}
       />
       <AgentProfile agent={agentData} />
 

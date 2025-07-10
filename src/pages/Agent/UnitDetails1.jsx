@@ -8,7 +8,7 @@ import girl from '../../assets/girl.jpg'
 import forplan from '../../assets/forplan1.webp';
 import { useLocation } from 'react-router-dom';
 import Footer from '../../components/Agent/Footer'
-import { jsPDF } from "jspdf";
+// import { jsPDF } from "jspdf";
 import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 
 const UnitDetails1 = () => {
