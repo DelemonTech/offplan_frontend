@@ -587,11 +587,19 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     });
   };
 
+  //   useEffect(() => {
+  //   if (rows.length > 0) {
+  //     setSelectedCity(rows[0]);
+  //   }
+  // }, [rows]);
+
   useEffect(() => {
-  if (rows.length > 0) {
-    setSelectedCity(rows[0]);
-  }
-}, [rows]);
+    if (!selectedCity && rows?.length > 0) {
+      const dubaiCity = rows.find(city => city.city_name.toLowerCase() === "dubai");
+      if (dubaiCity) setSelectedCity(dubaiCity);
+      else setSelectedCity(rows[0]); // fallback
+    }
+  }, [rows, selectedCity]);
 
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
@@ -708,7 +716,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                 max-w-screen-xl 
                 mb-6`}
             >
-              {row.map((city, index) => (
+              {/* {row.map((city, index) => (
                 <button
                   key={city.city_id}
                   onClick={() => handleCityClick(city)}
@@ -724,7 +732,29 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                     <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
                   </p>
                 </button>
-              ))}
+              ))} */}
+              {row.map((city, index) => {
+                const isSelected = selectedCity?.city_id === city.city_id;
+
+                return (
+                  <button
+                    key={city.city_id}
+                    onClick={() => handleCityClick(city)}
+                    className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none
+              ${isSelected ? "ring-2 ring-pink-300 bg-gradient-to-r from-pink-300 via-purple-200 to-purple-300" : "bg-white"}
+            `}
+                  >
+                    <h3 className={`font-semibold text-md mb-1 
+              ${isSelected ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text" : "text-gray-700"}`}>
+                      {city.city_name}
+                    </h3>
+                    <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
+                      <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
+                    </p>
+                  </button>
+                );
+              })}
+
             </div>
           ))}
         </div>
