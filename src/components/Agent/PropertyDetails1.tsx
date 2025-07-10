@@ -706,7 +706,7 @@ const PropertyDetails1 = () => {
         {/*  */}
 
         <div className="mb-10">
-          {units.available > 0 && unitTypes.length > 0 && (
+          {/* {units.available > 0 && unitTypes.length > 0 && ( */}
             <div>
             <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-600 mb-8">
               Available Unit Types
@@ -830,8 +830,8 @@ const PropertyDetails1 = () => {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  //  navigate(`/agent/${agent.username}/property-detailed/${sub.id}`,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           k{agent.username}/property-detailed/${sub.id}`,
-                                  navigate(`/agent/${agent.username}/unit-details/${sub.id}`,
+                                  //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           k{agent.username}/property-detailed/${sub.id}`,
+                                  navigate(`/agent/${agent.username}/property-detailed/${sub.id}`,
                                     {
                                       state: {
                                         unit: sub,
@@ -843,7 +843,7 @@ const PropertyDetails1 = () => {
                                 }}
                                 className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
                               >
-                                View Detailss
+                                View Details
                               </button>
                             </div>
                           </div>
@@ -862,7 +862,7 @@ const PropertyDetails1 = () => {
               ))}
             </div>
           </div>
-          )}
+          {/* )} */}
 
           {/*  */}
 
