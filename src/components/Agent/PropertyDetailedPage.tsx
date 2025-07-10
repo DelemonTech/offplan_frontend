@@ -296,7 +296,7 @@ const PropertyDetailedPage = () => {
         </div> */}
         <div className="bg-white rounded-xl shadow-sm p-6 mt-10">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-violet-600 mb-4">Floor Plan</h3>
+            <h3 className="text-xl font-bold text-violet-600 mb-4">Floor Plan</h3>
             {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
               <div className="flex space-x-2">
                 {/* Download Button */}
