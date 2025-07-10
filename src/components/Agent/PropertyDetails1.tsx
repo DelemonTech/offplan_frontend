@@ -627,7 +627,7 @@ const PropertyDetails1 = () => {
               }`}
           >
             {/* Price Range */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
                 <DollarSign className="w-5 h-5 text-white" />
               </div>
@@ -638,7 +638,7 @@ const PropertyDetails1 = () => {
             </div>
 
             {/* Area Range */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
                 <Maximize2 className="w-5 h-5 text-white" />
               </div>
@@ -649,7 +649,7 @@ const PropertyDetails1 = () => {
             </div>
 
             {/* Handover */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
                 <Handshake className="w-5 h-5 text-white" />
               </div>
@@ -660,7 +660,7 @@ const PropertyDetails1 = () => {
             </div>
 
             {/* Payment Plan */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
                 <BarChart2 className="w-5 h-5 text-white" />
               </div>
@@ -685,7 +685,7 @@ const PropertyDetails1 = () => {
               return (
                 <div
                   key={index}
-                  className={`flex flex-col sm:flex-row items-center gap-3 ${cardBg} rounded-2xl p-4 shadow-sm w-full`}
+                  className={`flex flex-row items-center gap-3 ${cardBg} rounded-2xl p-4 shadow-sm w-full`}
                 >
                   <div className={`${iconBg} rounded-full p-2`}>
                     <amenity.IconComponent className="w-5 h-5 text-white" />
@@ -708,43 +708,46 @@ const PropertyDetails1 = () => {
 
         {/* Unit Types */}
         {/*  */}
+
         <div className="mb-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-600 mb-8">
-            Available Unit Types
-          </h2>
+          {units.available > 0 && unitTypes.length > 0 && (
+            <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-600 mb-8">
+              Available Unit Types
+            </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {unitTypes.map((unit, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => toggleUnit(unit.type)}
-                ref={(el) => (unitRefs.current[unit.type] = el)}
-                className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer"
-              >
-                {/* Top: Unit Summary */}
-                <div className="flex justify-between items-center p-5">
-                  {/* Left: Icon & Details */}
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`w-14 h-14 rounded-full ${unit.color} flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition`}
-                    >
-                      {unit.icon}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {unitTypes.map((unit, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.02 }}
+                  onClick={() => toggleUnit(unit.type)}
+                  ref={(el) => (unitRefs.current[unit.type] = el)}
+                  className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer"
+                >
+                  {/* Top: Unit Summary */}
+                  <div className="flex justify-between items-center p-5">
+                    {/* Left: Icon & Details */}
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`w-14 h-14 rounded-full ${unit.color} flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition`}
+                      >
+                        {unit.icon}
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900">{unit.type || (unit.subUnits?.[0]?.id ?? 'N/A')}</h4>
+                        <p className="text-sm text-gray-500">{unit.available} units available</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-900">{unit.type || (unit.subUnits?.[0]?.id ?? 'N/A')}</h4>
-                      <p className="text-sm text-gray-500">{unit.available} units available</p>
+
+                    {/* Right: Price */}
+                    <div className="flex flex-col items-end">
+                      <p className="text-xs text-gray-400">Starting from</p>
+                      <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
+                        AED {formatPrice(unit.startingPrice)}
+                      </p>
                     </div>
                   </div>
-
-                  {/* Right: Price */}
-                  <div className="flex flex-col items-end">
-                    <p className="text-xs text-gray-400">Starting from</p>
-                    <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
-                      AED {formatPrice(unit.startingPrice)}
-                    </p>
-                  </div>
-                </div>
 
                 {/* Expand/Collapse Button Row */}
                 <div className="flex justify-center py-2 border-t">
@@ -775,91 +778,126 @@ const PropertyDetails1 = () => {
                     <div
                       className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
                         }`}
+
+                  {/* Expand/Collapse Button Row */}
+                  <div className="flex justify-center py-2 border-t">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent parent onClick
+                        toggleUnit(unit.type);
+                      }}
+                      className="flex items-center gap-1 text-purple-600 font-medium hover:text-purple-800 transition"
+
                     >
-                      {unit.subUnits.map((sub, subIndex) => (
-                        <div
-                          key={subIndex}
-                          className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md transition"
-                        >
-                          {/* Top Row */}
-                          <div className="flex justify-between mb-2">
-                            <span className="text-sm font-semibold text-gray-800">
-                              ID: {sub.id}
-                            </span>
-                            <span
-                              className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === "Available"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
-                                }`}
-                            >
-                              {sub.status || "N/A"}
-                            </span>
-                          </div>
+                      {expandedUnit === unit.type ? (
+                        <>
+                          <ChevronUp className="w-4 h-4" />
+                          Hide Units
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4" />
+                          View Units
+                        </>
+                      )}
+                    </button>
+                  </div>
 
-                          {/* Details */}
-                          <ul className="text-gray-500 text-xs mb-2">
-                            <li>Floor: {sub.floor || "N/A"}</li>
-                            <li>Size: {sub.size}</li>
-                          </ul>
-
-                          {/* Price */}
-                          <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
-                            AED {formatPrice(sub.price)}
-                          </p>
-
-                          {/* Optional: Floor Plan Image */}
-                          <div className="relative w-full h-32 rounded-lg overflow-hidden">
-                            <img
-                              src={sub.floorPlan}
-                              // alt={`Floor plan for ${sub.id}`}
-                              className="w-full h-full object-cover"
-                              // loading="lazy"
-                              onError={(e) => {
-                                e.currentTarget.src = "/no-floor-plan.png";
-                              }}
-                            />
-                            {/* Watermark Overlay */}
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                              <span className="text-white text-md font-bold opacity-60">
-                                OFFPLAN.MARKET
+                  {/* Expanded Sub-Units */}
+                  {expandedUnit === unit.type && unit.subUnits.length > 0 && (
+                    <div className="bg-gray-50 rounded-b-2xl p-4 border-t">
+                      <div
+                        className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
+                          }`}
+                      >
+                        {unit.subUnits.map((sub, subIndex) => (
+                          <div
+                            key={subIndex}
+                            className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md transition"
+                          >
+                            {/* Top Row */}
+                            <div className="flex justify-between mb-2">
+                              <span className="text-sm font-semibold text-gray-800">
+                                ID: {sub.id}
+                              </span>
+                              <span
+                                className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === "Available"
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-red-100 text-red-700"
+                                  }`}
+                              >
+                                {sub.status ? sub.status : "Coming Soon"}
                               </span>
                             </div>
-                          </div>
 
-                          {/* View Details Button */}
-                          <div className="mt-3 text-center">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(`/agent/${agent.username}/property-detailed/${sub.id}`, {
-                                  state: {
-                                    unit: sub,
-                                    projectData,
-                                    agent,
-                                  },
-                                });
-                              }}
-                              className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
-                            >
-                              View Details
-                            </button>
+                            {/* Details */}
+                            <ul className="text-gray-500 text-xs mb-2">
+                              <li>Floor: {sub.floor || "N/A"}</li>
+                              <li>Size: {sub.size}</li>
+                            </ul>
+
+                            {/* Price */}
+                            <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
+                              AED {formatPrice(sub.price)}
+                            </p>
+
+                            {/* Optional: Floor Plan Image */}
+                            <div className="relative w-full h-32 rounded-lg overflow-hidden">
+                              <img
+                                src={sub.floorPlan}
+                                // alt={`Floor plan for ${sub.id}`}
+                                className="w-full h-full object-cover"
+                                // loading="lazy"
+                                onError={(e) => {
+                                  e.currentTarget.src = "/no-floor-plan.png";
+                                }}
+                              />
+                              {/* Watermark Overlay */}
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                                <span className="text-white text-md font-bold opacity-60">
+                                  OFFPLAN.MARKET
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* View Details Button */}
+                            <div className="mt-3 text-center">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  //  navigate(`/agent/${agent.username}/property-detailed/${sub.id}`,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           k{agent.username}/property-detailed/${sub.id}`,
+                                  navigate(`/agent/${agent.username}/unit-details/${sub.id}`,
+                                    {
+                                      state: {
+                                        unit: sub,
+                                        projectData,
+                                        agent,
+                                      },
+                                    });
+
+                                }}
+                                className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
+                              >
+                                View Detailss
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Fallback if no sub-units */}
-                {expandedUnit === unit.type && unit.subUnits.length === 0 && (
-                  <div className="bg-gray-50 rounded-b-2xl p-4 text-center text-gray-500 border-t">
-                    No units available in this category
-                  </div>
-                )}
-              </motion.div>
-            ))}
-
+                  {/* Fallback if no sub-units */}
+                  {expandedUnit === unit.type && unit.subUnits.length === 0 && (
+                    <div className="bg-gray-50 rounded-b-2xl p-4 text-center text-gray-500 border-t">
+                      No units available in this category
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
           </div>
+          )}
 
           {/*  */}
 
@@ -910,7 +948,7 @@ const PropertyDetails1 = () => {
               </div>
             </div>
           )}
-          <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-200 p-6 shadow">
+          <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-100 p-6 shadow">
             <h3 className="text-2xl md:text-3xl font-extrabold text-center mb-6 bg-gradient-to-br from-green-700 to-emerald-500 bg-clip-text text-transparent ">
               Why Invest in {projectData.title}
             </h3>
