@@ -237,6 +237,8 @@ const PropertyDetailedPage = () => {
     window.open(whatsappUrl, '_blank');
   };
 
+  const [fullscreenImage, setFullscreenImage] = useState(null);
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header logo={logoPath} />
@@ -322,7 +324,7 @@ const PropertyDetailedPage = () => {
               }`}
           >
             {/* Overview */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-full p-2">
                 <Home className="w-5 h-5 text-white" />
               </div>
@@ -333,7 +335,7 @@ const PropertyDetailedPage = () => {
             </div>
 
             {/* Area */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full p-2">
                 <Maximize2 className="w-5 h-5 text-white" />
               </div>
@@ -344,7 +346,7 @@ const PropertyDetailedPage = () => {
             </div>
 
             {/* Handover */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full p-2">
                 <Handshake className="w-5 h-5 text-white" />
               </div>
@@ -355,7 +357,7 @@ const PropertyDetailedPage = () => {
             </div>
 
             {/* Payment Plan */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
+            <div className="flex flex-row items-center gap-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl p-4 shadow-sm w-full">
               <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-full p-2">
                 <BarChart2 className="w-5 h-5 text-white" />
               </div>
@@ -380,7 +382,7 @@ const PropertyDetailedPage = () => {
               return (
                 <div
                   key={index}
-                  className={`flex flex-col sm:flex-row items-center gap-3 ${cardBg} rounded-2xl p-4 shadow-sm w-full`}
+                  className={`flex flex-row items-center gap-3 ${cardBg} rounded-2xl p-4 shadow-sm w-full`}
                 >
                   <div className={`${iconBg} rounded-full p-2`}>
                     <amenity.IconComponent className="w-5 h-5 text-white" />
@@ -418,7 +420,7 @@ const PropertyDetailedPage = () => {
         </div> */}
         <div className="bg-white rounded-xl shadow-sm p-6 mt-10">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-violet-600 mb-4">Floor Plan</h3>
+            <h3 className="text-xl font-bold text-violet-600 mb-4">Floor Plan</h3>
             {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
               <div className="flex space-x-2">
                 {/* Download Button */}
@@ -640,22 +642,33 @@ const PropertyDetailedPage = () => {
               >
                 {card.button}
               </button>
+              {/* Gallery Modal */}
+              {/* Gallery Modal */}
               {showGalleryModal && (
-                <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-start overflow-y-auto p-6">
-                  <div className="bg-white rounded-2xl shadow-lg max-w-6xl w-full mt-10 relative p-6">
-                    {/* Close Button */}
+                <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-start overflow-y-auto p-2">
+                  <div
+                    className="bg-white rounded-3xl shadow-lg max-w-6xl w-full relative p-6"
+                    style={{ marginBottom: "80px" }} // Leave space for WhatsApp CTA
+                  >
+                    {/* Close Modal Button */}
                     <button
                       onClick={() => setShowGalleryModal(false)}
-                      className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-xl font-bold"
+                      className="absolute top-4 right-4 text-red-500 hover:text-red-500 text-3xl font-bold"
                     >
                       &times;
                     </button>
 
-                    <h3 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text mb-6 text-center">Project Gallery</h3>
+                    <h3 className="text-2xl font-bold text-blue-600 mb-4 text-center">
+                      Project Gallery
+                    </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto">
                       {projectData?.property_images?.map((img, index) => (
-                        <div key={index} className="rounded-xl overflow-hidden shadow">
+                        <div
+                          key={index}
+                          className="rounded-xl overflow-hidden shadow cursor-pointer"
+                          onClick={() => setFullscreenImage(img.image)} // ✅ Open fullscreen
+                        >
                           <img
                             src={img.image}
                             alt={`Gallery ${index + 1}`}
@@ -664,18 +677,35 @@ const PropertyDetailedPage = () => {
                         </div>
                       ))}
                     </div>
-
-                    <div className="text-center mt-6">
-                      <button
-                        onClick={() => setShowGalleryModal(false)}
-                        className="px-4 py-2 bg-gradient-to-tr from-pink-600 to-purple-500 text-white font-semibold rounded-lg hover:bg-red-200 transition"
-                      >
-                        Close Gallery
-                      </button>
-                    </div>
                   </div>
                 </div>
               )}
+
+              {/* 🆕 Render fullscreen image outside modal */}
+              {fullscreenImage && (
+                <div
+                  className="fixed inset-0 z-[100] bg-black bg-opacity-90 flex justify-center items-center"
+                  onClick={() => setFullscreenImage(null)} // Close on background click
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent closing if button is clicked
+                      setFullscreenImage(null);
+                    }}
+                    className="absolute top-6 right-6 text-white text-4xl font-bold"
+                  >
+                    &times;
+                  </button>
+                  <img
+                    src={fullscreenImage}
+                    alt="Fullscreen View"
+                    className="max-w-screen max-h-screen object-contain"
+                  />
+                </div>
+              )}
+
+
+
 
 
             </div>

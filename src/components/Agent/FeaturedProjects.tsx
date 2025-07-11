@@ -54,7 +54,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   isSearchLoading,
   setIsSearchLoading,
   subunit_count,
-  setSubUnitCount
+  setSubUnitCount,
+  isCitiesLoading
 }) => {
 
   // const navigate = useNavigate();
@@ -87,12 +88,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
 
   const filters = [
-    { id: 3, key: "all", label: 'All', icon: Globe2 },
+    { id: 3, key: "total", label: 'All', icon: Globe2 },
     { id: 1, key: 'ready', label: 'Ready', icon: Check },
     { id: 2, key: 'offplan', label: 'Off Plan', icon: Building2 }
   ];
   const [totalInventory, setTotalInventory] = useState({
-    all: 0,
+    total: 0,
     ready: 0,
     offplan: 0
   });
@@ -205,10 +206,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       max_price: priceRange[1],
       min_area: areaRange[0],
       max_area: areaRange[1],
-      property_status: '',
+      ...(statusName !== 'All' && { property_status: statusName }),
       // sales_status: '',
     };
 
+    if (statusName === "All") {
+      setSelectedCity('');
+      setSelectedNeighborhood('');
+      setDeveloper('');
+    }
     // Apply the status filter
     // if (statusName.toLowerCase() === 'sold out') {
     //   filters.sales_status = 'Sold Out';
@@ -345,9 +351,66 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   }, [properties]);
 
   useEffect(() => {
+    const fetchCityCounts = async () => {
+      try {
+        let status;
+
+        if (statusName?.toLowerCase() === 'sold out') {
+          status = 'Sold Out';
+        } else if (statusName?.toLowerCase() === 'ready') {
+          status = 'Ready';
+        } else if (statusName?.toLowerCase() === 'off plan') {
+          status = 'Off Plan';
+        } else if (statusName?.toLowerCase() === 'all') {
+          status = 'Total'; // ✅ NEW: Handle Total status
+        } else {
+          console.warn("Unknown statusName:", statusName);
+          return; // Exit early for invalid status
+        }
+
+        const response = await fetch(
+          `https://offplan-backend.onrender.com//properties/city/count/?status=${encodeURIComponent(status)}`
+        );
+        const data = await response.json();
+
+        if (data?.status && data?.data) {
+          setCities(data.data); // API returns [{ city_id, city_name, property_count, ... }]
+          console.log("CITIES:", cities);
+        }
+
+        if (data?.data?.length > 0) {
+          const firstCity = data.data[0];
+          setSelectedCity(firstCity);
+
+          const updatedFilters = {
+            city: firstCity.city_name,
+            property_status: statusName,
+          };
+
+          setSearchFilters(updatedFilters);
+
+          navigate(location.pathname, {
+            state: { filters: updatedFilters },
+          });
+        }
+      } catch (error) {
+        console.error("❌ Failed to fetch city counts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (statusName) {
+      fetchCityCounts();
+    }
+  }, [statusName]);
+
+
+  useEffect(() => {
     const fetchFilteredProperties = async () => {
       try {
         setIsLoading(true);
+        document.body.style.overflow = 'hidden';
 
         const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
           method: 'POST',
@@ -358,7 +421,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
             // statusName === 'Sold Out'
             //   ? { sales_status: 'Sold Out' }
             //   : 
-            { property_status: statusName === 'Ready' ? 'Ready' : 'Off Plan' }
+            statusName === 'All' || statusName === 'Total'
+              ? {}
+              : { property_status: statusName }
           ),
         });
 
@@ -368,9 +433,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           setProperties(result.data.results || []);
           setNextPageUrl(result.data.next_page_url || null);
         }
+
+        const section = document.getElementById('featured-projects');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       } catch (error) {
         console.error('Error fetching filtered properties:', error);
       } finally {
+        document.body.style.overflow = 'auto';
         setIsLoading(false);
       }
     };
@@ -382,6 +453,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   }, [statusName]);
 
   const [cities, setCities] = useState([]);
+
 
   // const cities1 = [
   //   { city_id: 1, city_name: 'Dubai', property_count: 120 },
@@ -418,46 +490,6 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   }
   // };
 
-  useEffect(() => {
-    const fetchCityCounts = async () => {
-      try {
-        const status = statusName?.toLowerCase() === 'sold out' ? 'Sold Out'
-          : statusName?.toLowerCase() === 'ready' ? 'Ready'
-            : 'Off Plan';
-
-        const response = await fetch(
-          `https://offplan-backend.onrender.com/properties/city/count/?status=${encodeURIComponent(status)}`
-        );
-        const data = await response.json();
-
-        if (data?.status && data?.data) {
-          setCities(data.data); // assumes API returns [{ name, count }]
-        }
-        if (data.data.length > 0) {
-          const firstCity = data.data[0];
-          setSelectedCity(firstCity);
-
-          const updatedFilters = {
-            city: firstCity.city_name,
-            property_status: statusName,
-          };
-
-          setSearchFilters(updatedFilters);
-
-          navigate(location.pathname, {
-            state: { filters: updatedFilters },
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch city counts:", error);
-      }
-    };
-
-    if (statusName) {
-      fetchCityCounts();
-    }
-  }, [statusName]);
-
 
   useEffect(() => {
     const filters = location.state?.filters;
@@ -465,6 +497,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
     const fetchFilteredProperties = async () => {
       setIsSearchLoading(true);
+      document.body.style.overflow = 'hidden';
       try {
         const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
           method: 'POST',
@@ -480,9 +513,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           //   window.scrollTo({ top: 930, behavior: 'smooth' });
           // }, 100);
         }
+        const section = document.getElementById('featured-projects');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       } catch (error) {
         console.error('Error:', error);
       } finally {
+        document.body.style.overflow = 'auto';
         setIsSearchLoading(false);
       }
     };
@@ -510,7 +548,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           setTotalInventory({
             ready,
             offplan,
-            all: ready + offplan
+            total: ready + offplan,
           });
         }
       } catch (error) {
@@ -593,13 +631,13 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   }
   // }, [rows]);
 
-  useEffect(() => {
-    if (!selectedCity && rows?.length > 0) {
-      const dubaiCity = rows.find(city => city.city_name.toLowerCase() === "dubai");
-      if (dubaiCity) setSelectedCity(dubaiCity);
-      else setSelectedCity(rows[0]); // fallback
-    }
-  }, [rows, selectedCity]);
+  const [citiesReady, setCitiesReady] = useState(false);
+
+useEffect(() => {
+  if (cities.length > 0) {
+    setCitiesReady(true); // API gave cities
+  }
+}, [cities]);
 
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
