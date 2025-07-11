@@ -651,7 +651,7 @@ const PropertyDetailedPage = () => {
                       &times;
                     </button>
 
-                    <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">Project Gallery</h3>
+                    <h3 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text mb-6 text-center">Project Gallery</h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto">
                       {projectData?.property_images?.map((img, index) => (
@@ -668,7 +668,7 @@ const PropertyDetailedPage = () => {
                     <div className="text-center mt-6">
                       <button
                         onClick={() => setShowGalleryModal(false)}
-                        className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                        className="px-4 py-2 bg-gradient-to-tr from-pink-600 to-purple-500 text-white font-semibold rounded-lg hover:bg-red-200 transition"
                       >
                         Close Gallery
                       </button>

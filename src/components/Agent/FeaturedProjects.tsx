@@ -702,61 +702,61 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         </div>
 
         <div className="flex flex-col items-center px-4 py-6 w-full">
-          {rows.length > 0 && rows.map((row, rowIndex) => (
-            <div
-              key={rowIndex}
-              className={`grid 
-                grid-cols-2 
-                sm:grid-cols-2 
-                md:grid-cols-3 
-                lg:grid-cols-4 
-                xl:grid-cols-${Math.min(row.length, 7)}
-                gap-4 
-                w-full 
-                max-w-screen-xl 
-                mb-6`}
-            >
-              {/* {row.map((city, index) => (
-                <button
-                  key={city.city_id}
-                  onClick={() => handleCityClick(city)}
-                  className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none 
-                  ${selectedCity.city_id === city.city_id ? "ring-2 ring-pink-500 bg-gradient-to-r from-pink-300 via-purple-100 to-purple-200" : "bg-white"}
-                  `}
+          {rows.length > 0 &&
+            rows.map((row, rowIndex) => {
+              const filteredRow = row.filter(city => city.property_count >= 2);
+
+              // Skip row if all cities were filtered out
+              if (filteredRow.length === 0) return null;
+
+              return (
+                <div
+                  key={rowIndex}
+                  className={`grid 
+            grid-cols-2 
+            sm:grid-cols-2 
+            md:grid-cols-3 
+            lg:grid-cols-4 
+            xl:grid-cols-${Math.min(filteredRow.length, 7)}
+            gap-4 
+            w-full 
+            max-w-screen-xl 
+            mb-6`}
                 >
-                  <h3 className={`font-semibold text-md mb-1 
-                  ${selectedCity.city_id === city.city_id ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text" : "text-gray-700"}`}>
-                    {city.city_name}
-                  </h3>
-                  <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
-                    <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
-                  </p>
-                </button>
-              ))} */}
-              {row.map((city, index) => {
-                const isSelected = selectedCity?.city_id === city.city_id;
+                  {filteredRow.map((city, index) => {
+                    const isSelected = selectedCity?.city_id === city.city_id;
 
-                return (
-                  <button
-                    key={city.city_id}
-                    onClick={() => handleCityClick(city)}
-                    className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none
-              ${isSelected ? "ring-2 ring-pink-300 bg-gradient-to-r from-pink-300 via-purple-200 to-purple-300" : "bg-white"}
-            `}
-                  >
-                    <h3 className={`font-semibold text-md mb-1 
-              ${isSelected ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text" : "text-gray-700"}`}>
-                      {city.city_name}
-                    </h3>
-                    <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
-                      <CountUp end={city.property_count} duration={1.5} delay={index} separator="," />
-                    </p>
-                  </button>
-                );
-              })}
-
-            </div>
-          ))}
+                    return (
+                      <button
+                        key={city.city_id}
+                        onClick={() => handleCityClick(city)}
+                        className={`border rounded-lg p-4 text-center shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none
+                  ${isSelected ? "ring-2 ring-pink-300 bg-gradient-to-r from-pink-300 via-purple-200 to-purple-300" : "bg-white"}
+                `}
+                      >
+                        <h3
+                          className={`font-semibold text-md mb-1 
+                    ${isSelected
+                              ? "font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text"
+                              : "text-gray-700"}
+                  `}
+                        >
+                          {city.city_name}
+                        </h3>
+                        <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
+                          <CountUp
+                            end={city.property_count}
+                            duration={1.5}
+                            delay={index}
+                            separator=","
+                          />
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })}
         </div>
 
 
