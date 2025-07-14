@@ -783,11 +783,12 @@ const PropertyDetails1 = () => {
                             className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md "
                           >
                             {/* Top Row */}
-                            <div className="flex justify-between mb-2">
+                            <div className="flex justify-between items-start mb-2">
                               <span className="text-sm font-semibold text-gray-800">
                                 ID: {sub.id}
                               </span>
-                              <span
+                              <div className='float-right'>
+                                <span
                                 className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === "Available"
                                   ? "bg-green-100 text-green-700"
                                   : "bg-red-100 text-red-700"
@@ -795,6 +796,7 @@ const PropertyDetails1 = () => {
                               >
                                 {sub.status ? sub.status : "Coming Soon"}
                               </span>
+                              </div>
                             </div>
 
                             {/* Details */}

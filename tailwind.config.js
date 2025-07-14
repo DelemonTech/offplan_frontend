@@ -17,16 +17,7 @@ module.exports = {
       }
     },
     extend: {
-      fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
-        inter: ['Inter', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
-        roboto: ['Roboto', 'sans-serif'],
-        montserrat: ['Montserrat', 'sans-serif'],
-        playfair: ['Playfair Display', 'serif'],
-        bebas: ['Bebas Neue', 'cursive'],
-        mono: ['Fira Code', 'monospace'],
-      },
+     
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
