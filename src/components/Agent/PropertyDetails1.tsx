@@ -122,19 +122,19 @@ const PropertyDetails1 = () => {
 
   // const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
-  const toggleUnit = (unitType: string) => {
-    const clickedElement = unitRefs.current[unitType];
+  const toggleUnit = (unitKey: string) => {
+    const clickedElement = unitRefs.current[unitKey];
     const topBeforeToggle = clickedElement?.getBoundingClientRect().top ?? 0;
 
-    setExpandedUnit(expandedUnit === unitType ? null : unitType);
-    setShowAllSubUnits(false); // Reset sub-unit view toggle
+    setExpandedUnit(prev => (prev === unitKey ? null : unitKey));
+    setShowAllSubUnits(false);
 
     setTimeout(() => {
       const topAfterToggle = clickedElement?.getBoundingClientRect().top ?? 0;
       const scrollDiff = topAfterToggle - topBeforeToggle;
-      window.scrollBy({ top: scrollDiff, behavior: "instant" }); // prevent jump
+      window.scrollBy({ top: scrollDiff, behavior: "instant" });
     }, 50);
-  };
+};
 
   // const groupedUnits = projectData.property_units.reduce((acc, unit) => {
   //   const roomKey = `${unit.apartment_id} Bedroom Apartment`; // Group by apartment_id or customize
@@ -397,7 +397,7 @@ const PropertyDetails1 = () => {
           unit.floor_plan_image && unit.floor_plan_image.length > 0
             ? JSON.parse(unit.floor_plan_image)[0]
             : "NO_FLOOR_PLAN",
-        status: unit.status || "Available",
+        status: projectData.status || "Available",
         apartmentType: getUnitTypeName(groupedApartment),
       })),
     };
@@ -711,12 +711,11 @@ const PropertyDetails1 = () => {
             <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-600 mb-8">
               Available Unit Types
             </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
               {unitTypes.map((unit, index) => (
                 <motion.div
                   key={index}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1 }}
                   onClick={() => toggleUnit(unit.type)}
                   ref={(el) => (unitRefs.current[unit.type] = el)}
                   className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer"
@@ -731,7 +730,9 @@ const PropertyDetails1 = () => {
                         {unit.icon}
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-900">{unit.type || (unit.subUnits?.[0]?.id ?? 'N/A')}</h4>
+                        <h4 className="text-lg font-semibold text-gray-900">
+                          {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : 'No Info'}
+                          </h4>
                         <p className="text-sm text-gray-500">{unit.available} units available</p>
                       </div>
                     </div>
@@ -771,14 +772,15 @@ const PropertyDetails1 = () => {
                   {/* Expanded Sub-Units */}
                   {expandedUnit === unit.type && unit.subUnits.length > 0 && (
                     <div className="bg-gray-50 rounded-b-2xl p-4 border-t">
-                      <div
-                        className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
+                     <div>
+                       <div
+                        className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"
                           }`}
                       >
                         {unit.subUnits.map((sub, subIndex) => (
                           <div
                             key={subIndex}
-                            className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md transition"
+                            className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md "
                           >
                             {/* Top Row */}
                             <div className="flex justify-between mb-2">
@@ -829,9 +831,10 @@ const PropertyDetails1 = () => {
                             <div className="mt-3 text-center">
                               <button
                                 onClick={(e) => {
+                                  e.preventDefault();
                                   e.stopPropagation();
-                                  //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           k{agent.username}/property-detailed/${sub.id}`,
-                                  navigate(`/agent/${agent.username}/property-detailed/${sub.id}`,
+                                  //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`, k{agent.username}/property-detailed/${sub.id}`,
+                                  navigate(`/agent/${agent.username}/property-detailed/${encodeURIComponent(sub.id)}`,
                                     {
                                       state: {
                                         unit: sub,
@@ -849,6 +852,7 @@ const PropertyDetails1 = () => {
                           </div>
                         ))}
                       </div>
+                     </div>
                     </div>
                   )}
 

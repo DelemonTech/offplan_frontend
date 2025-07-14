@@ -330,7 +330,7 @@ const PropertyDetailedPage = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-600">Overview</p>
-                <p className="text-sm font-semibold text-gray-800">{unit.apartmentType}</p>
+                <p className="text-sm font-semibold text-gray-800">{unit.apartmentType ? unit.apartmentType : unit.id ?  `${unit.id}` : 'No Info'}</p>
               </div>
             </div>
 
@@ -421,6 +421,7 @@ const PropertyDetailedPage = () => {
         <div className="bg-white rounded-xl shadow-sm p-6 mt-10">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-violet-600 mb-4">Floor Plan</h3>
+            
             {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
               <div className="flex space-x-2">
                 {/* Download Button */}
@@ -455,16 +456,24 @@ const PropertyDetailedPage = () => {
 
           <div className="relative rounded-xl overflow-hidden">
             {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
+            <>
               <img
                 src={unit.floorPlan}
                 alt="Floor Plan"
                 className="w-full h-72 object-cover"
               />
+             <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+          <span className="text-white text-md font-bold opacity-60">
+            OFFPLAN.MARKET
+          </span>
+        </div>
+      </>
             ) : (
               <div className="flex items-center justify-center w-full h-72 bg-gray-100 text-gray-500 rounded-xl">
                 No Floor Plan Image
               </div>
             )}
+
           </div>
         </div>
 
