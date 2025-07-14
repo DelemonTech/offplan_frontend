@@ -590,12 +590,12 @@ const PropertyDetails1 = () => {
           </div> */}
 
           {/* Bottom Right - Free DLD Label */}
-          <div className="absolute bottom-0 right-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-tl-2xl flex items-center gap-2 shadow-lg z-20">
+          {/* <div className="absolute bottom-0 right-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-tl-2xl flex items-center gap-2 shadow-lg z-20">
             <div className="bg-white rounded-full p-1">
               <Gift className="w-4 h-4 md:w-5 md:h-5 text-pink-500" />
             </div>
             Free DLD – Today Only
-          </div>
+          </div> */}
 
 
 
@@ -608,7 +608,7 @@ const PropertyDetails1 = () => {
         {/*  */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           {/* Heading */}
-          <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
+          <h2 className="flex items-center font-sans text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
               Explore This Exclusive Property in {projectData.city?.name || "N/A"}
@@ -708,7 +708,7 @@ const PropertyDetails1 = () => {
         <div className="mb-10">
           {/* {units.available > 0 && unitTypes.length > 0 && ( */}
             <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-600 mb-8">
+            <h2 className="text-2xl md:text-3xl font-sans font-extrabold text-center text-gray-600 mb-8">
               Available Unit Types
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
@@ -873,7 +873,7 @@ const PropertyDetails1 = () => {
           {/* About Section */}
           {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">About This Project</h2> */}
           <div className="mb-8 mt-8 rounded-2xl bg-white p-6 shadow">
-            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600 pt-4">About {projectData.title}</h2>
+            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-sans text-gray-600 pt-4">About {projectData.title}</h2>
             <div
               className="text-gray-600 prose prose-p"
               dangerouslySetInnerHTML={{ __html: projectData.description }}
@@ -903,7 +903,7 @@ const PropertyDetails1 = () => {
           {/* Amenities */}
           {amenities.length > 0 && (
             <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-              <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">Amenities</h3>
+              <h3 className="text-3xl md:text-3xl font-extrabold font-sans text-center mb-10 text-gray-600">Amenities</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {amenities.map((amenity, index) => (
                   <div
@@ -918,13 +918,13 @@ const PropertyDetails1 = () => {
             </div>
           )}
           <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-100 p-6 shadow">
-            <h3 className="text-2xl md:text-3xl font-extrabold text-center mb-6 bg-gradient-to-br from-green-700 to-emerald-500 bg-clip-text text-transparent ">
+            <h3 className="text-2xl md:text-3xl font-sans font-extrabold text-center mb-6 bg-gradient-to-br from-green-700 to-emerald-500 bg-clip-text text-transparent ">
               Why Invest in {projectData.title}
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-emerald-700 list-disc list-inside font-medium">
               <li>Located in prime community of {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</li>
               <li>Expected handover by {handover}</li>
-              <li>Free DLD + Escrow Protected (Zero Risk)</li>
+              {/* <li>Free DLD + Escrow Protected (Zero Risk)</li> */}
               <li>Flexible payment plan with only <span className="font-semibold">{projectData.payment_minimum_down_payment}%</span> down payment</li>
               {amenities.length >= 4 && (
                 <li>
@@ -937,7 +937,7 @@ const PropertyDetails1 = () => {
           {/* Payment Plan */}
           {paymentPlans.length > 0 && (
             <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
-              <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 text-gray-600">
+              <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-poppins text-gray-600">
                 Payment Plans
               </h3>
 
@@ -981,8 +981,8 @@ const PropertyDetails1 = () => {
 
         </div>
         {/* CTA */}
-        <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-t-2xl p-8 text-center text-white">
-          <h3 className="text-2xl font-bold mb-2">Ready to Make This Your Home?</h3>
+        <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-2xl p-8 mb-10 text-center text-white">
+          <h3 className="text-2xl font-bold mb-2 ">Ready to Make This Your Home?</h3>
           <p className="mb-4 text-white/90">
             Contact {agent?.name || "our team"} today for exclusive access and personalized assistance
           </p>
@@ -1011,8 +1011,10 @@ const PropertyDetails1 = () => {
 
       {/* <CallToAction agent={agent} /> */}
 
-      <Footer />
+     <div className='rounded-t-2xl overflow-hidden'>
+       <Footer />
 
+     </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
         {/* WhatsApp Button */}
         <button
