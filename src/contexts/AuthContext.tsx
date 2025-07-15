@@ -33,6 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check for existing session
     const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem("token");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }

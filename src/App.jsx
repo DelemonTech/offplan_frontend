@@ -32,7 +32,7 @@ import UnitDetails1 from "@/pages/Agent/UnitDetails1";
 import UnitDetail from "@/pages/Agent/UnitDetailPage"
 import ScrollToTop from "./components/Agent/ScrollToTop";
 import GalleryPage from "@/components/Agent/Gallery";
-
+import AgentEdit from "@/components/Agent/AgentEdit"
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -93,6 +93,7 @@ const App = () => (
 
             <Route path="/unit-detail" element={<UnitDetail />} />
             <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/agentedit/:username" element={<AgentEdit />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
