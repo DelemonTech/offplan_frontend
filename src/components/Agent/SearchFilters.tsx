@@ -53,6 +53,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   // get the selected city object
   const selectedCityData = citiesData.find((city) => city.name === selectedCity);
 
+  const hostUrl = import.meta.env.VITE_HOST_URL;
+
   // get districts of selected city
   const getFilteredNeighborhoods = () => {
     if (!selectedCity || citiesData.length === 0) {
@@ -178,7 +180,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     console.log("🔍 Sending search filters:", filters);
 
     try {
-      const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
+      const response = await fetch(`${hostUrl}/properties/filter/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -242,7 +244,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   useEffect(() => {
     const fetchDevelopers = async () => {
       try {
-        const response = await fetch("https://offplan-backend.onrender.com/developers/");
+        const response = await fetch(`${hostUrl}/developers/`);
         const result = await response.json();
 
         if (result.status && Array.isArray(result.data)) {

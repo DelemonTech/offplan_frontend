@@ -73,6 +73,8 @@ const AgentPageContent = () => {
     const [gender, setGender] = useState(null);
     const [logoPath, setLogoPath] = useState("@/assets/OFFPLAN_MARKET.png");
 
+    const hostUrl = import.meta.env.VITE_HOST_URL;
+
 useEffect(() => {
   if (gender) {
     setFavicon(gender);
@@ -100,7 +102,7 @@ useEffect(() => {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const agentRes = await fetch(`https://offplan-backend.onrender.com/agent/${username}`);
+      const agentRes = await fetch(`${hostUrl}/agent/${username}`);
       const agentJson = await agentRes.json();
 
       if (agentRes.ok && agentJson.status) {
@@ -113,27 +115,27 @@ useEffect(() => {
         }
 
         // Now fetch properties with agent_id + status_id
-        const propertiesRes = await fetch(`https://offplan-backend.onrender.com/properties/filter/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            property_status: statusName,
-          })
-        });
+        // const propertiesRes = await fetch(`${hostUrl}/properties/filter/`, {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   body: JSON.stringify({
+        //     property_status: statusName,
+        //   })
+        // });
 
-        const propertiesJson = await propertiesRes.json();
+        // const propertiesJson = await propertiesRes.json();
 
-        if (propertiesRes.ok && propertiesJson.status) {
-          const props = propertiesJson.data;
-          setPropertiesData(props.results || []);
-          const safeUrl = (props.next_page_url || "").replace('http://', 'https://');
-          setNextPageUrl(safeUrl);
-        } else {
-          setPropertiesData([]);
-          setNextPageUrl(null);
-        }
+        // if (propertiesRes.ok && propertiesJson.status) {
+        //   const props = propertiesJson.data;
+        //   setPropertiesData(props.results || []);
+        //   const safeUrl = (props.next_page_url || "").replace('http://', 'https://');
+        //   setNextPageUrl(safeUrl);
+        // } else {
+        //   setPropertiesData([]);
+        //   setNextPageUrl(null);
+        // }
       } else {
         setAgentData(null);
       }
@@ -153,7 +155,7 @@ useEffect(() => {
   const fetchCitiesFromAPI = async () => {
   try {
     setIsCitiesLoading(true);
-    const response = await fetch('https://offplan-backend.onrender.com/cities');
+    const response = await fetch(`${hostUrl}/cities`);
     const result = await response.json();
     if (result.status && result.data) {
       setCitiesData(result.data);

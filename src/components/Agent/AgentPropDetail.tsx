@@ -170,7 +170,8 @@ const AgentPropDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://offplan-backend.onrender.com/property/${projectId}/`);
+        const hostUrl = import.meta.env.VITE_HOST_URL
+        const response = await fetch(`${hostUrl}/property/${projectId}/`);
         const data = await response.json();
         if (data?.status && data?.data) {
           setProjectData(data.data);
