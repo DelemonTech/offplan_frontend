@@ -633,11 +633,11 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const [citiesReady, setCitiesReady] = useState(false);
 
-useEffect(() => {
-  if (cities.length > 0) {
-    setCitiesReady(true); // API gave cities
-  }
-}, [cities]);
+  useEffect(() => {
+    if (cities.length > 0) {
+      setCitiesReady(true); // API gave cities
+    }
+  }, [cities]);
 
   return (
     <section id="featured-projects" className="py-24 bg-gradient-to-br from-white via-pink-50/30 to-purple-50/30 relative overflow-hidden">
@@ -931,11 +931,13 @@ useEffect(() => {
                                 <span className="text-xs text-blue-500">Guaranteed ROI Contract</span>
                               </div>
                             )}
-                            <div className='pt-2 flex flex-row gap-1'>
-                              <img src={IconShield}
-                                className='h-4 w-5' />
-                              <span className='text-xs text-green-500'>Zero Risk - Escrow Protected</span>
-                            </div>
+                            {(displayStatus === 3 ? project?.property_status : displayStatus) !== 2 && (
+                              <div className='pt-2 flex flex-row gap-1'>
+                                <img src={IconShield} className='h-4 w-5' />
+                                <span className='text-xs text-green-500'>Zero Risk - Escrow Protected</span>
+                              </div>
+                            )}
+
                           </div>
 
                           <div className="flex gap-2 pt-2">
