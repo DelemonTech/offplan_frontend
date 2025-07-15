@@ -114,19 +114,19 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   return date.toLocaleDateString("en-US", options);
   // };
   const formatDeliveryDate = (yyyymm: string | number) => {
-  if (!yyyymm) return "N/A";
+    if (!yyyymm) return "N/A";
 
-  const str = yyyymm.toString();
-  if (str.length !== 6) return "Invalid Date";
+    const str = yyyymm.toString();
+    if (str.length !== 6) return "Invalid Date";
 
-  const year = str.slice(0, 4);
-  const monthIndex = parseInt(str.slice(4, 6), 10) - 1; // 0-indexed for JS Date
+    const year = str.slice(0, 4);
+    const monthIndex = parseInt(str.slice(4, 6), 10) - 1; // 0-indexed for JS Date
 
-  const date = new Date(Number(year), monthIndex);
-  const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
+    const date = new Date(Number(year), monthIndex);
+    const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
 
-  return date.toLocaleDateString("en-US", options); // e.g., "September 2023"
-};
+    return date.toLocaleDateString("en-US", options); // e.g., "September 2023"
+  };
 
   // const filters = [
   //   { id: 'ready', label: 'Ready', icon: Check },
@@ -818,7 +818,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           className={`relative ${isSearchLoading ? "h-screen overflow-y-auto" : ""
             }`}
         >
-          
+
           {isSearchLoading ? (
             <div className="flex justify-center py-20">
               <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-pink-500 border-opacity-50" />
@@ -950,11 +950,12 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                                   <span className="text-xs text-blue-500">Guaranteed ROI Contract</span>
                                 </div>
                               )}
-                              <div className='pt-2 flex flex-row gap-1'>
-                                <img src={IconShield}
-                                  className='h-4 w-5' />
-                                <span className='text-xs text-green-500'>Zero Risk - Escrow Protected</span>
-                              </div>
+                              {(displayStatus === 3 ? project?.property_status : displayStatus) !== 2 && (
+                                <div className='flex flex-row items-center gap-1 bg-white rounded-full px-3 py-1.5 shadow border border-green-100'>
+                                  <img src={IconShield} className='h-4 w-5' />
+                                  <span className='text-xs text-green-500 font-medium'>Zero Risk – Escrow Protected</span>
+                                </div>
+                              )}
                             </div>
 
                             <div className="flex gap-2 pt-2">
