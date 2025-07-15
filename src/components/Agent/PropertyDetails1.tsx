@@ -114,6 +114,8 @@ const PropertyDetails1 = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('id');
 
+  const hostUrl = import.meta.env.VITE_HOST_URL;
+
   const [projectData, setProjectData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const unitRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -167,14 +169,14 @@ const PropertyDetails1 = () => {
     let intervalRef: NodeJS.Timeout;
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://offplan-backend.onrender.com/property/${projectId}/`);
+        const response = await fetch(`${hostUrl}/property/${projectId}/`);
         const data = await response.json();
         if (data?.status && data?.data) {
           setProjectData(data.data);
           console.log(data.data);
 
           if (!agent && data.data.agent_id) {
-            const agentResponse = await fetch(`https://offplan-backend.onrender.com/agent/${data.data.agent_id}/`);
+            const agentResponse = await fetch(`${hostUrl}/agent/${data.data.agent_id}/`);
             const agentData = await agentResponse.json();
             if (agentData?.status && agentData?.data) {
               setAgent(agentData.data);

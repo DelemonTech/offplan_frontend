@@ -60,6 +60,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   // const navigate = useNavigate();
 
+  const hostUrl = import.meta.env.VITE_HOST_URL;
+
   const [selectedProperty, setSelectedProperty] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -383,7 +385,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         }
 
         const response = await fetch(
-          `https://offplan-backend.onrender.com//properties/city/count/?status=${encodeURIComponent(status)}`
+          `${hostUrl}/properties/city/count/?status=${encodeURIComponent(status)}`
         );
         const data = await response.json();
 
@@ -426,7 +428,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         setIsLoading(true);
         document.body.style.overflow = 'hidden';
 
-        const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
+        const response = await fetch(`${hostUrl}/properties/filter/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -511,9 +513,9 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
     const fetchFilteredProperties = async () => {
       setIsSearchLoading(true);
-      document.body.style.overflow = 'hidden';
+      // document.body.style.overflow = 'hidden';
       try {
-        const response = await fetch('https://offplan-backend.onrender.com/properties/filter/', {
+        const response = await fetch(`${hostUrl}/properties/filter/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(filters),
@@ -553,7 +555,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   useEffect(() => {
     const fetchStatusCounts = async () => {
       try {
-        const res = await fetch('https://offplan-backend.onrender.com/properties/status-counts/');
+        const res = await fetch(`${hostUrl}/properties/status-counts/`);
         const json = await res.json();
 
         if (json.status && json.data) {
@@ -812,68 +814,71 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         </div>
 
 
-
-
-        {isSearchLoading ? (
-          <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-pink-500 border-opacity-50" />
-          </div>
-        ) : properties.length === 0 ? (
-          <div className="text-center py-20">
-            <h3 className="text-2xl font-semibold text-gray-600 mb-4">Oh-Uh! 😕</h3>
-            <p className="text-gray-500 text-lg">No properties match your current search filters.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
-            {properties.map((project, index) => {
-              const displayStatus = (() => {
-                const normalizedStatus = statusName.toLowerCase();
-                if (normalizedStatus === 'ready') return 2;
-                if (normalizedStatus === 'off plan') return 1;
-                else return 3;
-                // return project.property_status;
-              })();
-              console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
-              // console.log("Subunit count: ",project.subunit_count);
-              return (
-                (
-                  <div
-                    key={project.id}
-                    id={`property-${index}`} // ✅ Give each wrapper a unique id
-                  >
-                    <Card
+        <div
+          className={`relative ${isSearchLoading ? "h-screen overflow-y-auto" : ""
+            }`}
+        >
+          
+          {isSearchLoading ? (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-pink-500 border-opacity-50" />
+            </div>
+          ) : properties.length === 0 ? (
+            <div className="text-center py-20">
+              <h3 className="text-2xl font-semibold text-gray-600 mb-4">Oh-Uh! 😕</h3>
+              <p className="text-gray-500 text-lg">No properties match your current search filters.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
+              {properties.map((project, index) => {
+                const displayStatus = (() => {
+                  const normalizedStatus = statusName.toLowerCase();
+                  if (normalizedStatus === 'ready') return 2;
+                  if (normalizedStatus === 'off plan') return 1;
+                  else return 3;
+                  // return project.property_status;
+                })();
+                console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
+                // console.log("Subunit count: ",project.subunit_count);
+                return (
+                  (
+                    <div
                       key={project.id}
-                      className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
-                    // onClick={() => handleProjectSummary(project)}
+                      id={`property-${index}`} // ✅ Give each wrapper a unique id
                     >
-                      <div className="relative overflow-hidden">
-                        {/* Top Left - Units Left */}
-                        <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-2 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
-                          <div className="bg rounded-full pl-1">
-                            <Star className="w-3 h-3 text-white-600 font-bold" strokeWidth={4} fill='white' />
+                      <Card
+                        key={project.id}
+                        className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
+                      // onClick={() => handleProjectSummary(project)}
+                      >
+                        <div className="relative overflow-hidden">
+                          {/* Top Left - Units Left */}
+                          <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-2 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
+                            <div className="bg rounded-full pl-1">
+                              <Star className="w-3 h-3 text-white-600 font-bold" strokeWidth={4} fill='white' />
+                            </div>
+                            {project.subunit_count} <span className='pr-1'>left</span>
                           </div>
-                          {project.subunit_count} <span className='pr-1'>left</span>
-                        </div>
-                        <img
-                          src={project.cover}
-                          alt={project.title}
-                          className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
+                          <img
+                            src={project.cover}
+                            alt={project.title}
+                            className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
+                          />
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                        <div className="absolute top-4 right-4">
-                          <Badge className={`
+                          <div className="absolute top-4 right-4">
+                            <Badge className={`
                             ${getStatusBadgeStyle(displayStatus)}
                             inline-flex items-center gap-1 px-3 py-1.5
                             rounded-full text-sm font-medium
                             border-2 border-white/20 shadow-lg
                           `}>
-                            {getStatusBadgeContent(displayStatus, project)}
-                          </Badge>
-                        </div>
+                              {getStatusBadgeContent(displayStatus, project)}
+                            </Badge>
+                          </div>
 
-                        {/* <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+                          {/* <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
                           {project.badges.slice(0, 2).map((badge, index) => (
                             <Badge
                               key={index}
@@ -884,162 +889,161 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                           ))}
                         </div> */}
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center">
-                          <div className="text-white text-center p-4 space-y-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                            <div className="flex items-center justify-center gap-4 text-sm">
-                              <div className="flex items-center gap-1">
-                                <Calendar size={14} />
-                                <span>{formatDeliveryDate(project.delivery_date)}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <CreditCard size={14} />
-                                <span>Payment</span>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center">
+                            <div className="text-white text-center p-4 space-y-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                              <div className="flex items-center justify-center gap-4 text-sm">
+                                <div className="flex items-center gap-1">
+                                  <Calendar size={14} />
+                                  <span>{formatDeliveryDate(project.delivery_date)}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <CreditCard size={14} />
+                                  <span>Payment</span>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <CardContent className="p-4 sm:p-6">
-                        <div className="space-y-4">
-                          <div>
-                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
-                              {project.title}
-                            </h3>
-                            <div className="flex items-center text-gray-600">
-                              <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
-                              <span className="font-medium text-sm sm:text-base truncate">
-                                {project.city?.name || 'Unknown City'}, {project.district?.name || 'Unknown District'}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
-                            <div className="text-xs sm:text-sm text-gray-600 mb-1">Starting from</div>
-                            <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                              {project.low_price ? `AED ${formatAED(project.low_price)}` : 'AED N/A'}
+                        <CardContent className="p-4 sm:p-6">
+                          <div className="space-y-4">
+                            <div>
+                              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
+                                {project.title}
+                              </h3>
+                              <div className="flex items-center text-gray-600">
+                                <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
+                                <span className="font-medium text-sm sm:text-base truncate">
+                                  {project.city?.name || 'Unknown City'}, {project.district?.name || 'Unknown District'}
+                                </span>
+                              </div>
                             </div>
 
-                            <div className="flex flex-wrap gap-3 text-xs text-gray-600">
-                              <div className="flex items-center gap-1">
-                                <Ruler size={12} className="text-pink-500" />
-                                <span>From {project.min_area} ft²</span>
+                            <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
+                              <div className="text-xs sm:text-sm text-gray-600 mb-1">Starting from</div>
+                              <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                                {project.low_price ? `AED ${formatAED(project.low_price)}` : 'AED N/A'}
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Calendar size={12} className="text-blue-500" />
-                                <span>{formatDeliveryDate(project.delivery_date)}</span>
-                              </div>
-                              {/* <div className="flex items-center gap-1">
+
+                              <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                                <div className="flex items-center gap-1">
+                                  <Ruler size={12} className="text-pink-500" />
+                                  <span>From {project.min_area} ft²</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Calendar size={12} className="text-blue-500" />
+                                  <span>{formatDeliveryDate(project.delivery_date)}</span>
+                                </div>
+                                {/* <div className="flex items-center gap-1">
                                     <CreditCard size={12} className="text-purple-500" />
                                     <span>Payment</span>
                                   </div> */}
-                            </div>
-                            {/* <div className="pt-3 flex flex-row gap-1">
+                              </div>
+                              {/* <div className="pt-3 flex flex-row gap-1">
                               <img src={IconGuarantee}
                                 className='h-5 w-5' />
                               <span className='text-xs text-blue-500'>Guaranteed ROI Contract</span>
                             </div> */}
-                            {project.guarantee_rental_guarantee && (
-                              <div className="pt-3 flex flex-row gap-1">
-                                <img src={IconGuarantee} className="h-5 w-5" />
-                                <span className="text-xs text-blue-500">Guaranteed ROI Contract</span>
-                              </div>
-                            )}
-                            {(displayStatus === 3 ? project?.property_status : displayStatus) !== 2 && (
+                              {project.guarantee_rental_guarantee && (
+                                <div className="pt-3 flex flex-row gap-1">
+                                  <img src={IconGuarantee} className="h-5 w-5" />
+                                  <span className="text-xs text-blue-500">Guaranteed ROI Contract</span>
+                                </div>
+                              )}
                               <div className='pt-2 flex flex-row gap-1'>
-                                <img src={IconShield} className='h-4 w-5' />
+                                <img src={IconShield}
+                                  className='h-4 w-5' />
                                 <span className='text-xs text-green-500'>Zero Risk - Escrow Protected</span>
                               </div>
-                            )}
+                            </div>
 
-                          </div>
-
-                          <div className="flex gap-2 pt-2">
-                            <button
-                              onClick={() => handleViewDetails(project.id)}
-                              disabled={loadingProjectId === project.id} // disable button while loading
-                              className={`inline-flex items-center justify-center gap-2 text-sm font-medium text-white px-4 py-2 rounded-xl shadow 
+                            <div className="flex gap-2 pt-2">
+                              <button
+                                onClick={() => handleViewDetails(project.id)}
+                                disabled={loadingProjectId === project.id} // disable button while loading
+                                className={`inline-flex items-center justify-center gap-2 text-sm font-medium text-white px-4 py-2 rounded-xl shadow 
                                 ${loadingProjectId === project.id
-                                  ? "bg-gray-400 cursor-not-allowed"
-                                  : "bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
-                                } transition`}
-                            >
-                              {loadingProjectId === project.id ? (
-                                <>
-                                  <svg
-                                    className="animate-spin h-4 w-4 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-11v4a5 4 0 00-6 4H4z"
-                                    ></path>
-                                  </svg>
-                                  Loading...
-                                </>
-                              ) : (
-                                "See Availability"
-                              )}
-                            </button>
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+                                  } transition`}
+                              >
+                                {loadingProjectId === project.id ? (
+                                  <>
+                                    <svg
+                                      className="animate-spin h-4 w-4 text-white"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                      ></circle>
+                                      <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-11v4a5 4 0 00-6 4H4z"
+                                      ></path>
+                                    </svg>
+                                    Loading...
+                                  </>
+                                ) : (
+                                  "See Availability"
+                                )}
+                              </button>
 
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleWhatsApp(project);
-                              }}
-                            >
-                              <img
-                                src={IconWhatsapp}
-                                alt="WhatsApp"
-                                className="w-8 h-8 object-contain" // ✅ consistent sizing
-                              />
-                            </Button>
-                            <div className="relative">
                               <Button
                                 variant="outline"
                                 size="icon"
-                                className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 rounded-xl border-2"
+                                className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleShare(project);
+                                  handleWhatsApp(project);
                                 }}
                               >
-                                {copiedProjectId === project.id ? (
-                                  <Check size={18} className="text-green-500 transition" />
-                                ) : (
-                                  <Share size={18} className="text-blue-500 transition" />
-                                )}
+                                <img
+                                  src={IconWhatsapp}
+                                  alt="WhatsApp"
+                                  className="w-8 h-8 object-contain" // ✅ consistent sizing
+                                />
                               </Button>
+                              <div className="relative">
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 rounded-xl border-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleShare(project);
+                                  }}
+                                >
+                                  {copiedProjectId === project.id ? (
+                                    <Check size={18} className="text-green-500 transition" />
+                                  ) : (
+                                    <Share size={18} className="text-blue-500 transition" />
+                                  )}
+                                </Button>
 
-                              {copiedProjectId === project.id && (
-                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#7d8bff] text-white text-xs px-2 py-1 rounded shadow">
-                                  Link Copied!
-                                </div>
-                              )}
+                                {copiedProjectId === project.id && (
+                                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#7d8bff] text-white text-xs px-2 py-1 rounded shadow">
+                                    Link Copied!
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))
-            }
-            )}
-          </div>)}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ))
+              }
+              )}
+            </div>)}
+        </div>
 
         {/* {hasMoreProjects && ( */}
         {nextPageUrl && <div className="flex justify-center pt-8">
