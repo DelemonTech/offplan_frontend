@@ -102,15 +102,29 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const animatedCounts = useCountSequenceOnView(counts, inView);
 
 
-  const formatDeliveryDate = (unixTimestamp: string | number) => {
-    if (!unixTimestamp) return "N/A";
-    // Convert to number and then to milliseconds
-    const date = new Date(Number(unixTimestamp) * 1000);
+  // const formatDeliveryDate = (unixTimestamp: string | number) => {
+  //   if (!unixTimestamp) return "N/A";
+  //   // Convert to number and then to milliseconds
+  //   const date = new Date(Number(unixTimestamp) * 1000);
 
-    // Example output: "June 2028"
-    const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
-    return date.toLocaleDateString("en-US", options);
-  };
+  //   // Example output: "June 2028"
+  //   const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
+  //   return date.toLocaleDateString("en-US", options);
+  // };
+  const formatDeliveryDate = (yyyymm: string | number) => {
+  if (!yyyymm) return "N/A";
+
+  const str = yyyymm.toString();
+  if (str.length !== 6) return "Invalid Date";
+
+  const year = str.slice(0, 4);
+  const monthIndex = parseInt(str.slice(4, 6), 10) - 1; // 0-indexed for JS Date
+
+  const date = new Date(Number(year), monthIndex);
+  const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
+
+  return date.toLocaleDateString("en-US", options); // e.g., "September 2023"
+};
 
   // const filters = [
   //   { id: 'ready', label: 'Ready', icon: Check },
