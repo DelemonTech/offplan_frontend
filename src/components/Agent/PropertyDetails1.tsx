@@ -134,7 +134,7 @@ const PropertyDetails1 = () => {
       const scrollDiff = topAfterToggle - topBeforeToggle;
       window.scrollBy({ top: scrollDiff, behavior: "instant" });
     }, 50);
-};
+  };
 
   // const groupedUnits = projectData.property_units.reduce((acc, unit) => {
   //   const roomKey = `${unit.apartment_id} Bedroom Apartment`; // Group by apartment_id or customize
@@ -563,12 +563,16 @@ const PropertyDetails1 = () => {
             </div>
           ) : (
             <div className="flex justify-center py-5">
+                 {propertyStatus.name !== "Ready" && (
+
               <div className="flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md bg-green-50 text-green-600 text-sm md:text-base font-semibold">
-                <div className="bg-white rounded-full p-1">
-                  <img src={IconShield} alt="icon" className="w-5 h-5" />
-                </div>
-                <span>Zero Risk – Escrow Protected</span>
+                  <div className="bg-white rounded-full p-1">
+                    <img src={IconShield} alt="icon" className="w-5 h-5" />
+                  </div>
+                    <span>Zero Risk – Escrow Protected</span>
               </div>
+                )}
+
             </div>
           )}
 
@@ -707,7 +711,7 @@ const PropertyDetails1 = () => {
 
         <div className="mb-10">
           {/* {units.available > 0 && unitTypes.length > 0 && ( */}
-            <div>
+          <div>
             <h2 className="text-2xl md:text-3xl font-sans font-extrabold text-center text-gray-600 mb-8">
               Available Unit Types
             </h2>
@@ -732,7 +736,7 @@ const PropertyDetails1 = () => {
                       <div>
                         <h4 className="text-lg font-semibold text-gray-900">
                           {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : 'No Info'}
-                          </h4>
+                        </h4>
                         <p className="text-sm text-gray-500">{unit.available} units available</p>
                       </div>
                     </div>
@@ -772,89 +776,89 @@ const PropertyDetails1 = () => {
                   {/* Expanded Sub-Units */}
                   {expandedUnit === unit.type && unit.subUnits.length > 0 && (
                     <div className="bg-gray-50 rounded-b-2xl p-4 border-t">
-                     <div>
-                       <div
-                        className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"
-                          }`}
-                      >
-                        {unit.subUnits.map((sub, subIndex) => (
-                          <div
-                            key={subIndex}
-                            className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md "
-                          >
-                            {/* Top Row */}
-                            <div className="flex justify-between items-start mb-2">
-                              <span className="text-sm font-semibold text-gray-800">
-                                ID: {sub.id}
-                              </span>
-                              <div className='float-right'>
-                                <span
-                                className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === "Available"
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-red-100 text-red-700"
-                                  }`}
-                              >
-                                {sub.status ? sub.status : "Coming Soon"}
-                              </span>
-                              </div>
-                            </div>
-
-                            {/* Details */}
-                            <ul className="text-gray-500 text-xs mb-2">
-                              <li>Floor: {sub.floor || "N/A"}</li>
-                              <li>Size: {sub.size}</li>
-                            </ul>
-
-                            {/* Price */}
-                            <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
-                              AED {formatPrice(sub.price)}
-                            </p>
-
-                            {/* Optional: Floor Plan Image */}
-                            <div className="relative w-full h-32 rounded-lg overflow-hidden">
-                              <img
-                                src={sub.floorPlan}
-                                // alt={`Floor plan for ${sub.id}`}
-                                className="w-full h-full object-cover"
-                                // loading="lazy"
-                                onError={(e) => {
-                                  e.currentTarget.src = "/no-floor-plan.png";
-                                }}
-                              />
-                              {/* Watermark Overlay */}
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                                <span className="text-white text-md font-bold opacity-60">
-                                  OFFPLAN.MARKET
+                      <div>
+                        <div
+                          className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"
+                            }`}
+                        >
+                          {unit.subUnits.map((sub, subIndex) => (
+                            <div
+                              key={subIndex}
+                              className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md "
+                            >
+                              {/* Top Row */}
+                              <div className="flex justify-between items-start mb-2">
+                                <span className="text-sm font-semibold text-gray-800">
+                                  ID: {sub.id}
                                 </span>
+                                <div className='float-right'>
+                                  <span
+                                    className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === "Available"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-red-100 text-red-700"
+                                      }`}
+                                  >
+                                    {sub.status ? sub.status : "Coming Soon"}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Details */}
+                              <ul className="text-gray-500 text-xs mb-2">
+                                <li>Floor: {sub.floor || "N/A"}</li>
+                                <li>Size: {sub.size}</li>
+                              </ul>
+
+                              {/* Price */}
+                              <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
+                                AED {formatPrice(sub.price)}
+                              </p>
+
+                              {/* Optional: Floor Plan Image */}
+                              <div className="relative w-full h-32 rounded-lg overflow-hidden">
+                                <img
+                                  src={sub.floorPlan}
+                                  // alt={`Floor plan for ${sub.id}`}
+                                  className="w-full h-full object-cover"
+                                  // loading="lazy"
+                                  onError={(e) => {
+                                    e.currentTarget.src = "/no-floor-plan.png";
+                                  }}
+                                />
+                                {/* Watermark Overlay */}
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                                  <span className="text-white text-md font-bold opacity-60">
+                                    OFFPLAN.MARKET
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* View Details Button */}
+                              <div className="mt-3 text-center">
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`, k{agent.username}/property-detailed/${sub.id}`,
+                                    navigate(`/agent/${agent.username}/property-detailed/${encodeURIComponent(sub.id)}`,
+                                      {
+                                        state: {
+                                          unit: sub,
+                                          projectData,
+                                          agent,
+                                        },
+                                      });
+
+                                  }}
+                                  className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
+                                >
+                                  View Details
+                                </button>
                               </div>
                             </div>
-
-                            {/* View Details Button */}
-                            <div className="mt-3 text-center">
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`, k{agent.username}/property-detailed/${sub.id}`,
-                                  navigate(`/agent/${agent.username}/property-detailed/${encodeURIComponent(sub.id)}`,
-                                    {
-                                      state: {
-                                        unit: sub,
-                                        projectData,
-                                        agent,
-                                      },
-                                    });
-
-                                }}
-                                className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
-                              >
-                                View Details
-                              </button>
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                     </div>
                     </div>
                   )}
 
@@ -1013,10 +1017,10 @@ const PropertyDetails1 = () => {
 
       {/* <CallToAction agent={agent} /> */}
 
-     <div className='rounded-t-2xl overflow-hidden'>
-       <Footer />
+      <div className='rounded-t-2xl overflow-hidden'>
+        <Footer />
 
-     </div>
+      </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
         {/* WhatsApp Button */}
         <button
