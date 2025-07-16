@@ -6,11 +6,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 // import Index from "./pages/Index";
-import Login from "./pages/Login";
-import AdminDashboard from "./pages/AdminDashboard";
-import AgentDashboard from "./pages/AgentDashboard";
+import Login from "./pages/others/Login";
+import AdminDashboard from "./pages/others/AdminDashboard";
+import AgentDashboard from "./pages/others/AgentDashboard";
 import AgentPage from "./pages/Agent/AgentPage";
-import AgentProfile from "./components/AgentProfile1";
+import AgentProfile from "./components/others/AgentProfile1";
 // import AgentPageVariation1 from "./pages/AgentPageVariation1";
 // import AgentPageVariation2 from "./pages/AgentPageVariation2";
 // import AgentPageVariation3 from "./pages/AgentPageVariation3";
@@ -23,10 +23,10 @@ import PropertyDetailed from "@/components/Agent/PropertyDetailedPage"
 // import ProjectDetail from "./pages/ProjectDetail";
 import AgentPropDetail from "./components/Agent/AgentPropDetail"
 import NotFound from "./pages/NotFound";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/others/ProtectedRoute";
 // import AgentFarsi from "./pages/AgentFarsi";
 import HomePage from "./pages/HomePage"
-import Sample from "./pages/Sample";
+import Sample from "./pages/others/Sample";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import UnitDetails1 from "@/pages/Agent/UnitDetails1";
 import UnitDetail from "@/pages/Agent/UnitDetailPage"

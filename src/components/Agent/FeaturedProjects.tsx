@@ -804,11 +804,15 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
           className={`relative ${isSearchLoading ? "h-screen overflow-y-auto" : ""
             }`}
         >
-          
+
           {isSearchLoading ? (
-            <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-pink-500 border-opacity-50" />
+            <div className="flex flex-col justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-pink-500 border-opacity-50 mb-4" />
+              <div className="flex flex-col items-center">
+                <span className="text-[#f24ca0] font-semibold text-lg">Loading properties ...</span>
+              </div>
             </div>
+
           ) : properties.length === 0 ? (
             <div className="text-center py-20">
               <h3 className="text-2xl font-semibold text-gray-600 mb-4">Oh-Uh! 😕</h3>

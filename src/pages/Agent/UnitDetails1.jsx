@@ -1,5 +1,5 @@
 import React ,{useState} from 'react'
-import Header from '../../components/Header'
+import Header from '../../components/others/Header'
 // import Header from "@/components/HomeHeader";
 import { ArrowLeft, MapPin, Ruler,Maximize, DollarSign, Building, Eye,Shield, Calendar,Flame, Bath, Bed, Phone, Mail, Download, Share2, MessageCircle, Home, CheckCircle, Image, FileText, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';

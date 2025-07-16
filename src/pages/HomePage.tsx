@@ -1,13 +1,13 @@
 
-import Header from "@/components/HomeHeader";
-import HeroSection from "@/components/HomeHeroSection";
-import TrustedDevelopers from "@/components/HomeTrustedDevelopers";
-import WhyTrustUs from "@/components/HomeWhyTrustUs";
-import ProjectSearchTool from "@/components/HomeProjectSearchTool";
-import TopRatedAgents from "@/components/HomeTopRatedAgents";
-import HowItWorks from "@/components/HomeHowItWorks";
-import AgentRecruitment from "@/components/HomeAgentRecruitment";
-import Footer from "@/components/Footer";
+import Header from "@/components/others/HomeHeader";
+import HeroSection from "@/components/others/HomeHeroSection";
+import TrustedDevelopers from "@/components/others/HomeTrustedDevelopers";
+import WhyTrustUs from "@/components/others/HomeWhyTrustUs";
+import ProjectSearchTool from "@/components/others/HomeProjectSearchTool";
+import TopRatedAgents from "@/components/others/HomeTopRatedAgents";
+import HowItWorks from "@/components/others/HomeHowItWorks";
+import AgentRecruitment from "@/components/others/HomeAgentRecruitment";
+import Footer from "@/components/others/Footer";
 
 const HomePage = () => {
   return (
