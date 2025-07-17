@@ -22,7 +22,7 @@ const UnitDetails1 = () => {
   const { unit, projectData, agent } = location.state || {};
 
   const unitData = location.state;  
-  console.log(unitData); 
+  // console.log(unitData); 
   const paymentPlans = projectData?.payment_plans || [];
  if (!unit) {
     return (

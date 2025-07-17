@@ -33,7 +33,7 @@ const PropertyDetailedPage = () => {
   const { unit, projectData, agent } = location.state || {};
 
   const unitData = location.state;
-  console.log(unitData);
+  // console.log(unitData);
   const paymentPlans = projectData?.payment_plans || [];
   if (!unit) {
     return (
@@ -220,7 +220,7 @@ const PropertyDetailedPage = () => {
     "Lake": { icon: "Droplet", color: "text-blue-400" }
   };
   const amenities = projectData.facilities?.map((fac: any) => {
-    console.log(fac.name);
+    // console.log(fac.name);
     const facilityName = fac?.name || "Unknown";
     const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
     const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon

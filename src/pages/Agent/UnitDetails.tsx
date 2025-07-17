@@ -243,13 +243,13 @@ const UnitDetails = () => {
     setIsSubmitting(true);
 
     try {
-      console.log('Floor Plan Request:', {
-        name: formData.name,
-        whatsappNumber: formData.whatsappNumber,
-        unitId: unit.unitNumber,
-        projectId,
-        timestamp: new Date().toISOString()
-      });
+      // console.log('Floor Plan Request:', {
+      //   name: formData.name,
+      //   whatsappNumber: formData.whatsappNumber,
+      //   unitId: unit.unitNumber,
+      //   projectId,
+      //   timestamp: new Date().toISOString()
+      // });
 
       await new Promise(resolve => setTimeout(resolve, 1500));
       setShowConfirmation(true);

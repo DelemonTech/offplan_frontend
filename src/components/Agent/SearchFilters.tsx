@@ -177,7 +177,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     }
 
     // 👉 Optional: log the final request body
-    console.log("🔍 Sending search filters:", filters);
+    // console.log("🔍 Sending search filters:", filters);
 
     try {
       const response = await fetch(`${hostUrl}/properties/filter/`, {
@@ -260,7 +260,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     fetchDevelopers();
   }, []);
 
-  console.log("City : ", selectedNeighborhood, "!");
+  // console.log("City : ", selectedNeighborhood, "!");
 
   useEffect(() => {
     if (selectedCity) {
@@ -463,7 +463,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             <Select
               onValueChange={(value) => {
                 setPropertyStatus(value);
-                console.log("property status: ", value);
+                // console.log("property status: ", value);
               }}
             >
               <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">

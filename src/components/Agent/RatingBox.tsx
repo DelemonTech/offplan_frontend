@@ -21,7 +21,7 @@ const RatingBox = ({agent}) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (rating > 0) {
-      console.log('Rating submitted:', { rating, comment });
+      // console.log('Rating submitted:', { rating, comment });
       setIsSubmitted(true);
       // Here you would typically send the data to your backend
     }

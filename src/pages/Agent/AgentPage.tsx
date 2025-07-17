@@ -86,7 +86,7 @@ useEffect(() => {
       setLogoPath(defaultLogo);
     }
   }
-  console.log("gender : ",logoPath)
+  // console.log("gender : ",logoPath)
 }, [gender]);
 
 

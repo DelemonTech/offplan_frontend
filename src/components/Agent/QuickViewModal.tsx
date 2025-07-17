@@ -35,7 +35,7 @@ const QuickViewModal = ({ project, isOpen, onClose, onViewDetails }: QuickViewMo
 
   const handleDownloadBrochure = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("Downloading brochure for DoubleTree By Hilton");
+    // console.log("Downloading brochure for DoubleTree By Hilton");
   };
 
   return (

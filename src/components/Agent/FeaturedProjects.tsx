@@ -251,7 +251,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       });
 
       const result = await response.json();
-      console.log("Load More Response:", result);
+      // console.log("Load More Response:", result);
 
       if (result.status && result.data) {
         const newProperties = result.data.results || [];
@@ -272,7 +272,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         document.body.classList.remove('freeze-scroll');
       }
     } catch (error) {
-      console.error('Failed to load more properties:', error);
+      // console.error('Failed to load more properties:', error);
       document.body.classList.remove('freeze-scroll');
     } finally {
       setIsLoading(false);
@@ -298,10 +298,10 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         },
       });
 
-      console.log("project ID : ", projectId);
+      // console.log("project ID : ", projectId);
 
       const data = await res.json();
-      console.log("data : ", data);
+      // console.log("data : ", data);
 
       setSelectedProperty(data.property);
 
@@ -345,7 +345,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   };
 
   useEffect(() => {
-    console.log('📦 [FeaturedProjects] statusName changed to:', statusName);
+    // console.log('📦 [FeaturedProjects] statusName changed to:', statusName);
     setNextPageUrl(null);
   }, [statusName]);
 
@@ -391,7 +391,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
         if (data?.status && data?.data) {
           setCities(data.data); // API returns [{ city_id, city_name, property_count, ... }]
-          console.log("CITIES:", cities);
+          // console.log("CITIES:", cities);
         }
 
         if (data?.data?.length > 0) {
@@ -630,7 +630,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       [statusKey]: statusName,
     };
 
-    console.log("Updated filters:", updatedFilters);
+    // console.log("Updated filters:", updatedFilters);
 
     setSelectedCity(city);
 
@@ -842,7 +842,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                   else return 3;
                   // return project.property_status;
                 })();
-                console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
+                // console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
                 // console.log("Subunit count: ",project.subunit_count);
                 return (
                   (
