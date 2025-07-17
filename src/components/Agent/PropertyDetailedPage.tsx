@@ -97,41 +97,24 @@ const PropertyDetailedPage = () => {
 
     if (!delivery) return "N/A";
 
-    // If it's a number (UNIX timestamp)
-    if (typeof delivery === "number") {
-      const date = new Date(delivery * 1000);
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
+    // If it's a number in YYYYMM format (e.g., 202502)
+    if (typeof delivery === "number" && delivery > 100000) {
+      const year = Math.floor(delivery / 100);
+      const month = delivery % 100;
 
-      // Compute quarter
+      if (month < 1 || month > 12) return "Invalid Date";
+
       const quarter = Math.ceil(month / 3);
       return `Q${quarter} ${year}`;
     }
 
-    // If it's already a string (like "Q4 2024")
+    // If it's already a string like "Q4 2024"
     if (typeof delivery === "string") {
       return delivery;
     }
 
     return "N/A";
   })();
-
-  // const handover = (() => {
-  //   const delivery = projectData?.delivery_date;
-
-  //   if (!delivery) return "N/A";
-
-  //   const str = delivery.toString();
-  //   if (str.length !== 6) return "Invalid Date";
-
-  //   const year = parseInt(str.slice(0, 4), 10);
-  //   const month = parseInt(str.slice(4, 6), 10);
-
-  //   if (isNaN(year) || isNaN(month) || month < 1 || month > 12) return "Invalid Date";
-
-  //   const quarter = Math.ceil(month / 3);
-  //   return `Q${quarter} ${year}`;  // e.g., Q3 2023
-  // })();
 
   //   const featureList = [
   //   { label: 'Type', value: unitData.apartmentType, icon:  <Home />, gradient: 'from-pink-500 to-purple-500' },
