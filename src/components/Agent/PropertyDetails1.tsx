@@ -357,6 +357,7 @@ const handover = (() => {
 
   return "N/A";
 })();
+
   const downPayment = (() => {
     const dpPercent = projectData?.payment_minimum_down_payment;
 
