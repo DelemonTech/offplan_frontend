@@ -1034,10 +1034,8 @@ const PropertyDetails1 = () => {
 
       {/* <CallToAction agent={agent} /> */}
 
-      <div className='rounded-t-2xl overflow-hidden'>
         <Footer />
 
-      </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
         {/* WhatsApp Button */}
         <button

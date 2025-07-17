@@ -1,26 +1,73 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Mail } from 'lucide-react';
 
+const FloatingLabelInput = ({
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  focusedField,
+  setFocusedField
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  focusedField: string;
+  setFocusedField: (name: string) => void;
+}) => (
+  
+  <div className="relative">
+    <Input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      onFocus={() => setFocusedField(name)}
+      onBlur={() => setFocusedField('')}
+      className="h-11 bg-white border-gray-300 text-gray-900 placeholder-transparent focus:border-pink-400 focus:ring-pink-300 peer transition-all duration-200"
+      placeholder={label}
+    />
+    <label
+      className={`absolute left-3 transition-all duration-200 pointer-events-none ${
+        focusedField === name || value
+          ? '-top-2 text-xs text-pink-500 bg-white px-1 transform scale-90 font-medium'
+          : 'top-3 text-gray-500 transform scale-100'
+      }`}
+    >
+      {label}
+    </label>
+  </div>
+);
 const ContactModal = () => {
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
     email: '',
     message: '',
-    agreeUpdates: false
+    agreeUpdates: false,
   });
 
   const [focusedField, setFocusedField] = useState('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const FloatingLabelInput = ({

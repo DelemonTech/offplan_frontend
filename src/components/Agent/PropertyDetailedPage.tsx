@@ -11,7 +11,8 @@ import logoPath from "@/assets/OFFPLAN_MARKET.png"
 import Footer from '../../components/Agent/Footer';
 import { useNavigate } from "react-router-dom";
 import IconWhatsapp from "@/assets/icon-whatsapp.svg";
-import * as LucideIcons from 'lucide-react';
+import * as LucideIcons from 'lucide-react'
+import RequestCallBackModal from './RequestCallBackModal';
 import GalleryPage from './Gallery';
 
 // import { jsPDF } from "jspdf";
@@ -25,6 +26,8 @@ const PropertyDetailedPage = () => {
   const [showFloorPlanImage, setShowFloorPlanImage] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
+  const [showCallbackModal, setShowCallbackModal] = useState(true);
+
 
 
 
@@ -91,19 +94,19 @@ const PropertyDetailedPage = () => {
   // Calculate handover quarter
   const handover = (() => {
     const delivery = projectData?.delivery_date;
+
     if (!delivery) return "N/A";
 
-    if (typeof delivery === "number") {
-      const date = new Date(delivery * 1000);
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-      const quarter = Math.ceil(month / 3);
-      return `Q${quarter} ${year}`;
-    }
+    const str = delivery.toString();
+    if (str.length !== 6) return "Invalid Date";
 
-    if (typeof delivery === "string") return delivery;
+    const year = parseInt(str.slice(0, 4), 10);
+    const month = parseInt(str.slice(4, 6), 10);
 
-    return "N/A";
+    if (isNaN(year) || isNaN(month) || month < 1 || month > 12) return "Invalid Date";
+
+    const quarter = Math.ceil(month / 3);
+    return `Q${quarter} ${year}`;  // e.g., Q3 2023
   })();
 
   //   const featureList = [
@@ -330,7 +333,7 @@ const PropertyDetailedPage = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-600">Overview</p>
-                <p className="text-sm font-semibold text-gray-800">{unit.apartmentType ? unit.apartmentType : unit.id ?  `${unit.id}` : 'No Info'}</p>
+                <p className="text-sm font-semibold text-gray-800">{unit.apartmentType ? unit.apartmentType : unit.id ? `${unit.id}` : 'No Info'}</p>
               </div>
             </div>
 
@@ -421,7 +424,7 @@ const PropertyDetailedPage = () => {
         <div className="bg-white rounded-xl shadow-sm p-6 mt-10">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-violet-600 mb-4">Floor Plan</h3>
-            
+
             {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
               <div className="flex space-x-2">
                 {/* Download Button */}
@@ -456,18 +459,18 @@ const PropertyDetailedPage = () => {
 
           <div className="relative rounded-xl overflow-hidden">
             {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
-            <>
-              <img
-                src={unit.floorPlan}
-                alt="Floor Plan"
-                className="w-full h-72 object-cover"
-              />
-             <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-          <span className="text-white text-md font-bold opacity-60">
-            OFFPLAN.MARKET
-          </span>
-        </div>
-      </>
+              <>
+                <img
+                  src={unit.floorPlan}
+                  alt="Floor Plan"
+                  className="w-full h-72 object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                  <span className="text-white text-md font-bold opacity-60">
+                    OFFPLAN.MARKET
+                  </span>
+                </div>
+              </>
             ) : (
               <div className="flex items-center justify-center w-full h-72 bg-gray-100 text-gray-500 rounded-xl">
                 No Floor Plan Image
@@ -757,7 +760,7 @@ const PropertyDetailedPage = () => {
         </div>
 
         {/* Section 2: Need Help or More Info */}
-        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md text-center border border-gray-200">
+        <div className="bg-white rounded-2xl p-6 sm:p-8 mb-10 shadow-md text-center border border-gray-200">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Need Help or More Info?</h2>
           <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
             Talk to our property advisor for pricing, viewing, and guidance.
@@ -804,9 +807,17 @@ const PropertyDetailedPage = () => {
             </a>
 
             {/* Request Callback */}
-            <button className="w-full mt-4 sm:mt-4 bg-purple-200 text-gray-800 border border-gray-300 hover:bg-gray-100 font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 transition">
+            {/* <button
+              className="w-full mt-4 sm:mt-4 bg-purple-200 text-gray-800 border border-gray-300 hover:bg-gray-100 font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
+
+              onClick={() => setShowCallbackModal(true)}
+            >
               <span className="text-lg"><Calendar /></span> Request Callback
-            </button>
+            </button> */}
+
+            {showCallbackModal && (
+              <RequestCallBackModal onClose={() => setShowCallbackModal(false)} />
+            )}
           </div>
 
         </div>
