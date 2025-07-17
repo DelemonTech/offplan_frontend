@@ -78,7 +78,7 @@ const RequestCallBackModal = ({ onClose }: { onClose: () => void }) => {
               onBlur={() => setFocusedField('')}
               className="w-full px-3 pt-5 pb-2 border border-gray-300 rounded-md text-gray-900 placeholder-transparent focus:outline-none focus:border-pink-400 focus:ring-pink-300 transition-all duration-200 peer"
               placeholder="Mobile number"
-            />
+            />  
             <label
               className={`absolute left-3 transition-all duration-200 pointer-events-none bg-white px-1 
                 ${focusedField === 'mobile' || formData.mobile
