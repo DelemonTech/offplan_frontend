@@ -902,7 +902,7 @@ const handover = (() => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`, k{agent.username}/property-detailed/${sub.id}`,
-                                    navigate(`/agent/${agent.username}/property-detailed/${encodeURIComponent(sub.id)}`,
+                                    navigate(`/${agent.username}/property-detailed/${encodeURIComponent(sub.id)}`,
                                       {
                                         state: {
                                           unit: sub,

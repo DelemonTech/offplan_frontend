@@ -305,7 +305,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
       setSelectedProperty(data.property);
 
-      navigate(`/agent/${agent.username}/property-details/?id=${projectId}`, {
+      navigate(`/${agent.username}/property-details/?id=${projectId}`, {
         state: { agent }
       });
     } catch (error) {
@@ -852,7 +852,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                     >
                       <Card
                         key={project.id}
-                        className="group hover:shadow-2xl hover:-translate-y-3 transition-all h-full duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
+                        className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
                       // onClick={() => handleProjectSummary(project)}
                       >
                         <div className="relative overflow-hidden">
