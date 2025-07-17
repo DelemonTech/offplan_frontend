@@ -85,9 +85,9 @@ const Footer = () => {
   );
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 text-white rounded-t-2xl overflow-hidden">
       {/* AI Chat CTA Section */}
-      <div className="bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4">
+      <div className="bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 ">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-lg font-medium">Need help choosing? Chat with our AI — 24/7 support! 🤖</p>
         </div>

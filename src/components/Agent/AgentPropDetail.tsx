@@ -175,7 +175,7 @@ const AgentPropDetail = () => {
         const data = await response.json();
         if (data?.status && data?.data) {
           setProjectData(data.data);
-          console.log(data.data)
+          // console.log(data.data)
         }
       } catch (err) {
         console.error('Failed to fetch project:', err);
@@ -252,7 +252,7 @@ const AgentPropDetail = () => {
 
 
 
-  console.log(projectData.facilities);
+  // console.log(projectData.facilities);
   const amenities = projectData.facilities?.map((fac: any) => {
     console.log(fac.name);
     const facilityName = fac?.name || "Unknown";

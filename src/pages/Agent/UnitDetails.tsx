@@ -10,8 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '@/components/others/Header';
+import Footer from '@/components/others/Footer';
 
 const UnitDetails = () => {
   const { id: projectId, unitId } = useParams<{ id: string; unitId: string }>();
@@ -243,13 +243,13 @@ const UnitDetails = () => {
     setIsSubmitting(true);
 
     try {
-      console.log('Floor Plan Request:', {
-        name: formData.name,
-        whatsappNumber: formData.whatsappNumber,
-        unitId: unit.unitNumber,
-        projectId,
-        timestamp: new Date().toISOString()
-      });
+      // console.log('Floor Plan Request:', {
+      //   name: formData.name,
+      //   whatsappNumber: formData.whatsappNumber,
+      //   unitId: unit.unitNumber,
+      //   projectId,
+      //   timestamp: new Date().toISOString()
+      // });
 
       await new Promise(resolve => setTimeout(resolve, 1500));
       setShowConfirmation(true);

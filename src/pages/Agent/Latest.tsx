@@ -1,7 +1,7 @@
 
 import React from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '@/components/others/Header';
+import Footer from '@/components/others/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Clock, TrendingUp, Zap } from 'lucide-react';
 

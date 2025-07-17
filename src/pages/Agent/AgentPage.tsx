@@ -86,7 +86,7 @@ useEffect(() => {
       setLogoPath(defaultLogo);
     }
   }
-  console.log("gender : ",logoPath)
+  // console.log("gender : ",logoPath)
 }, [gender]);
 
 
@@ -187,7 +187,7 @@ useEffect(() => {
   if (loading) {
     return (
       <div className="text-center py-20 text-gray-500 text-lg">
-        <LoadingOverlay message={t("Loading Projects...")} />
+        <LoadingOverlay message={t("Loading ...")} />
       </div>
     );
   }

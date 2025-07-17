@@ -173,7 +173,7 @@ const PropertyDetails1 = () => {
         const data = await response.json();
         if (data?.status && data?.data) {
           setProjectData(data.data);
-          console.log(data.data);
+          // console.log(data.data);
 
           if (!agent && data.data.agent_id) {
             const agentResponse = await fetch(`${hostUrl}/agent/${data.data.agent_id}/`);
@@ -340,10 +340,10 @@ const PropertyDetails1 = () => {
     );
   }
 
-  console.log(
-    "grouped_apartment : ",
-    projectData.grouped_apartments.map((item) => item.unit_type)
-  );
+  // console.log(
+  //   "grouped_apartment : ",
+  //   projectData.grouped_apartments.map((item) => item.unit_type)
+  // );
   // Build a map of property_id to unit_type
   // const apartmentTypeMap = projectData.grouped_apartments.reduce(
   //   (acc, item) => {
@@ -436,9 +436,9 @@ const PropertyDetails1 = () => {
 
 
 
-  console.log(projectData.facilities);
+  // console.log(projectData.facilities);
   const amenities = projectData.facilities?.map((fac: any) => {
-    console.log(fac.name);
+    // console.log(fac.name);
     const facilityName = fac?.name || "Unknown";
     const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
     const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon
@@ -1034,10 +1034,8 @@ const PropertyDetails1 = () => {
 
       {/* <CallToAction agent={agent} /> */}
 
-      <div className='rounded-t-2xl overflow-hidden'>
         <Footer />
 
-      </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
         {/* WhatsApp Button */}
         <button

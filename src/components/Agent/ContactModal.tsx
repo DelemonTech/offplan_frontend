@@ -1,34 +1,81 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Mail } from 'lucide-react';
 
+const FloatingLabelInput = ({
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  focusedField,
+  setFocusedField
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  focusedField: string;
+  setFocusedField: (name: string) => void;
+}) => (
+  
+  <div className="relative">
+    <Input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      onFocus={() => setFocusedField(name)}
+      onBlur={() => setFocusedField('')}
+      className="h-11 bg-white border-gray-300 text-gray-900 placeholder-transparent focus:border-pink-400 focus:ring-pink-300 peer transition-all duration-200"
+      placeholder={label}
+    />
+    <label
+      className={`absolute left-3 transition-all duration-200 pointer-events-none ${
+        focusedField === name || value
+          ? '-top-2 text-xs text-pink-500 bg-white px-1 transform scale-90 font-medium'
+          : 'top-3 text-gray-500 transform scale-100'
+      }`}
+    >
+      {label}
+    </label>
+  </div>
+);
 const ContactModal = () => {
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
     email: '',
     message: '',
-    agreeUpdates: false
+    agreeUpdates: false,
   });
 
   const [focusedField, setFocusedField] = useState('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const FloatingLabelInput = ({ 
-    label, 
-    name, 
-    type = 'text', 
-    value, 
-    onChange 
+  const FloatingLabelInput = ({
+    label,
+    name,
+    type = 'text',
+    value,
+    onChange,
   }: {
     label: string;
     name: string;
@@ -44,14 +91,14 @@ const ContactModal = () => {
         onChange={onChange}
         onFocus={() => setFocusedField(name)}
         onBlur={() => setFocusedField('')}
-        className="h-11 bg-white border-gray-300 text-gray-900 placeholder-transparent focus:border-pink-400 focus:ring-pink-300 peer transition-all duration-200"
         placeholder={label}
+        className="h-11 bg-white border-gray-300 text-gray-900 placeholder-transparent focus:border-pink-400 focus:ring-pink-300  transition-all duration-200"
       />
-      <label 
-        className={`absolute left-3 transition-all duration-200 pointer-events-none ${
+      <label
+        className={`absolute left-3 px-1 bg-white transition-all duration-200 pointer-events-none ${
           focusedField === name || value
-            ? '-top-2 text-xs text-pink-500 bg-white px-1 transform scale-90 font-medium'
-            : 'top-3 text-gray-500 transform scale-100'
+            ? '-top-2 text-xs text-pink-500 scale-90 font-medium'
+            : 'top-3 text-gray-500 scale-100'
         }`}
       >
         {label}
@@ -69,9 +116,11 @@ const ContactModal = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg bg-white">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-900 text-center">Get In Touch</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-gray-900 text-center">
+            Get In Touch
+          </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 mt-4">
           <FloatingLabelInput
             label="Your name"
@@ -104,13 +153,13 @@ const ContactModal = () => {
               onFocus={() => setFocusedField('message')}
               onBlur={() => setFocusedField('')}
               className="min-h-[80px] bg-white border-gray-300 text-gray-900 placeholder-transparent focus:border-pink-400 focus:ring-pink-300 resize-none transition-all duration-200"
-              placeholder="Your inquiry message"
+              placeholder="Your message"
             />
-            <label 
-              className={`absolute left-3 transition-all duration-200 pointer-events-none ${
+            <label
+              className={`absolute left-3 px-1 bg-white transition-all duration-200 pointer-events-none ${
                 focusedField === 'message' || formData.message
-                  ? '-top-2 text-xs text-pink-500 bg-white px-1 transform scale-90 font-medium'
-                  : 'top-3 text-gray-500 transform scale-100'
+                  ? '-top-2 text-xs text-pink-500 scale-90 font-medium'
+                  : 'top-3 text-gray-500 scale-100'
               }`}
             >
               Your message
@@ -118,15 +167,21 @@ const ContactModal = () => {
           </div>
 
           <div className="flex items-start space-x-2">
-            <Checkbox 
+            <Checkbox
               id="updates"
               checked={formData.agreeUpdates}
-              onCheckedChange={(checked) => 
-                setFormData(prev => ({ ...prev, agreeUpdates: checked as boolean }))
+              onCheckedChange={(checked) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  agreeUpdates: checked as boolean,
+                }))
               }
               className="border-gray-400 data-[state=checked]:bg-pink-500 mt-0.5"
             />
-            <label htmlFor="updates" className="text-sm text-gray-600 leading-relaxed">
+            <label
+              htmlFor="updates"
+              className="text-sm text-gray-600 leading-relaxed"
+            >
               I agree to receive updates about new properties
             </label>
           </div>

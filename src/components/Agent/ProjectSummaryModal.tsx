@@ -28,7 +28,7 @@ const ProjectSummaryModal: React.FC<ProjectSummaryModalProps> = ({ project, isOp
   const navigate = useNavigate();
 
   // Debug logging
-  console.log('ProjectSummaryModal - Received project:', project);
+  // console.log('ProjectSummaryModal - Received project:', project);
 
   if (!project) return null;
 
