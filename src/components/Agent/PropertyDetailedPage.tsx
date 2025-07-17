@@ -273,7 +273,7 @@ const PropertyDetailedPage = () => {
 
 
             {/* Text content over image */}
-            <div className="absolute bottom-4 left-4 z-10 right-2">
+            <div className="absolute bottom-4 left-4 z-10">
 
               <h2 className="text-3xl text-white  lg:text-xl font-bold mb-1">
                 <div>{projectData.title}<br /><span className='text-2xl'> Unit ID : {unit.id}</span></div>
