@@ -929,7 +929,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                                 {project.low_price ? `AED ${formatAED(project.low_price)}` : 'AED N/A'}
                               </div>
 
-                              <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                              <div className="flex flex-wrap gap-3 text-xs text-gray-600 pb-3">
                                 <div className="flex items-center gap-1">
                                   <Ruler size={12} className="text-pink-500" />
                                   <span>From {project.min_area} ft²</span>
@@ -955,7 +955,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
                                 </div>
                               )}
                               {(displayStatus === 3 ? project?.property_status : displayStatus) !== 2 && (
-                                <div className='flex flex-row items-center gap-1 bg-white rounded-full px-3 py-1.5 shadow border border-green-100'>
+                                <div className='flex flex-row items-center gap-1 bg-white rounded-xl px-4 py-1.5 shadow border border-green-100'>
                                   <img src={IconShield} className='h-4 w-5' />
                                   <span className='text-xs text-green-500 font-medium'>Zero Risk – Escrow Protected</span>
                                 </div>
