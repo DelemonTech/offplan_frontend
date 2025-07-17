@@ -273,22 +273,44 @@ const PropertyDetails1 = () => {
     minArea && maxArea
       ? `${minArea} – ${maxArea} sq.ft.`
       : "Area Not Available";
-  const handover = (() => {
-    const delivery = projectData?.delivery_date;
 
-    if (!delivery) return "N/A";
+  // const handover = (() => {
+  //   const delivery = projectData?.delivery_date;
 
-    const str = delivery.toString();
-    if (str.length !== 6) return "Invalid Date";
+  //   if (!delivery) return "N/A";
 
-    const year = parseInt(str.slice(0, 4), 10);
-    const month = parseInt(str.slice(4, 6), 10);
+  //   // Convert to string in case it's a number
+  //   const str = delivery.toString();
 
-    if (isNaN(year) || isNaN(month) || month < 1 || month > 12) return "Invalid Date";
+  //   // Check if it's 6-digit format like "202708"
+  //   if (/^\d{6}$/.test(str)) {
+  //     const year = parseInt(str.slice(0, 4), 10);
+  //     const month = parseInt(str.slice(4, 6), 10);
 
-    const quarter = Math.ceil(month / 3);
-    return `Q${quarter} ${year}`;  // e.g., Q3 2023
-  })();
+  //     if (isNaN(year) || isNaN(month) || month < 1 || month > 12) return "Invalid Date";
+
+  //     // Option 1: Return as Quarter format
+  //     const quarter = Math.ceil(month / 3);
+  //     return `Q${quarter} ${year}`; // ➜ e.g., Q3 2027
+
+  //     // Option 2: Return as MM/YYYY format
+  //     // return `${String(month).padStart(2, '0')}/${year}`; // ➜ e.g., 08/2027
+  //   }
+
+  //   // If already in MM/YYYY format, return as-is
+  //   if (/^\d{2}\/\d{4}$/.test(str)) return str;
+
+  //   // If UNIX timestamp
+  //   if (!isNaN(str) && Number(str) > 1000000000) {
+  //     const date = new Date(Number(str) * 1000);
+  //     const month = String(date.getMonth() + 1).padStart(2, '0');
+  //     const year = date.getFullYear();
+  //     return `${month}/${year}`;
+  //   }
+
+  //   return "Invalid Date";
+  // })();
+
   // const handover = (() => {
   //   const delivery = projectData?.delivery_date;
 
@@ -312,7 +334,29 @@ const PropertyDetails1 = () => {
 
   //   return "N/A";
   // })();
+const handover = (() => {
+  const delivery = projectData?.delivery_date;
 
+  if (!delivery) return "N/A";
+
+  // If it's a number in YYYYMM format (e.g., 202502)
+  if (typeof delivery === "number" && delivery > 100000) {
+    const year = Math.floor(delivery / 100);
+    const month = delivery % 100;
+
+    if (month < 1 || month > 12) return "Invalid Date";
+
+    const quarter = Math.ceil(month / 3);
+    return `Q${quarter} ${year}`;
+  }
+
+  // If it's already a string like "Q4 2024"
+  if (typeof delivery === "string") {
+    return delivery;
+  }
+
+  return "N/A";
+})();
   const downPayment = (() => {
     const dpPercent = projectData?.payment_minimum_down_payment;
 
@@ -580,15 +624,15 @@ const PropertyDetails1 = () => {
             </div>
           ) : (
             <div className="flex justify-center py-5">
-                 {propertyStatus.name !== "Ready" && (
+              {propertyStatus.name !== "Ready" && (
 
-              <div className="flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md bg-green-50 text-green-600 text-sm md:text-base font-semibold">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-[10px] shadow-md bg-green-50 text-green-600 text-sm md:text-base font-semibold">
                   <div className="bg-white rounded-full p-1">
                     <img src={IconShield} alt="icon" className="w-5 h-5" />
                   </div>
-                    <span>Zero Risk – Escrow Protected</span>
-              </div>
-                )}
+                  <span>Zero Risk – Escrow Protected</span>
+                </div>
+              )}
 
             </div>
           )}
@@ -1034,7 +1078,7 @@ const PropertyDetails1 = () => {
 
       {/* <CallToAction agent={agent} /> */}
 
-        <Footer />
+      <Footer />
 
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
         {/* WhatsApp Button */}
