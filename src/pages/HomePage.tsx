@@ -7,7 +7,7 @@ import ProjectSearchTool from "@/components/others/HomeProjectSearchTool";
 import TopRatedAgents from "@/components/others/HomeTopRatedAgents";
 import HowItWorks from "@/components/others/HomeHowItWorks";
 import AgentRecruitment from "@/components/others/HomeAgentRecruitment";
-import Footer from "@/components/others/Footer";
+import Footer from "@/components/Agent/Footer";
 
 const HomePage = () => {
   return (

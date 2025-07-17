@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import exp from 'constants';
 import { Button } from "@/components/ui/button";
 import { Menu, LayoutDashboard, Users, Building2 } from "lucide-react";
+import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
 
 export const Header = () => {
   const { t, i18n } = useTranslation();
@@ -90,7 +91,7 @@ export const Header = () => {
               <a href="#agents" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Agents")}</a>
               <a href="#developers" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Developers")}</a>
 
-              <div className="relative group py-2">
+              {/* <div className="relative group py-2">
                 <button className="flex items-center text-gray-700 hover:text-[#6084ee] transition">
                   🌐
                   <span className="ml-1 hidden sm:inline">{t('Language')}</span>
@@ -109,7 +110,8 @@ export const Header = () => {
                     {t("Farsi (Persian)")}
                   </button>
                 </div>
-              </div>
+              </div> */}
+              <LanguageSwitcher />
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -142,8 +144,8 @@ export const Header = () => {
 
               {/* Dropdown menu below header */}
               <div
-                className="fixed top-16 left-4 right-4 bg-white z-50 shadow-md px-4 py-4 flex flex-col space-y-3 rounded-lg overflow-auto inline-flex max-w-[calc(100vw-2rem)]">
-                {menuItems.map((item) => (
+                className="fixed top-16 left-4 right-4 bg-white z-50 shadow-md px-4 pb-4 flex flex-col space-y-3 rounded-lg overflow-auto inline-flex max-w-[calc(100vw-2rem)]">
+                {/* {menuItems.map((item) => (
                   <button
                     key={item.label}
                     onClick={() => {
@@ -154,10 +156,10 @@ export const Header = () => {
                   >
                     <div className='flex items-center space-x-2'>{item.icon}<span>{item.label}</span></div>
                   </button>
-                ))}
-                <hr />
+                ))} */}
+                {/* <hr /> */}
                 {/* Language on Mobile */}
-                <div>
+                {/* <div>
                   <p className="text-gray-600 text-sm mb-1">🌐 Language</p>
                   <button
                     onClick={() => changeLanguage('en')}
@@ -171,7 +173,8 @@ export const Header = () => {
                   >
                     {t("Farsi (Persian)")}
                   </button>
-                </div>
+                </div> */}
+                <LanguageSwitcher mobile/>
               </div>
             </>
 

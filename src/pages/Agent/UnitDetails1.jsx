@@ -3,9 +3,9 @@ import Header from '../../components/others/Header'
 // import Header from "@/components/HomeHeader";
 import { ArrowLeft, MapPin, Ruler,Maximize, DollarSign, Building, Eye,Shield, Calendar,Flame, Bath, Bed, Phone, Mail, Download, Share2, MessageCircle, Home, CheckCircle, Image, FileText, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import unit from '../../assets/unit.jpeg';
-import girl from '../../assets/girl.jpg'
-import forplan from '../../assets/forplan1.webp';
+// import unit from '../../assets/unit.jpeg';
+// import girl from '../../assets/girl.jpg'
+// import forplan from '../../assets/forplan1.webp';
 import { useLocation } from 'react-router-dom';
 import Footer from '../../components/Agent/Footer'
 // import { jsPDF } from "jspdf";

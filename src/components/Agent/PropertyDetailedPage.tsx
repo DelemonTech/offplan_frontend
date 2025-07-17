@@ -26,7 +26,7 @@ const PropertyDetailedPage = () => {
   const [showFloorPlanImage, setShowFloorPlanImage] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
-  const [showCallbackModal, setShowCallbackModal] = useState(false);
+  const [showCallbackModal, setShowCallbackModal] = useState(true);
 
 
 
@@ -287,7 +287,7 @@ const PropertyDetailedPage = () => {
               {/* <div className='bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold'>
                 <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">AED {formatPrice(unit.price)}</p>
               </div> */}
-              <p className="flex items-center text-sm font-medium text-white mt-1 gap-1 bg-red-400 rounded-2xl px-2">
+              <p className="flex items-center text-sm font-medium text-white mt-1 gap-1 bg-red-400 rounded-2xl px-3">
                 <Flame className="text-white animate-burn" />
                 Reserve 24/7 –
                 <span className="text-1xl font-bold text-white text-transparent bg-clip-text py-1">
@@ -807,12 +807,13 @@ const PropertyDetailedPage = () => {
             </a>
 
             {/* Request Callback */}
-            <button
+            {/* <button
               className="w-full mt-4 sm:mt-4 bg-purple-200 text-gray-800 border border-gray-300 hover:bg-gray-100 font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
+
               onClick={() => setShowCallbackModal(true)}
             >
               <span className="text-lg"><Calendar /></span> Request Callback
-            </button>
+            </button> */}
 
             {showCallbackModal && (
               <RequestCallBackModal onClose={() => setShowCallbackModal(false)} />
