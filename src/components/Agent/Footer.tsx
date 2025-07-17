@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Facebook, Youtube, Instagram, Linkedin, ChevronDown, ChevronUp, Phone, Mail, MapPin, Globe, ArrowUp } from 'lucide-react';
+import { SiSnapchat, SiTiktok } from "react-icons/si";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,8 +13,8 @@ const Footer = () => {
   const [email, setEmail] = useState('');
 
   const toggleSection = (section: string) => {
-    setOpenSections(prev => 
-      prev.includes(section) 
+    setOpenSections(prev =>
+      prev.includes(section)
         ? prev.filter(s => s !== section)
         : [...prev, section]
     );
@@ -23,17 +24,17 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const FooterSection = ({ 
-    title, 
-    children, 
-    id 
-  }: { 
-    title: string; 
-    children: React.ReactNode; 
+  const FooterSection = ({
+    title,
+    children,
+    id
+  }: {
+    title: string;
+    children: React.ReactNode;
     id: string;
   }) => (
     <div className="md:block">
-      <Collapsible 
+      <Collapsible
         open={openSections.includes(id)}
         onOpenChange={() => toggleSection(id)}
       >
@@ -59,28 +60,28 @@ const Footer = () => {
   );
 
   // Custom TikTok icon component
-  const TikTokIcon = ({ size = 24, className = "" }) => (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="currentColor" 
-      className={className}
-    >
-      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.04-.1z"/>
-    </svg>
-  );
+  // const TikTokIcon = ({ size = 24, className = "" }) => (
+  //   <svg
+  //     width={size}
+  //     height={size}
+  //     viewBox="0 0 24 24"
+  //     fill="currentColor"
+  //     className={className}
+  //   >
+  //     <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.04-.1z" />
+  //   </svg>
+  // );
 
   // Custom Twitter/X icon component
   const TwitterIcon = ({ size = 24, className = "" }) => (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="currentColor" 
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
       className={className}
     >
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
   );
 
@@ -148,9 +149,9 @@ const Footer = () => {
                 'Retail in The Springs'
               ].map((property) => (
                 <li key={property}>
-                  <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium">
+                  {/* <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium"> */}
                     {property}
-                  </a>
+                  {/* </a> */}
                 </li>
               ))}
             </ul>
@@ -173,7 +174,7 @@ const Footer = () => {
                   <span className="text-gray-200 font-medium">Sahar@offplan.market</span>
                 </div>
               </div>
-              
+
               {/* Language Selector */}
               <div className="flex items-center space-x-3">
                 <Globe size={16} className="text-pink-400" />
@@ -216,13 +217,73 @@ const Footer = () => {
 
         {/* Social Media Icons */}
         <div className="flex justify-center space-x-6 mb-8">
-          <Facebook size={24} className="text-gray-400 hover:text-blue-400 cursor-pointer transition-colors duration-300 hover:scale-110" />
-          <Youtube size={24} className="text-gray-400 hover:text-red-400 cursor-pointer transition-colors duration-300 hover:scale-110" />
-          <Instagram size={24} className="text-gray-400 hover:text-pink-400 cursor-pointer transition-colors duration-300 hover:scale-110" />
-          <Linkedin size={24} className="text-gray-400 hover:text-blue-300 cursor-pointer transition-colors duration-300 hover:scale-110" />
-          <TikTokIcon size={24} className="text-gray-400 hover:text-pink-500 cursor-pointer transition-colors duration-300 hover:scale-110" />
-          <TwitterIcon size={24} className="text-gray-400 hover:text-blue-400 cursor-pointer transition-colors duration-300 hover:scale-110" />
+          <a
+            href="https://www.facebook.com/profile.php?id=61576864533245"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Facebook
+              size={24}
+              className="text-gray-400 hover:text-blue-400 cursor-pointer transition-colors duration-300 hover:scale-110"
+            />
+          </a>
+
+          <a
+            href="https://www.youtube.com/channel/UCFcc-JtEzK79k7Fc8_7z7Ew"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Youtube
+              size={24}
+              className="text-gray-400 hover:text-red-400 cursor-pointer transition-colors duration-300 hover:scale-110"
+            />
+          </a>
+
+          <a
+            href="https://www.instagram.com/offplan.market/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Instagram
+              size={24}
+              className="text-gray-400 hover:text-pink-400 cursor-pointer transition-colors duration-300 hover:scale-110"
+            />
+          </a>
+
+          <a
+            href="https://www.linkedin.com/company/107619333/admin/dashboard/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Linkedin
+              size={24}
+              className="text-gray-400 hover:text-blue-300 cursor-pointer transition-colors duration-300 hover:scale-110"
+            />
+          </a>
+
+          <a
+            href="https://www.tiktok.com/@offplan.market"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <SiTiktok
+              size={24}
+              className="text-gray-400 hover:text-pink-500 cursor-pointer transition-colors duration-300 hover:scale-110"
+            />
+          </a>
+
+          <a
+            href="https://profile.snapchat.com/91c5628a-eb73-4b4a-9755-a8922f965d97/profiles/a59bb01d-e94f-4e6e-a30d-9bbd1e367000/details/public-stories?ref_aid=fe1d29a1-c5c0-4a6e-bc32-1e14764a27fe"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <SiSnapchat
+              size={24}
+              className="text-gray-400 hover:text-blue-400 cursor-pointer transition-colors duration-300 hover:scale-110"
+            />
+          </a>
         </div>
+
 
         {/* Bottom Row */}
         <div className="border-t border-gray-700 pt-6">
@@ -237,11 +298,11 @@ const Footer = () => {
                   <img src={Icon} alt="Logo" className="h-12" />
                 </span>
               </div>
-              
+
               <p className="text-sm text-gray-400 text-center font-medium">
                 © 2025 Offplan.Market | UAE's Smart Off-Plan Property Platform | All rights reserved.
               </p>
-              
+
               <Button
                 onClick={scrollToTop}
                 variant="outline"
