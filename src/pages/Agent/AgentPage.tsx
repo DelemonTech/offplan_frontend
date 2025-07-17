@@ -98,21 +98,21 @@ useEffect(() => {
   const { t } = useLanguage();
   const [statusName, setStatusName] = useState("Ready");
 
-useEffect(() => {
-  const fetchAll = async () => {
-    setLoading(true);
-    try {
-      const agentRes = await fetch(`${hostUrl}/agent/${username}`);
-      const agentJson = await agentRes.json();
+  useEffect(() => {
+    const fetchAll = async () => {
+      setLoading(true);
+      try {
+        const agentRes = await fetch(`${hostUrl}/agent/${username}`);
+        const agentJson = await agentRes.json();
 
-      if (agentRes.ok && agentJson.status) {
-        const agent = agentJson.data;
-        setAgentData(agent);
+        if (agentRes.ok && agentJson.status) {
+          const agent = agentJson.data;
+          setAgentData(agent);
 
-        if (agent.gender) {
-          setFavicon(agent.gender);
-          setGender(agent.gender.toLowerCase());
-        }
+          if (agent.gender) {
+            setFavicon(agent.gender);
+            setGender(agent.gender.toLowerCase());
+          }
 
         // Now fetch properties with agent_id + status_id
         // const propertiesRes = await fetch(`${hostUrl}/properties/filter/`, {

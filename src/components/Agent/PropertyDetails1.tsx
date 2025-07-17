@@ -273,30 +273,45 @@ const PropertyDetails1 = () => {
     minArea && maxArea
       ? `${minArea} – ${maxArea} sq.ft.`
       : "Area Not Available";
-
   const handover = (() => {
     const delivery = projectData?.delivery_date;
 
     if (!delivery) return "N/A";
 
-    // If it's a number (UNIX timestamp)
-    if (typeof delivery === "number") {
-      const date = new Date(delivery * 1000);
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
+    const str = delivery.toString();
+    if (str.length !== 6) return "Invalid Date";
 
-      // Compute quarter
-      const quarter = Math.ceil(month / 3);
-      return `Q${quarter} ${year}`;
-    }
+    const year = parseInt(str.slice(0, 4), 10);
+    const month = parseInt(str.slice(4, 6), 10);
 
-    // If it's already a string (like "Q4 2024")
-    if (typeof delivery === "string") {
-      return delivery;
-    }
+    if (isNaN(year) || isNaN(month) || month < 1 || month > 12) return "Invalid Date";
 
-    return "N/A";
+    const quarter = Math.ceil(month / 3);
+    return `Q${quarter} ${year}`;  // e.g., Q3 2023
   })();
+  // const handover = (() => {
+  //   const delivery = projectData?.delivery_date;
+
+  //   if (!delivery) return "N/A";
+
+  //   // If it's a number (UNIX timestamp)
+  //   if (typeof delivery === "number") {
+  //     const date = new Date(delivery * 1000);
+  //     const month = date.getMonth() + 1;
+  //     const year = date.getFullYear();
+
+  //     // Compute quarter
+  //     const quarter = Math.ceil(month / 3);
+  //     return `Q${quarter} ${year}`;
+  //   }
+
+  //   // If it's already a string (like "Q4 2024")
+  //   if (typeof delivery === "string") {
+  //     return delivery;
+  //   }
+
+  //   return "N/A";
+  // })();
 
   const downPayment = (() => {
     const dpPercent = projectData?.payment_minimum_down_payment;
