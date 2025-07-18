@@ -463,7 +463,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     };
 
     if (statusName) {
-      console.log('Fetching properties for statusName:', statusName);
+      // console.log('Fetching properties for statusName:', statusName);
       fetchFilteredProperties();
     }
   }, [statusName]);
