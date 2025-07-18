@@ -22,53 +22,111 @@ console.log("🌱 API_BASE_URL =", API_BASE_URL);
 const frontendPath = "/var/www/frontend";
 app.use("/", express.static(frontendPath));
 
-// 📝 Dynamic meta route for agents
+/**
+ * 🧠 Detect crawlers (WhatsApp, Facebook, Twitter)
+ */
+function isCrawler(userAgent = "") {
+  const crawlers = [
+    "facebookexternalhit",
+    "WhatsApp",
+    "TelegramBot",
+    "Twitterbot",
+    "Slackbot",
+    "LinkedInBot",
+    "Discordbot",
+    "Googlebot",
+    "bingbot",
+    "embedly",
+    "pinterest",
+  ];
+  return crawlers.some((crawler) =>
+    userAgent.toLowerCase().includes(crawler.toLowerCase())
+  );
+}
+
+/**
+ * 📝 Dynamic meta route for agents
+ */
 app.get("/agent/:username", async (req, res) => {
   const username = req.params.username;
-  console.log("👉 Fetching agent data for username:", username);
+  const userAgent = req.headers["user-agent"] || "";
+  console.log("👉 Request for /agent/:username =", username);
+  console.log("📱 User-Agent:", userAgent);
+
+  const apiUrl = `${API_BASE_URL}/agent/${username}`;
+  console.log("🌐 API call:", apiUrl);
+
+  let agent;
 
   try {
-    const apiUrl = `${API_BASE_URL}/agent/${username}`;
-    console.log("🌐 API call:", apiUrl);
-
+    // 🔥 Try fetching agent data
     const response = await fetch(apiUrl);
     console.log("🌐 API Response:", response.status);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ API call failed:", response.status, errorText);
-      throw new Error(`API call failed with status ${response.status}`);
+    if (response.ok) {
+      const agentResponse = await response.json();
+      agent = agentResponse.data;
     }
 
-    const agentResponse = await response.json();
-    console.log("✅ API Agent Data:", agentResponse);
+    // 💤 Retry once for crawlers if first fetch failed
+    if (!agent && isCrawler(userAgent)) {
+      console.log("⏳ First API call failed. Retrying for crawler...");
+      await new Promise((resolve) => setTimeout(resolve, 800)); // Wait 800ms
 
-    const agent = agentResponse.data;
-    if (!agent) {
-      throw new Error("Agent data missing in API response");
+      const retryResponse = await fetch(apiUrl);
+      console.log("🌐 Retry API Response:", retryResponse.status);
+
+      if (retryResponse.ok) {
+        const retryAgentResponse = await retryResponse.json();
+        agent = retryAgentResponse.data;
+        console.log("✅ Data fetched on retry for crawler.");
+      }
     }
 
-    const html = await injectMetaTags({
-      title: `${agent.name} | Offplan Expert – Offplan.Market`,
-      description: `Work with ${agent.name} to explore Dubai off-plan projects.`,
-      ogImage: agent.profile_image_url || "/default-og-image.jpg",
-    });
+    // 🤖 Serve SSR meta tags for crawlers
+    if (isCrawler(userAgent)) {
+      const meta = agent
+        ? {
+            title: `${agent.name} | Offplan Expert – Offplan.Market`,
+            description: `Work with ${agent.name} to explore Dubai off-plan projects.`,
+            ogImage: agent.profile_image_url || "/default-og-image.jpg",
+          }
+        : undefined;
 
-    res.send(html);
+      const html = await injectMetaTags(meta);
+      return res.send(html);
+    }
+
+    // 🖥️ For browsers, serve React app
+    return res.sendFile(path.join(frontendPath, "index.html"));
   } catch (err) {
     console.error("🚨 Error fetching agent data:", err);
-    const fallbackHtml = await injectMetaTags();
-    res.send(fallbackHtml);
+
+    if (isCrawler(userAgent)) {
+      const fallbackHtml = await injectMetaTags();
+      return res.send(fallbackHtml);
+    } else {
+      return res.sendFile(path.join(frontendPath, "index.html"));
+    }
   }
 });
 
-// 📝 Fallback route for other pages
+/**
+ * 📝 Fallback route for other pages
+ */
 app.get(/^\/(?!api).*/, async (req, res) => {
-  const html = await injectMetaTags();
-  res.send(html);
+  const userAgent = req.headers["user-agent"] || "";
+  if (isCrawler(userAgent)) {
+    const html = await injectMetaTags();
+    return res.send(html);
+  } else {
+    return res.sendFile(path.join(frontendPath, "index.html"));
+  }
 });
 
-// 🛠 Function to inject meta tags into index.html
+/**
+ * 🛠 Function to inject meta tags into index.html
+ */
 async function injectMetaTags(meta = {}) {
   const defaults = {
     title: "Offplan Market – Dubai Offplan Properties",
@@ -109,6 +167,7 @@ async function injectMetaTags(meta = {}) {
   return html;
 }
 
+// ✅ Start server
 app.listen(PORT, () => {
   console.log(`✅ SSR Server running at http://localhost:${PORT}`);
 });
