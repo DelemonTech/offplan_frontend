@@ -3,6 +3,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import fetch from "node-fetch";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 // ✅ Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -21,7 +24,10 @@ app.get("/agent/:username", async (req, res) => {
   const username = req.params.username;
 console.log("👉 Fetching agent data for username:", username);
   try {
-    const response = await fetch(`${process.env.VITE_HOST_URL}/agent/${username}`);
+    const apiBaseUrl = process.env.API_BASE_URL;
+    const response = await fetch(`${apiBaseUrl}/agent/${username}`);
+
+
     console.log("🌐 API Response Status:", response.status);
     if (!response.ok) {
       console.error("❌ API call failed:", response.status);
