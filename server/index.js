@@ -18,20 +18,21 @@ const PORT = process.env.PORT || 3000;
 const API_BASE_URL = process.env.API_BASE_URL || "https://offplan.market/api";
 console.log("🌱 API_BASE_URL =", API_BASE_URL);
 
-// ✅ Serve static assets from Nginx directory
-app.use("/", express.static("/var/www/frontend"));
+// ✅ Serve static assets (React frontend)
+const frontendPath = "/var/www/frontend";
+app.use("/", express.static(frontendPath));
 
-// Dynamic meta for agent pages
+// 📝 Dynamic meta route for agents
 app.get("/agent/:username", async (req, res) => {
   const username = req.params.username;
   console.log("👉 Fetching agent data for username:", username);
 
   try {
     const apiUrl = `${API_BASE_URL}/agent/${username}`;
-    console.log("🌐 Fetching:", apiUrl);
+    console.log("🌐 API call:", apiUrl);
 
     const response = await fetch(apiUrl);
-    console.log("🌐 API Response Status:", response.status);
+    console.log("🌐 API Response:", response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -40,14 +41,14 @@ app.get("/agent/:username", async (req, res) => {
     }
 
     const agentResponse = await response.json();
-    console.log("✅ Agent API Data:", agentResponse);
+    console.log("✅ API Agent Data:", agentResponse);
 
     const agent = agentResponse.data;
     if (!agent) {
-      throw new Error("Agent data missing from API response");
+      throw new Error("Agent data missing in API response");
     }
 
-    const html = await getHtmlWithMeta({
+    const html = await injectMetaTags({
       title: `${agent.name} | Offplan Expert – Offplan.Market`,
       description: `Work with ${agent.name} to explore Dubai off-plan projects.`,
       ogImage: agent.profile_image_url || "/default-og-image.jpg",
@@ -56,30 +57,29 @@ app.get("/agent/:username", async (req, res) => {
     res.send(html);
   } catch (err) {
     console.error("🚨 Error fetching agent data:", err);
-    const fallbackHtml = await getHtmlWithMeta();
+    const fallbackHtml = await injectMetaTags();
     res.send(fallbackHtml);
   }
 });
 
-// ✅ Catch-all fallback route
+// 📝 Fallback route for other pages
 app.get(/^\/(?!api).*/, async (req, res) => {
-  const html = await getHtmlWithMeta();
+  const html = await injectMetaTags();
   res.send(html);
 });
 
-// Helper to inject meta tags
-async function getHtmlWithMeta(meta = {}) {
-  const defaultMeta = {
+// 🛠 Function to inject meta tags into index.html
+async function injectMetaTags(meta = {}) {
+  const defaults = {
     title: "Offplan Market – Dubai Offplan Properties",
     description: "Explore Dubai's top off-plan projects and VIP property offers.",
     ogImage: "/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png",
   };
+  const finalMeta = { ...defaults, ...meta };
 
-  const finalMeta = { ...defaultMeta, ...meta };
-
-  const indexPath = path.join("/var/www/frontend", "index.html");
-
+  const indexPath = path.join(frontendPath, "index.html");
   let html;
+
   try {
     html = await fs.readFile(indexPath, "utf-8");
   } catch (err) {
