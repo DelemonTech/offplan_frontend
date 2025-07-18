@@ -28,12 +28,79 @@ const PropertyDetailedPage = () => {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [showCallbackModal, setShowCallbackModal] = useState(true);
 
+const [agent, setAgent] = useState<any>(location.state?.agent || null);
+const [projectData, setProjectData] = useState<any>(location.state?.projectData || null);
+const [unit, setUnit] = useState<any>(location.state?.unit || null);
+
+// const hostUrl = import.meta.env.VITE_HOST_URL;
+
+// // 👇 Extract from URL
+// const pathname = window.location.pathname;
+// const segments = pathname.split("/");
+
+// const username = segments[1]; // e.g., sahar
+// const propertyId = segments[3]; // e.g., 1782
+// const unitTitle = decodeURIComponent(segments[5]); // e.g., G2-M2 (Villa)
+
+// // 🔥 Fetch agent if missing
+// if (!agent && username) {
+//   fetch(`${hostUrl}/agent/${username}`)
+//     .then((res) => res.json())
+//     .then((agentData) => {
+//       if (agentData?.status && agentData?.data) {
+//         setAgent(agentData.data);
+//       } else {
+//         console.error("Agent not found");
+//       }
+//     })
+//     .catch((err) => console.error("Failed to fetch agent:", err));
+// }
+
+// // 🔥 Fetch property & subunit if missing
+// if ((!projectData || !unit) && propertyId && unitTitle) {
+//   fetch(`https://panel.estaty.app/api/v1/getProperty?id=${propertyId}`, {
+//     method: "POST",
+//     headers: {
+//       "App-key": import.meta.env.VITE_ESTATY_API_KEY,
+//       "Content-Type": "application/json",
+//     },
+//   })
+//     .then((res) => res.json())
+//     .then((data) => {
+//       if (data?.property) {
+//   setProjectData(data.property);
+
+//   // ✅ Only try to find subunit if property_units exists
+//   if (Array.isArray(data.property.property_units)) {
+//     const foundUnit = data.property.property_units.find(
+//       (u: any) => u.title === unitTitle
+//     );
+
+//     if (foundUnit) {
+//       setUnit(foundUnit);
+//     } else {
+//       console.error("Subunit not found for:", unitTitle);
+//     }
+//   } else {
+//     console.error("property_units is missing for property:", propertyId);
+//   }
+// } else {
+//   console.error("Property not found in API response");
+// }
+
+//     })
+//     .catch((err) => console.error("Failed to fetch property:", err));
+// }
+
+// if (!agent || !projectData || !unit) {
+//   return <div>Loading unit details...</div>;
+// }
 
 
 
   const navigate = useNavigate();
 
-  const { unit, projectData, agent } = location.state || {};
+  // const { unit, projectData } = location.state || {};
 
   const unitData = location.state;
   // console.log(unitData);
@@ -243,7 +310,14 @@ const PropertyDetailedPage = () => {
 
   const handleWhatsApp = () => {
     const currentUrl = window.location.href;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${currentUrl}`;
+    const pathname = window.location.pathname; // e.g., /sahar/property-details/1782/unit-details/G2-M2 (Villa)
+    const segments = pathname.split("/");
+
+    const username = segments[1]; // sahar
+    const propertyId = segments[3]; // 1782
+
+    const cleanUrl = `${window.location.origin}/${username}/property-details/?id=${propertyId}`;
+    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${cleanUrl}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };

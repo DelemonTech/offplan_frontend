@@ -90,6 +90,7 @@ const App = () => (
             <Route path="/:username/unit-details/:unitId" element={<UnitDetails1/>} />
 
             <Route path="/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
+            <Route path="/:username/property-details/:propertyId/unit-details/:unitId" element={<PropertyDetailed />} />
 
             <Route path="/unit-detail" element={<UnitDetail />} />
             <Route path="/gallery" element={<GalleryPage />} />
