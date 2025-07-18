@@ -18,11 +18,8 @@ const PORT = process.env.PORT || 3000;
 const API_BASE_URL = process.env.API_BASE_URL || "https://offplan.market/api";
 console.log("🌱 API_BASE_URL =", API_BASE_URL);
 
-// ✅ Path to deployed frontend
-const frontendPath = "/var/www/frontend";
-
-// ✅ Serve static assets properly
-app.use("/", express.static(frontendPath));
+// ✅ Serve static assets from Nginx directory
+app.use("/", express.static("/var/www/frontend"));
 
 // Dynamic meta for agent pages
 app.get("/agent/:username", async (req, res) => {
@@ -34,16 +31,21 @@ app.get("/agent/:username", async (req, res) => {
     console.log("🌐 Fetching:", apiUrl);
 
     const response = await fetch(apiUrl);
-
     console.log("🌐 API Response Status:", response.status);
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error("❌ API call failed:", response.status, errorText);
       throw new Error(`API call failed with status ${response.status}`);
     }
 
-    const agent = await response.json();
-    console.log("✅ Agent Data:", agent);
+    const agentResponse = await response.json();
+    console.log("✅ Agent API Data:", agentResponse);
+
+    const agent = agentResponse.data;
+    if (!agent) {
+      throw new Error("Agent data missing from API response");
+    }
 
     const html = await getHtmlWithMeta({
       title: `${agent.name} | Offplan Expert – Offplan.Market`,
@@ -75,7 +77,7 @@ async function getHtmlWithMeta(meta = {}) {
 
   const finalMeta = { ...defaultMeta, ...meta };
 
-  const indexPath = path.join(frontendPath, "index.html");
+  const indexPath = path.join("/var/www/frontend", "index.html");
 
   let html;
   try {
