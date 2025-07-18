@@ -19,7 +19,8 @@ const API_BASE_URL = process.env.API_BASE_URL || "https://offplan.market/api";
 console.log("🌱 API_BASE_URL =", API_BASE_URL);
 
 // ✅ Serve static assets properly
-app.use("/", express.static(path.join(__dirname, "..", "dist")));
+const distPath = path.join(__dirname, "..", "dist");
+app.use("/", express.static(distPath));
 
 // Dynamic meta for agent pages
 app.get("/agent/:username", async (req, res) => {
@@ -34,9 +35,8 @@ app.get("/agent/:username", async (req, res) => {
 
     console.log("🌐 API Response Status:", response.status);
     if (!response.ok) {
-      console.error("❌ API call failed:", response.status);
       const errorText = await response.text();
-      console.error("❌ API Response:", errorText);
+      console.error("❌ API call failed:", response.status, errorText);
       throw new Error(`API call failed with status ${response.status}`);
     }
 
@@ -46,7 +46,7 @@ app.get("/agent/:username", async (req, res) => {
     const html = await getHtmlWithMeta({
       title: `${agent.name} | Offplan Expert – Offplan.Market`,
       description: `Work with ${agent.name} to explore Dubai off-plan projects.`,
-      ogImage: `${agent.profile_image_url}`,
+      ogImage: agent.profile_image_url || "/default-og-image.jpg",
     });
 
     res.send(html);
@@ -73,24 +73,32 @@ async function getHtmlWithMeta(meta = {}) {
 
   const finalMeta = { ...defaultMeta, ...meta };
 
-  let html = await fs.readFile(path.join(__dirname, "..", "dist", "index.html"), "utf-8");
+  const indexPath = path.join(distPath, "index.html");
+
+  let html;
+  try {
+    html = await fs.readFile(indexPath, "utf-8");
+  } catch (err) {
+    console.error("🚨 index.html not found at:", indexPath);
+    return "<h1>Error: index.html not found</h1>";
+  }
 
   html = html
-    .replace(/<title>.*<\/title>/, `<title>${finalMeta.title}</title>`)
+    .replace(/<title>(.*?)<\/title>/i, `<title>${finalMeta.title}</title>`)
     .replace(
-      /<meta name="description" content=".*">/,
+      /<meta\s+name="description"\s+content=".*?">/i,
       `<meta name="description" content="${finalMeta.description}">`
     )
     .replace(
-      /<meta property="og:title" content=".*">/,
+      /<meta\s+property="og:title"\s+content=".*?">/i,
       `<meta property="og:title" content="${finalMeta.title}">`
     )
     .replace(
-      /<meta property="og:description" content=".*">/,
+      /<meta\s+property="og:description"\s+content=".*?">/i,
       `<meta property="og:description" content="${finalMeta.description}">`
     )
     .replace(
-      /<meta property="og:image" content=".*">/,
+      /<meta\s+property="og:image"\s+content=".*?">/i,
       `<meta property="og:image" content="${finalMeta.ogImage}">`
     );
 
