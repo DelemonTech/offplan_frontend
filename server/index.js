@@ -18,9 +18,11 @@ const PORT = process.env.PORT || 3000;
 const API_BASE_URL = process.env.API_BASE_URL || "https://offplan.market/api";
 console.log("🌱 API_BASE_URL =", API_BASE_URL);
 
+// ✅ Path to deployed frontend
+const frontendPath = "/var/www/frontend";
+
 // ✅ Serve static assets properly
-const distPath = path.join(__dirname, "..", "dist");
-app.use("/", express.static(distPath));
+app.use("/", express.static(frontendPath));
 
 // Dynamic meta for agent pages
 app.get("/agent/:username", async (req, res) => {
@@ -73,7 +75,7 @@ async function getHtmlWithMeta(meta = {}) {
 
   const finalMeta = { ...defaultMeta, ...meta };
 
-  const indexPath = path.join(distPath, "index.html");
+  const indexPath = path.join(frontendPath, "index.html");
 
   let html;
   try {
