@@ -25,7 +25,7 @@ const AgentEdit = ({ agent }) => {
         const fetchAgentData = async () => {
             try {
                 const hostUrl = import.meta.env.VITE_HOST_URL
-                const res = await fetch(`${hostUrl}/${username}`);
+                const res = await fetch(`${hostUrl}/agent/${username}`);
                 const json = await res.json();
                 if (res.ok && json.status) {
                     setFormData({
@@ -73,7 +73,7 @@ const AgentEdit = ({ agent }) => {
 
         try {
             const hostUrl = import.meta.env.VITE_HOST_URL;
-            const res = await fetch(`${hostUrl}/update/${formData.id}/`, {
+            const res = await fetch(`${hostUrl}/agent/update/${formData.id}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
