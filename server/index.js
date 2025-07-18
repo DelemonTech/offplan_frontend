@@ -1,10 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import fetch from "node-fetch";
-import dotenv from "dotenv";
-dotenv.config();
 
 
 // ✅ Fix __dirname for ES modules
