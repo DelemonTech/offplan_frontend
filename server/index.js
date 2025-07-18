@@ -19,10 +19,17 @@ app.use("/", express.static(path.join(__dirname, "..", "dist")));
 // Dynamic meta for agent pages
 app.get("/agent/:username", async (req, res) => {
   const username = req.params.username;
-
+console.log("👉 Fetching agent data for username:", username);
   try {
     const response = await fetch(`${process.env.VITE_HOST_URL}/agent/${username}`);
+    console.log("🌐 API Response Status:", response.status);
+    if (!response.ok) {
+      console.error("❌ API call failed:", response.status);
+      const errorText = await response.text();
+      console.error("❌ API Response:", errorText);
+    }
     const agent = await response.json();
+    console.log("✅ Agent Data:", agent);
 
     const html = await getHtmlWithMeta({
       title: `${agent.name} | Offplan Expert – Offplan.Market`,
