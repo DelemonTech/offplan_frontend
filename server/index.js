@@ -7,7 +7,6 @@ import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import fetch from "node-fetch";
 
-
 // ✅ Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,26 +14,32 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ Set API_BASE_URL with fallback
+const API_BASE_URL = process.env.API_BASE_URL || "https://offplan.market/api";
+console.log("🌱 API_BASE_URL =", API_BASE_URL);
+
 // ✅ Serve static assets properly
 app.use("/", express.static(path.join(__dirname, "..", "dist")));
-
-
 
 // Dynamic meta for agent pages
 app.get("/agent/:username", async (req, res) => {
   const username = req.params.username;
-console.log("👉 Fetching agent data for username:", username);
-  try {
-    const apiBaseUrl = process.env.API_BASE_URL;
-    const response = await fetch(`${apiBaseUrl}/agent/${username}`);
+  console.log("👉 Fetching agent data for username:", username);
 
+  try {
+    const apiUrl = `${API_BASE_URL}/agent/${username}`;
+    console.log("🌐 Fetching:", apiUrl);
+
+    const response = await fetch(apiUrl);
 
     console.log("🌐 API Response Status:", response.status);
     if (!response.ok) {
       console.error("❌ API call failed:", response.status);
       const errorText = await response.text();
       console.error("❌ API Response:", errorText);
+      throw new Error(`API call failed with status ${response.status}`);
     }
+
     const agent = await response.json();
     console.log("✅ Agent Data:", agent);
 
@@ -46,7 +51,7 @@ console.log("👉 Fetching agent data for username:", username);
 
     res.send(html);
   } catch (err) {
-    console.error("Error fetching agent data:", err);
+    console.error("🚨 Error fetching agent data:", err);
     const fallbackHtml = await getHtmlWithMeta();
     res.send(fallbackHtml);
   }
@@ -58,7 +63,6 @@ app.get(/^\/(?!api).*/, async (req, res) => {
   res.send(html);
 });
 
-
 // Helper to inject meta tags
 async function getHtmlWithMeta(meta = {}) {
   const defaultMeta = {
@@ -69,7 +73,7 @@ async function getHtmlWithMeta(meta = {}) {
 
   const finalMeta = { ...defaultMeta, ...meta };
 
-  let html = await fs.readFile(path.join(__dirname,"..", "dist", "index.html"), "utf-8");
+  let html = await fs.readFile(path.join(__dirname, "..", "dist", "index.html"), "utf-8");
 
   html = html
     .replace(/<title>.*<\/title>/, `<title>${finalMeta.title}</title>`)
