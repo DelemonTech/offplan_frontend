@@ -7,23 +7,23 @@ import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import fetch from "node-fetch";
 
-// ✅ Fix __dirname for ES modules
+// Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Set API_BASE_URL with fallback
+// Set API_BASE_URL with fallback
 const API_BASE_URL = process.env.API_BASE_URL || "https://offplan.market/api";
 console.log("🌱 API_BASE_URL =", API_BASE_URL);
 
-// ✅ Serve static assets (React frontend)
+// Serve static assets (React frontend)
 const frontendPath = "/var/www/frontend";
 app.use("/", express.static(frontendPath));
 
 /**
- * 🧠 Detect crawlers (WhatsApp, Facebook, Twitter)
+ * Detect crawlers (WhatsApp, Facebook, Twitter, etc.)
  */
 function isCrawler(userAgent = "") {
   const crawlers = [
@@ -45,7 +45,7 @@ function isCrawler(userAgent = "") {
 }
 
 /**
- * 📝 Dynamic meta route for agents
+ * Route for agent pages with dynamic meta
  */
 app.get("/agent/:username", async (req, res) => {
   const username = req.params.username;
@@ -54,36 +54,31 @@ app.get("/agent/:username", async (req, res) => {
   console.log("📱 User-Agent:", userAgent);
 
   const apiUrl = `${API_BASE_URL}/agent/${username}`;
-  console.log("🌐 API call:", apiUrl);
-
   let agent;
 
   try {
-    // 🔥 Try fetching agent data
+    // Fetch agent data from API
     const response = await fetch(apiUrl);
     console.log("🌐 API Response:", response.status);
 
     if (response.ok) {
-      const agentResponse = await response.json();
-      agent = agentResponse.data;
+      const data = await response.json();
+      agent = data.data;
     }
 
-    // 💤 Retry once for crawlers if first fetch failed
+    // Retry if data missing for crawlers
     if (!agent && isCrawler(userAgent)) {
-      console.log("⏳ First API call failed. Retrying for crawler...");
-      await new Promise((resolve) => setTimeout(resolve, 800)); // Wait 800ms
-
-      const retryResponse = await fetch(apiUrl);
-      console.log("🌐 Retry API Response:", retryResponse.status);
-
-      if (retryResponse.ok) {
-        const retryAgentResponse = await retryResponse.json();
-        agent = retryAgentResponse.data;
-        console.log("✅ Data fetched on retry for crawler.");
+      console.log("⏳ Retry API fetch for crawler...");
+      await delay(1000); // wait 1s
+      const retryRes = await fetch(apiUrl);
+      if (retryRes.ok) {
+        const retryData = await retryRes.json();
+        agent = retryData.data;
+        console.log("✅ Data fetched on retry.");
       }
     }
 
-    // 🤖 Serve SSR meta tags for crawlers
+    // Render with dynamic meta for crawlers
     if (isCrawler(userAgent)) {
       const meta = agent
         ? {
@@ -97,7 +92,7 @@ app.get("/agent/:username", async (req, res) => {
       return res.send(html);
     }
 
-    // 🖥️ For browsers, serve React app
+    // Serve React app for browsers
     return res.sendFile(path.join(frontendPath, "index.html"));
   } catch (err) {
     console.error("🚨 Error fetching agent data:", err);
@@ -112,7 +107,7 @@ app.get("/agent/:username", async (req, res) => {
 });
 
 /**
- * 📝 Fallback route for other pages
+ * Fallback route for all other pages
  */
 app.get(/^\/(?!api).*/, async (req, res) => {
   const userAgent = req.headers["user-agent"] || "";
@@ -125,7 +120,7 @@ app.get(/^\/(?!api).*/, async (req, res) => {
 });
 
 /**
- * 🛠 Function to inject meta tags into index.html
+ * Inject meta tags into index.html
  */
 async function injectMetaTags(meta = {}) {
   const defaults = {
@@ -167,7 +162,14 @@ async function injectMetaTags(meta = {}) {
   return html;
 }
 
-// ✅ Start server
+/**
+ * Delay utility
+ */
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Start server
 app.listen(PORT, () => {
   console.log(`✅ SSR Server running at http://localhost:${PORT}`);
 });
