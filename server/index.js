@@ -21,13 +21,13 @@ app.get("/agent/:username", async (req, res) => {
   const username = req.params.username;
 
   try {
-    const response = await fetch(`https://offplan.market/api/agent/${username}`);
+    const response = await fetch(`${process.env.VITE_HOST_URL}/agent/${username}`);
     const agent = await response.json();
 
     const html = await getHtmlWithMeta({
       title: `${agent.name} | Offplan Expert – Offplan.Market`,
       description: `Work with ${agent.name} to explore Dubai off-plan projects.`,
-      ogImage: `https://offplan.market/images/agents/${agent.photo}`,
+      ogImage: `${agent.profile_image_url}`,
     });
 
     res.send(html);
@@ -50,7 +50,7 @@ async function getHtmlWithMeta(meta = {}) {
   const defaultMeta = {
     title: "Offplan Market – Dubai Offplan Properties",
     description: "Explore Dubai's top off-plan projects and VIP property offers.",
-    ogImage: "https://offplan.market/images/default-og.jpg",
+    ogImage: "/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png",
   };
 
   const finalMeta = { ...defaultMeta, ...meta };
