@@ -81,6 +81,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
+  const [isCityReady, setIsCityReady] = useState(false);
+
   const handleOpenModal = () => {
     setCurrentImageIndex(0); // call before opening
     setIsModalOpen(true);
@@ -322,13 +324,36 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   };
 
   const handleWhatsApp = (project: any) => {
-    const message = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.location}. Starting from AED ${parseInt(project.price).toLocaleString()}. Can you share more details?`;
+    
+    const message = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
+
+Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handleShare = (project: any) => {
-    const shareText = `🏠 ${project.title} - ${project.location}\n💰 Starting from AED ${parseInt(project.price).toLocaleString()}\n📅 Handover: ${project.handover}\n💳 Payment Plan: ${project.paymentPlan}\n📐 From ${project.sizeFrom} ft²\n\nInterested? Contact Sahar: https://wa.me/971529529687`;
+    const whatsappMessage = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.city?.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?`;
+    const whatsappLink = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+    const shareText = `🌇 ${project.title} – ${project.city?.name}, ${project.district?.name}
+📍 Location: ${project.city?.name || 'N/A'}, ${project.district?.name || 'N/A'}
+🏷️ Price: AED ${formatAED(project.low_price)}
+📐 Unit Size: ${project.min_area || 'N/A'} sq.ft
+📆 Handover: ${formatDeliveryDate(project.delivery_date) || 'TBA'}
+🏗️ Status: ${statusName || 'N/A'}
+🛏️ Available Unit(s): ${project.subunit_count || 'N/A'} available
+
+💳 Payment Plan:
+   Contact ${agent.name} for more details:
+📞 WhatsApp: ${whatsappLink}
+
+🌟 Highlights:
+• ${project.highlights?.[0] || 'Final unit available'}
+• ${project.highlights?.[1] || 'Modern design by developer'}
+• Escrow-protected & ready to transfer
+
+🌐 Project Page:
+https://offplan.market/sahar/property-details/?id=${project.id}`;
 
     if (navigator.share) {
       navigator.share({
@@ -397,11 +422,13 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         if (data?.data?.length > 0) {
           const firstCity = data.data[0];
           setSelectedCity(firstCity);
+          setIsCityReady(true);
 
           const updatedFilters = {
             city: firstCity.city_name,
             property_status: statusName,
           };
+          setIsCityReady(true);
 
           setSearchFilters(updatedFilters);
 
@@ -422,51 +449,51 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   }, [statusName]);
 
 
-  useEffect(() => {
-    const fetchFilteredProperties = async () => {
-      try {
-        setIsLoading(true);
-        document.body.style.overflow = 'hidden';
+  // useEffect(() => {
+  //   const fetchFilteredProperties = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       document.body.style.overflow = 'hidden';
 
-        const response = await fetch(`${hostUrl}/properties/filter/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(
-            // statusName === 'Sold Out'
-            //   ? { sales_status: 'Sold Out' }
-            //   : 
-            statusName === 'All' || statusName === 'Total'
-              ? {}
-              : { property_status: statusName }
-          ),
-        });
+  //       const response = await fetch(`${hostUrl}/properties/filter/`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify(
+  //           // statusName === 'Sold Out'
+  //           //   ? { sales_status: 'Sold Out' }
+  //           //   : 
+  //           statusName === 'All' || statusName === 'Total'
+  //             ? {}
+  //             : { property_status: statusName }
+  //         ),
+  //       });
 
-        const result = await response.json();
+  //       const result = await response.json();
 
-        if (result?.status && result?.data) {
-          setProperties(result.data.results || []);
-          setNextPageUrl(result.data.next_page_url || null);
-        }
+  //       if (result?.status && result?.data) {
+  //         setProperties(result.data.results || []);
+  //         setNextPageUrl(result.data.next_page_url || null);
+  //       }
 
-        const section = document.getElementById('featured-projects');
-        if (section) {
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      } catch (error) {
-        console.error('Error fetching filtered properties:', error);
-      } finally {
-        document.body.style.overflow = 'auto';
-        setIsLoading(false);
-      }
-    };
+  //       const section = document.getElementById('featured-projects');
+  //       if (section) {
+  //         section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching filtered properties:', error);
+  //     } finally {
+  //       document.body.style.overflow = 'auto';
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    if (statusName) {
-      // console.log('Fetching properties for statusName:', statusName);
-      fetchFilteredProperties();
-    }
-  }, [statusName]);
+  //   if (statusName && selectedCity) {
+  //     // console.log('Fetching properties for statusName:', statusName);
+  //     fetchFilteredProperties();
+  //   }
+  // }, [statusName]);
 
   const [cities, setCities] = useState([]);
 
@@ -510,9 +537,11 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   useEffect(() => {
     const filters = location.state?.filters;
     if (!filters) return;
+    if (!statusName) return; // Wait for status
+    if (!isCityReady) return; // Wait until city fetch completes
 
     const fetchFilteredProperties = async () => {
-      setIsSearchLoading(true);
+      setIsSearchLoading(true); 
       // document.body.style.overflow = 'hidden';
       try {
         const response = await fetch(`${hostUrl}/properties/filter/`, {
@@ -542,7 +571,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     };
 
     fetchFilteredProperties();
-  }, [location.state?.filters]);
+  }, [location.state?.filters, statusName, isCityReady]);
 
   // useEffect(() => {
   //   window.scrollTo({ top: 930, behavior: 'smooth' });
@@ -1079,26 +1108,38 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
         onClose={() => setIsSummaryModalOpen(false)}
       />
 
-      {showFloatingBar && (<div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
+      {/* {showFloatingBar && (<div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl"> */}
         {/* WhatsApp Button */}
-        <button
+        {/* <button
           onClick={handleWhatsApp}
           className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
           <img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
           WhatsApp
-        </button>
+        </button> */}
 
         {/* Call Now Button */}
 
-        <button
+        {/* <button
           onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
           className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
           <Phone className="w-5 h-5 mr-2" />
           Call Now
         </button>
-      </div>)}
+      </div>)} */}
+
+      {showFloatingBar && (
+        <div className="fixed bottom-8 right-5 z-50">
+          <button
+            onClick={()=>handleWhatsApp(properties[0])} // Use the first property for WhatsApp
+            className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
+          >
+            <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
+          </button>
+        </div>
+      )}
+
 
       <style>
         {`

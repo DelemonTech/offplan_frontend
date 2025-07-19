@@ -542,7 +542,6 @@ const handover = (() => {
   const propertyStatus = propertyStatusMap[propertyStatusId] || { name: "Unknown", color: "text-gray-500" };
   const salesStatus = salesStatusMap[salesStatusId] || { name: "Unknown", color: "text-gray-500" };
 
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header logo={logoPath} />
@@ -1105,26 +1104,36 @@ const handover = (() => {
 
       <Footer />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
+      {/* <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl"> */}
         {/* WhatsApp Button */}
-        <button
+        {/* <button
           onClick={handleWhatsApp}
           className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
           <img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
           WhatsApp
-        </button>
+        </button> */}
 
         {/* Call Now Button */}
 
-        <button
+        {/* <button
           onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
           className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
           <Phone className="w-5 h-5 mr-2" />
           Call Now
         </button>
-      </div>
+      </div> */}
+      {(
+        <div className="fixed bottom-8 right-5 z-50">
+          <button
+            onClick={handleWhatsApp} // Use the first property for WhatsApp
+            className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
+          >
+            <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
+          </button>
+        </div>
+      )}
 
     </div>
   );
