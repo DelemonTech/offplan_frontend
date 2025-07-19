@@ -20,6 +20,28 @@ const PropertyDetails1 = () => {
 
   const location = useLocation();
   const [agent, setAgent] = useState<any>(location.state?.agent || null);
+  const pathname = window.location.pathname;
+const segments = pathname.split("/");
+const username = segments[1]; // ✅ directly get username from URL
+const hostUrl = import.meta.env.VITE_HOST_URL;
+
+// If agent is null, fetch agent immediately
+if (!agent && username) {
+  fetch(`${hostUrl}/agent/${username}`)
+    .then((res) => res.json())
+    .then((agentData) => {
+      if (agentData?.status && agentData?.data) {
+        setAgent(agentData.data); // ✅ Set agent in state
+      } else {
+        console.error("Agent not found");
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to fetch agent:", err);
+    });
+}
+
+console.log("Agent:", agent);
 
   const facilityIconMap = {
     "Library": { icon: "BookOpen", color: "text-blue-500" },
@@ -114,7 +136,7 @@ const PropertyDetails1 = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('id');
 
-  const hostUrl = import.meta.env.VITE_HOST_URL;
+  // const hostUrl = import.meta.env.VITE_HOST_URL;
 
   const [projectData, setProjectData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -154,7 +176,8 @@ const PropertyDetails1 = () => {
   // };
 
   const handleWhatsApp = () => {
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?`;
+    const currentUrl = window.location.href;
+    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${currentUrl}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -884,6 +907,7 @@ const handover = (() => {
                                   className="w-full h-full object-cover"
                                   // loading="lazy"
                                   onError={(e) => {
+                                    e.currentTarget.onerror = null; // ✅ prevent infinite loop
                                     e.currentTarget.src = "/no-floor-plan.png";
                                   }}
                                 />
@@ -902,7 +926,7 @@ const handover = (() => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`, k{agent.username}/property-detailed/${sub.id}`,
-                                    navigate(`/agent/${agent.username}/property-detailed/${encodeURIComponent(sub.id)}`,
+                                    navigate(`/${agent.username}/property-details/${projectId}/unit-details/${encodeURIComponent(sub.id)}`,
                                       {
                                         state: {
                                           unit: sub,

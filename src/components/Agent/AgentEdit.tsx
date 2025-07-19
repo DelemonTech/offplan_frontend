@@ -90,7 +90,7 @@ const AgentEdit = ({ agent }) => {
                 });
 
                 setTimeout(() => {
-                    navigate(`/agent/${formData.username}`);
+                    navigate(`/${formData.username}`);
                 }, 1500);
             } else {
                 toast({

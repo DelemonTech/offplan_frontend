@@ -65,7 +65,7 @@ const App = () => (
             />
             {/* <Route path="/projects/:slug" element={<ProjectDetail />} /> */}
             {/* <Route path="/projects/:slug" element={<AgentDetail />} />/ */}
-            <Route path="/agent/:username" element={<AgentPage />} />
+            <Route path="/:username" element={<AgentPage />} />
             {/* <Route path="/:agentUsername/farsi" element={<AgentFarsi/> } /> */}
             <Route path="/agentProfile" element={<AgentProfile/>}/>
             {/* <Route path="/propertydetail/:slug" element={<PropDetail/>}/> */}
@@ -77,19 +77,20 @@ const App = () => (
             <Route path="/:agentUsername/v5" element={<AgentPageVariation5 />} />
             <Route path="/:agentUsername/v6" element={<AgentPageVariation6 />} /> */}
 
-            <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} /> {/*Original*/}    
+            <Route path="/:username/property-details" element={<PropertyDetails1/>} /> {/*Original*/}    
         
-            <Route path="/agent/property-details" element={<PropertyDetails2 />} />       
-            <Route path="/agent/:username/agent-detail" element={<AgentPropDetail />} />
+            <Route path="/property-details" element={<PropertyDetails2 />} />       
+            <Route path="/:username/agent-detail" element={<AgentPropDetail />} />
 
-            <Route path="/agent/:username/property-details" element={<PropertyDetails1/>} />
-            <Route path="/agent/property-details" element={<PropertyDetails2 />} />
+            <Route path="/:username/property-details" element={<PropertyDetails1/>} />
+            <Route path="/property-details" element={<PropertyDetails2 />} />
 
 
-            <Route path="/agent/property-detailed" element={<PropertyDetailed />} />
-            <Route path="/agent/:username/unit-details/:unitId" element={<UnitDetails1/>} />
+            <Route path="/property-detailed" element={<PropertyDetailed />} />
+            <Route path="/:username/unit-details/:unitId" element={<UnitDetails1/>} />
 
-            <Route path="/agent/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
+            <Route path="/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
+            <Route path="/:username/property-details/:propertyId/unit-details/:unitId" element={<PropertyDetailed />} />
 
             <Route path="/unit-detail" element={<UnitDetail />} />
             <Route path="/gallery" element={<GalleryPage />} />
