@@ -36,7 +36,7 @@ const AgentProfile = ({ agent }) => {
     // Handle form submission here
   };
 
-  const truncateText = "From Dubai’s skyline dreams to smart investments — Mohammad brings";
+  const truncateText = `From Dubai’s skyline dreams to smart investments — ${agent.name} brings`;
 const truncateIndex = agent.description.indexOf(truncateText) + truncateText.length;
 
 const shortDescription = agent.description.slice(0, truncateIndex);

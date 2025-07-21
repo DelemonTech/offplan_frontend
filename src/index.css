@@ -136,6 +136,28 @@
   width: 100%;
 }
 
+.text-outline-gradient {
+  text-shadow: 
+    0 0 4px #ec4899,  /* pink glow */
+    0 0 8px #c084fc,  /* purple glow */
+    0 0 12px #60a5fa; /* blue glow */
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide {
+  animation: slide 15s linear infinite;
+}
+
+
+
   /* Add this to your global CSS (e.g., styles.css or tailwind.css) */
 @media (max-width: 639px) {
   .grid-cols-1:has(> div:nth-child(1):nth-last-child(1)) {

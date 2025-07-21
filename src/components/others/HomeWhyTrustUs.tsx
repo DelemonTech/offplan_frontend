@@ -50,7 +50,7 @@ const WhyTrustUs = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section className="py-12 bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -64,15 +64,16 @@ const WhyTrustUs = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => (
-            <div 
+            <div
               key={feature.title}
               className="trust-card animate-slide-up"
               style={{ animationDelay: `${index * 150}ms` }}
             >
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-offplan-gradient rounded-xl flex items-center justify-center mr-4">
+              <div className="flex items-center mb-4 gap-2">
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500 shrink-0">
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
+
                 <h3 className="text-xl font-bold text-gray-900">{feature.title}</h3>
               </div>
               <p className="text-gray-600 leading-relaxed">{feature.description}</p>

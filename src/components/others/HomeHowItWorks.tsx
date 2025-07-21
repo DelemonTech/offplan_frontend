@@ -39,7 +39,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -64,7 +64,7 @@ const HowItWorks = () => {
               >
                 {/* Step Number Circle */}
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-offplan-gradient rounded-full flex items-center justify-center mx-auto shadow-2xl relative z-10">
+                  <div className="w-20 h-20 bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto shadow-2xl relative z-10">
                     <span className="text-white text-2xl font-bold">{step.number}</span>
                   </div>
                   <div className="absolute inset-0 w-20 h-20 bg-offplan-gradient rounded-full mx-auto animate-pulse opacity-30"></div>

@@ -41,7 +41,7 @@ if (!agent && username) {
     });
 }
 
-console.log("Agent:", agent);
+// console.log("Agent:", agent);
 
   const facilityIconMap = {
     "Library": { icon: "BookOpen", color: "text-blue-500" },

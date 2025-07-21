@@ -118,7 +118,7 @@ export const Header = () => {
               <Button variant="outline" className="hidden md:inline-flex">
                 {t("Login")}
               </Button>
-              <Button className="btn-primary hidden md:inline-flex">
+              <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hidden md:inline-flex font-semibold text-white">
                 {t("Get Started")}
               </Button>
               <div className="md:hidden">
