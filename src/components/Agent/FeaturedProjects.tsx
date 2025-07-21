@@ -324,7 +324,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   };
 
   const handleWhatsApp = (project: any) => {
-    
+
     const message = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
 
 Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
@@ -541,7 +541,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
     if (!isCityReady) return; // Wait until city fetch completes
 
     const fetchFilteredProperties = async () => {
-      setIsSearchLoading(true); 
+      setIsSearchLoading(true);
       // document.body.style.overflow = 'hidden';
       try {
         const response = await fetch(`${hostUrl}/properties/filter/`, {
@@ -559,9 +559,9 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
           // }, 100);
         }
         const section = document.getElementById('featured-projects');
-        if (section) {
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        // if (section) {
+        //   section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // }
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -610,23 +610,37 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
   const [showFloatingBar, setShowFloatingBar] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const triggerPoint = 300; // adjust this value as needed
+  // Check if search filter was applied before reload
+  const searchFilterApplied = sessionStorage.getItem("searchFilterApplied") === "true";
 
-      if (scrollY > triggerPoint) {
-        setShowFloatingBar(true);
-      } else {
-        setShowFloatingBar(false);
-      }
-    };
+  if (!searchFilterApplied) {
+    // Skip scroll logic on initial load
+    return;
+  }
 
-    window.addEventListener('scroll', handleScroll);
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const triggerPoint = 300;
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+    if (scrollY > triggerPoint) {
+      setShowFloatingBar(true);
+    } else {
+      setShowFloatingBar(false);
+    }
+  };
+
+  // Check scroll position immediately
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
+
+
+
 
 
   const chunkArray = (arr, chunkSize) => {
@@ -1109,8 +1123,8 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
       />
 
       {/* {showFloatingBar && (<div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl"> */}
-        {/* WhatsApp Button */}
-        {/* <button
+      {/* WhatsApp Button */}
+      {/* <button
           onClick={handleWhatsApp}
           className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
@@ -1118,9 +1132,9 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
           WhatsApp
         </button> */}
 
-        {/* Call Now Button */}
+      {/* Call Now Button */}
 
-        {/* <button
+      {/* <button
           onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
           className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
@@ -1132,7 +1146,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
       {showFloatingBar && (
         <div className="fixed bottom-8 right-5 z-50">
           <button
-            onClick={()=>handleWhatsApp(properties[0])} // Use the first property for WhatsApp
+            onClick={() => handleWhatsApp(properties[0])} // Use the first property for WhatsApp
             className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
           >
             <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />

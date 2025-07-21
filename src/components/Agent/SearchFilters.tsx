@@ -194,9 +194,9 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
         setProperties(result.data.results || []);
         setNextPageUrl(result.data.next_page_url || null);
       }
-      setTimeout(() => {
-        window.scrollTo({ top: 930, behavior: 'smooth' });
-      }, 100);
+      // setTimeout(() => {
+      //   window.scrollTo({ top: 930, behavior: 'smooth' });
+      // }, 100);
     } catch (error) {
       console.error('❌ Search error:', error);
     }
