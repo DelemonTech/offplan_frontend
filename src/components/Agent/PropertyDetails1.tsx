@@ -479,8 +479,9 @@ const handover = (() => {
         size: `${unit.area} sq.ft`,
         price: unit.price,
         floorPlan:
-          unit.floor_plan_image &&
-          unit.floor_plan_image.startsWith("[") // likely a JSON array
+          Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
+            ? unit.floor_plan_image[0]
+            : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
             ? JSON.parse(unit.floor_plan_image)[0]
             : "NO_FLOOR_PLAN",
         status: projectData.status || "Available",
