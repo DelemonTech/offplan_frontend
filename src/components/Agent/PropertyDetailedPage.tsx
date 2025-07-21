@@ -28,73 +28,73 @@ const PropertyDetailedPage = () => {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [showCallbackModal, setShowCallbackModal] = useState(true);
 
-const [agent, setAgent] = useState<any>(location.state?.agent || null);
-const [projectData, setProjectData] = useState<any>(location.state?.projectData || null);
-const [unit, setUnit] = useState<any>(location.state?.unit || null);
+  const [agent, setAgent] = useState<any>(location.state?.agent || null);
+  const [projectData, setProjectData] = useState<any>(location.state?.projectData || null);
+  const [unit, setUnit] = useState<any>(location.state?.unit || null);
 
-// const hostUrl = import.meta.env.VITE_HOST_URL;
+  // const hostUrl = import.meta.env.VITE_HOST_URL;
 
-// // 👇 Extract from URL
-// const pathname = window.location.pathname;
-// const segments = pathname.split("/");
+  // // 👇 Extract from URL
+  // const pathname = window.location.pathname;
+  // const segments = pathname.split("/");
 
-// const username = segments[1]; // e.g., sahar
-// const propertyId = segments[3]; // e.g., 1782
-// const unitTitle = decodeURIComponent(segments[5]); // e.g., G2-M2 (Villa)
+  // const username = segments[1]; // e.g., sahar
+  // const propertyId = segments[3]; // e.g., 1782
+  // const unitTitle = decodeURIComponent(segments[5]); // e.g., G2-M2 (Villa)
 
-// // 🔥 Fetch agent if missing
-// if (!agent && username) {
-//   fetch(`${hostUrl}/agent/${username}`)
-//     .then((res) => res.json())
-//     .then((agentData) => {
-//       if (agentData?.status && agentData?.data) {
-//         setAgent(agentData.data);
-//       } else {
-//         console.error("Agent not found");
-//       }
-//     })
-//     .catch((err) => console.error("Failed to fetch agent:", err));
-// }
+  // // 🔥 Fetch agent if missing
+  // if (!agent && username) {
+  //   fetch(`${hostUrl}/agent/${username}`)
+  //     .then((res) => res.json())
+  //     .then((agentData) => {
+  //       if (agentData?.status && agentData?.data) {
+  //         setAgent(agentData.data);
+  //       } else {
+  //         console.error("Agent not found");
+  //       }
+  //     })
+  //     .catch((err) => console.error("Failed to fetch agent:", err));
+  // }
 
-// // 🔥 Fetch property & subunit if missing
-// if ((!projectData || !unit) && propertyId && unitTitle) {
-//   fetch(`https://panel.estaty.app/api/v1/getProperty?id=${propertyId}`, {
-//     method: "POST",
-//     headers: {
-//       "App-key": import.meta.env.VITE_ESTATY_API_KEY,
-//       "Content-Type": "application/json",
-//     },
-//   })
-//     .then((res) => res.json())
-//     .then((data) => {
-//       if (data?.property) {
-//   setProjectData(data.property);
+  // // 🔥 Fetch property & subunit if missing
+  // if ((!projectData || !unit) && propertyId && unitTitle) {
+  //   fetch(`https://panel.estaty.app/api/v1/getProperty?id=${propertyId}`, {
+  //     method: "POST",
+  //     headers: {
+  //       "App-key": import.meta.env.VITE_ESTATY_API_KEY,
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data?.property) {
+  //   setProjectData(data.property);
 
-//   // ✅ Only try to find subunit if property_units exists
-//   if (Array.isArray(data.property.property_units)) {
-//     const foundUnit = data.property.property_units.find(
-//       (u: any) => u.title === unitTitle
-//     );
+  //   // ✅ Only try to find subunit if property_units exists
+  //   if (Array.isArray(data.property.property_units)) {
+  //     const foundUnit = data.property.property_units.find(
+  //       (u: any) => u.title === unitTitle
+  //     );
 
-//     if (foundUnit) {
-//       setUnit(foundUnit);
-//     } else {
-//       console.error("Subunit not found for:", unitTitle);
-//     }
-//   } else {
-//     console.error("property_units is missing for property:", propertyId);
-//   }
-// } else {
-//   console.error("Property not found in API response");
-// }
+  //     if (foundUnit) {
+  //       setUnit(foundUnit);
+  //     } else {
+  //       console.error("Subunit not found for:", unitTitle);
+  //     }
+  //   } else {
+  //     console.error("property_units is missing for property:", propertyId);
+  //   }
+  // } else {
+  //   console.error("Property not found in API response");
+  // }
 
-//     })
-//     .catch((err) => console.error("Failed to fetch property:", err));
-// }
+  //     })
+  //     .catch((err) => console.error("Failed to fetch property:", err));
+  // }
 
-// if (!agent || !projectData || !unit) {
-//   return <div>Loading unit details...</div>;
-// }
+  // if (!agent || !projectData || !unit) {
+  //   return <div>Loading unit details...</div>;
+  // }
 
 
 
@@ -1093,26 +1093,36 @@ const [unit, setUnit] = useState<any>(location.state?.unit || null);
           </div>
         </div>
       )}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl">
-        {/* WhatsApp Button */}
-        <button
+      {/* <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl"> */}
+      {/* WhatsApp Button */}
+      {/* <button
           onClick={handleWhatsApp}
           className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
           <img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6 mr-2" />
           WhatsApp
-        </button>
+        </button> */}
 
-        {/* Call Now Button */}
+      {/* Call Now Button */}
 
-        <button
+      {/* <button
           onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
           className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
           <Phone className="w-5 h-5 mr-2" />
           Call Now
         </button>
-      </div>
+      </div> */}
+      {(
+        <div className="fixed bottom-8 right-5 z-50">
+          <button
+            onClick={handleWhatsApp} // Use the first property for WhatsApp
+            className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
+          >
+            <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
+          </button>
+        </div>
+      )}
 
     </div>
   )
