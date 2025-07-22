@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useRef } from 'react';
 import HeroVideo from '@/assets/HomePage/31956-389724705_small.mp4'
 
+
 const HeroSection = () => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -249,6 +250,7 @@ const HeroSection = () => {
           }`} style={{ animationDelay: '1.2s' }}>
             
             {/* Primary Button */}
+            <a href="#steps">
             <Button 
               className="relative overflow-hidden bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-lg px-12 py-5 group flex items-center justify-center w-full sm:w-auto min-w-[200px] rounded-xl shadow-2xl border-0 transition-all duration-500 hover:scale-105 hover:shadow-purple-500/50"
               onMouseEnter={() => setHoveredButton(0)}
@@ -284,8 +286,10 @@ const HeroSection = () => {
                 </div>
               )}
             </Button>
+            </a>
 
             {/* Secondary Button */}
+            <a href="#agents">
             <Button 
               className="relative overflow-hidden bg-white/20 backdrop-blur-xl text-white border border-white/30 text-lg px-12 py-5 flex items-center justify-center w-full sm:w-auto min-w-[200px] rounded-xl shadow-xl hover:bg-white/30 hover:scale-105 transition-all duration-500"
               onMouseEnter={() => setHoveredButton(1)}
@@ -294,9 +298,10 @@ const HeroSection = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/20 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10 font-bold">{t("Choose Your Agent")}</span>
               <Users className="w-5 h-5 ml-2 relative z-10" />
-            </Button>
+            </Button></a>
 
             {/* Third Button */}
+            <a href="#steps">
             <Button 
               className="relative overflow-hidden bg-transparent border-2 border-white/50 text-white hover:bg-white hover:text-purple-900 text-lg px-12 py-5 flex items-center justify-center w-full sm:w-auto min-w-[200px] rounded-xl shadow-xl transition-all duration-500 hover:scale-105 hover:border-white"
               onMouseEnter={() => setHoveredButton(2)}
@@ -305,6 +310,7 @@ const HeroSection = () => {
               <TrendingUp className="w-5 h-5 mr-2" />
               <span className="font-bold">{t("List Your Project")}</span>
             </Button>
+            </a>
           </div>
 
           {/* Enhanced Stats Section */}

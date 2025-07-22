@@ -135,7 +135,7 @@ const HowItWorks = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10" id="steps">
         <div className="max-w-6xl mx-auto">
           {/* Enhanced Header */}
           <div className="text-center mb-20">

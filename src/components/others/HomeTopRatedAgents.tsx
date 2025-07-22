@@ -198,7 +198,7 @@ const TopRatedAgents = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10"  id="agents">
         {/* Enhanced Header */}
         <div className="text-center mb-20">
           <div className="relative inline-block mb-8">
