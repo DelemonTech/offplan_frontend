@@ -115,6 +115,13 @@
   scroll-behavior: smooth;
 }
 
+/* .emoji-flag {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 1.25em;
+  vertical-align: middle; 
+} */
+
+
   body {
     @apply bg-background text-foreground  antialiased;
   }
