@@ -617,7 +617,6 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
     // Skip scroll logic on initial load
     return;
   }
-
   const handleScroll = () => {
     const scrollY = window.scrollY;
     const triggerPoint = 300;
