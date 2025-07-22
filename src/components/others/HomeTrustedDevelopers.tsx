@@ -1,7 +1,7 @@
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useRef } from 'react';
-import emaar from '@/assets/HomePage/Emaar-Properties.jpg';
+import emaar from '@/assets/HomePage/Emaar-properties.jpg';
 import damac from '@/assets/HomePage/DAMAC_Properties.jpg';
 import sobha from '@/assets/HomePage/Sobha-Dubai.webp';
 import nakheel from '@/assets/HomePage/Nakheel.jfif';
