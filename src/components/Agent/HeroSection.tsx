@@ -28,7 +28,7 @@ const HeroSection = ({ agent }) => {
   };
 
   const handleWhatsApp = () => {
-    const message = `Hi Sahar! I'm interested in Offplan market properties. Can you share more details?`
+    const message = `Hi ${agent.name}! I'm interested in Offplan market properties. Can you share more details?`
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };

@@ -9,7 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import RatingBox from './RatingBox';
 import girl from '@/static/girl.jpg'
 
-const AgentProfile = ({ agent }) => {
+const AgentProfile = ({ agent, project }) => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: '',
@@ -21,7 +21,9 @@ const AgentProfile = ({ agent }) => {
   const [showFullText, setShowFullText] = useState(false);
 
   const openWhatsApp = () => {
-    const message = encodeURIComponent("Hi, I'm interested in off-plan properties. Can you help me?");
+    const message = encodeURIComponent(`Hi ${agent.name}, I'm interested in off-plan properties. Can you help me?
+
+  Here's the link: ${window.location.href}`);
     window.open(`https://wa.me/${agent.phone_number}?text=${message}`, '_blank');
   };
 
@@ -114,7 +116,7 @@ const remainingDescription = agent.description.slice(truncateIndex);
                 {/* Quick Contact Buttons - At the bottom */}
                 <div className="flex flex-col gap-4 mt-6">
                   <a
-                    href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=Hi, I'm interested in your off-plan properties`}
+                    href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(`Hi ${agent.name}, I'm interested in your off-plan properties.\n\nHere's the link: ${window.location.href}/property-details/?id=${project.id}`)}`}
                     target="_blank">
                     <Button
                       className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
