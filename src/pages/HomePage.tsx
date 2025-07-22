@@ -16,7 +16,6 @@ const HomePage = () => {
       <HeroSection />
       <TrustedDevelopers />
       <WhyTrustUs />
-      <ProjectSearchTool />
       <TopRatedAgents />
       <HowItWorks />
       <AgentRecruitment />
