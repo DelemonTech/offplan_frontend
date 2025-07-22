@@ -39,10 +39,10 @@ const AgentProfile = ({ agent, project }) => {
   };
 
   const truncateText = `From Dubai’s skyline dreams to smart investments — ${agent.name} brings`;
-const truncateIndex = agent.description.indexOf(truncateText) + truncateText.length;
+  const truncateIndex = agent.description.indexOf(truncateText) + truncateText.length;
 
-const shortDescription = agent.description.slice(0, truncateIndex);
-const remainingDescription = agent.description.slice(truncateIndex);
+  const shortDescription = agent.description.slice(0, truncateIndex);
+  const remainingDescription = agent.description.slice(truncateIndex);
 
 
   return (
@@ -114,28 +114,33 @@ const remainingDescription = agent.description.slice(truncateIndex);
                 <div className="flex-grow"></div>
 
                 {/* Quick Contact Buttons - At the bottom */}
-                <div className="flex flex-col gap-4 mt-6">
-                  <a
-                    href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(`Hi ${agent.name}, I'm interested in your off-plan properties.\n\nHere's the link: ${window.location.href}/property-details/?id=${project.id}`)}`}
-                    target="_blank">
-                    <Button
-                      className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                {agent && project && (
+                  <div className="flex flex-col gap-4 mt-6">
+                    <a
+                      href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(`Hi ${agent.name}, I'm interested in your off-plan properties.\n\nHere's the link: ${window.location.href}/property-details/?id=${project.id}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      <MessageCircle size={18} className="mr-2" />
-                      WhatsApp Now
-                    </Button>
-                  </a>
+                      <Button
+                        className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <MessageCircle size={18} className="mr-2" />
+                        WhatsApp Now
+                      </Button>
+                    </a>
 
-                  <a href={`tel:${agent.phone_number}`}>
-                    <Button
-                      variant="outline"
-                      className="w-full h-12 border-2 border-gray-300 bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      <Phone size={18} className="mr-2" />
-                      Call Now
-                    </Button>
-                  </a>
-                </div>
+                    <a href={`tel:${agent.phone_number}`}>
+                      <Button
+                        variant="outline"
+                        className="w-full h-12 border-2 border-gray-300 bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <Phone size={18} className="mr-2" />
+                        Call Now
+                      </Button>
+                    </a>
+                  </div>
+                )}
+
               </div>
             </div>
 
@@ -222,8 +227,8 @@ const remainingDescription = agent.description.slice(truncateIndex);
                     />
                     <label
                       className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'fullName' || formData.fullName
-                          ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
-                          : 'top-3 text-white/70 transform scale-100'
+                        ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
+                        : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
                       Full Name
@@ -242,8 +247,8 @@ const remainingDescription = agent.description.slice(truncateIndex);
                     />
                     <label
                       className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'email' || formData.email
-                          ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
-                          : 'top-3 text-white/70 transform scale-100'
+                        ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
+                        : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
                       Email Address
@@ -262,8 +267,8 @@ const remainingDescription = agent.description.slice(truncateIndex);
                     />
                     <label
                       className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'whatsapp' || formData.whatsapp
-                          ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
-                          : 'top-3 text-white/70 transform scale-100'
+                        ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
+                        : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
                       WhatsApp Number
@@ -281,8 +286,8 @@ const remainingDescription = agent.description.slice(truncateIndex);
                     />
                     <label
                       className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === 'message' || formData.message
-                          ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
-                          : 'top-3 text-white/70 transform scale-100'
+                        ? '-top-2 text-xs text-white bg-purple-600 px-2 transform scale-90 font-medium rounded'
+                        : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
                       Your Message
