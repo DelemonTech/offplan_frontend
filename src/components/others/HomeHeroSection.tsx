@@ -3,7 +3,7 @@ import { ArrowRight, Play, Star } from "lucide-react";
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
-import HeroVideo from '@/assets/31956-389724705_small.mp4'
+import HeroVideo from '@/assets/HomePage/31956-389724705_small.mp4'
 
 const HeroSection = () => {
    const { t, i18n } = useTranslation();

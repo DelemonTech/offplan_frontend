@@ -1,12 +1,12 @@
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useRef } from 'react';
-import emaar from '@/assets/Emaar-properties.jpg';
-import damac from '@/assets/DAMAC_Properties.jpg';
-import sobha from '@/assets/Sobha-Dubai.webp';
-import nakheel from '@/assets/Nakheel.jfif';
-import azizi from '@/assets/azizi.webp';
-import meraas from '@/assets/Meraas-properties.jpg';
+import emaar from '@/assets/HomePage/Emaar-Properties.jpg';
+import damac from '@/assets/HomePage/DAMAC_Properties.jpg';
+import sobha from '@/assets/HomePage/Sobha-Dubai.webp';
+import nakheel from '@/assets/HomePage/Nakheel.jfif';
+import azizi from '@/assets/HomePage/azizi.webp';
+import meraas from '@/assets/HomePage/Meraas_Properties.jpg';
 const TrustedDevelopers = () => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
