@@ -16,6 +16,9 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ mobile = false }) =
     setLanguage(lng as 'en' | 'ar' | 'fa'); // update your context
     i18n.changeLanguage(lng); // ✅ tell react-i18next to change language
     document.dir = lng === 'ar' || lng === 'fa' ? 'rtl' : 'ltr'; // handle direction
+    if (window.location.pathname === "/") {
+    window.location.reload();
+  }
   };
 
   const languages = [

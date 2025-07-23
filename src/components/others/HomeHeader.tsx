@@ -18,6 +18,7 @@ export const Header = () => {
     i18n.changeLanguage(lng);
     document.dir = lng === 'fa' ? 'rtl' : 'ltr';
     setIsOpen(false);
+    window.location.reload();
   };
   const [isMobileOverlayVisible, setIsMobileOverlayVisible] = useState(false);
   const { user, logout } = useAuth();
