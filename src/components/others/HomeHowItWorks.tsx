@@ -166,7 +166,7 @@ const HowItWorks = () => {
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
               {/* Connection Lines */}
-              <div className="hidden md:block absolute top-32 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"></div>
+              <div className="hidden md:block absolute top-28 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"></div>
               
               {steps.map((step, index) => (
                 <div 

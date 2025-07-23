@@ -323,7 +323,7 @@ const HeroSection = () => {
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse-fast"></div>
                   <span className="font-bold text-white text-lg group-hover:text-green-400 transition-colors duration-300">47</span>
-                  <span className="text-white/80 text-sm">users viewing projects now</span>
+                  <span className="text-white/80 text-sm">{t("users viewing projects now")}</span>
                 </div>
                 <div className="h-1 bg-green-400/30 rounded-full overflow-hidden">
                   <div className="h-full bg-green-400 rounded-full animate-progress-bar" style={{ width: '78%' }}></div>
@@ -334,7 +334,7 @@ const HeroSection = () => {
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse-fast" style={{ animationDelay: '0.5s' }}></div>
                   <span className="font-bold text-white text-lg group-hover:text-blue-400 transition-colors duration-300">12</span>
-                  <span className="text-white/80 text-sm">new inquiries in 30 min</span>
+                  <span className="text-white/80 text-sm">{t("new inquiries in 30 min")}</span>
                 </div>
                 <div className="h-1 bg-blue-400/30 rounded-full overflow-hidden">
                   <div className="h-full bg-blue-400 rounded-full animate-progress-bar" style={{ width: '65%', animationDelay: '0.3s' }}></div>
@@ -345,7 +345,7 @@ const HeroSection = () => {
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <Globe2 className="w-4 h-4 text-purple-400 animate-spin-slow" />
                   <span className="font-bold text-white text-lg group-hover:text-purple-400 transition-colors duration-300">23</span>
-                  <span className="text-white/80 text-sm">countries represented</span>
+                  <span className="text-white/80 text-sm">{t("countries represented")}</span>
                 </div>
                 <div className="h-1 bg-purple-400/30 rounded-full overflow-hidden">
                   <div className="h-full bg-purple-400 rounded-full animate-progress-bar" style={{ width: '92%', animationDelay: '0.6s' }}></div>
