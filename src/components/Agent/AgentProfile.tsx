@@ -7,10 +7,19 @@ import { Badge } from '@/components/ui/badge';
 import { Phone, Mail, MessageCircle, Briefcase, Clock, Star, Send, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import RatingBox from './RatingBox';
-import girl from '@/static/girl.jpg'
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 const AgentProfile = ({ agent, project }) => {
-  const { t } = useLanguage();
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -38,11 +47,15 @@ const AgentProfile = ({ agent, project }) => {
     // Handle form submission here
   };
 
-  const truncateText = `From Dubai’s skyline dreams to smart investments — ${agent.name} brings`;
-  const truncateIndex = agent.description.indexOf(truncateText) + truncateText.length;
+// Pick the localized description
+const description = i18n.language === 'fa' ? agent.fa_description : agent.description;
 
-  const shortDescription = agent.description.slice(0, truncateIndex);
-  const remainingDescription = agent.description.slice(truncateIndex);
+// Use the length of the reference sentence as truncation length
+const truncateLength = `From Dubai’s skyline dreams to smart investments —`.length;
+
+// Truncate equally to that length
+const shortDescription = description.slice(0, truncateLength);
+const remainingDescription = description.slice(truncateLength);
 
 
   return (
@@ -78,7 +91,7 @@ const AgentProfile = ({ agent, project }) => {
                   <div className="absolute top-6 left-6 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm">
                     <div className="flex items-center gap-2">
                       <Star className="w-4 h-4 fill-current" />
-                      <span className="text-sm font-bold">Top Agent</span>
+                      <span className="text-sm font-bold">{t('Top Agent')}</span>
                     </div>
                   </div>
                 </div>
@@ -91,21 +104,21 @@ const AgentProfile = ({ agent, project }) => {
                         <Briefcase className="w-4 h-4 mr-1" />
                       </div>
                       <div className="text-2xl font-bold">{agent.total_business_deals}</div>
-                      <div className="text-xs opacity-80">Deals</div>
+                      <div className="text-xs opacity-80">{t('Deals')}</div>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-1">
                         <Clock className="w-4 h-4 mr-1" />
                       </div>
                       <div className="text-2xl font-bold">{agent.years_of_experience.split(" ")[0]}</div>
-                      <div className="text-xs opacity-80">Years</div>
+                      <div className="text-xs opacity-80">{t('Years')}</div>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-1">
                         <Star className="w-4 h-4 mr-1 fill-current text-yellow-400" />
                       </div>
-                      <div className="text-2xl font-bold">4.9</div>
-                      <div className="text-xs opacity-80">Rating</div>
+                      <div className="text-2xl font-bold">{t('4.9')}</div>
+                      <div className="text-xs opacity-80">{t('Rating')}</div>
                     </div>
                   </div>
                 </div>
@@ -125,7 +138,7 @@ const AgentProfile = ({ agent, project }) => {
                         className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <MessageCircle size={18} className="mr-2" />
-                        WhatsApp Now
+                        {t('WhatsApp Now')}
                       </Button>
                     </a>
 
@@ -135,7 +148,7 @@ const AgentProfile = ({ agent, project }) => {
                         className="w-full h-12 border-2 border-gray-300 bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <Phone size={18} className="mr-2" />
-                        Call Now
+                        {t('Call Now')}
                       </Button>
                     </a>
                   </div>
@@ -153,13 +166,13 @@ const AgentProfile = ({ agent, project }) => {
                   {agent.name}
                 </h2>
                 <p className="text-2xl text-gray-600 font-medium mb-4">
-                  Your Trusted Off-Plan Expert
+                  {t('Your Trusted Off-Plan Expert')}
                 </p>
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
                   ))}
-                  <span className="text-lg font-semibold text-gray-700 ml-2">4.9 out of 5</span>
+                  <span className="text-lg font-semibold text-gray-700 ml-2">{t('4.9 out of 5')}</span>
                 </div>
               </div>
 
@@ -174,7 +187,7 @@ const AgentProfile = ({ agent, project }) => {
                         onClick={() => setShowFullText(true)}
                         className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 transition-colors ml-1"
                       >
-                        See more <ChevronDown size={16} />
+                        {t('See more')} <ChevronDown size={16} />
                       </button>
                     </>
                   )}
@@ -185,7 +198,7 @@ const AgentProfile = ({ agent, project }) => {
                         onClick={() => setShowFullText(false)}
                         className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1 transition-colors ml-1"
                       >
-                        See less <ChevronUp size={16} />
+                        {t('See less')} <ChevronUp size={16} />
                       </button>
                     </>
                   )}
@@ -207,10 +220,10 @@ const AgentProfile = ({ agent, project }) => {
                 <div className="text-center mb-6">
                   <div className="text-3xl mb-3">📬</div>
                   <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">
-                    Book a Free Consultation
+                    {t('Book a Free Consultation')}
                   </h3>
                   <p className="text-purple-100 text-sm">
-                    Get personalized property recommendations
+                    {t('Get personalized property recommendations')}
                   </p>
                 </div>
 
@@ -231,7 +244,7 @@ const AgentProfile = ({ agent, project }) => {
                         : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
-                      Full Name
+                      {t('Full Name')}
                     </label>
                   </div>
 
@@ -251,7 +264,7 @@ const AgentProfile = ({ agent, project }) => {
                         : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
-                      Email Address
+                      {t('Email Address')}
                     </label>
                   </div>
 
@@ -271,7 +284,7 @@ const AgentProfile = ({ agent, project }) => {
                         : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
-                      WhatsApp Number
+                      {t('WhatsApp Number')}
                     </label>
                   </div>
 
@@ -290,7 +303,7 @@ const AgentProfile = ({ agent, project }) => {
                         : 'top-3 text-white/70 transform scale-100'
                         }`}
                     >
-                      Your Message
+                      {t('Your Message')}
                     </label>
                   </div>
 
@@ -299,7 +312,7 @@ const AgentProfile = ({ agent, project }) => {
                     className="w-full h-12 bg-white text-purple-700 hover:bg-gray-100 font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-auto"
                   >
                     <Send size={18} className="mr-2" />
-                    Submit Request
+                    {t('Submit Request')}
                   </Button>
                 </form>
               </div>

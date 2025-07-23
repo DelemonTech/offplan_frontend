@@ -176,7 +176,7 @@ const HowItWorks = () => {
                     text-center relative transform-gpu transition-all duration-700
                     ${visibleSteps.includes(index) ? 'animate-card-slide-up opacity-100' : 'opacity-0 translate-y-20'}
                   `}
-                  style={{ animationDelay: `${index * 200}ms` }}
+                  // style={{ animationDelay: `${50}ms` }}
                 >
                   <div className="relative group">
                     {/* Step Number Circle */}

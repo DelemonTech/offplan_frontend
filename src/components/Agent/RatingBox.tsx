@@ -3,8 +3,19 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Star, Send } from 'lucide-react';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
-const RatingBox = ({agent}) => {
+const RatingBox = ({ agent }) => {
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
+
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -29,16 +40,19 @@ const RatingBox = ({agent}) => {
 
   const displayRating = hoveredRating || rating;
 
+  const localizedName =
+  i18n.language === 'fa' ? agent.fa_name : agent.name;
+
   if (isSubmitted) {
     return (
       <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-200/50 shadow-lg">
         <div className="text-center">
           <div className="text-4xl mb-3">🙏</div>
           <h3 className="text-xl font-bold text-green-800 mb-2">
-            Thank you for your feedback!
+            {t('Thank you for your feedback!')}
           </h3>
           <p className="text-green-700">
-            Your opinion is very valuable to us and helps improve our services.
+            {t('Your opinion is very valuable to us and helps improve our services.')}
           </p>
         </div>
       </div>
@@ -49,11 +63,12 @@ const RatingBox = ({agent}) => {
     <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200/50 shadow-lg">
       <div className="text-center mb-6">
         <h3 className="text-xl font-bold text-gray-800 mb-2">
-          ⭐ How would you rate {agent.name}'s consultation?
+          ⭐ {t("How would you rate {{name}}'s consultation?", { name: localizedName })}
         </h3>
         <p className="text-gray-600 text-sm">
-          Share your experience with others
+          {t("Share your experience with others")}
         </p>
+
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -70,11 +85,10 @@ const RatingBox = ({agent}) => {
             >
               <Star
                 size={32}
-                className={`transition-colors duration-200 ${
-                  star <= displayRating
+                className={`transition-colors duration-200 ${star <= displayRating
                     ? 'fill-yellow-400 text-yellow-400'
                     : 'text-gray-300 hover:text-yellow-300'
-                }`}
+                  }`}
               />
             </button>
           ))}
@@ -110,7 +124,7 @@ const RatingBox = ({agent}) => {
           className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed"
         >
           <Send size={18} className="mr-2" />
-          Submit Review
+          {t('Submit Review')}
         </Button>
       </form>
     </div>

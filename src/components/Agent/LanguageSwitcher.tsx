@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import ReactCountryFlag from "react-country-flag";
+import { useTranslation } from 'react-i18next'; // ✅ Import i18n
 
 interface LanguageSwitcherProps {
   mobile?: boolean;
@@ -9,6 +10,13 @@ interface LanguageSwitcherProps {
 
 const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ mobile = false }) => {
   const { language, setLanguage, isRTL } = useLanguage();
+  const { i18n } = useTranslation(); // ✅ Get i18n instance
+
+  const handleLanguageChange = (lng: string) => {
+    setLanguage(lng as 'en' | 'ar' | 'fa'); // update your context
+    i18n.changeLanguage(lng); // ✅ tell react-i18next to change language
+    document.dir = lng === 'ar' || lng === 'fa' ? 'rtl' : 'ltr'; // handle direction
+  };
 
   const languages = [
     { code: 'en', name: 'English', countryCode: 'GB' }, // 🇬🇧
@@ -25,7 +33,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ mobile = false }) =
         {languages.map((lang) => (
           <button
             key={lang.code}
-            onClick={() => setLanguage(lang.code as any)}
+            onClick={() => handleLanguageChange(lang.code)} // ✅ use new handler
             className={`flex items-center py-2 px-4 rounded-lg cursor-pointer transition-all duration-200 w-full ${
               language === lang.code
                 ? 'bg-blue-100 text-blue-700 font-medium'
@@ -63,7 +71,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ mobile = false }) =
           key={lang.code}
           variant={language === lang.code ? "default" : "ghost"}
           size="sm"
-          onClick={() => setLanguage(lang.code as any)}
+          onClick={() => handleLanguageChange(lang.code)} // ✅ use new handler
           className={`flex items-center space-x-1 transition-all ${
             language === lang.code
               ? 'bg-white shadow-sm text-blue-600 font-medium'

@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Switch } from '@/components/ui/switch';
-import { useNavigate } from 'react-router-dom';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUrl, setPropertyType,
   setSelectedPropertySubtype,
@@ -49,6 +49,15 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
 }) => {
 
   const cityOptions = citiesData.map((city) => city.name);
+
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
 
   // get the selected city object
   const selectedCityData = citiesData.find((city) => city.name === selectedCity);
@@ -107,17 +116,17 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   };
 
   const residentialSubtypes = [
-    { name: 'Apartment', icon: Building },
-    { name: 'Villa', icon: Home },
-    { name: 'Townhouse', icon: Building },
-    { name: 'Penthouse', icon: Building2 }
+    { name: t('Apartment'), icon: Building },
+    { name: t('Villa'), icon: Home },
+    { name: t('Townhouse'), icon: Building },
+    { name: t('Penthouse'), icon: Building2 }
   ];
 
   const commercialSubtypes = [
-    { name: 'Office', icon: Building },
-    { name: 'Shop', icon: Store },
-    { name: 'Warehouse', icon: Warehouse },
-    { name: 'Retail', icon: ShoppingCart }
+    { name: t('Office'), icon: Building },
+    { name: t('Shop'), icon: Store },
+    { name: t('Warehouse'), icon: Warehouse },
+    { name: t('Retail'), icon: ShoppingCart }
   ];
 
   const [userSelectedCity, setUserSelectedCity] = useState("");
@@ -151,7 +160,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       district: selectedNeighborhood || '',
       property_type: propertyType || '',
       unit_type: selectedPropertySubtype || '',
-      rooms: propertyType === 'Residential' ? bedrooms?.toString() : '',
+      rooms: propertyType === t('Residential') ? bedrooms?.toString() : '',
       delivery_year: deliveryYear ? parseInt(deliveryYear) : 0,
       low_price: priceRange[0],
       max_price: priceRange[1],
@@ -160,7 +169,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       sales_status: '',
       title: projectName || '',           // ✅ Include project name
       developer: developer || '',                // ✅ Include developer
-      ...(statusName !== 'Total' && { property_status: statusName }),
+      ...(statusName !== t('Total') && { property_status: statusName }),
       // project_status: projectStatus || '',       // ✅ Include project status
     };
 
@@ -206,8 +215,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   };
 
   const projectStatuses = [
-    'Ready',
-    'Off Plan'
+    t('Ready'),
+    t('Off Plan')
   ];
 
   const deliveryYears = [
@@ -220,12 +229,12 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     '2030+'
   ];
 
-  const currentSubtypes = propertyType === 'Commercial' ? commercialSubtypes : residentialSubtypes;
+  const currentSubtypes = propertyType === t('Commercial') ? commercialSubtypes : residentialSubtypes;
   const bedroomOptions = ['1', '2', '3', '4', '5', '6+'];
 
   const handlePropertyTypeChange = (type: string) => {
     setPropertyType(type);
-    setSelectedPropertySubtype(type === 'Commercial' ? 'Office' : 'Apartment');
+    setSelectedPropertySubtype(type === t('Commercial') ? t('Office') : t('Apartment'));
   };
 
   // useEffect(() => {
@@ -286,12 +295,12 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
         <div>
           <div className="flex items-center mb-3">
             <Globe className="mr-2 text-gray-600" size={18} />
-            <label className="text-sm font-semibold text-gray-700">City</label>
+            <label className="text-sm font-semibold text-gray-700">{t('City')}</label>
           </div>
           {citiesData.length > 0 && (
             <Select value={userSelectedCity || ""} onValueChange={(value) => { setSelectedCity(value); setUserSelectedCity(value) }}>
               <SelectTrigger className="h-11 bg-white/70 border-gray-200 rounded-lg">
-                <SelectValue placeholder="Select city" />
+                <SelectValue placeholder={t('Select city')} />
               </SelectTrigger>
               <SelectContent>
                 {citiesData.map(city => (
@@ -307,7 +316,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
         <div>
           <div className="flex items-center mb-3">
             <MapPin className="mr-2 text-gray-600" size={18} />
-            <label className="text-sm font-semibold text-gray-700">Neighborhood</label>
+            <label className="text-sm font-semibold text-gray-700">{t('Neighborhood')}</label>
           </div>
           <Select
             value={selectedNeighborhood}
@@ -315,7 +324,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             disabled={!selectedCity} // disable until city is selected
           >
             <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
-              <SelectValue placeholder={selectedCity ? "Select area" : "Select city first"} />
+              <SelectValue placeholder={selectedCity ? t('Select area') : t('Select city first')} />
             </SelectTrigger>
             <SelectContent className="bg-white border-gray-200 shadow-lg max-h-60 overflow-y-auto">
               {selectedCity ? (
@@ -326,10 +335,10 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
                     </SelectItem>
                   ))
                 ) : (
-                  <div className="p-2 text-gray-500 text-center text-xs">No neighborhoods found</div>
+                  <div className="p-2 text-gray-500 text-center text-xs">{t('No neighborhoods found')}</div>
                 )
               ) : (
-                <div className="p-2 text-gray-500 text-center">Select a city first</div>
+                <div className="p-2 text-gray-500 text-center">{t('Select a city first')}</div>
               )}
             </SelectContent>
           </Select>
@@ -339,9 +348,9 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
 
       {/* Enhanced Property Type Toggle */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-3">Property Type</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-3">{t('Property Type')}</label>
         <div className="flex rounded-xl bg-gradient-to-r from-gray-100 to-gray-50 p-1.5 shadow-inner">
-          {['Residential', 'Commercial'].map((type) => (
+          {[t('Residential'), t('Commercial')].map((type) => (
             <button
               key={type}
               onClick={() => handlePropertyTypeChange(type)}
@@ -359,7 +368,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       {/* Enhanced Property Subtypes */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-4">
-          {propertyType === 'Commercial' ? 'Commercial Property Types' : 'Residential Property Types'}
+          {propertyType === 'Commercial' ? t('Commercial Property Types') : t('Residential Property Types')}
         </label>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {currentSubtypes.map((subtype) => {
@@ -386,7 +395,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
         <div>
           <div className="flex items-center mb-3">
             <Bed className="mr-2 text-gray-600" size={18} />
-            <label className="text-sm font-semibold text-gray-700">Bedrooms</label>
+            <label className="text-sm font-semibold text-gray-700">{t('Bedrooms')}</label>
           </div>
           <div className="grid grid-cols-3 gap-2">
             {bedroomOptions.map((num) => (
@@ -414,7 +423,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           >
             <span className="flex items-center justify-center gap-2">
               {isAdvancedOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-              Advanced Filters
+              {t('Advanced Filters')}
             </span>
           </Button>
         </CollapsibleTrigger>
@@ -424,12 +433,12 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <div>
             <div className="flex items-center mb-3">
               <Building className="mr-2 text-gray-600" size={18} />
-              <label className="text-sm font-semibold text-gray-700">Project Name</label>
+              <label className="text-sm font-semibold text-gray-700">{t('Project Name')}</label>
             </div>
             <Input
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              placeholder="Enter project name"
+              placeholder={t('Enter project name')}
               className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg"
             />
           </div>
@@ -438,11 +447,11 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <div>
             <div className="flex items-center mb-3">
               <Users className="mr-2 text-gray-600" size={18} />
-              <label className="text-sm font-semibold text-gray-700">Developer</label>
+              <label className="text-sm font-semibold text-gray-700">{t('Developer')}</label>
             </div>
             <Select value={developer} onValueChange={setDeveloper}>
               <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
-                <SelectValue placeholder="Select developer" />
+                <SelectValue placeholder={t('Select developer')} />
               </SelectTrigger>
               <SelectContent className="bg-white border-gray-200 shadow-lg">
                 {developers.map((dev) => (
@@ -458,7 +467,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <div>
             <div className="flex items-center mb-3">
               <Calendar className="mr-2 text-gray-600" size={18} />
-              <label className="text-sm font-semibold text-gray-700">Property Status</label>
+              <label className="text-sm font-semibold text-gray-700">{t('Property Status')}</label>
             </div>
             <Select
               onValueChange={(value) => {
@@ -483,7 +492,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-8">
             <div className="bg-white/50 rounded-xl p-4 sm:p-6 shadow-sm">
               <div className="flex items-center mb-4">
-                <span className="text-sm font-semibold text-gray-700">Price Range (AED)</span>
+                <span className="text-sm font-semibold text-gray-700">{t('Price Range (AED)')}</span>
                 <span className="ml-2 text-yellow-500 text-lg">💰</span>
               </div>
               <div className="px-2">
@@ -501,7 +510,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
                   </div>
                   <span className="text-center text-xs text-gray-400">to</span>
                   <div className="text-right">
-                    <span className="block text-xs text-gray-500">Max</span>
+                    <span className="block text-xs text-gray-500">({t('Max')})</span>
                     <span className="block text-sm font-semibold">{formatCurrency(priceRange[1])}</span>
                   </div>
                 </div>
@@ -510,7 +519,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
 
             <div className="bg-white/50 rounded-xl p-4 sm:p-6 shadow-sm">
               <div className="flex items-center mb-4">
-                <span className="text-sm font-semibold text-gray-700">Area Range (sq ft)</span>
+                <span className="text-sm font-semibold text-gray-700">{t('Area Range (sq ft)')}</span>
                 <span className="ml-2 text-orange-500 text-lg">📏</span>
               </div>
               <div className="px-2">
@@ -523,12 +532,12 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
                 />
                 <div className="flex justify-between items-center mt-3 text-sm text-gray-600 font-medium">
                   <div className="text-left">
-                    <span className="block text-xs text-gray-500">Min</span>
+                    <span className="block text-xs text-gray-500">{t('Min')}</span>
                     <span className="block text-sm font-semibold">{areaRange[0].toLocaleString()} sq ft</span>
                   </div>
                   <span className="text-center text-xs text-gray-400">to</span>
                   <div className="text-right">
-                    <span className="block text-xs text-gray-500">Max</span>
+                    <span className="block text-xs text-gray-500">{t('Max')}</span>
                     <span className="block text-sm font-semibold">{areaRange[1].toLocaleString()} sq ft</span>
                   </div>
                 </div>
@@ -540,11 +549,11 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <div>
             <div className="flex items-center mb-3">
               <Calendar className="mr-2 text-gray-600" size={18} />
-              <label className="text-sm font-semibold text-gray-700">Delivery Year</label>
+              <label className="text-sm font-semibold text-gray-700">{t('Delivery Year')}</label>
             </div>
             <Select value={deliveryYear} onValueChange={setDeliveryYear}>
               <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
-                <SelectValue placeholder="Select delivery year" />
+                <SelectValue placeholder={t('Select delivery year')} />
               </SelectTrigger>
               <SelectContent className="bg-white border-gray-200 shadow-lg">
                 {deliveryYears.map((year) => (
@@ -566,7 +575,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           className="flex-1 h-12 sm:h-14 text-gray-600 border-gray-300 hover:bg-white/80 rounded-xl font-semibold"
           onClick={resetFilters}
         >
-          Reset Filters
+          {t('Reset Filters')}
         </Button>
         <Button
           className="flex-1 h-12 sm:h-14 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
@@ -588,7 +597,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           }
           }
         >
-          🔍 Show Properties
+          🔍 {t('Show Properties')}
         </Button>
       </div>
     </div>

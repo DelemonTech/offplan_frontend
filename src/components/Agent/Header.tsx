@@ -8,22 +8,30 @@ import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
 import maleLogo from '@/assets/OFFPLAN_MARKET_male.png';
 import femaleLogo from '@/assets/OFFPLAN_MARKET_female.png';
 import defaultLogo from '@/assets/OFFPLAN_MARKET.png';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useLanguage();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
 
   const navigationLinks = [
-    { href: "/", label: t('nav.home') },
-    { href: "#", label: t('nav.exclusive') },
-    { href: "#", label: t('nav.latest') },
-    { href: "#", label: t('nav.about') },
-    { href: "#", label: t('nav.contact') },
-    { href: "#", label: t('nav.blog') },
+    { href: "/", label: t('Home') },
+    { href: "#", label: t('Exclusive') },
+    { href: "#", label: t('Latest') },
+    { href: "#", label: t('About') },
+    { href: "#", label: t('Contact') },
+    { href: "#", label: t('Blog') },
   ];
  
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-white shadow-sm sticky top-0 z-50" dir='ltr'>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">

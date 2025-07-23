@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Users, Database, Award, Brain, Globe, CheckCircle, Sparkles, ArrowRight } from "lucide-react";
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 const WhyTrustUs = () => {
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [visibleCards, setVisibleCards] = useState([]);
@@ -9,25 +13,10 @@ const WhyTrustUs = () => {
   const cardRefs = useRef([]);
 
   // Mock translation function - replace with your actual i18n
-  const t = (key) => {
-    const translations = {
-      "Why Thousands Trust Us": "Why Thousands Trust Us",
-      "We've revolutionized the off-plan property market with transparency, technology, and trust.": "We've revolutionized the off-plan property market with transparency, technology, and trust.",
-      "Honest Advice, No Pressure": "Honest Advice, No Pressure",
-      "Our agents provide transparent, unbiased guidance to help you make informed decisions.": "Our agents provide transparent, unbiased guidance to help you make informed decisions.",
-      "Choose Your Own Agent Freely": "Choose Your Own Agent Freely",
-      "Browse profiles and select the agent that best matches your preferences and language.": "Browse profiles and select the agent that best matches your preferences and language.",
-      "Real-time Developer-Synced Data": "Real-time Developer-Synced Data",
-      "Access up-to-the-minute project information directly from developer systems.": "Access up-to-the-minute project information directly from developer systems.",
-      "Verified Agents Only": "Verified Agents Only",
-      "All our agents are RERA-registered and thoroughly vetted for your security.": "All our agents are RERA-registered and thoroughly vetted for your security.",
-      "AI-Powered Property Matching": "AI-Powered Property Matching",
-      "Advanced algorithms match you with properties that fit your exact requirements.": "Advanced algorithms match you with properties that fit your exact requirements.",
-      "Multilingual Support": "Multilingual Support",
-      "Communicate in your preferred language with our diverse team of international agents.": "Communicate in your preferred language with our diverse team of international agents.",
-      "Discover More": "Discover More"
-    };
-    return translations[key] || key;
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
   };
 
   const features = [
@@ -45,7 +34,7 @@ const WhyTrustUs = () => {
       description: t("Browse profiles and select the agent that best matches your preferences and language."),
       color: "from-blue-400 via-indigo-500 to-purple-600",
       bgColor: "from-blue-500/20 to-purple-500/20",
-      delay: 50
+      delay: 0
     },
     {
       icon: Database,
@@ -53,7 +42,7 @@ const WhyTrustUs = () => {
       description: t("Access up-to-the-minute project information directly from developer systems."),
       color: "from-orange-400 via-red-500 to-pink-600",
       bgColor: "from-orange-500/20 to-pink-500/20",
-      delay: 150
+      delay:0
     },
     {
       icon: Award,
@@ -61,7 +50,7 @@ const WhyTrustUs = () => {
       description: t("All our agents are RERA-registered and thoroughly vetted for your security."),
       color: "from-yellow-400 via-orange-500 to-red-600",
       bgColor: "from-yellow-500/20 to-red-500/20",
-      delay: 200
+      delay: 0
     },
     {
       icon: Brain,
@@ -69,7 +58,7 @@ const WhyTrustUs = () => {
       description: t("Advanced algorithms match you with properties that fit your exact requirements."),
       color: "from-violet-400 via-purple-500 to-fuchsia-600",
       bgColor: "from-violet-500/20 to-fuchsia-500/20",
-      delay: 225
+      delay: 0
     },
     {
       icon: Globe,
@@ -77,7 +66,7 @@ const WhyTrustUs = () => {
       description: t("Communicate in your preferred language with our diverse team of international agents."),
       color: "from-pink-400 via-rose-500 to-red-600",
       bgColor: "from-pink-500/20 to-red-500/20",
-      delay: 250
+      delay: 0
     }
   ];
 

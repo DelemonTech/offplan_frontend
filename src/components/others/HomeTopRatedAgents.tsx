@@ -1,7 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Star, ChevronLeft, ChevronRight, MessageCircle, Award, Globe, Users, Zap, TrendingUp } from 'lucide-react';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
+import { throttle } from 'lodash';
 
 const TopRatedAgents = () => {
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -9,101 +14,61 @@ const TopRatedAgents = () => {
   const scrollRef = useRef(null);
   const sectionRef = useRef(null);
 
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
   // Mock data with enhanced details
   const agents = [
     {
       id: 1,
-      name: "Sahar Kalhor",
+      name: t("Sahar Kalhor"),
       username: "sahar",
-      avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/sahar-crawler.webp" alt="Sahar Kalhor" className='overflow-hidden rounded-full' />,
+      avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/sahar-crawler.webp" alt="Sahar Kalhor" className="w-full h-full object-cover rounded-full" />,
       nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: ["English", "Arabic", "Farsi"],
+      languages: [t("English"), t("Arabic"), t("Farsi")],
       rating: 4.9,
       reviews: 127,
-      specialties: ["Luxury Properties", "Investment"],
+      specialties: [t("Luxury Properties"), t("Investment")],
       totalSales: "150+",
       responseTime: "< 30 min",
-      badge: "Top Performer",
+      badge: t("Top Performer"),
       color: "from-pink-400 via-purple-500 to-indigo-600"
     },
     {
       id: 2,
-      name: "Mohammed Erfani",
+      name: t("Mohammed Erfani"),
       username: "erfani",
       avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/erfani-crawler.webp" alt="Mohammed Erfani" className='overflow-hidden rounded-full' />,
       nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: ["English", "Arabic", "Farsi"],
+      languages: [t("English"), t("Arabic"), t("Farsi")],
       rating: 4.9,
       reviews: 95,
-      specialties: ["Commercial", "Residential"],
+      specialties: [t("Commercial"), t("Residential")],
       totalSales: "125+",
       responseTime: "< 30 min",
-      badge: "Rising Star",
+      badge: t("Rising Star"),
       color: "from-orange-400 via-red-500 to-pink-600"
     },
     {
       id: 3,
-      name: "Maryam",
+      name: t("Maryam"),
       username: "maryam",
       avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/maryam-crawler.webp" alt="Maryam" className='overflow-hidden rounded-full' />,
       nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: ["English", "Arabic", "Farsi"],
+      languages: [t("English"), t("Arabic"), t("Farsi")],
       rating: 4.9,
       reviews: 89,
-      specialties: ["First-time Buyers", "Rentals"],
+      specialties: [t("First-time Buyers"), t("Rentals")],
       totalSales: "120+",
       responseTime: "< 30 min",
-      badge: "Expert",
+      badge: t("Expert"),
       color: "from-emerald-400 via-teal-500 to-cyan-600"
     },
-    // {
-    //   id: 4,
-    //   name: "James Wilson",
-    //   username: "james-wilson",
-    //   avatar: "JW",
-    //   nationality: "🇺🇸",
-    //   languages: ["English", "Spanish"],
-    //   rating: 4.7,
-    //   reviews: 156,
-    //   specialties: ["Luxury Condos", "Waterfront"],
-    //   totalSales: "75M+",
-    //   responseTime: "< 2 hours",
-    //   badge: "Veteran",
-    //   color: "from-blue-400 via-indigo-500 to-purple-600"
-    // },
-    // {
-    //   id: 5,
-    //   name: "Liu Wei",
-    //   username: "liu-wei",
-    //   avatar: "LW",
-    //   nationality: "🇨🇳",
-    //   languages: ["Chinese", "English", "Cantonese"],
-    //   rating: 4.9,
-    //   reviews: 203,
-    //   specialties: ["International", "Investment"],
-    //   totalSales: "120M+",
-    //   responseTime: "< 45 min",
-    //   badge: "Global Leader",
-    //   color: "from-violet-400 via-purple-500 to-fuchsia-600"
-    // }
   ];
+  
 
-  const t = (key) => {
-    const translations = {
-      "Top Rated Agents": "Top Rated Agents",
-      "Connect with verified, multilingual professionals who understand your needs.": "Connect with verified, multilingual professionals who understand your needs.",
-      "reviews": "reviews",
-      "View Full Profile": "View Full Profile",
-      "View All Agents": "View All Agents",
-      "Contact Now": "Contact Now",
-      "Total Sales": "Total Sales",
-      "Response Time": "Response Time",
-      "Specialties": "Specialties"
-    };
-    return translations[key] || key;
-  };
-
-  // Mouse tracking for interactive effects
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (sectionRef.current) {
@@ -147,7 +112,7 @@ const TopRatedAgents = () => {
   }, [isAnimating, hoveredCard]);
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className="py-20 relative overflow-hidden min-h-screen"
       style={{
@@ -181,11 +146,11 @@ const TopRatedAgents = () => {
             }}
           />
         ))}
-        
+
         {/* Geometric shapes */}
         <div className="absolute top-20 left-10 w-32 h-32 border-2 border-white/20 rounded-lg rotate-45 animate-spin-slow"></div>
         <div className="absolute bottom-20 right-20 w-24 h-24 border-2 border-white/20 rounded-full animate-pulse"></div>
-        
+
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -198,7 +163,7 @@ const TopRatedAgents = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10"  id="agents">
+      <div className="container mx-auto px-4 relative z-10" id="agents">
         {/* Enhanced Header */}
         <div className="text-center mb-20">
           <div className="relative inline-block mb-8">
@@ -207,18 +172,18 @@ const TopRatedAgents = () => {
               <Award className="w-10 h-10 text-white animate-pulse" />
             </div>
           </div>
-          
+
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 relative">
             <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent drop-shadow-2xl animate-text-shimmer">
               {t("Top Rated Agents")}
             </span>
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-purple-600/20 blur-3xl -z-10 animate-pulse"></div>
           </h2>
-          
+
           <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed mb-8 animate-fade-in-up">
             {t("Connect with verified, multilingual professionals who understand your needs.")}
           </p>
-          
+
           <div className="relative w-40 h-2 mx-auto rounded-full overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-600 rounded-full animate-loading-bar shadow-lg"></div>
           </div>
@@ -230,15 +195,14 @@ const TopRatedAgents = () => {
             {agents.slice(currentIndex, currentIndex + 3).map((agent, displayIndex) => {
               const actualIndex = currentIndex + displayIndex;
               const isCenter = displayIndex === 1;
-              
+
               return (
                 <div
                   key={agent.id}
-                  className={`relative transition-all duration-800 ease-out transform-gpu ${
-                    isCenter ? 'scale-110 z-20' : 'scale-95 z-10'
-                  } ${!isAnimating ? 'animate-card-entrance' : ''}`}
-                  style={{ 
-                    animationDelay: `${displayIndex * 200}ms`,
+                  className={`relative transition-all duration-800 ease-out transform-gpu ${isCenter ? 'scale-110 z-20' : 'scale-95 z-10'
+                    } ${!isAnimating ? 'animate-card-entrance' : ''}`}
+                  style={{
+                    animationDelay: `${displayIndex * 50}ms`,
                     transform: `
                       ${isCenter ? 'scale(1.1) translateY(-20px)' : 'scale(0.95) translateY(10px)'}
                       ${displayIndex === 0 ? 'rotateY(15deg)' : displayIndex === 2 ? 'rotateY(-15deg)' : 'rotateY(0deg)'}
@@ -247,10 +211,10 @@ const TopRatedAgents = () => {
                   onMouseEnter={() => setHoveredCard(agent.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                 >
-                  <EnhancedAgentCard 
-                    agent={agent} 
-                    actualIndex={actualIndex} 
-                    t={t} 
+                  <EnhancedAgentCard
+                    agent={agent}
+                    actualIndex={actualIndex}
+                    t={t}
                     isHovered={hoveredCard === agent.id}
                     isCenter={isCenter}
                   />
@@ -270,7 +234,7 @@ const TopRatedAgents = () => {
               <ChevronLeft className="w-7 h-7 text-white group-hover:text-blue-200 transition-all duration-300 relative z-10" />
             </div>
           </button>
-          
+
           <button
             onClick={nextSlide}
             disabled={isAnimating}
@@ -290,11 +254,10 @@ const TopRatedAgents = () => {
                 onClick={() => setCurrentIndex(index)}
                 className="relative group"
               >
-                <div className={`w-4 h-4 rounded-full transition-all duration-500 ${
-                  index === currentIndex 
-                    ? 'bg-gradient-to-r from-blue-400 to-purple-600 scale-125 shadow-lg' 
+                <div className={`w-4 h-4 rounded-full transition-all duration-500 ${index === currentIndex
+                    ? 'bg-gradient-to-r from-blue-400 to-purple-600 scale-125 shadow-lg'
                     : 'bg-white/40 hover:bg-white/60 scale-100'
-                }`}>
+                  }`}>
                   {index === currentIndex && (
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-600 rounded-full animate-ping opacity-40"></div>
                   )}
@@ -306,7 +269,7 @@ const TopRatedAgents = () => {
 
         {/* Enhanced Mobile View */}
         <div className="lg:hidden">
-          <div 
+          <div
             ref={scrollRef}
             className="flex space-x-6 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory"
           >
@@ -317,10 +280,10 @@ const TopRatedAgents = () => {
                 onMouseEnter={() => setHoveredCard(agent.id)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
-                <EnhancedAgentCard 
-                  agent={agent} 
-                  actualIndex={index} 
-                  t={t} 
+                <EnhancedAgentCard
+                  agent={agent}
+                  actualIndex={index}
+                  t={t}
                   isHovered={hoveredCard === agent.id}
                   isCenter={false}
                 />
@@ -334,7 +297,7 @@ const TopRatedAgents = () => {
           <button className="group relative inline-flex items-center justify-center px-12 py-3 text-xl font-bold text-white transition-all duration-500 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl group-hover:shadow-blue-500/50 transition-all duration-500"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition-all duration-500"></div>
-            <div className="absolute inset-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl animate-gradient-shift"></div>
+            <div className="absolute inset-0.1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl animate-gradient-shift"></div>
             <span className="relative z-10 flex items-center space-x-3">
               <span>{t("View All Agents")}</span>
               <TrendingUp className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
@@ -424,14 +387,14 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
       transition-all duration-700 transform-gpu
       ${isHovered ? 'scale-105 shadow-blue-500/25' : 'scale-100'}
     `}>
-      
+
       {/* Animated background overlay */}
       <div className={`
         absolute inset-0 bg-gradient-to-br ${agent.color} opacity-0 
         transition-all duration-700 rounded-3xl
         ${isHovered ? 'opacity-10' : 'opacity-0'}
       `}></div>
-      
+
       {/* Floating particles effect */}
       {isHovered && (
         <div className="absolute inset-0 pointer-events-none">
@@ -469,13 +432,12 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
             transition-all duration-700
             ${isHovered ? 'animate-pulse scale-110' : 'scale-100'}
           `}></div>
-          
-          <div className="relative w-full h-full bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full border-4 border-white/30 flex items-center justify-center shadow-2xl">
-            <span className="text-white text-4xl font-black drop-shadow-lg">
-              {agent.avatar}
-            </span>
+
+          <div className="relative w-full h-full bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full border-4 border-white/30 flex items-center justify-center shadow-2xl overflow-hidden">
+            {agent.avatar}
           </div>
-          
+
+
           {/* Status indicator with pulse animation */}
           <div className="absolute -bottom-1 -right-1 w-10 h-10 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
             <div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
@@ -506,7 +468,7 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
             </div>
             <div className="text-sm text-white/70 font-medium">{t("Total Sales")}</div>
           </div>
-          
+
           <div className={`
             bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm p-4 rounded-2xl 
             border border-white/20 transition-all duration-500 hover:scale-105
@@ -524,7 +486,7 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Globe className="w-5 h-5 text-white/70" />
-            <span className="text-sm font-bold text-white/70 uppercase tracking-wider">Languages</span>
+            <span className="text-sm font-bold text-white/70 uppercase tracking-wider">{t("LANGUAGES")}</span>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {agent.languages.map((lang, index) => (
@@ -548,7 +510,7 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Award className="w-5 h-5 text-white/70" />
-            <span className="text-sm font-bold text-white/70 uppercase tracking-wider">{t("Specialties")}</span>
+            <span className="text-sm font-bold text-white/70 uppercase tracking-wider">{t("SPECIALTIES")}</span>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
             {agent.specialties.map((specialty) => (
@@ -566,12 +528,12 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
         <div className="flex items-center justify-center space-x-3 mb-10">
           <div className="flex space-x-1">
             {[...Array(5)].map((_, i) => (
-              <Star 
-                key={i} 
+              <Star
+                key={i}
                 className={`
                   w-6 h-6 transition-all duration-300
-                  ${i < Math.floor(agent.rating) 
-                    ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm' 
+                  ${i < Math.floor(agent.rating)
+                    ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
                     : 'text-white/30'
                   }
                   ${isHovered ? 'animate-pulse' : ''}
@@ -600,13 +562,13 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
             `}>
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               <a href={`/${agent.username}`} className="absolute inset-0 flex items-center justify-center" target='_blank'>
-              <span className="relative z-10 text-white font-bold text-lg">
-                {t("View Full Profile")}
-              </span>
+                <span className="relative z-10 text-white font-bold text-lg">
+                  {t("View Full Profile")}
+                </span>
               </a>
             </div>
           </a>
-          
+
           {/* <button className="group w-full bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm border-2 border-white/30 text-white p-4 rounded-2xl font-semibold transition-all duration-500 hover:scale-105 hover:bg-white/30 hover:shadow-xl flex items-center justify-center space-x-3">
             <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
             <span>{t("Contact Now")}</span>

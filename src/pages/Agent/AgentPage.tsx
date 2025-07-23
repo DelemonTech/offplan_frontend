@@ -14,9 +14,20 @@ import LoadingOverlay from '@/components/ui/LoadingOverlay';
 import maleLogo from '@/assets/OFFPLAN_MARKET_male.png';
 import femaleLogo from '@/assets/OFFPLAN_MARKET_female.png';
 import defaultLogo from '@/assets/OFFPLAN_MARKET.png';
-import IconWhatsapp from "@/assets/icon-whatsapp.svg"
+import IconWhatsapp from "@/assets/icon-whatsapp.svg";
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 const AgentPageContent = () => {
+
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
 
   function setFavicon(gender: string) {
     let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement | null;
@@ -98,7 +109,6 @@ const AgentPageContent = () => {
   const [properties, setPropertiesData] = useState([]);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { t } = useLanguage();
   const [statusName, setStatusName] = useState("Ready");
 
 
@@ -318,11 +328,11 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
                 <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-blue-500 animate-bounce" />
               </div>
               <h2 className="text-4xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent leading-tight">
-                Haven’t found the right Offplan or Ready property yet?
+                {t("Haven’t found the right Offplan or Ready property yet?")}
               </h2>
             </div>
             <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto font-medium">
-              Don’t worry — Just use the search bar to explore top investment opportunities in Dubai, Abu Dhabi, and beyond.
+              {t("Don’t worry — Just use the search bar to explore top investment opportunities in Dubai, Abu Dhabi, and beyond.")}
             </p>
           </div>
         </div>
@@ -430,10 +440,10 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
               <div className="col-span-4 h-full">
                 <div className="grid grid-rows-4 gap-6 h-full">
                   {[
-                    { emoji: '🧭', title: 'Smart Navigation', desc: 'AI-powered search' },
-                    { emoji: '📍', title: 'Prime Locations', desc: 'Best areas in Dubai' },
-                    { emoji: '🏙️', title: 'Urban Excellence', desc: 'Premium developments' },
-                    { emoji: '💰', title: 'Best ROI', desc: 'Find instant returns' }
+                    { emoji: '🧭', title: t('Smart Navigation'), desc: t('AI-powered search') },
+                    { emoji: '📍', title: t('Prime Locations'), desc: t('Best areas in Dubai') },
+                    { emoji: '🏙️', title: t('Urban Excellence'), desc: t('Premium developments') },
+                    { emoji: '💰', title: t('Best ROI'), desc: t('Find instant returns') }
                   ].map((item, i) => (
                     <div key={i} className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 xl:p-6 shadow-sm text-center hover:shadow-lg transition-all duration-300 hover:scale-105 flex flex-col justify-center">
                       <div className="text-2xl xl:text-3xl 2xl:text-4xl mb-2 xl:mb-3">{item.emoji}</div>

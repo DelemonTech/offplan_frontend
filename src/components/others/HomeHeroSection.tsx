@@ -247,7 +247,7 @@ const HeroSection = () => {
           {/* Enhanced CTA Buttons */}
           <div className={`flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16 transition-all duration-1000 ${
             isVisible ? 'animate-buttons-slide-up' : ''
-          }`} style={{ animationDelay: '1.2s' }}>
+          }`} style={{ animationDelay: '0.4s' }}>
             
             {/* Primary Button */}
             <a href="#steps">
@@ -316,7 +316,7 @@ const HeroSection = () => {
           {/* Enhanced Stats Section */}
           <div className={`bg-black/20 backdrop-blur-xl rounded-2xl p-6 shadow-2xl max-w-4xl mx-auto border border-white/20 transition-all duration-1000 hover:bg-black/30 ${
             isVisible ? 'animate-stats-appear' : ''
-          }`} style={{ animationDelay: '1.6s' }}>
+          }`} style={{ animationDelay: '0.8s' }}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
               
               <div className="group cursor-pointer">

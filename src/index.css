@@ -147,6 +147,30 @@
   width: 100%;
 }
 
+@keyframes floatComplex {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(10px, -15px) rotate(15deg);
+  }
+  50% {
+    transform: translate(-10px, 10px) rotate(-15deg);
+  }
+  75% {
+    transform: translate(5px, -10px) rotate(10deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+.animate-float-complex {
+  animation: floatComplex 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+
 .text-outline-gradient {
   text-shadow: 
     0 0 4px #ec4899,  /* pink glow */

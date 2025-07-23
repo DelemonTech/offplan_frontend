@@ -85,31 +85,36 @@ const TrustedDevelopers = () => {
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Floating brand elements */}
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute opacity-5 animate-float-complex"
-            style={{
-              width: `${60 + i * 20}px`,
-              height: `${60 + i * 20}px`,
-              left: `${10 + (i * 15)}%`,
-              top: `${15 + (i * 12)}%`,
-              animationDelay: `${i * 1}s`,
-              animationDuration: `${4 + i * 0.2}s`
-            }}
-          >
-            {/* White background wrapper */}
-            <div className="w-full h-full bg-white rounded-xl shadow-md flex items-center justify-center">
-              {/* Logo or gradient */}
-              <div
-                className={`w-4/5 h-4/5 bg-gradient-to-br ${developers[i].color} rounded-lg rotate-12`}
-              ></div>
-            </div>
-          </div>
+  {/* Floating brand elements */}
+  {[...Array(6)].map((_, i) => {
+    const randomDelay = Math.random() * 3; // random delay
+    const randomDuration = 5 + Math.random() * 2; // random duration
 
-        ))}
+    return (
+      <div
+        key={i}
+        className="absolute opacity-5 animate-float-complex"
+        style={{
+          width: `${60 + i * 20}px`,
+          height: `${60 + i * 20}px`,
+          left: `${10 + (i * 15)}%`,
+          top: `${15 + (i * 12)}%`,
+          animationDelay: `${randomDelay}s`,
+          animationDuration: `${randomDuration}s`
+        }}
+      >
+        {/* White background wrapper */}
+        <div className="w-full h-full bg-white rounded-xl shadow-md flex items-center justify-center">
+          {/* Logo or gradient */}
+          <div
+            className={`w-4/5 h-4/5 bg-gradient-to-br ${developers[i].color} rounded-lg rotate-12`}
+          ></div>
+        </div>
       </div>
+    );
+  })}
+</div>
+
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
@@ -144,7 +149,7 @@ const TrustedDevelopers = () => {
                   group cursor-pointer transform-gpu transition-all duration-700
                   ${visibleLogos.includes(index) ? 'animate-card-slide-up opacity-100' : 'opacity-0 translate-y-10'}
                 `}
-                style={{ animationDelay: `${index * 50}ms` }}
+                // style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="relative">
                   {/* Logo Container */}
@@ -200,9 +205,9 @@ const TrustedDevelopers = () => {
                         key={i}
                         className="absolute animate-float-particles"
                         style={{
-                          left: `${25 + Math.random() * 50}%`,
-                          top: `${25 + Math.random() * 50}%`,
-                          animationDelay: `${i * 0.3}s`,
+                          // left: `${25 + Math.random() * 50}%`,
+                          // top: `${25 + Math.random() * 50}%`,
+                          // animationDelay: `0.5s`,
                         }}
                       >
                         <div className={`w-1.5 h-1.5 bg-gradient-to-r ${developer.color} rounded-full opacity-80`}></div>
@@ -217,20 +222,20 @@ const TrustedDevelopers = () => {
       </div>
 
       <style>{`
-        @keyframes float-complex {
-          0%, 100% { 
-            transform: translateY(0px) rotate(0deg) scale(1); 
-          }
-          25% { 
-            transform: translateY(-20px) rotate(90deg) scale(1.05); 
-          }
-          50% { 
-            transform: translateY(10px) rotate(180deg) scale(0.95); 
-          }
-          75% { 
-            transform: translateY(-15px) rotate(270deg) scale(1.02); 
-          }
-        }
+        // @keyframes float-complex {
+        //   0%, 100% { 
+        //     transform: translateY(0px) rotate(0deg) scale(1); 
+        //   }
+        //   25% { 
+        //     transform: translateY(-20px) rotate(90deg) scale(1.05); 
+        //   }
+        //   50% { 
+        //     transform: translateY(10px) rotate(180deg) scale(0.95); 
+        //   }
+        //   75% { 
+        //     transform: translateY(-15px) rotate(270deg) scale(1.02); 
+        //   }
+        // }
         
         @keyframes grid-move {
           0% { transform: translate(0, 0); }

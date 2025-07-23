@@ -26,7 +26,7 @@ const AgentRecruitment = () => {
       description: t("Get your own branded page under your name with full profile customization."),
       color: "from-blue-400 via-indigo-500 to-purple-600",
       bgColor: "from-blue-500/20 to-purple-500/20",
-      delay: 50
+      delay: 0
     },
     {
       icon: Database,
@@ -34,7 +34,7 @@ const AgentRecruitment = () => {
       description: t("Complete database of verified off-plan projects across the UAE."),
       color: "from-emerald-400 via-teal-500 to-cyan-600",
       bgColor: "from-emerald-500/20 to-teal-500/20",
-      delay: 100
+      delay: 0
     },
     {
       icon: Megaphone,
@@ -42,7 +42,7 @@ const AgentRecruitment = () => {
       description: t("Market new launches and exclusive projects to your network immediately."),
       color: "from-orange-400 via-red-500 to-pink-600",
       bgColor: "from-orange-500/20 to-pink-500/20",
-      delay: 150
+      delay: 0
     },
     {
       icon: Brain,
@@ -50,7 +50,7 @@ const AgentRecruitment = () => {
       description: t("Receive qualified leads matched to your expertise and language skills."),
       color: "from-violet-400 via-purple-500 to-fuchsia-600",
       bgColor: "from-violet-500/20 to-fuchsia-500/20",
-      delay: 200
+      delay: 0
     }
   ];
 

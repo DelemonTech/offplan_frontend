@@ -13,6 +13,8 @@ import PropertyDetailsModal from "@/components/Agent/PropertyDetails"
 import IconWhatsapp from "@/assets/icon-whatsapp.svg"
 import IconGuarantee from "@/assets/guarantee.png"
 import IconShield from "@/assets/shield.png"
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 // import PropertyDetails1 from '../Agent/PropertyDetails1';
 
 
@@ -59,6 +61,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 }) => {
 
   // const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
 
   const hostUrl = import.meta.env.VITE_HOST_URL;
 
@@ -227,8 +237,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       ...(statusName !== 'All' && { property_status: statusName }),
       // sales_status: '',
     };
-
-    if (statusName === "All") {
+    console.log("statusName:", statusName);
+    if (statusName === 'All') {
       setSelectedCity('');
       setSelectedNeighborhood('');
       setDeveloper('');
@@ -236,8 +246,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     // Apply the status filter
     // if (statusName.toLowerCase() === 'sold out') {
     //   filters.sales_status = 'Sold Out';
-    // } else 
-    if (['ready', 'off plan'].includes(statusName.toLowerCase())) {
+    // } else
+    if ([t('Ready'), t('Off Plan')].includes(statusName)) {
       filters.property_status = statusName;
     }
 
@@ -336,7 +346,7 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
     const whatsappMessage = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.city?.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?`;
     const whatsappLink = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
     const shareText = `🌇 ${project.title} – ${project.city?.name}, ${project.district?.name}
-📍 Location: ${project.city?.name || 'N/A'}, ${project.district?.name || 'N/A'}
+📍 t(Location: ${project.city?.name || 'N/A'}, ${project.district?.name || 'N/A'}
 🏷️ Price: AED ${formatAED(project.low_price)}
 📐 Unit Size: ${project.min_area || 'N/A'} sq.ft
 📆 Handover: ${formatDeliveryDate(project.delivery_date) || 'TBA'}
@@ -426,8 +436,9 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
 
           const updatedFilters = {
             city: firstCity.city_name,
-            property_status: statusName,
+            ...(statusName !== 'All' && { property_status: statusName })
           };
+
           setIsCityReady(true);
 
           setSearchFilters(updatedFilters);
@@ -562,6 +573,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
         // if (section) {
         //   section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         // }
+        console.log("Filters being sent:", filters);
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -610,33 +622,33 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
   const [showFloatingBar, setShowFloatingBar] = useState(false);
 
   useEffect(() => {
-  // Check if search filter was applied before reload
-  const searchFilterApplied = sessionStorage.getItem("searchFilterApplied") === "true";
+    // Check if search filter was applied before reload
+    const searchFilterApplied = sessionStorage.getItem("searchFilterApplied") === "true";
 
-  if (!searchFilterApplied) {
-    // Skip scroll logic on initial load
-    return;
-  }
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const triggerPoint = 300;
-
-    if (scrollY > triggerPoint) {
-      setShowFloatingBar(true);
-    } else {
-      setShowFloatingBar(false);
+    if (!searchFilterApplied) {
+      // Skip scroll logic on initial load
+      return;
     }
-  };
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const triggerPoint = 300;
 
-  // Check scroll position immediately
-  handleScroll();
+      if (scrollY > triggerPoint) {
+        setShowFloatingBar(true);
+      } else {
+        setShowFloatingBar(false);
+      }
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    // Check scroll position immediately
+    handleScroll();
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
 
 
@@ -708,13 +720,13 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 tracking-tight" id="featured-projects">
-            Your Next Home <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">Starts Here</span>
+            {t('Your Next Home')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">{t('Starts Here')}</span>
           </h2>
           <div className="relative">
             <p className="text-xl lg:text-2xl text-gray-600 max-w-2xl mx-auto mb-4 font-medium">
-              Buy Ready & Offplan Properties
-              in Dubai, Abu Dhabi, and Across the UAE
-              Curated for Smart Investors.
+              {t('Buy Ready & Offplan Properties')}
+              {t('in Dubai, Abu Dhabi, and Across the UAE')}
+              {t('Curated for Smart Investors.')}
             </p>
             <div className="flex justify-center">
               <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full"></div>
@@ -865,14 +877,14 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
             <div className="flex flex-col justify-center items-center py-20">
               <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-pink-500 border-opacity-50 mb-4" />
               <div className="flex flex-col items-center">
-                <span className="text-[#f24ca0] font-semibold text-lg">Loading properties ...</span>
+                <span className="text-[#f24ca0] font-semibold text-lg">{t('Loading properties ...')}</span>
               </div>
             </div>
 
           ) : properties.length === 0 ? (
             <div className="text-center py-20">
               <h3 className="text-2xl font-semibold text-gray-600 mb-4">Oh-Uh! 😕</h3>
-              <p className="text-gray-500 text-lg">No properties match your current search filters.</p>
+              <p className="text-gray-500 text-lg">{t('No properties match your current search filters.')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
@@ -944,7 +956,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <CreditCard size={14} />
-                                  <span>Payment</span>
+                                  <span>{t('Payment')}</span>
                                 </div>
                               </div>
                             </div>
@@ -966,7 +978,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                             </div>
 
                             <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
-                              <div className="text-xs sm:text-sm text-gray-600 mb-1">Starting from</div>
+                              <div className="text-xs sm:text-sm text-gray-600 mb-1">{t('Starting from')}</div>
                               <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                                 {project.low_price ? `AED ${formatAED(project.low_price)}` : 'AED N/A'}
                               </div>
@@ -974,7 +986,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                               <div className="flex flex-wrap gap-3 text-xs text-gray-600 pb-3">
                                 <div className="flex items-center gap-1">
                                   <Ruler size={12} className="text-pink-500" />
-                                  <span>From {project.min_area} ft²</span>
+                                  <span>{t(`From ${project.min_area} ft²`)}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Calendar size={12} className="text-blue-500" />
@@ -993,13 +1005,13 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                               {project.guarantee_rental_guarantee && (
                                 <div className="pt-3 flex flex-row gap-1">
                                   <img src={IconGuarantee} className="h-5 w-5" />
-                                  <span className="text-xs text-blue-500">Guaranteed ROI Contract</span>
+                                  <span className="text-xs text-blue-500">{t('Guaranteed ROI Contract')}</span>
                                 </div>
                               )}
                               {(displayStatus === 3 ? project?.property_status : displayStatus) !== 2 && (
                                 <div className='flex flex-row items-center gap-1 bg-white rounded-xl px-4 py-1.5 shadow border border-green-100'>
                                   <img src={IconShield} className='h-4 w-5' />
-                                  <span className='text-xs text-green-500 font-medium'>Zero Risk – Escrow Protected</span>
+                                  <span className='text-xs text-green-500 font-medium'>{t('Zero Risk – Escrow Protected')}</span>
                                 </div>
                               )}
                             </div>
@@ -1036,10 +1048,10 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                                         d="M4 12a8 8 0 018-11v4a5 4 0 00-6 4H4z"
                                       ></path>
                                     </svg>
-                                    Loading...
+                                    {t('Loading...')}
                                   </>
                                 ) : (
-                                  "See Availability"
+                                  t('See Availability')
                                 )}
                               </button>
 
@@ -1077,7 +1089,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
 
                                 {copiedProjectId === project.id && (
                                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#7d8bff] text-white text-xs px-2 py-1 rounded shadow">
-                                    Link Copied!
+                                    {t('Link Copied!')}
                                   </div>
                                 )}
                               </div>
@@ -1102,12 +1114,12 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
             {isLoading ? (
               <>
                 <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                Loading more properties...
+                {t('Loading more properties...')}
               </>
             ) : (
               <>
                 <RefreshCw className="mr-3 h-5 w-5" />
-                Load More Properties
+                {t('Load More Properties')}
               </>
             )}
           </Button>
