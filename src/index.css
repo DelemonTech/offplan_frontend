@@ -111,6 +111,17 @@
     @apply border-border;
   }
 
+ html {
+  scroll-behavior: smooth;
+}
+
+/* .emoji-flag {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 1.25em;
+  vertical-align: middle; 
+} */
+
+
   body {
     @apply bg-background text-foreground  antialiased;
   }
@@ -135,6 +146,28 @@
   /* position: fixed;     */
   width: 100%;
 }
+
+.text-outline-gradient {
+  text-shadow: 
+    0 0 4px #ec4899,  /* pink glow */
+    0 0 8px #c084fc,  /* purple glow */
+    0 0 12px #60a5fa; /* blue glow */
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide {
+  animation: slide 15s linear infinite;
+}
+
+
 
   /* Add this to your global CSS (e.g., styles.css or tailwind.css) */
 @media (max-width: 639px) {

@@ -7,10 +7,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ContactModal from './ContactModal';
 import Icon from '@/static/OFFPLAN.MARKET new.png';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<string[]>([]);
   const [email, setEmail] = useState('');
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
 
   const toggleSection = (section: string) => {
     setOpenSections(prev =>
@@ -90,7 +100,7 @@ const Footer = () => {
       {/* AI Chat CTA Section */}
       <div className="bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 ">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-lg font-medium">Need help choosing? Chat with our AI — 24/7 support! 🤖</p>
+          <p className="text-lg font-medium">{t('Need help choosing? Chat with our AI — support!')} 🤖</p>
         </div>
       </div>
 
@@ -98,7 +108,7 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Company Section */}
-          <FooterSection title="Company" id="company">
+          <FooterSection title={t("Company")} id="company">
             <div className="space-y-4">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-400 to-blue-500"></div>
@@ -123,7 +133,7 @@ const Footer = () => {
           </FooterSection>
 
           {/* Quick Links */}
-          <FooterSection title="Quick Links" id="quicklinks">
+          <FooterSection title={t("Quick Links")} id="quicklinks">
             <ul className="space-y-3 text-sm">
               {['FAQs', 'Privacy Policy', 'Terms of Service', 'Chat with AI', 'Help Center', 'Contact Support'].map((link) => (
                 <li key={link}>
@@ -136,7 +146,7 @@ const Footer = () => {
           </FooterSection>
 
           {/* Popular Properties */}
-          <FooterSection title="Popular Properties" id="properties">
+          <FooterSection title={t("Popular Properties")} id="properties">
             <ul className="space-y-3 text-sm">
               {[
                 'Apartments in Dubai Marina',
@@ -158,7 +168,7 @@ const Footer = () => {
           </FooterSection>
 
           {/* Contact Info */}
-          <FooterSection title="Contact Info" id="contact">
+          <FooterSection title={t("Contact Info")} id="contact">
             <div className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-sm">
@@ -197,19 +207,19 @@ const Footer = () => {
         <div className="bg-gray-800 rounded-lg py-6 px-6 mb-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-2 text-white">Stay Updated</h3>
-              <p className="text-gray-300 font-medium">Get the latest off-plan property updates and market insights</p>
+              <h3 className="text-xl font-semibold mb-2 text-white">{t('Stay Updated')}</h3>
+              <p className="text-gray-300 font-medium">{t('Get the latest off-plan property updates and market insights')}</p>
             </div>
             <div className="flex w-full md:w-auto gap-3">
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t('Enter your email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-300 focus:border-pink-400 font-medium"
               />
               <Button className="bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 px-6 font-medium">
-                Subscribe
+                {t('Subscribe')}
               </Button>
             </div>
           </div>
@@ -300,7 +310,7 @@ const Footer = () => {
               </div>
 
               <p className="text-sm text-gray-400 text-center font-medium">
-                © 2025 Offplan.Market | UAE's Smart Off-Plan Property Platform | All rights reserved.
+                © 2025 {t('Offplan.Market | UAE\'s Smart Off-Plan Property Platform | All rights reserved')}
               </p>
 
               <Button
@@ -310,7 +320,7 @@ const Footer = () => {
                 className="bg-from-pink-500 to-blue-500 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300"
               >
                 <ArrowUp size={16} className="mr-1" />
-                Back to Top
+                {t('Back to Top')}
               </Button>
             </div>
           </div>

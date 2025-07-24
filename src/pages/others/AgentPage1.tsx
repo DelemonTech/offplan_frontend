@@ -60,19 +60,19 @@ const AgentPage = () => {
   // };
 
   // Scroll detection for floating buttons
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroSection = document.querySelector('section');
-      if (heroSection) {
-        const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
-        const scrollPosition = window.scrollY + window.innerHeight * 0.2; // Add some buffer
-        setShowFloatingButtons(scrollPosition > heroBottom);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const heroSection = document.querySelector('section');
+  //     if (heroSection) {
+  //       const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+  //       const scrollPosition = window.scrollY + window.innerHeight * 0.2; // Add some buffer
+  //       setShowFloatingButtons(scrollPosition > heroBottom);
+  //     }
+  //   };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => window.removeEventListener('scroll', handleScroll);
+  // }, []);
 
   useEffect(() => {
       if (username) {

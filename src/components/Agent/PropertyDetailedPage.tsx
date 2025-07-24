@@ -327,6 +327,19 @@ const PropertyDetailedPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header logo={logoPath} />
+       <Button
+        variant="outline"
+        className="relative m-4 border border-gradient-to-r from-pink-700 via-purple-700 to-blue-500 rounded-full px-4 py-2 hover:bg-gradient-to-r hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 hover:text-white transition-colors duration-300"
+        onClick={() => navigate(-1)}
+      >
+        <div className="flex items-center gap-2">
+          <LucideIcons.ArrowLeft className="w-4 h-2 bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text" />
+          <span className="text-transparent bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text">
+            Back
+          </span>
+        </div>
+      </Button>
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* <Button
           variant="outline"
@@ -337,7 +350,7 @@ const PropertyDetailedPage = () => {
           Back to Project
         </Button> */}
 
-        <div className="relative rounded-xl overflow-hidden shadow-lg mb-8 mt-6">
+        <div className="relative rounded-xl overflow-hidden shadow-lg mb-8 mt-1">
           <div className="relative h-[350px] lg:h-[450px]">
             <img
               src={projectData.cover}

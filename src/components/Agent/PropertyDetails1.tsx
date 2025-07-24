@@ -21,27 +21,27 @@ const PropertyDetails1 = () => {
   const location = useLocation();
   const [agent, setAgent] = useState<any>(location.state?.agent || null);
   const pathname = window.location.pathname;
-const segments = pathname.split("/");
-const username = segments[1]; // ✅ directly get username from URL
-const hostUrl = import.meta.env.VITE_HOST_URL;
+  const segments = pathname.split("/");
+  const username = segments[1]; // ✅ directly get username from URL
+  const hostUrl = import.meta.env.VITE_HOST_URL;
 
-// If agent is null, fetch agent immediately
-if (!agent && username) {
-  fetch(`${hostUrl}/agent/${username}`)
-    .then((res) => res.json())
-    .then((agentData) => {
-      if (agentData?.status && agentData?.data) {
-        setAgent(agentData.data); // ✅ Set agent in state
-      } else {
-        console.error("Agent not found");
-      }
-    })
-    .catch((err) => {
-      console.error("Failed to fetch agent:", err);
-    });
-}
+  // If agent is null, fetch agent immediately
+  if (!agent && username) {
+    fetch(`${hostUrl}/agent/${username}`)
+      .then((res) => res.json())
+      .then((agentData) => {
+        if (agentData?.status && agentData?.data) {
+          setAgent(agentData.data); // ✅ Set agent in state
+        } else {
+          console.error("Agent not found");
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch agent:", err);
+      });
+  }
 
-console.log("Agent:", agent);
+  // console.log("Agent:", agent);
 
   const facilityIconMap = {
     "Library": { icon: "BookOpen", color: "text-blue-500" },
@@ -357,29 +357,29 @@ console.log("Agent:", agent);
 
   //   return "N/A";
   // })();
-const handover = (() => {
-  const delivery = projectData?.delivery_date;
+  const handover = (() => {
+    const delivery = projectData?.delivery_date;
 
-  if (!delivery) return "N/A";
+    if (!delivery) return "N/A";
 
-  // If it's a number in YYYYMM format (e.g., 202502)
-  if (typeof delivery === "number" && delivery > 100000) {
-    const year = Math.floor(delivery / 100);
-    const month = delivery % 100;
+    // If it's a number in YYYYMM format (e.g., 202502)
+    if (typeof delivery === "number" && delivery > 100000) {
+      const year = Math.floor(delivery / 100);
+      const month = delivery % 100;
 
-    if (month < 1 || month > 12) return "Invalid Date";
+      if (month < 1 || month > 12) return "Invalid Date";
 
-    const quarter = Math.ceil(month / 3);
-    return `Q${quarter} ${year}`;
-  }
+      const quarter = Math.ceil(month / 3);
+      return `Q${quarter} ${year}`;
+    }
 
-  // If it's already a string like "Q4 2024"
-  if (typeof delivery === "string") {
-    return delivery;
-  }
+    // If it's already a string like "Q4 2024"
+    if (typeof delivery === "string") {
+      return delivery;
+    }
 
-  return "N/A";
-})();
+    return "N/A";
+  })();
 
   const downPayment = (() => {
     const dpPercent = projectData?.payment_minimum_down_payment;
@@ -482,8 +482,8 @@ const handover = (() => {
           Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
             ? unit.floor_plan_image[0]
             : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
-            ? JSON.parse(unit.floor_plan_image)[0]
-            : "NO_FLOOR_PLAN",
+              ? JSON.parse(unit.floor_plan_image)[0]
+              : "NO_FLOOR_PLAN",
         status: projectData.status || "Available",
         apartmentType: getUnitTypeName(groupedApartment),
       })),
@@ -547,6 +547,20 @@ const handover = (() => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header logo={logoPath} />
+      <Button
+        variant="outline"
+        className="relative m-4 border border-gradient-to-r from-pink-700 via-purple-700 to-blue-500 rounded-full px-4 py-2 hover:bg-gradient-to-r hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 hover:text-white transition-colors duration-300"
+        onClick={() => navigate(-1)}
+      >
+        <div className="flex items-center gap-2">
+          <LucideIcons.ArrowLeft className="w-4 h-2 bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text" />
+          <span className="text-transparent bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text">
+            Back
+          </span>
+        </div>
+      </Button>
+
+
 
       {/* Hero Section */}
       <motion.div
@@ -1107,8 +1121,8 @@ const handover = (() => {
       <Footer />
 
       {/* <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex rounded-t-2xl overflow-hidden shadow-xl"> */}
-        {/* WhatsApp Button */}
-        {/* <button
+      {/* WhatsApp Button */}
+      {/* <button
           onClick={handleWhatsApp}
           className="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >
@@ -1116,9 +1130,9 @@ const handover = (() => {
           WhatsApp
         </button> */}
 
-        {/* Call Now Button */}
+      {/* Call Now Button */}
 
-        {/* <button
+      {/* <button
           onClick={() => { window.location.href = `tel:${agent.phone_number}`; }}
           className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-4 font-semibold text-lg transition-all duration-300"
         >

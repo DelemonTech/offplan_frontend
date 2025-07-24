@@ -20,19 +20,19 @@ const ProjectSearchTool = () => {
   }, [i18n.language]);
 
   return (
-    <section className="py-20 bg-white">
+    <section className="pt-12 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 animate-fade-in">
+        {/* <div className="text-center mb-12 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             {t("Find Your Perfect Off-Plan Project")}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             {t("Use our smart search tool to discover projects that match your exact needs.")}
           </p>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          {/* Search Filters */}
+        </div> */}
+    
+        {/* <div className="max-w-4xl mx-auto">
+          
           <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 border border-gray-50">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
@@ -87,7 +87,7 @@ const ProjectSearchTool = () => {
               </div>
             </div>
 
-            {/* Filter Buttons */}
+            
             <div className="flex flex-wrap items-center gap-4 mb-8">
               <span className="text-sm font-semibold text-gray-700">{t("Quick Filters")}:</span>
               <Button variant="outline" size="sm" className="rounded-full border-green-500 text-green-600 hover:bg-green-50 shadow-sm">
@@ -101,27 +101,14 @@ const ProjectSearchTool = () => {
               </Button>
             </div>
 
-            {/* Search Button */}
+            
             <Button className="w-full h-16 text-lg font-semibold bg-gradient-to-r from-offplan-purple to-offplan-pink hover:from-offplan-purple/90 hover:to-offplan-pink/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
               <Search className="w-6 h-6 mr-3" />
               {t("Search Projects")}
               <Filter className="w-5 h-5 ml-3" />
             </Button>
           </div>
-
-          {/* Latest Project Alert */}
-          <div className="bg-gradient-to-r from-offplan-purple/10 to-offplan-pink/10 rounded-2xl p-6 border border-offplan-purple/20 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-bold text-lg text-gray-900">{t("Latest Project Listed")}</h3>
-                <p className="text-gray-600">"Riviera 68 by Azizi • 2 minutes ago</p>
-              </div>
-              <Button variant="outline" className="border-offplan-purple text-offplan-purple hover:bg-offplan-purple hover:text-white rounded-xl px-6 py-3 font-medium shadow-sm">
-                {t("View Details")}
-              </Button>
-            </div>
-          </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
