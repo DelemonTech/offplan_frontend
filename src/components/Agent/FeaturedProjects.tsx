@@ -633,12 +633,12 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
       const scrollY = window.scrollY;
       const triggerPoint = 300;
 
-      if (scrollY > triggerPoint) {
-        setShowFloatingBar(true);
-      } else {
-        setShowFloatingBar(false);
-      }
-    };
+    if (scrollY > triggerPoint) {
+      setShowFloatingBar(true);
+    } else {
+      setShowFloatingBar(false);
+    }
+  };
 
     // Check scroll position immediately
     handleScroll();

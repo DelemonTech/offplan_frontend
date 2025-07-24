@@ -985,6 +985,18 @@ const PropertyDetails1 = () => {
               className="text-gray-600 prose prose-p"
               dangerouslySetInnerHTML={{ __html: projectData.description }}
             ></div>
+            <div
+              className="text-gray-600 prose prose-p text-right"
+              // dir="rtl"
+              dangerouslySetInnerHTML={{
+                __html: projectData.arabic_desc
+                  ?.replace(/& nbsp;?/g, ' ')         // Remove `&nbsp;` and `&nbsp؛`
+                  .replace(/nbsp ;?/g, ' ')   
+                  .replace(/؛/g, '')      // Remove `&nbsp;` and `&nbsp؛`
+                  .replace(/\s{2,}/g, ' ')           // Replace multiple spaces with single space
+                  .replace(/\r?\n|\r/g, '<br />')    // Optional: Convert newlines to <br> if needed
+              }}
+            ></div>
           </div>
 
           {/* Location Section */}

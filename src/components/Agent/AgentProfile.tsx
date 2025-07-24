@@ -323,5 +323,4 @@ const remainingDescription = description.slice(truncateLength);
     </section>
   );
 };
-
 export default AgentProfile;
