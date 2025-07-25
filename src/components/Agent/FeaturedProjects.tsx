@@ -69,6 +69,10 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     document.dir = lng === 'fa' ? 'rtl' : 'ltr';
     setIsOpen(false);
   };
+  console.log("Status Name:", statusName);
+  const [activeFilterKey, setActiveFilterKey] = useState('ready');
+
+  const isRTL = i18n.dir() === 'rtl';
 
   const hostUrl = import.meta.env.VITE_HOST_URL;
 
@@ -102,10 +106,20 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const [copiedProjectId, setCopiedProjectId] = useState<number | null>(null);
 
   const filters = [
-    { id: 3, key: "total", label: 'All', icon: Globe2 },
-    { id: 1, key: 'ready', label: 'Ready', icon: Check },
-    { id: 2, key: 'offplan', label: 'Off Plan', icon: Building2 }
+    { id: 3, key: "total", labelKey: "All", icon: Globe2 },
+    { id: 1, key: 'ready', labelKey: 'Ready', icon: Check },
+    { id: 2, key: 'offplan', labelKey: 'Off Plan', icon: Building2 }
   ];
+
+  const getEnglishStatusFromFilterKey = (filterKey) => {
+    const keyToStatusMap = {
+      'ready': 'Ready',
+      'offplan': 'Off Plan',
+      'total': 'Total'
+    };
+    return keyToStatusMap[filterKey] || 'Total';
+  };
+
   const [totalInventory, setTotalInventory] = useState({
     total: 0,
     ready: 0,
@@ -162,45 +176,95 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const visibleProjects = properties.slice(0, visibleCount);
 
-  const getStatusBadgeContent = (status: number, property?: any) => {
-    const actualStatus = property?.property_status;
+  const getStatusBadgeContent = (displayStatus, property) => {
+    // For "total" filter, use the property's actual status
+    const effectiveStatus = activeFilterKey === 'total'
+      ? property?.property_status
+      : displayStatus;
 
-    const resolveByStatus = (statusValue: number) => {
-      switch (statusValue) {
-        case 1:
-          return (
-            <>
-              <Building2 size={16} className="text-white" />
-              <span className="ml-1">Off Plan</span>
-            </>
-          );
-        case 2:
-          return (
-            <>
-              <Check size={16} className="text-white" />
-              <span className="ml-1">Ready</span>
-            </>
-          );
-        default:
-          return (
-            <>
-              <span className="ml-1">{property?.property_status || 'General'}</span>
-            </>
-          );
-      }
-    };
-
-    if (status === 3) {
-      return resolveByStatus(actualStatus);
+    switch (effectiveStatus) {
+      case 1:
+        return (
+          <>
+            <Building2 size={16} className="text-white" />
+            <span className="ml-1">{t('Off Plan')}</span>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <Check size={16} className="text-white" />
+            <span className="ml-1">{t('Ready')}</span>
+          </>
+        );
+      default:
+        return (
+          <>
+            <Globe2 size={16} className="text-white" />
+            <span className="ml-1">{t('General')}</span>
+          </>
+        );
     }
+  };
 
-    return resolveByStatus(status);
+  useEffect(() => {
+    if (statusName) {
+      // Convert statusName to filterKey for backward compatibility
+      const englishStatus = getEnglishStatusFromTranslated(statusName, t);
+      const statusToKeyMap = {
+        'Ready': 'ready',
+        'Off Plan': 'offplan',
+        'Total': 'total'
+      };
+      const filterKey = statusToKeyMap[englishStatus] || 'total';
+      setActiveFilterKey(filterKey);
+    }
+  }, [statusName]);
+
+
+  const getStatusBadgeContentSimple = (propertyStatus) => {
+    switch (propertyStatus) {
+      case 1:
+        return (
+          <>
+            <Check size={16} className="text-white" />
+            <span className="ml-1">{t('Ready')}</span>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <Building2 size={16} className="text-white" />
+            <span className="ml-1">{t('Off Plan')}</span>
+          </>
+        );
+      default:
+        return (
+          <>
+            <Globe2 size={16} className="text-white" />
+            <span className="ml-1">{t('General')}</span>
+          </>
+        );
+    }
+  };
+
+  const getStatusBadgeStyleSimple = (propertyStatus) => {
+    switch (propertyStatus) {
+      case 1: // Ready
+        return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
+      case 2: // Off Plan
+        return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-lg';
+      default:
+        return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg';
+    }
   };
 
 
-
-  const getStatusBadgeStyle = (status: number, property?: any) => {
-    const effectiveStatus = status === 3 ? property?.property_status : status;
+  const getStatusBadgeStyle = (displayStatus, property) => {
+    // For "total" filter, use the property's actual status
+    const effectiveStatus = activeFilterKey === 'total'
+      ? property?.property_status
+      : displayStatus;
 
     switch (effectiveStatus) {
       case 1: // Off Plan
@@ -234,11 +298,11 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       max_price: priceRange[1],
       min_area: areaRange[0],
       max_area: areaRange[1],
-      ...(statusName !== 'All' && { property_status: statusName }),
+      ...(statusName !== t('All') && { property_status: statusName }),
       // sales_status: '',
     };
     console.log("statusName:", statusName);
-    if (statusName === 'All') {
+    if (statusName === t('All')) {
       setSelectedCity('');
       setSelectedNeighborhood('');
       setDeveloper('');
@@ -342,42 +406,101 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
     window.open(whatsappUrl, '_blank');
   };
 
+  const agentName = i18n.language === 'fa'
+    ? agent.fa_name
+    : i18n.language === 'ar'
+      ? agent.ar_name
+      : agent.name;
+
   const handleShare = (project: any) => {
-    const whatsappMessage = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.city?.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?`;
+    const whatsappMessage = t("Hi {{agent}}! I'm interested in {{title}} in {{city}}. Starting from AED {{price}}. Can you share more details?", {
+      agent: agentName,
+      title: t(project.title),
+      city: t(project.city?.name),
+      price: formatAED(project.low_price)
+    });
+
     const whatsappLink = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
-    const shareText = `🌇 ${project.title} – ${project.city?.name}, ${project.district?.name}
-📍 t(Location: ${project.city?.name || 'N/A'}, ${project.district?.name || 'N/A'}
-🏷️ Price: AED ${formatAED(project.low_price)}
-📐 Unit Size: ${project.min_area || 'N/A'} sq.ft
-📆 Handover: ${formatDeliveryDate(project.delivery_date) || 'TBA'}
-🏗️ Status: ${statusName || 'N/A'}
-🛏️ Available Unit(s): ${project.subunit_count || 'N/A'} available
 
-💳 Payment Plan:
-   Contact ${agent.name} for more details:
-📞 WhatsApp: ${whatsappLink}
+    const shareText = `${t("🌇 {{title}} – {{city}}, {{district}}", {
+      title: t(project.title),
+      city: t(project.city?.name),
+      district: t(project.district?.name)
+    })}
+📍 ${t("Location")}: ${t(project.city?.name || 'N/A')}, ${t(project.district?.name || 'N/A')}
+🏷️ ${t("Price")}: AED ${formatAED(project.low_price)}
+📐 ${t("Unit Size")}: ${project.min_area || 'N/A'} ${t("sq.ft")}
+📆 ${t("Handover")}: ${formatDeliveryDate(project.delivery_date) || 'TBA'}
+🏗️ ${t("Status")}: ${statusName || t('N/A')}
+🛏️ ${t("Available Unit(s)")}: ${project.subunit_count || 'N/A'} ${t("available")}
 
-🌟 Highlights:
-• ${project.highlights?.[0] || 'Final unit available'}
-• ${project.highlights?.[1] || 'Modern design by developer'}
-• Escrow-protected & ready to transfer
+💳 ${t("Payment Plan")}:
+   ${t("Contact")} ${agentName} ${t("for more details")}:
+📞 ${t("WhatsApp")}: ${agent.whatsapp_number.replace(/\s+/g, '')}
 
-🌐 Project Page:
-https://offplan.market/sahar/property-details/?id=${project.id}`;
+🌟 ${t("Highlights")}:
+• ${project.highlights?.[0] || t("Final unit available")}
+• ${project.highlights?.[1] || t("Modern design by developer")}
+• ${t("Escrow-protected & ready to transfer")}
+
+🌐 ${t("Project Page")}:
+https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
 
     if (navigator.share) {
       navigator.share({
-        title: project.title,
+        title: t(project.title),
         text: shareText,
         url: window.location.href
       });
     } else {
       navigator.clipboard.writeText(shareText).then(() => {
-        setCopiedProjectId(project.id); // 👈 track which icon to show check for
-        setTimeout(() => setCopiedProjectId(null), 2000); // ⏱ reset after 2s
+        setCopiedProjectId(project.id);
+        setTimeout(() => setCopiedProjectId(null), 2000);
       });
     }
   };
+
+  const getActualStatusBadgeContent = (property) => {
+    const status = property?.property_status;
+
+    switch (status) {
+      case 1:
+        return (
+          <>
+            <Building2 size={16} className="text-white" />
+            <span className="ml-1">{t('Off Plan')}</span>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <Check size={16} className="text-white" />
+            <span className="ml-1">{t('Ready')}</span>
+          </>
+        );
+      default:
+        return (
+          <>
+            <Globe2 size={16} className="text-white" />
+            <span className="ml-1">{t('General')}</span>
+          </>
+        );
+    }
+  };
+
+  const getActualStatusBadgeStyle = (property) => {
+    const status = property?.property_status;
+
+    switch (status) {
+      case 1: // Off Plan
+        return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white shadow-lg';
+      case 2: // Ready
+        return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg';
+      default:
+        return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg';
+    }
+  };
+
 
   useEffect(() => {
     // console.log('📦 [FeaturedProjects] statusName changed to:', statusName);
@@ -401,32 +524,76 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
     return () => clearTimeout(timer);
   }, [properties]);
 
+  const getEnglishStatusFromTranslated = (translatedStatus, t) => {
+    if (!translatedStatus) return null;
+
+    // Get all possible translations for each status
+    const statusMappings = {
+      'Ready': [
+        'ready',
+        'Ready',
+        t('Ready').toLowerCase(),
+        'جاهز',     // Arabic
+        'آماده'     // Farsi
+      ],
+      'Off Plan': [
+        'off plan',
+        'Off Plan',
+        'offplan',
+        t('Off Plan').toLowerCase(),
+        'على الخريطة',  // Arabic
+        'پیش فروش'      // Farsi
+      ],
+      'Sold Out': [
+        'sold out',
+        'Sold Out',
+        t('Sold Out').toLowerCase(),
+        'تم البيع بالكامل', // Arabic
+        'فروخته شده'       // Farsi
+      ],
+      'Total': [
+        'all',
+        'All',
+        'total',
+        'Total',
+        t('All').toLowerCase(),
+        'الكل',    // Arabic
+        'همه'      // Farsi
+      ]
+    };
+
+    const normalizedInput = translatedStatus.toLowerCase().trim();
+
+    // Find the English key that matches the translated status
+    for (const [englishStatus, translations] of Object.entries(statusMappings)) {
+      if (translations.some(translation =>
+        translation.toLowerCase().trim() === normalizedInput
+      )) {
+        return englishStatus;
+      }
+    }
+
+    console.warn("Unknown statusName:", translatedStatus);
+    return null;
+  };
+
   useEffect(() => {
     const fetchCityCounts = async () => {
       try {
-        let status;
+        if (!activeFilterKey) return;
 
-        if (statusName?.toLowerCase() === 'sold out') {
-          status = 'Sold Out';
-        } else if (statusName?.toLowerCase() === 'ready') {
-          status = 'Ready';
-        } else if (statusName?.toLowerCase() === 'off plan') {
-          status = 'Off Plan';
-        } else if (statusName?.toLowerCase() === 'all') {
-          status = 'Total'; // ✅ NEW: Handle Total status
-        } else {
-          console.warn("Unknown statusName:", statusName);
-          return; // Exit early for invalid status
-        }
+        // Convert filter key to English status
+        const englishStatus = getEnglishStatusFromFilterKey(activeFilterKey);
+
+        console.log("Fetching cities for filter key:", activeFilterKey, "-> English status:", englishStatus);
 
         const response = await fetch(
-          `${hostUrl}/properties/city/count/?status=${encodeURIComponent(status)}`
+          `${hostUrl}/properties/city/count/?status=${encodeURIComponent(englishStatus)}`
         );
         const data = await response.json();
 
         if (data?.status && data?.data) {
-          setCities(data.data); // API returns [{ city_id, city_name, property_count, ... }]
-          // console.log("CITIES:", cities);
+          setCities(data.data);
         }
 
         if (data?.data?.length > 0) {
@@ -436,11 +603,10 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
 
           const updatedFilters = {
             city: firstCity.city_name,
-            ...(statusName !== 'All' && { property_status: statusName })
+            ...(englishStatus !== 'Total' && { property_status: englishStatus })
           };
 
           setIsCityReady(true);
-
           setSearchFilters(updatedFilters);
 
           navigate(location.pathname, {
@@ -454,10 +620,39 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
       }
     };
 
-    if (statusName) {
+    if (activeFilterKey) {
       fetchCityCounts();
     }
-  }, [statusName]);
+  }, [activeFilterKey]); // Remove statusName dependency, use activeFilterKey instead
+
+
+  // Also fix the handleCityClick function:
+  const handleCityClick = (city) => {
+    const currentFilters = { ...(location.state?.filters || {}) };
+
+    // Remove unwanted keys
+    delete currentFilters.property_type;
+    delete currentFilters.propertyType;
+    delete currentFilters.property_status;
+
+    // Convert filter key to English status
+    const englishStatus = getEnglishStatusFromFilterKey(activeFilterKey);
+
+    const updatedFilters = {
+      ...currentFilters,
+      city: city.city_name,
+      ...(englishStatus !== 'Total' && { property_status: englishStatus })
+    };
+
+    console.log("Updated filters with English status:", updatedFilters);
+
+    setSelectedCity(city);
+    setSearchFilters(updatedFilters);
+
+    navigate(location.pathname, {
+      state: { filters: updatedFilters },
+    });
+  };
 
 
   // useEffect(() => {
@@ -650,7 +845,28 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
     };
   }, []);
 
+  const getDisplayStatusFromStatusName = (statusName, t) => {
+    const englishStatus = getEnglishStatusFromTranslated(statusName, t);
 
+    switch (englishStatus) {
+      case 'Ready': return 2;
+      case 'Off Plan': return 1;
+      default: return 3;
+    }
+  };
+
+  const getDisplayStatusFromFilterKey = (filterKey, property) => {
+    switch (filterKey) {
+      case 'ready': return 2;
+      case 'offplan': return 1;
+      case 'total':
+        // When showing all properties, use the actual property's status
+        return property?.property_status || 3;
+      default: return 3;
+    }
+  };
+
+  // const displayStatus = getDisplayStatusFromFilterKey(activeFilterKey);
 
 
 
@@ -665,35 +881,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
   const maxPerRow = 6;
   const rows = chunkArray(cities, maxPerRow);
 
-  const handleCityClick = (city) => {
-    const currentFilters = { ...(location.state?.filters || {}) };
 
-    // Remove unwanted keys
-    delete currentFilters.property_type;
-    delete currentFilters.propertyType;
-    delete currentFilters.property_status;
-    // delete currentFilters.sales_status;
-
-    // Decide which status key to use
-    const propertyStatusLabels = ['Ready', 'Off Plan'];
-    const statusKey = propertyStatusLabels.includes(statusName) ? 'property_status' : '';
-
-    const updatedFilters = {
-      ...currentFilters,
-      city: city.city_name, // or use city.city_id if needed
-      [statusKey]: statusName,
-    };
-
-    // console.log("Updated filters:", updatedFilters);
-
-    setSelectedCity(city);
-
-    setSearchFilters(updatedFilters);
-
-    navigate(location.pathname, {
-      state: { filters: updatedFilters },
-    });
-  };
 
   //   useEffect(() => {
   //   if (rows.length > 0) {
@@ -743,12 +931,13 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
             {filters.map((filter, index) => {
               const IconComponent = filter.icon;
               const filterCount = totalInventory[filter.key];
+              const isActive = activeFilterKey === filter.key; // Compare keys, not translated labels
 
               return (
                 <button
-                  key={filter.label}
-                  onClick={() => setStatusName(filter.label)}
-                  className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${statusName === filter.label
+                  key={filter.key} // Use key instead of label
+                  onClick={() => setActiveFilterKey(filter.key)} // Set key instead of label
+                  className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${isActive
                     ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
                     : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
                     }`}
@@ -756,13 +945,12 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                   <div className="flex items-center gap-5">
                     <IconComponent
                       size={28}
-                      className={`${statusName === filter.label ? 'text-white' : 'text-gray-600'
-                        }`}
+                      className={`${isActive ? 'text-white' : 'text-gray-600'}`}
                     />
                     <div className="text-left">
-                      <div className="text-base font-semibold mb-1">{filter.label}</div>
+                      <div className="text-base font-semibold mb-1">{t(filter.labelKey)}</div>
                       <div
-                        className={`text-2xl font-bold ${statusName === filter.label ? 'text-white' : 'text-gray-800'
+                        className={`text-2xl font-bold ${isActive ? 'text-white' : 'text-gray-800'
                           }`}
                       >
                         <CountUp end={filterCount} duration={1.75} delay={index} separator="," />
@@ -779,26 +967,26 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
             {filters.map((filter, index) => {
               const IconComponent = filter.icon;
               const filterCount = totalInventory[filter.key];
+              const isActive = activeFilterKey === filter.key;
 
               return (
                 <button
-                  key={filter.label}
-                  onClick={() => setStatusName(filter.label)}
-                  className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${statusName === filter.label
+                  key={filter.key}
+                  onClick={() => setActiveFilterKey(filter.key)}
+                  className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${isActive
                     ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
                     : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
                     }`}
                 >
                   <IconComponent
                     size={18}
-                    className={`mb-1 ${statusName === filter.label ? 'text-white' : 'text-gray-600'
-                      }`}
+                    className={`mb-1 ${isActive ? 'text-white' : 'text-gray-600'}`}
                   />
                   <span className="text-xs font-semibold mb-1 text-center leading-tight">
-                    {filter.label}
+                    {t(filter.labelKey)}
                   </span>
                   <span
-                    className={`text-lg font-bold ${statusName === filter.label ? 'text-white' : 'text-gray-800'
+                    className={`text-lg font-bold ${isActive ? 'text-white' : 'text-gray-800'
                       }`}
                   >
                     <CountUp end={filterCount} duration={1.5} delay={index} separator="," />
@@ -849,7 +1037,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                               : "text-gray-700"}
                   `}
                         >
-                          {city.city_name}
+                          {t(city.city_name)}
                         </h3>
                         <p className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-transparent bg-clip-text">
                           <CountUp
@@ -889,13 +1077,9 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mb-8">
               {properties.map((project, index) => {
-                const displayStatus = (() => {
-                  const normalizedStatus = statusName.toLowerCase();
-                  if (normalizedStatus === 'ready') return 2;
-                  if (normalizedStatus === 'off plan') return 1;
-                  else return 3;
-                  // return project.property_status;
-                })();
+                const actualPropertyStatus = project.property_status;
+                const displayStatus = getDisplayStatusFromFilterKey(activeFilterKey, project);
+
                 // console.log("Project Status:", project.property_status, "Display Status:", displayStatus);
                 // console.log("Subunit count: ",project.subunit_count);
                 return (
@@ -919,7 +1103,7 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                           </div>
                           <img
                             src={project.cover}
-                            alt={project.title}
+                            alt={t(project.title)}
                             className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
                           />
 
@@ -927,12 +1111,12 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
 
                           <div className="absolute top-4 right-4">
                             <Badge className={`
-                            ${getStatusBadgeStyle(displayStatus)}
-                            inline-flex items-center gap-1 px-3 py-1.5
-                            rounded-full text-sm font-medium
-                            border-2 border-white/20 shadow-lg
-                          `}>
-                              {getStatusBadgeContent(displayStatus, project)}
+              ${getStatusBadgeStyleSimple(actualPropertyStatus)}
+              inline-flex items-center gap-1 px-3 py-1.5
+              rounded-full text-sm font-medium
+              border-2 border-white/20 shadow-lg
+            `}>
+                              {getStatusBadgeContentSimple(actualPropertyStatus)}
                             </Badge>
                           </div>
 
@@ -967,20 +1151,30 @@ https://offplan.market/sahar/property-details/?id=${project.id}`;
                           <div className="space-y-4">
                             <div>
                               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
-                                {project.title}
+                                {t(project.title)}
                               </h3>
                               <div className="flex items-center text-gray-600">
                                 <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
                                 <span className="font-medium text-sm sm:text-base truncate">
-                                  {project.city?.name || 'Unknown City'}, {project.district?.name || 'Unknown District'}
+                                  {t(project.city?.name || 'Unknown City')}, {t(project.district?.name || 'Unknown District')}
                                 </span>
                               </div>
                             </div>
 
                             <div className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-xl p-4 border border-pink-100">
                               <div className="text-xs sm:text-sm text-gray-600 mb-1">{t('Starting from')}</div>
-                              <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                                {project.low_price ? `AED ${formatAED(project.low_price)}` : 'AED N/A'}
+                              <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 flex gap-1">
+                                {isRTL ? (
+                                  <>
+                                    <span>{project.low_price ? formatAED(project.low_price) : 'N/A'}</span>
+                                    <span dir="ltr" style={{ unicodeBidi: 'isolate' }}>{t('AED')}</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span dir="ltr" style={{ unicodeBidi: 'isolate' }}>{t('AED')}</span>
+                                    <span>{project.low_price ? formatAED(project.low_price) : 'N/A'}</span>
+                                  </>
+                                )}
                               </div>
 
                               <div className="flex flex-wrap gap-3 text-xs text-gray-600 pb-3">
