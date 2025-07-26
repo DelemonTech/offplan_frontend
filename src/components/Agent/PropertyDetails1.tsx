@@ -12,11 +12,22 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import IconGuarantee from "@/assets/guarantee.png";
 import IconShield from "@/assets/shield.png";
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 // import CallToAction from "@/components/Agent/CallToAction"
 
 const PropertyDetails1 = () => {
 
   const navigate = useNavigate();
+
+  const { t, i18n } = useTranslation();
+    const [isOpen, setIsOpen] = useState(false);
+  
+    const changeLanguage = (lng) => {
+      i18n.changeLanguage(lng);
+      document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+      setIsOpen(false);
+    };
 
   const location = useLocation();
   const [agent, setAgent] = useState<any>(location.state?.agent || null);
@@ -177,7 +188,7 @@ const PropertyDetails1 = () => {
 
   const handleWhatsApp = () => {
     const currentUrl = window.location.href;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${currentUrl}`;
+    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -231,11 +242,11 @@ const PropertyDetails1 = () => {
 
           // Generate dynamic messages with random times
           const randomMessages = [
-            `Last unit sold ${getRandomNumber(1, 5)} hours ago`,
-            `Last viewed ${getRandomNumber(1, 30)} minutes ago`,
-            `Last inquiry received ${getRandomNumber(1, 60)} minutes ago`,
-            `Last offer negotiated ${getRandomNumber(1, 3)} hours ago`,
-            `Last down payment confirmed ${getRandomNumber(10, 50)} minutes ago`,
+            `${t("Last unit sold")} ${getRandomNumber(1, 5)} ${t("hours ago")}`,
+            `${t("Last viewed")} ${getRandomNumber(1, 30)} ${t("minutes ago")}`,
+            `${t("Last inquiry received")} ${getRandomNumber(1, 60)} ${t("minutes ago")}`,
+            `${t("Last offer negotiated")} ${getRandomNumber(1, 3)} ${t("hours ago")}`,
+            `${t("Last down payment confirmed")} ${getRandomNumber(10, 50)} ${t("minutes ago")}`,
           ];
 
           setMessages(randomMessages);
@@ -367,7 +378,7 @@ const PropertyDetails1 = () => {
       const year = Math.floor(delivery / 100);
       const month = delivery % 100;
 
-      if (month < 1 || month > 12) return "Invalid Date";
+      if (month < 1 || month > 12) return t("Invalid Date");
 
       const quarter = Math.ceil(month / 3);
       return `Q${quarter} ${year}`;
@@ -395,7 +406,7 @@ const PropertyDetails1 = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-500">
-        Loading property details...
+        {t("Loading property details...")}
       </div>
     );
   }
@@ -403,7 +414,7 @@ const PropertyDetails1 = () => {
   if (!projectData) {
     return (
       <div className="flex items-center justify-center min-h-screen text-red-500">
-        Property not found.
+        {t("Property not found.")}
       </div>
     );
   }
@@ -430,10 +441,10 @@ const PropertyDetails1 = () => {
     const rooms = apartment.rooms?.toString().trim();
 
     if (!isNaN(Number(rooms))) {
-      return `${rooms} Bedroom ${apartment.unit_type}`;
+      return `${rooms} ${t("Bedroom")} ${apartment.unit_type}`;
     }
     if (rooms?.toLowerCase() === "studio") {
-      return `Studio ${apartment.unit_type}`;
+      return `${t("Studio")} ${apartment.unit_type}`;
     }
     return apartment.unit_type || ""; // fallback to unit_type or empty
   };
@@ -458,7 +469,7 @@ const PropertyDetails1 = () => {
   // Map grouped_apartments by apartment_id (property_units.apartment_id)
   const apartmentNameMap = projectData.grouped_apartments.reduce(
     (acc, item) => {
-      acc[item.id] = `${item.rooms} Bedroom ${item.unit_type}`;
+      acc[item.id] = `${item.rooms} ${t("Bedroom")} ${item.unit_type}`;
       return acc;
     },
     {} as Record<number, string>
@@ -523,19 +534,19 @@ const PropertyDetails1 = () => {
 
   const totalUnitsText =
     totalUnits > 9
-      ? "9+ units left"
-      : `${totalUnits} ${totalUnits === 1 ? "unit" : "units"} left`;
+      ? t("9+ units left")
+      : `${totalUnits} ${totalUnits === 1 ? t("unit") : t("units")} left`;
 
   const propertyStatusMap = {
-    1: { name: "Ready", color: "text-green-600" },
-    2: { name: "Off Plan", color: "text-blue-600" },
+    1: { name: t("Ready"), color: "text-green-600" },
+    2: { name: t("Off Plan"), color: "text-blue-600" },
   };
 
   const salesStatusMap = {
-    1: { name: "Available", color: "text-green-500" },
-    2: { name: "Pre Launch", color: "text-yellow-500" },
-    4: { name: "Sold Out", color: "text-red-500" },
-    5: { name: "Price On Demand", color: "text-blue-500" },
+    1: { name: t("Available"), color: "text-green-500" },
+    2: { name: t("Pre Launch"), color: "text-yellow-500" },
+    4: { name: t("Sold Out"), color: "text-red-500" },
+    5: { name: t("Price On Demand"), color: "text-blue-500" },
   };
 
   const propertyStatusId = projectData.property_status;
@@ -555,7 +566,7 @@ const PropertyDetails1 = () => {
         <div className="flex items-center gap-2">
           <LucideIcons.ArrowLeft className="w-4 h-2 bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text" />
           <span className="text-transparent bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text">
-            Back
+            {t('Back')}
           </span>
         </div>
       </Button>
@@ -584,7 +595,7 @@ const PropertyDetails1 = () => {
         {/* Top Right - Property Status */}
         <div
           className={`absolute top-4 right-4 text-white text-sm font-semibold rounded-full flex items-center px-3 py-1.5 rounded-full shadow-lg z-20
-              ${propertyStatus.name === "Ready"
+              ${propertyStatus.name === t("Ready")
               ? "bg-gradient-to-r from-green-500 to-emerald-800"
               : "bg-gradient-to-r from-blue-500 to-indigo-700"
             }`}
@@ -592,16 +603,16 @@ const PropertyDetails1 = () => {
           <div className="flex items-center gap-2">
             {/* Icon bubble */}
             <div
-              className={`bg-white rounded-full p-1 ${propertyStatus.name === "Ready" ? "text-green-600" : "text-blue-600"
+              className={`bg-white rounded-full p-1 ${propertyStatus.name === t("Ready") ? "text-green-600" : "text-blue-600"
                 }`}
             >
-              {propertyStatus.name === "Ready" ? (
+              {propertyStatus.name === t("Ready") ? (
                 <Check className="w-4 h-4 font-bold" strokeWidth={3} />
               ) : (
                 <Building2 className="w-4 h-4 font-bold" strokeWidth={3} />
               )}
             </div>
-            {propertyStatus.name}
+            {t(propertyStatus.name)}
           </div>
         </div>
 
@@ -609,7 +620,7 @@ const PropertyDetails1 = () => {
         {/* Background image */}
         <img
           src={projectData.cover}
-          alt={projectData.title}
+          alt={t(projectData.title)}
           className="w-full h-full object-cover"
           loading="lazy"
         />
@@ -625,11 +636,11 @@ const PropertyDetails1 = () => {
             transition={{ duration: 0.9, ease: 'easeOut' }}
             className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-xl"
           >
-            {projectData.title}
+            {t(projectData.title)}
           </motion.h1>
           <div className="flex items-center text-white font-semibold mt-3">
             <MapPin className="w-5 h-5 mr-2" />
-            {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}
+            {t(projectData.district?.name || "Unknown District")}, {t(projectData.city?.name || "Unknown City")}
           </div>
           <AnimatePresence mode="wait">
             <motion.div
@@ -669,7 +680,7 @@ const PropertyDetails1 = () => {
                   <div className="bg-white rounded-full p-1">
                     <img src={IconShield} alt="icon" className="w-5 h-5" />
                   </div>
-                  <span>Zero Risk – Escrow Protected</span>
+                  <span>{t("Zero Risk – Escrow Protected")}</span>
                 </div>
               )}
 
@@ -715,7 +726,7 @@ const PropertyDetails1 = () => {
           <h2 className="flex items-center font-sans text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-              Explore This Exclusive Property in {projectData.city?.name || "N/A"}
+              {t("Explore This Exclusive Property in {{city-name}}", { "city-name": t(projectData.city?.name || "N/A") })}
             </span>
           </h2>
 
@@ -732,7 +743,7 @@ const PropertyDetails1 = () => {
                 <DollarSign className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Price Range</p>
+                <p className="text-xs text-gray-600">{t("Price Range")}</p>
                 <p className="text-sm font-semibold text-gray-800">{priceRange}</p>
               </div>
             </div>
@@ -743,7 +754,7 @@ const PropertyDetails1 = () => {
                 <Maximize2 className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Area Range</p>
+                <p className="text-xs text-gray-600">{t("Area Range")}</p>
                 <p className="text-sm font-semibold text-gray-800">{areaRange}</p>
               </div>
             </div>
@@ -754,7 +765,7 @@ const PropertyDetails1 = () => {
                 <Handshake className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Handover</p>
+                <p className="text-xs text-gray-600">{t("Handover")}</p>
                 <p className="text-sm font-semibold text-gray-800">{handover}</p>
               </div>
             </div>
@@ -765,7 +776,7 @@ const PropertyDetails1 = () => {
                 <BarChart2 className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Payment Plan</p>
+                <p className="text-xs text-gray-600">{t("Payment Plan")}</p>
                 <p className="text-sm font-semibold text-gray-800">{downPayment}</p>
               </div>
             </div>
@@ -791,8 +802,8 @@ const PropertyDetails1 = () => {
                     <amenity.IconComponent className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600">{amenity.name}</p>
-                    <p className="text-sm font-semibold text-gray-800">Available</p>
+                    <p className="text-xs text-gray-600">{t(amenity.name)}</p>
+                    <p className="text-sm font-semibold text-gray-800">{t("Available")}</p>
                   </div>
                 </div>
               );
@@ -813,7 +824,7 @@ const PropertyDetails1 = () => {
           {/* {units.available > 0 && unitTypes.length > 0 && ( */}
           <div>
             <h2 className="text-2xl md:text-3xl font-sans font-extrabold text-center text-gray-600 mb-8">
-              Available Unit Types
+              {t('Available Unit Types')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
               {unitTypes.map((unit, index) => (
@@ -835,15 +846,15 @@ const PropertyDetails1 = () => {
                       </div>
                       <div>
                         <h4 className="text-lg font-semibold text-gray-900">
-                          {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : 'No Info'}
+                          {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : t('No Info')}
                         </h4>
-                        <p className="text-sm text-gray-500">{unit.available} units available</p>
+                        <p className="text-sm text-gray-500">{unit.available} {t("units available")}</p>
                       </div>
                     </div>
 
                     {/* Right: Price */}
                     <div className="flex flex-col items-end">
-                      <p className="text-xs text-gray-400">Starting from</p>
+                      <p className="text-xs text-gray-400">{t("Starting from")}</p>
                       <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
                         AED {formatPrice(unit.startingPrice)}
                       </p>
@@ -862,12 +873,12 @@ const PropertyDetails1 = () => {
                       {expandedUnit === unit.type ? (
                         <>
                           <ChevronUp className="w-4 h-4" />
-                          Hide Units
+                          {t("Hide Units")}
                         </>
                       ) : (
                         <>
                           <ChevronDown className="w-4 h-4" />
-                          View Units
+                          {t("View Units")}
                         </>
                       )}
                     </button>
@@ -980,7 +991,7 @@ const PropertyDetails1 = () => {
           {/* About Section */}
           {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">About This Project</h2> */}
           <div className="mb-8 mt-8 rounded-2xl bg-white p-6 shadow">
-            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-sans text-gray-600 pt-4">About {projectData.title}</h2>
+            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-sans text-gray-600 pt-4">{t("About {{project-title}}", { "project-title": projectData.title })}</h2>
             <div
               className="text-gray-600 prose prose-p"
               dangerouslySetInnerHTML={{ __html: projectData.description }}
@@ -1001,7 +1012,7 @@ const PropertyDetails1 = () => {
 
           {/* Location Section */}
           <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-            <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> Location & Address</h3>
+            <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> {t("Location & Address")}</h3>
             <p className="text-gray-700 font-semibold">{projectData.title}</p>
             <p className="text-gray-500 mb-4">{projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</p>
             <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
@@ -1022,7 +1033,7 @@ const PropertyDetails1 = () => {
           {/* Amenities */}
           {amenities.length > 0 && (
             <div className="mb-8 rounded-2xl bg-white p-6 shadow">
-              <h3 className="text-3xl md:text-3xl font-extrabold font-sans text-center mb-10 text-gray-600">Amenities</h3>
+              <h3 className="text-3xl md:text-3xl font-extrabold font-sans text-center mb-10 text-gray-600">{t("Amenities")}</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {amenities.map((amenity, index) => (
                   <div
@@ -1038,16 +1049,16 @@ const PropertyDetails1 = () => {
           )}
           <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-100 p-6 shadow">
             <h3 className="text-2xl md:text-3xl font-sans font-extrabold text-center mb-6 bg-gradient-to-br from-green-700 to-emerald-500 bg-clip-text text-transparent ">
-              Why Invest in {projectData.title}
+              {t("Why Invest in {{project-title}}", { "project-title": t(projectData.title) })}
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-emerald-700 list-disc list-inside font-medium">
-              <li>Located in prime community of {projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</li>
-              <li>Expected handover by {handover}</li>
+              <li>{t("Located in prime community of {{district-name}}, {{city-name}}", { "district-name": t(projectData.district?.name || "Unknown District"), "city-name": t(projectData.city?.name || "Unknown City") })}</li>
+              <li>{t("Expected handover by {{handover}}", { "handover": t(handover) })}</li>
               {/* <li>Free DLD + Escrow Protected (Zero Risk)</li> */}
-              <li>Flexible payment plan with only <span className="font-semibold">{projectData.payment_minimum_down_payment}%</span> down payment</li>
+              <li>{t("Flexible payment plan with only")} <span className="font-semibold">{projectData.payment_minimum_down_payment}%</span> {t("down payment")}</li>
               {amenities.length >= 4 && (
                 <li>
-                  Unique {amenities.slice(2, 4).map((a) => a.name.toLowerCase()).join(' and ')} onsite
+                  {t("Unique")} {amenities.slice(2, 4).map((a) => a.name.toLowerCase()).join(' and ')} {t("onsite")}
                 </li>
               )}
             </ul>

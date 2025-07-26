@@ -3,6 +3,8 @@ import { Star, ChevronLeft, ChevronRight, MessageCircle, Award, Globe, Users, Za
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Link } from 'react-router-dom';
 
 const TopRatedAgents = () => {
   const { t, i18n } = useTranslation();
@@ -13,6 +15,8 @@ const TopRatedAgents = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const scrollRef = useRef(null);
   const sectionRef = useRef(null);
+
+  const { setLanguage } = useLanguage();
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -27,7 +31,7 @@ const TopRatedAgents = () => {
       username: "sahar",
       avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/sahar-crawler.webp" alt="Sahar Kalhor" className="w-full h-full object-cover rounded-full" />,
       nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: [t("English"), t("Arabic"), t("Farsi")],
+      languages: ['en', 'ar', 'fa'],
       rating: 4.9,
       reviews: 127,
       specialties: [t("Luxury Properties"), t("Investment")],
@@ -42,7 +46,7 @@ const TopRatedAgents = () => {
       username: "erfani",
       avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/erfani-crawler.webp" alt="Mohammed Erfani" className='overflow-hidden rounded-full' />,
       nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: [t("English"), t("Arabic"), t("Farsi")],
+      languages: ['en', 'ar', 'fa'],
       rating: 4.9,
       reviews: 95,
       specialties: [t("Commercial"), t("Residential")],
@@ -57,7 +61,7 @@ const TopRatedAgents = () => {
       username: "maryam",
       avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/maryam-crawler.webp" alt="Maryam" className='overflow-hidden rounded-full' />,
       nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: [t("English"), t("Arabic"), t("Farsi")],
+      languages: ['en', 'ar', 'fa'],
       rating: 4.9,
       reviews: 89,
       specialties: [t("First-time Buyers"), t("Rentals")],
@@ -67,7 +71,7 @@ const TopRatedAgents = () => {
       color: "from-emerald-400 via-teal-500 to-cyan-600"
     },
   ];
-  
+
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -110,6 +114,16 @@ const TopRatedAgents = () => {
 
     return () => clearInterval(interval);
   }, [isAnimating, hoveredCard]);
+
+  // const { i18n } = useTranslation();
+  const handleLanguageChange = (lng: string, username: string) => {
+    setLanguage(lng as 'en' | 'ar' | 'fa');
+    i18n.changeLanguage(lng);
+    document.dir = lng === 'ar' || lng === 'fa' ? 'rtl' : 'ltr';
+
+    // Redirect to agent page
+    window.location.href = `/${username}`; // or with language: `/${lng}/${username}`
+  };
 
   return (
     <section
@@ -217,6 +231,7 @@ const TopRatedAgents = () => {
                     t={t}
                     isHovered={hoveredCard === agent.id}
                     isCenter={isCenter}
+                    handleLanguageChange={handleLanguageChange}
                   />
                 </div>
               );
@@ -255,8 +270,8 @@ const TopRatedAgents = () => {
                 className="relative group"
               >
                 <div className={`w-4 h-4 rounded-full transition-all duration-500 ${index === currentIndex
-                    ? 'bg-gradient-to-r from-blue-400 to-purple-600 scale-125 shadow-lg'
-                    : 'bg-white/40 hover:bg-white/60 scale-100'
+                  ? 'bg-gradient-to-r from-blue-400 to-purple-600 scale-125 shadow-lg'
+                  : 'bg-white/40 hover:bg-white/60 scale-100'
                   }`}>
                   {index === currentIndex && (
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-600 rounded-full animate-ping opacity-40"></div>
@@ -271,7 +286,7 @@ const TopRatedAgents = () => {
         <div className="lg:hidden">
           <div
             ref={scrollRef}
-            className="flex space-x-6 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory"
+            className="flex overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory"
           >
             {agents.map((agent, index) => (
               <div
@@ -286,6 +301,7 @@ const TopRatedAgents = () => {
                   t={t}
                   isHovered={hoveredCard === agent.id}
                   isCenter={false}
+                  handleLanguageChange={handleLanguageChange}
                 />
               </div>
             ))}
@@ -378,8 +394,8 @@ const TopRatedAgents = () => {
   );
 };
 
-const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
-  <div className={`relative group transition-all duration-700 ${isCenter ? 'transform-gpu' : ''}`}>
+const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleLanguageChange }) => (
+  <div className={`relative group transition-all duration-700 ${isCenter ? 'transform-gpu' : ''} p-2`}>
     {/* Card container with enhanced glassmorphism */}
     <div className={`
       relative bg-gradient-to-br from-white/20 via-white/10 to-white/5 backdrop-blur-xl 
@@ -489,18 +505,25 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
             <span className="text-sm font-bold text-white/70 uppercase tracking-wider">{t("LANGUAGES")}</span>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
-            {agent.languages.map((lang, index) => (
+            {agent.languages.map((langCode, index) => (
               <span
-                key={lang}
+                key={langCode}
+                onClick={() => handleLanguageChange(langCode, agent.username)}
                 className={`
-                  px-4 py-2 rounded-full text-sm font-semibold border border-white/30
+                  px-4 py-2 rounded-full text-sm font-semibold border border-white/30 cursor-pointer
                   bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm text-white
                   transition-all duration-500 hover:scale-110 hover:shadow-lg
                   ${isHovered ? 'animate-bounce' : ''}
                 `}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {lang}
+                {t(
+                  langCode === 'en'
+                    ? 'English'
+                    : langCode === 'ar'
+                      ? 'Arabic'
+                      : 'Farsi'
+                )}
               </span>
             ))}
           </div>
@@ -550,24 +573,21 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter }) => (
 
         {/* Enhanced CTAs */}
         <div className="space-y-4">
-          <a
-            href={`/${agent.username}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to={`/${agent.username}`}
             className="group relative block w-full overflow-hidden rounded-2xl"
+            // target="_blank" // optional: if you truly want a new tab
+            rel="noopener noreferrer"
           >
-            <div className={`
-              relative bg-gradient-to-r ${agent.color} p-4 transition-all duration-500
-              hover:scale-105 hover:shadow-2xl shadow-lg
-            `}>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-              <a href={`/${agent.username}`} className="absolute inset-0 flex items-center justify-center" target='_blank'>
-                <span className="relative z-10 text-white font-bold text-lg">
+            <div className={`relative bg-gradient-to-r ${agent.color} p-4 hover:scale-105 hover:shadow-2xl shadow-lg transition-all duration-500`}>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              <div className="relative z-10 flex items-center justify-center h-full">
+                <span className="text-white font-bold text-lg">
                   {t("View Full Profile")}
                 </span>
-              </a>
+              </div>
             </div>
-          </a>
+          </Link>
 
           {/* <button className="group w-full bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm border-2 border-white/30 text-white p-4 rounded-2xl font-semibold transition-all duration-500 hover:scale-105 hover:bg-white/30 hover:shadow-xl flex items-center justify-center space-x-3">
             <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />

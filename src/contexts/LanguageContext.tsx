@@ -1,5 +1,6 @@
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import i18n from "@/i18n";
 
 export type Language = 'en' | 'ar' | 'fa';
 
@@ -457,7 +458,21 @@ const translations = {
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>('en');
+
+  useEffect(() => {
+    const storedLang = localStorage.getItem("i18nextLng") as Language;
+    const initialLang = storedLang || 'en';
+    setLanguageState(initialLang);
+    document.dir = initialLang === 'ar' || initialLang === 'fa' ? 'rtl' : 'ltr';
+  }, []);
+
+  const setLanguage = (lang: Language) => {
+    localStorage.setItem("i18nextLng", lang);
+    setLanguageState(lang);
+    i18n.changeLanguage(lang);
+    document.dir = lang === 'ar' || lang === 'fa' ? 'rtl' : 'ltr';
+  };
 
   const t = (key: string): string => {
     return translations[language][key] || key;
