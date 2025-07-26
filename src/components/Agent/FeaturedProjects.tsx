@@ -399,7 +399,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const handleWhatsApp = (project: any) => {
 
-    const message = `Hi ${agent.name}! I'm interested in ${project.title} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
+    const message = `Hi ${agent.name}! I'm interested in ${project.title?.[i18n.language]} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
 
 Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
@@ -448,7 +448,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
 
     if (navigator.share) {
       navigator.share({
-        title: t(project.title),
+        title: t(project.title?.[i18n.language]),
         text: shareText,
         url: window.location.href
       });
@@ -1099,11 +1099,11 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                             <div className="bg rounded-full pl-1">
                               <Star className="w-3 h-3 text-white-600 font-bold" strokeWidth={4} fill='white' />
                             </div>
-                            {project.subunit_count} <span className='pr-1'>left</span>
+                            {t(project.subunit_count)} <span className='pr-1'>left</span>
                           </div>
                           <img
                             src={project.cover}
-                            alt={t(project.title)}
+                            alt={t(project.title?.[i18n.language])}
                             className="w-full h-52 sm:h-60 object-cover group-hover:scale-110 transition-transform duration-700"
                           />
 
@@ -1151,7 +1151,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                           <div className="space-y-4">
                             <div>
                               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors line-clamp-2">
-                                {t(project.title)}
+                                {t(project.title?.[i18n.language])}
                               </h3>
                               <div className="flex items-center text-gray-600">
                                 <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />

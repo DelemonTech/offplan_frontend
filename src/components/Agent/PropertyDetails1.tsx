@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MapPin, ChevronDown, Building2, Check, Lock, ChevronUp, Maximize2, Layout, Bed, Waves, Dumbbell, Car, Wifi, Shield, Building, DollarSign, Ruler, Handshake, BarChart2, Compass, Gift, ShieldCheck, Star, Phone } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, propEffect } from 'framer-motion';
 import Header from '../Agent/Header';
 import Footer from '../Agent/Footer';
 import { Button } from '@/components/ui/button';
@@ -21,13 +21,16 @@ const PropertyDetails1 = () => {
   const navigate = useNavigate();
 
   const { t, i18n } = useTranslation();
-    const [isOpen, setIsOpen] = useState(false);
-  
-    const changeLanguage = (lng) => {
-      i18n.changeLanguage(lng);
-      document.dir = lng === 'fa' ? 'rtl' : 'ltr';
-      setIsOpen(false);
-    };
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    console.log('lng', lng);
+
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
+  const lang = i18n.language || 'en';
 
   const location = useLocation();
   const [agent, setAgent] = useState<any>(location.state?.agent || null);
@@ -518,11 +521,28 @@ const PropertyDetails1 = () => {
 
 
   // console.log(projectData.facilities);
+  // const amenities = projectData.facilities?.map((fac: any) => {
+  //   // console.log(fac.name);
+  //   const facilityName = fac?.name || "Unknown";
+  //   const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
+  //   const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon
+  //   return {
+  //     name: facilityName,
+  //     IconComponent,
+  //     color: iconInfo.color,
+  //   };
+  // }) || [];
+
   const amenities = projectData.facilities?.map((fac: any) => {
-    // console.log(fac.name);
-    const facilityName = fac?.name || "Unknown";
-    const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
-    const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon
+    const currentLang = i18n.language;
+
+    // Get the localized facility name with fallback
+    const facilityName = fac.facility_names?.[currentLang] || fac.facility_names?.en || fac.name || "Unknown";
+
+    // Find the icon and color
+    const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" };
+    const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
+
     return {
       name: facilityName,
       IconComponent,
@@ -585,7 +605,7 @@ const PropertyDetails1 = () => {
           <div className="rounded-full">
             <Star className="w-4 h-4 text-white-600 font-bold" strokeWidth={3} fill='white' />
           </div>
-          {totalUnitsText}
+          {t(totalUnitsText)}
         </div>
 
 
@@ -621,9 +641,11 @@ const PropertyDetails1 = () => {
         <img
           src={projectData.cover}
           alt={t(projectData.title)}
+
           className="w-full h-full object-cover"
           loading="lazy"
         />
+        {t(projectData.title?.[i18n.language])}
 
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/60 flex items-center justify-center"></div>
@@ -636,11 +658,12 @@ const PropertyDetails1 = () => {
             transition={{ duration: 0.9, ease: 'easeOut' }}
             className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-xl"
           >
-            {t(projectData.title)}
+            {/* {t(projectData.title)} */}
+            <h1>{t(projectData.title?.[i18n.language])}</h1>
           </motion.h1>
           <div className="flex items-center text-white font-semibold mt-3">
             <MapPin className="w-5 h-5 mr-2" />
-            {t(projectData.district?.name || "Unknown District")}, {t(projectData.city?.name || "Unknown City")}
+            {t(projectData.district?.dist_names?.[i18n.language] || "Unknown District")}, {t(projectData.city?.city_names?.[i18n.language] || "Unknown City")}
           </div>
           <AnimatePresence mode="wait">
             <motion.div
@@ -991,12 +1014,12 @@ const PropertyDetails1 = () => {
           {/* About Section */}
           {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">About This Project</h2> */}
           <div className="mb-8 mt-8 rounded-2xl bg-white p-6 shadow">
-            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-sans text-gray-600 pt-4">{t("About {{project-title}}", { "project-title": projectData.title })}</h2>
+            <h2 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-sans text-gray-600 pt-4">{t("About {{project-title}}", { "project-title": t(projectData.title?.[i18n.language]) })}</h2>
             <div
               className="text-gray-600 prose prose-p"
-              dangerouslySetInnerHTML={{ __html: projectData.description }}
+              dangerouslySetInnerHTML={{ __html: projectData.description?.[i18n.language] }}
             ></div>
-            <div
+            {/* <div
               className="text-gray-600 prose prose-p text-right"
               // dir="rtl"
               dangerouslySetInnerHTML={{
@@ -1007,14 +1030,14 @@ const PropertyDetails1 = () => {
                   .replace(/\s{2,}/g, ' ')           // Replace multiple spaces with single space
                   .replace(/\r?\n|\r/g, '<br />')    // Optional: Convert newlines to <br> if needed
               }}
-            ></div>
+            ></div> */}
           </div>
 
           {/* Location Section */}
           <div className="mb-8 rounded-2xl bg-white p-6 shadow">
             <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> {t("Location & Address")}</h3>
-            <p className="text-gray-700 font-semibold">{projectData.title}</p>
-            <p className="text-gray-500 mb-4">{projectData.district?.name || "Unknown District"}, {projectData.city?.name || "Unknown City"}</p>
+            <p className="text-gray-700 font-semibold">{t(projectData.title?.[i18n.language])}</p>
+            <p className="text-gray-500 mb-4">{projectData.district?.dist_names?.[i18n.language] || "Unknown District"}, {projectData.city?.city_names?.[i18n.language] || "Unknown City"}</p>
             <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
               <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-200">
                 <iframe
@@ -1049,10 +1072,16 @@ const PropertyDetails1 = () => {
           )}
           <section className="mb-10 rounded-2xl bg-gradient-to-tr from-green-100 to-green-100 p-6 shadow">
             <h3 className="text-2xl md:text-3xl font-sans font-extrabold text-center mb-6 bg-gradient-to-br from-green-700 to-emerald-500 bg-clip-text text-transparent ">
-              {t("Why Invest in {{project-title}}", { "project-title": t(projectData.title) })}
+              {t("Why Invest in {{project-title}}", { "project-title": t(projectData.title?.[i18n.language || projectData.title?.en]) })}
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-emerald-700 list-disc list-inside font-medium">
-              <li>{t("Located in prime community of {{district-name}}, {{city-name}}", { "district-name": t(projectData.district?.name || "Unknown District"), "city-name": t(projectData.city?.name || "Unknown City") })}</li>
+              <li>
+                {t("Located in prime community of {{district}}, {{city}}", {
+                  district: projectData.district?.dist_names?.[i18n.language] || "Unknown District",
+                  city: projectData.city?.city_names?.[i18n.language] || "Unknown City"
+                })}
+              </li>
+              {/* <li>{t("Located in prime community of {{district-name}}, {{city-name}}", { "district-name": t(projectData.district?.dist_names?.[i18n.language] || "Unknown District"), "city-name": t(projectData.city?.city_names?.[i18n.language] || "Unknown City") })}</li> */}
               <li>{t("Expected handover by {{handover}}", { "handover": t(handover) })}</li>
               {/* <li>Free DLD + Escrow Protected (Zero Risk)</li> */}
               <li>{t("Flexible payment plan with only")} <span className="font-semibold">{projectData.payment_minimum_down_payment}%</span> {t("down payment")}</li>
@@ -1068,7 +1097,7 @@ const PropertyDetails1 = () => {
           {paymentPlans.length > 0 && (
             <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
               <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-poppins text-gray-600">
-                Payment Plans
+                {t("Payment Plans")}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1079,8 +1108,8 @@ const PropertyDetails1 = () => {
                   >
                     {/* Plan Header */}
                     <div className="mb-5 border-b pb-3">
-                      <h4 className="text-xl font-bold text-purple-600">{plan.name}</h4>
-                      <p className="text-sm text-gray-500 italic">{plan.description}</p>
+                      <h4 className="text-xl font-bold text-purple-600">{t(plan.name)}</h4>
+                      <p className="text-sm text-gray-500 italic">{t(plan.description)}</p>
                     </div>
 
                     {/* Steps */}
@@ -1112,7 +1141,7 @@ const PropertyDetails1 = () => {
         </div>
         {/* CTA */}
         <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-2xl p-8 mb-10 text-center text-white">
-          <h3 className="text-2xl font-bold mb-2 ">Ready to Make This Your Home?</h3>
+          <h3 className="text-2xl font-bold mb-2 ">{t("Ready to Make This Your Home?")}</h3>
           <p className="mb-4 text-white/90">
             Contact {agent?.name || "our team"} today for exclusive access and personalized assistance
           </p>
