@@ -170,7 +170,7 @@ const AgentPageContent = () => {
   const fetchCitiesFromAPI = async () => {
     try {
       setIsCitiesLoading(true);
-      const response = await fetch(`${hostUrl}/agents/${username}/cities`);
+      const response = await fetch(`${hostUrl}/cities`);
       const result = await response.json();
       if (result.status && result.data) {
         setCitiesData(result.data);

@@ -54,8 +54,11 @@ const description = i18n.language === 'fa' ? agent.fa_description : agent.descri
 const truncateLength = `From Dubai’s skyline dreams to smart investments —`.length;
 
 // Truncate equally to that length
-const shortDescription = description.slice(0, truncateLength);
-const remainingDescription = description.slice(truncateLength);
+// const shortDescription = description.slice(0, truncateLength);
+// const remainingDescription = description.slice(truncateLength);
+
+const shortDescription = (description || "").slice(0, truncateLength);
+const remainingDescription = (description || "").slice(truncateLength);
 
 
   return (
