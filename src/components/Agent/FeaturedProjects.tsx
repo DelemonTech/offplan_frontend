@@ -415,7 +415,7 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
   const handleShare = (project: any) => {
     const whatsappMessage = t("Hi {{agent}}! I'm interested in {{title}} in {{city}}. Starting from AED {{price}}. Can you share more details?", {
       agent: agentName,
-      title: t(project.title),
+      title: t(project.title?.[i18n.language]),
       city: t(project.city?.name),
       price: formatAED(project.low_price)
     });
@@ -423,7 +423,7 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
     const whatsappLink = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
 
     const shareText = `${t("🌇 {{title}} – {{city}}, {{district}}", {
-      title: t(project.title),
+      title: t(project.title?.i18n.language),
       city: t(project.city?.name),
       district: t(project.district?.name)
     })}
