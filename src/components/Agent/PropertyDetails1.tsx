@@ -191,7 +191,7 @@ const PropertyDetails1 = () => {
 
   const handleWhatsApp = () => {
     const currentUrl = window.location.href;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
+    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.city_names?.[i18n.language]}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -521,7 +521,7 @@ const PropertyDetails1 = () => {
 
 
   // console.log(projectData.facilities);
-  // const amenities = projectData.facilities?.map((fac: any) => {
+  // const amenities = projectData.facilities?.facilities?.map((fac: any) => {
   //   // console.log(fac.name);
   //   const facilityName = fac?.name || "Unknown";
   //   const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
@@ -537,7 +537,7 @@ const PropertyDetails1 = () => {
     const currentLang = i18n.language;
 
     // Get the localized facility name with fallback
-    const facilityName = fac.facility_names?.[currentLang] || fac.facility_names?.en || fac.name || "Unknown";
+    const facilityName = fac.facilities?.[currentLang] || fac.facilities?.en || fac.name || "Unknown";
 
     // Find the icon and color
     const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" };
@@ -749,7 +749,7 @@ const PropertyDetails1 = () => {
           <h2 className="flex items-center font-sans text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-              {t("Explore This Exclusive Property in {{city-name}}", { "city-name": t(projectData.city?.name || "N/A") })}
+              {t("Explore This Exclusive Property in {{city-name}}", { "city-name": t(projectData.city?.city_names?.[i18n.language] || "N/A") })}
             </span>
           </h2>
 
@@ -1143,7 +1143,10 @@ const PropertyDetails1 = () => {
         <div className="bg-gradient-to-r from-pink-500 via-purple-450 to-blue-500 rounded-2xl p-8 mb-10 text-center text-white">
           <h3 className="text-2xl font-bold mb-2 ">{t("Ready to Make This Your Home?")}</h3>
           <p className="mb-4 text-white/90">
-            Contact {agent?.name || "our team"} today for exclusive access and personalized assistance
+            {/* Contact {agent?.name || "our team"} today for exclusive access and personalized assistance */}
+            {t("Contact {{name}} today for exclusive access and personalized assistance", {
+              name: agent?.name || "our team"
+            })}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
@@ -1151,7 +1154,7 @@ const PropertyDetails1 = () => {
               className="flex-1"
             >
               <button className="w-full bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">
-                <div className='flex flex-row gap-2 justify-center'><Phone className='w-5 h-5' /> Call Now</div>
+                <div className='flex flex-row gap-2 justify-center'><Phone className='w-5 h-5' /> {t("Call Now")}</div>
               </button>
             </a>
             <a
@@ -1160,7 +1163,7 @@ const PropertyDetails1 = () => {
               className="flex-1"
             >
               <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
-                <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6' /> Chat on WhatsApp</div>
+                <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6' /> {t("Chat on WhatsApp")}</div>
               </button>
             </a>
           </div>

@@ -17,6 +17,8 @@ const resources = {
       "About": "درباره",
       "Contact": "تماس",
       "Blog": "وبلاگ",
+      "Bedroom Apartment":"آپارتمان یک‌خوابه",
+      "Chat on WhatsApp":"گفتگو در واتساپ",
       "Sahar Kalhor": "سحر کلهر",
       "Off-Plan & Ready Property Expert | Dubai & UAE": "متخصص املاک آماده و پیش فروش | دبی و امارات",
       "Helping you find the right ready and off-plan properties in Dubai, Abu Dhabi, and across the UAE.": "کمک به شما برای یافتن املاک آماده و پیش فروش مناسب در دبی، ابوظبی و سراسر امارات",
@@ -25,6 +27,7 @@ const resources = {
       "DLD Verified": "تأیید شده توسط DLD",
       "Deals Closed": "معاملات انجام شده",
       "Years of Experience": "سال تجربه",
+      "Ready to Make This Your Home?":"آیا آماده‌اید اینجا را خانه خود کنید؟",
       "Your Next Home Starts Here": "خانه بعدی شما از اینجا شروع می‌شود",
       "Your Next Home": "خانه بعدی شما",
       "Starts Here": "از اینجا شروع می‌شود",
@@ -305,6 +308,7 @@ const resources = {
       "Amenities": "امکانات",
       "Zero Risk – Escrow Protected": "بدون ریسک – محافظت شده با حساب امانی",
       "AED": "درهم",
+      "Contact Sahar Kalhor today for exclusive access and personalized assistance":"امروز با سحر کالهر تماس بگیرید تا از دسترسی انحصاری و مشاوره شخصی بهره‌مند شوید.",
 
     }
   },
@@ -317,11 +321,14 @@ const resources = {
       "About": "حول",
       "Contact": "اتصال",
       "Blog": "مدونة",
+      "Bedroom Apartment":"شقة غرفة نوم",
       "Sahar Kalhor": "سحر كلهر",
       "Off-Plan & Ready Property Expert | Dubai & UAE": "خبيرة العقارات الجاهزة وعلى الخريطة | دبي والإمارات",
       "Helping you find the right ready and off-plan properties in Dubai, Abu Dhabi, and across the UAE.": "مساعدتك في العثور على العقارات الجاهزة وعلى الخريطة المناسبة في دبي وأبو ظبي وعبر الإمارات",
       "Explore Projects": "استكشف المشاريع",
       "Chat with Sahar Kalhor": "تحدث مع سحر كلهر",
+      "Ready to Make This Your Home?":"هل أنت مستعد لجعل هذا منزلك؟",
+      "Contact {{name}} today for exclusive access and personalized assistance":"تواصل مع سحر كالهر اليوم للحصول على وصول حصري ومساعدة شخصية.",
       "DLD Verified": "معتمد من دائرة الأراضي والأملاك",
       "Deals Closed": "الصفقات المغلقة",
       "Years of Experience": "سنوات الخبرة",
@@ -601,7 +608,9 @@ const resources = {
       "Location & Address": "الموقع والعنوان",
       "Amenities": "المرافق",
       "Zero Risk – Escrow Protected": "صفر مخاطرة – محمي بحساب الضمان",
-      "Last inquiry received": "آخر استفسار تم استلامه"
+      "Last inquiry received": "آخر استفسار تم استلامه",
+      "Chat on WhatsApp":"الدردشة على واتساب",
+
 
     }
 

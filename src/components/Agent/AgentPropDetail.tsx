@@ -205,7 +205,7 @@ const AgentPropDetail = () => {
 
   // Group property_units by room type
   const groupedUnits = projectData.property_units.reduce((acc, unit) => {
-    const roomKey = `${unit.apartment_id} Bedroom Apartment`; // Group by apartment_id or customize
+    const roomKey = `${unit.apartment_id} {t("Bedroom Apartment")}`; // Group by apartment_id or customize
     if (!acc[roomKey]) {
       acc[roomKey] = [];
     }

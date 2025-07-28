@@ -47,19 +47,34 @@ const AgentProfile = ({ agent, project }) => {
     // Handle form submission here
   };
 
-// Pick the localized description
-const description = i18n.language === 'fa' ? agent.fa_description : agent.description;
+// // Pick the localized description
+// const description = i18n.language === 'fa' ? agent.fa_description : agent.description;
 
-// Use the length of the reference sentence as truncation length
+// // Use the length of the reference sentence as truncation length
+// const truncateLength = `From Dubai’s skyline dreams to smart investments —`.length;
+
+// // Truncate equally to that length
+// // const shortDescription = description.slice(0, truncateLength);
+// // const remainingDescription = description.slice(truncateLength);
+
+// const shortDescription = (description || "").slice(0, truncateLength);
+// const remainingDescription = (description || "").slice(truncateLength);
+
+const rawDescription = i18n.language === 'fa' ? agent.fa_description
+                     : i18n.language === 'ar' ? agent.ar_description
+                     : agent.description;
+
+// Fallback in case it's an object with keys like {en, ar, fa}
+const description = typeof rawDescription === 'string' 
+  ? rawDescription 
+  : rawDescription?.[i18n.language] || rawDescription?.en || "";
+
+// Use length of reference sentence as truncation length
 const truncateLength = `From Dubai’s skyline dreams to smart investments —`.length;
 
-// Truncate equally to that length
-// const shortDescription = description.slice(0, truncateLength);
-// const remainingDescription = description.slice(truncateLength);
-
-const shortDescription = (description || "").slice(0, truncateLength);
-const remainingDescription = (description || "").slice(truncateLength);
-
+// Slice safely
+const shortDescription = description.slice(0, truncateLength);
+const remainingDescription = description.slice(truncateLength);
 
   return (
     <section className="py-10 bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 relative overflow-hidden">
@@ -166,7 +181,8 @@ const remainingDescription = (description || "").slice(truncateLength);
               {/* Name and Title */}
               <div className="mb-6">
                 <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  {agent.name}
+                  {/* {t("agent.name")} */}
+                  {agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}
                 </h2>
                 <p className="text-2xl text-gray-600 font-medium mb-4">
                   {t('Your Trusted Off-Plan Expert')}
