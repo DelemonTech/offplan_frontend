@@ -101,7 +101,8 @@ const HeroSection = ({ agent }) => {
             <div className="space-y-1 lg:space-y-4 text-white text-center font-semibold">
               <h1 className="text-4xl sm:text-3xl lg:text-7xl font-bold bg-gradient-to-r from-pink-700 to-blue-500 bg-clip-text text-transparent leading-tight">
                 <span>
-                  {i18n.language === 'fa' ? agent.fa_name : agent.name}
+                  {/* {i18n.language === 'fa' ? agent.fa_name : agent.name} */}
+                  {agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}
                 </span>
               </h1>
               <div className='text-white/90 lg: text-2xl'>{t('Off-Plan & Ready Property Expert | Dubai & UAE')}</div>
@@ -136,7 +137,8 @@ const HeroSection = ({ agent }) => {
               >
                 <MessageCircle size={16} className="mr-2" />
                 {t('Chat with')} <span>
-                  {i18n.language === 'fa' ? agent.fa_name : agent.name}
+                  {/* {i18n.language === 'fa' ? agent.fa_name : agent.name} */}
+                  {agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}
                 </span>
               </Button>
             </div>
