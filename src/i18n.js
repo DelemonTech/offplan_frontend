@@ -696,7 +696,12 @@ const resources = {
       "More than just an agent — Sahar is your trusted advisor in navigating": "More than just an agent — Sahar is your trusted advisor in navigating",
       "See more": "See more",
       "How would you rate Sahar Kalhor's consultation?": "How would you rate Sahar Kalhor's consultation?",
-
+      "Last viewed":"Last viewed",
+      "Last inquiry received":"Last inquiry received",
+      "Last offer negotiated":"Last offer negotiated",
+      "Last down payment confirmed":"Last down payment confirmed",
+      "hours ago":"hours ago",
+      "minutes ago":"minutes ago",
       "Share your experience with others": "Share your experience with others",
       "Submit Review": "Submit Review",
       "Book a Free Consultation": "Book a Free Consultation",
@@ -845,6 +850,7 @@ const resources = {
       "users viewing projects now": "users viewing projects now",
       "new inquiries in 30 min": "new inquiries in 30 min",
       "countries represented": "countries represented",
+      "Last unit sold":"Last unit sold",
 
       "Hi {{agent}}! I'm interested in {{title}} in {{city}}. Starting from AED {{price}}. Can you share more details?": "Hi {{agent}}! I'm interested in {{title}} in {{city}}. Starting from AED {{price}}. Can you share more details?",
       "Location": "Location",

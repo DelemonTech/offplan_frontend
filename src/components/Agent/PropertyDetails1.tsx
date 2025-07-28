@@ -191,7 +191,7 @@ const PropertyDetails1 = () => {
 
   const handleWhatsApp = () => {
     const currentUrl = window.location.href;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.city_names?.[i18n.language]}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
+    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.city?.[i18n.language]}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -663,7 +663,7 @@ const PropertyDetails1 = () => {
           </motion.h1>
           <div className="flex items-center text-white font-semibold mt-3">
             <MapPin className="w-5 h-5 mr-2" />
-            {t(projectData.district?.dist_names?.[i18n.language] || "Unknown District")}, {t(projectData.city?.city_names?.[i18n.language] || "Unknown City")}
+            {t(projectData.district?.district?.[i18n.language] || "Unknown District")}, {t(projectData.city?.city?.[i18n.language] || "Unknown City")}
           </div>
           <AnimatePresence mode="wait">
             <motion.div
@@ -681,8 +681,8 @@ const PropertyDetails1 = () => {
           {projectData.guarantee_rental_guarantee ? (
             <div className="flex flex-wrap gap-5 justify-center text-sm md:text-base font-semibold mt-15 py-5">
               {[
-                { text: 'Guaranteed ROI Contract', color: 'bg-blue-50 text-blue-600', icon: IconGuarantee },
-                { text: 'Zero Risk – Escrow Protected', color: 'bg-green-50 text-green-600', icon: IconShield }
+                { text: t('Guaranteed ROI Contract'), color: 'bg-blue-50 text-blue-600', icon: IconGuarantee },
+                { text: t('Zero Risk – Escrow Protected'), color: 'bg-green-50 text-green-600', icon: IconShield }
               ].map((item, index) => (
                 <div
                   key={index}
@@ -749,7 +749,7 @@ const PropertyDetails1 = () => {
           <h2 className="flex items-center font-sans text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-              {t("Explore This Exclusive Property in {{city-name}}", { "city-name": t(projectData.city?.city_names?.[i18n.language] || "N/A") })}
+              {t("Explore This Exclusive Property in {{city-name}}", { "city-name": t(projectData.city?.city?.[i18n.language] || "N/A") })}
             </span>
           </h2>
 
@@ -1037,7 +1037,7 @@ const PropertyDetails1 = () => {
           <div className="mb-8 rounded-2xl bg-white p-6 shadow">
             <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> {t("Location & Address")}</h3>
             <p className="text-gray-700 font-semibold">{t(projectData.title?.[i18n.language])}</p>
-            <p className="text-gray-500 mb-4">{projectData.district?.dist_names?.[i18n.language] || "Unknown District"}, {projectData.city?.city_names?.[i18n.language] || "Unknown City"}</p>
+            <p className="text-gray-500 mb-4">{projectData.district?.district?.[i18n.language] || "Unknown District"}, {projectData.city?.city?.[i18n.language] || "Unknown City"}</p>
             <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
               <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-200">
                 <iframe
@@ -1077,8 +1077,8 @@ const PropertyDetails1 = () => {
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-emerald-700 list-disc list-inside font-medium">
               <li>
                 {t("Located in prime community of {{district}}, {{city}}", {
-                  district: projectData.district?.dist_names?.[i18n.language] || "Unknown District",
-                  city: projectData.city?.city_names?.[i18n.language] || "Unknown City"
+                  district: projectData.district?.district?.[i18n.language] || "Unknown District",
+                  city: projectData.city?.city?.[i18n.language] || "Unknown City"
                 })}
               </li>
               {/* <li>{t("Located in prime community of {{district-name}}, {{city-name}}", { "district-name": t(projectData.district?.dist_names?.[i18n.language] || "Unknown District"), "city-name": t(projectData.city?.city_names?.[i18n.language] || "Unknown City") })}</li> */}
@@ -1108,8 +1108,8 @@ const PropertyDetails1 = () => {
                   >
                     {/* Plan Header */}
                     <div className="mb-5 border-b pb-3">
-                      <h4 className="text-xl font-bold text-purple-600">{t(plan.name)}</h4>
-                      <p className="text-sm text-gray-500 italic">{t(plan.description)}</p>
+                      <h4 className="text-xl font-bold text-purple-600">{t(plan.name?.[i18n.language])}</h4>
+                      <p className="text-sm text-gray-500 italic">{t(plan.description?.[i18n.language])}</p>
                     </div>
 
                     {/* Steps */}
