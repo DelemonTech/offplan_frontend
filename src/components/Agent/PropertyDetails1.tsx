@@ -554,8 +554,8 @@ const PropertyDetails1 = () => {
 
   const totalUnitsText =
     totalUnits > 9
-      ? t("9+ units left")
-      : `${totalUnits} ${totalUnits === 1 ? t("unit") : t("units")} left`;
+      ? t("units_left_9plus")
+      : t("units_left", { count: totalUnits });
 
   const propertyStatusMap = {
     1: { name: t("Ready"), color: "text-green-600" },
