@@ -228,6 +228,7 @@ const PropertyDetailedPage = () => {
   //   { label: 'Handover', value: 'Q4 2025', icon: <Calendar  />, gradient: 'from-pink-500 to-purple-500' },
   //   { label: 'Payment', value: '60/40', icon: <DollarSign  />, gradient: 'from-green-400 to-blue-400' },
   // ];
+
   const featureList = [
     {
       label: 'Type',
@@ -348,27 +349,27 @@ const PropertyDetailedPage = () => {
   // }) || [];
   const amenities = projectData.facilities?.map((fac: any) => {
     const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
-  
+
     // Always use English name (or fallback) for icon mapping
     const defaultFacilityName = fac.name?.en || "Unknown";
-  
+
     // Display name in current language
     const facilityDisplayName = fac.name?.[currentLang] || defaultFacilityName;
-  
+
     const iconInfo = facilityIconMap[defaultFacilityName] || {
       icon: "Sparkle",
       color: "text-gray-400",
     };
-  
+
     const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
-  
+
     return {
       name: facilityDisplayName,
       IconComponent,
       color: iconInfo.color,
     };
   }) || [];
-  
+
 
   const handleWhatsApp = () => {
     const currentUrl = window.location.href;
@@ -383,6 +384,7 @@ const PropertyDetailedPage = () => {
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
+  console.log("unit:", unit);
 
   const [fullscreenImage, setFullscreenImage] = useState(null);
 
@@ -436,7 +438,7 @@ const PropertyDetailedPage = () => {
             <div className="absolute bottom-4 left-4 z-10">
 
               <h2 className="text-3xl text-white  lg:text-xl font-bold mb-1">
-                <div>{projectData.title?.[i18n.language]}<br /><span className='text-2xl'> Unit ID : {unit.id}</span></div>
+                <div>{projectData.title?.[i18n.language]}<br /><span className='text-2xl'> {t("Unit ID :")} {unit.id}</span></div>
               </h2>
               <p className="text-sm flex text-white  items-center gap-1 mb-8">
                 <span className="material-icons text-sm"><MapPin /></span>{projectData.city?.city?.[i18n.language]}, {projectData.district?.district?.[i18n.language]}
@@ -446,9 +448,9 @@ const PropertyDetailedPage = () => {
               </div> */}
               <p className="flex items-center text-sm font-medium text-white mt-1 gap-1 bg-red-400 rounded-2xl px-3">
                 <Flame className="text-white animate-burn" />
-                Reserve 24/7 –
+                {t("Reserve 24/7 –")}
                 <span className="text-1xl font-bold text-white text-transparent bg-clip-text py-1">
-                  No Down Payment Required !
+                  {t("No Down Payment Required !")}
                 </span>
               </p>
 
@@ -471,7 +473,7 @@ const PropertyDetailedPage = () => {
           <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-             {t("exclusive_property", { title })}
+              {t("exclusive_property", { title })}
             </span>
           </h2>
 
@@ -500,7 +502,7 @@ const PropertyDetailedPage = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-600">{t("area")}</p>
-                <p className="text-sm font-semibold text-gray-800">{unit.size} </p>
+                <p className="text-sm font-semibold text-gray-800">{t(unit.size)}</p>
               </div>
             </div>
 
@@ -681,23 +683,23 @@ const PropertyDetailedPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Unit Info */}
             <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500">
-              <h4 className="text-xl font-bold text-purple-600 mb-4">Unit Details</h4>
+              <h4 className="text-xl font-bold text-purple-600 mb-4">{t("Unit Details")}</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Unit ID</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Unit ID")}</p>
                   <p className="text-base font-medium bg-gradient-to-r from-pink-500 to-blue-400 text-transparent bg-clip-text">{unit.id}</p>
 
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Status</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Status")}</p>
                   <p className="text-base font-semibold text-green-600">{unit.status}</p>
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Size</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Size")}</p>
                   <p className="text-base font-medium text-blue-400">{unit.size}</p>
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Unit Price</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Unit Price")}</p>
                   <p className="text-base font-bold text-purple-600">
                     AED {formatPrice(unit.price)}
                   </p>
@@ -743,27 +745,27 @@ const PropertyDetailedPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
           {[
             {
-              title: 'Gallery',
-              description: 'View all unit images and renders',
-              button: 'View Gallery',
+              title: t('Gallery'),
+              description: t('View all unit images and renders'),
+              button: t('View Gallery'),
               icon: <Image />,
               bg: 'bg-pink-100',
               textColor: 'text-violet-600',
               buttonColor: 'text-violet-600 border border-violet-200',
             },
             {
-              title: 'Floor Plan',
-              description: 'Download detailed floor plan',
-              button: 'Download Plan',
+              title: t('Floor Plan'),
+              description: t('Download detailed floor plan'),
+              button: t('Download Plan'),
               icon: <FileText />,
               bg: 'bg-blue-50',
               textColor: 'text-blue-600',
               buttonColor: 'text-blue-600 border border-blue-200',
             },
             {
-              title: 'Payment Plan',
-              description: 'Flexible payment options',
-              button: 'View Details',
+              title: t('Payment Plan'),
+              description: t('Flexible payment options'),
+              button: t('View Details'),
               icon: <CreditCard />,
               bg: 'bg-green-50',
               textColor: 'text-green-600',
@@ -829,7 +831,7 @@ const PropertyDetailedPage = () => {
                     </button>
 
                     <h3 className="text-2xl font-bold text-blue-600 mb-4 text-center">
-                      Project Gallery
+                      {t("Project Gallery")}
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto">
@@ -885,9 +887,9 @@ const PropertyDetailedPage = () => {
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-pink-600 text-white rounded-2xl mt-12 p-6 sm:p-8 shadow-lg">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold">Ready to Reserve? </h2>
+              <h2 className="text-xl sm:text-2xl font-bold">{t("Ready to Reserve?")}</h2>
               <p className="text-sm sm:text-base text-white/90 mt-1">
-                Secure this unit online now with a small deposit.
+                {t("Secure this unit online now with a small deposit.")}
               </p>
             </div>
             <div className="bg-white/20 p-2 rounded-full">
@@ -901,11 +903,11 @@ const PropertyDetailedPage = () => {
               onClick={() => setShowReserveModal(true)}
               className="w-full sm:w-1/2 bg-white text-purple-700 font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-100 transition"
             >
-              <span className="text-lg"><Shield /></span> Reserve Now
+              <span className="text-lg"><Shield /></span> {t("Reserve Now")}
             </button>
 
             <button className="w-full sm:w-1/2 bg-gradient-to-r from-purple-300 via-pink-400 to-pink-300 text-white font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 border border-white/30 hover:opacity-90 transition">
-              <span className="text-lg"><Calendar /></span> <p className='font-semibold'>Pay Booking Fee</p>
+              <span className="text-lg"><Calendar /></span> <p className='font-semibold'>{t("Pay Booking Fee")}</p>
             </button>
           </div>
         </div>
@@ -913,7 +915,7 @@ const PropertyDetailedPage = () => {
         {/* OR Divider */}
         <div className="my-6 flex items-center justify-center gap-2 text-gray-400 text-sm font-medium">
           <div className="h-px bg-gray-300 w-10" />
-          or
+          {t("or")}
           <div className="h-px bg-gray-300 w-10" />
         </div>
 
@@ -921,12 +923,12 @@ const PropertyDetailedPage = () => {
         <div className="bg-white rounded-2xl p-6 sm:p-8 mb-10 shadow-md text-center border border-gray-200">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("Need Help or More Info?")}</h2>
           <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
-            Talk to our property advisor for pricing, viewing, and guidance.
+            {t("Talk to our property advisor for pricing, viewing, and guidance.")}
           </p>
           <div className="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white shadow-md overflow-hidden">
             <img
               src={agent.profile_image_url}// Replace with actual image path or import
-              alt="Sahar Kalhor"
+              alt="agent_profile"
               className="w-full h-full object-cover"
             />
           </div>
@@ -935,10 +937,10 @@ const PropertyDetailedPage = () => {
           <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-1">
             {agent.name?.[i18n.language]}
           </h3>
-          <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
+          <p className="text-gray-600 mb-4 text-sm">{t("Your Property Advisor")}</p>
           <div className="text-sm text-gray-700 font-medium mb-4">
             <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full shadow">
-              Trusted Advisor – ⭐ 4.9 (38 reviews)
+              {t("Trusted Advisor")} – ⭐ {t("4.9 (38 reviews)")}
             </span>
           </div>
           {/* Description */}
