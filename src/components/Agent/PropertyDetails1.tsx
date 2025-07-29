@@ -14,6 +14,8 @@ import IconGuarantee from "@/assets/guarantee.png";
 import IconShield from "@/assets/shield.png";
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { formatAED } from '@/utils/FormatAED';
+
 // import CallToAction from "@/components/Agent/CallToAction"
 
 const PropertyDetails1 = () => {
@@ -189,9 +191,25 @@ const PropertyDetails1 = () => {
   //   whatsapp_number: "+971 52 952 9687",
   // };
 
-  const handleWhatsApp = () => {
-    const currentUrl = window.location.href;
-    const message = `Hi ${agent?.name?.[i18n.language]}! I'm interested in ${projectData.title} in ${projectData.city?.city?.[i18n.language]}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
+   const handleWhatsApp = (project: any) => {
+    const localizedAgentName =
+      agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
+
+    const translations = {
+      en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.en} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
+
+Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
+
+      ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${project.title?.ar} في ${project.city.name}. تبدأ الأسعار من AED ${formatAED(project.low_price)}. هل يمكنك مشاركة المزيد من التفاصيل؟
+
+رابط العقار: https://offplan.market/sahar/property-details/?id=${project.id}`,
+
+      fa: `${localizedAgentName} عزیز، من به ${project.title?.fa} در ${project.city.name} علاقه‌مندم. قیمت‌ها از AED ${formatAED(project.low_price)} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟
+
+لینک ملک: https://offplan.market/sahar/property-details/?id=${project.id}`
+    };
+
+    const message = translations[i18n.language] || translations.en;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
