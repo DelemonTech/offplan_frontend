@@ -15,6 +15,7 @@ import IconShield from "@/assets/shield.png";
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { formatAED } from '@/utils/FormatAED';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 
 // import CallToAction from "@/components/Agent/CallToAction"
 
@@ -191,28 +192,64 @@ const PropertyDetails1 = () => {
   //   whatsapp_number: "+971 52 952 9687",
   // };
 
-   const handleWhatsApp = (project: any) => {
-    const localizedAgentName =
-      agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
+//    const handleWhatsApp = (project: any) => {
+//   // Debug logging to see the actual data structure
+//   console.log('Agent object:', agent);
+//   console.log('Project object:', project);
+//   console.log('Agent name structure:', agent?.name);
+//   console.log('Project title structure:', project?.title);
 
-    const translations = {
-      en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.en} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
+//   // Safe extraction with fallbacks
+//   const localizedAgentName = (() => {
+//     if (!agent?.name) return 'Agent';
+    
+//     // If agent.name is a string, use it directly
+//     if (typeof agent.name === 'string') return agent.name;
+    
+//     // If it's an object with language keys
+//     return agent.name[i18n.language] || agent.name.en || agent.name.ar || 'Agent';
+//   })();
 
-Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
+//   const projectTitle = (() => {
+//     if (!project?.title) return 'a property';
+    
+//     // If project.title is a string, use it directly
+//     if (typeof project.title === 'string') return project.title;
+    
+//     // If it's an object with language keys
+//     return project.title[i18n.language] || project.title.en || project.title.ar || 'a property';
+//   })();
 
-      ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${project.title?.ar} في ${project.city.name}. تبدأ الأسعار من AED ${formatAED(project.low_price)}. هل يمكنك مشاركة المزيد من التفاصيل؟
+//   const cityName = (() => {
+//     if (!project?.city) return 'Dubai';
+    
+//     // Handle different city name structures
+//     if (typeof project.city === 'string') return project.city;
+//     if (typeof project.city.name === 'string') return project.city.name;
+//     if (typeof project.city.name === 'object') {
+//       return project.city.name[i18n.language] || project.city.name.en || project.city.name.ar || 'Dubai';
+//     }
+    
+//     return 'Dubai';
+//   })();
 
-رابط العقار: https://offplan.market/sahar/property-details/?id=${project.id}`,
+//   const projectPrice = project?.low_price ? formatAED(project.low_price) : 'competitive prices';
+//   const projectId = project?.id || '';
 
-      fa: `${localizedAgentName} عزیز، من به ${project.title?.fa} در ${project.city.name} علاقه‌مندم. قیمت‌ها از AED ${formatAED(project.low_price)} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟
+//   const translations = {
+//     en: `Hi ${localizedAgentName}! I'm interested in ${projectTitle} in ${cityName}. Starting from AED ${projectPrice}. Can you share more details?${projectId ? `\n\nProperty Link: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
 
-لینک ملک: https://offplan.market/sahar/property-details/?id=${project.id}`
-    };
+//     ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${projectTitle} في ${cityName}. تبدأ الأسعار من AED ${projectPrice}. هل يمكنك مشاركة المزيد من التفاصيل؟${projectId ? `\n\nرابط العقار: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
 
-    const message = translations[i18n.language] || translations.en;
-    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+//     fa: `${localizedAgentName} عزیز، من به ${projectTitle} در ${cityName} علاقه‌مندم. قیمت‌ها از AED ${projectPrice} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟${projectId ? `\n\nلینک ملک: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`
+//   };
+
+//   const message = translations[i18n.language] || translations.en;
+//   const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  
+//   console.log('Final message:', message); // Debug the final message
+//   window.open(whatsappUrl, '_blank');
+// };
 
   const [messages, setMessages] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -1256,11 +1293,12 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
               </button>
             </a>
             <a
-              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-              target="_blank"
+              // href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              // target="_blank"
               className="flex-1"
             >
-              <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
+              <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700"
+              onClick={()=>handleWhatsApp(projectData,agent,t,i18n)}>
                 <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6' /> {t("Chat on WhatsApp")}</div>
               </button>
             </a>
@@ -1296,7 +1334,7 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
       {(
         <div className="fixed bottom-8 right-5 z-50">
           <button
-            onClick={handleWhatsApp} // Use the first property for WhatsApp
+            onClick={()=>handleWhatsApp(projectData,agent,t,i18n)} // Use the first property for WhatsApp
             className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
           >
             <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />

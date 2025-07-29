@@ -16,6 +16,7 @@ import RequestCallBackModal from './RequestCallBackModal';
 import GalleryPage from './Gallery';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 
 // import { jsPDF } from "jspdf";
 
@@ -371,19 +372,19 @@ const PropertyDetailedPage = () => {
   }) || [];
 
 
-  const handleWhatsApp = () => {
-    const currentUrl = window.location.href;
-    const pathname = window.location.pathname; // e.g., /sahar/property-details/1782/unit-details/G2-M2 (Villa)
-    const segments = pathname.split("/");
+  // const handleWhatsApp = () => {
+  //   const currentUrl = window.location.href;
+  //   const pathname = window.location.pathname; // e.g., /sahar/property-details/1782/unit-details/G2-M2 (Villa)
+  //   const segments = pathname.split("/");
 
-    const username = segments[1]; // sahar
-    const propertyId = segments[3]; // 1782
+  //   const username = segments[1]; // sahar
+  //   const propertyId = segments[3]; // 1782
 
-    const cleanUrl = `${window.location.origin}/${username}/property-details/?id=${propertyId}`;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title?.[i18n.language]} in ${projectData.city?.city?.[i18n.language]}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${cleanUrl}`;
-    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  //   const cleanUrl = `${window.location.origin}/${username}/property-details/?id=${propertyId}`;
+  //   const message = `Hi ${agent.name}! I'm interested in ${projectData.title?.[i18n.language]} in ${projectData.city?.city?.[i18n.language]}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${cleanUrl}`;
+  //   const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  //   window.open(whatsappUrl, '_blank');
+  // };
   console.log("unit:", unit);
 
   const [fullscreenImage, setFullscreenImage] = useState(null);
@@ -959,8 +960,10 @@ const PropertyDetailedPage = () => {
 
             {/* WhatsApp */}
             <a
-              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-              target="_blank"
+              // href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              // target="_blank"
+              href=''
+              onClick={()=>handleWhatsApp(projectData,agent,t,i18n)}
               className="w-full sm:w-[calc(50%-0.5rem)] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
             >
               <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> WhatsApp
@@ -1194,7 +1197,7 @@ const PropertyDetailedPage = () => {
       {(
         <div className="fixed bottom-8 right-5 z-50">
           <button
-            onClick={handleWhatsApp} // Use the first property for WhatsApp
+            onClick={()=>handleWhatsApp(projectData,agent,t,i18n)} // Use the first property for WhatsApp
             className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
           >
             <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />

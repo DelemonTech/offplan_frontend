@@ -17,6 +17,7 @@ import defaultLogo from '@/assets/OFFPLAN_MARKET.png';
 import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 
 const AgentPageContent = () => {
 
@@ -215,41 +216,41 @@ const AgentPageContent = () => {
     );
   }
 
-  const formatAED = (value: string | number | null | undefined): string => {
-    const number = typeof value === 'string' ? parseInt(value) : value;
+  // const formatAED = (value: string | number | null | undefined): string => {
+  //   const number = typeof value === 'string' ? parseInt(value) : value;
 
-    if (!isNaN(number as number)) {
-      const withCommas = (number as number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      return `${withCommas}`;
-    }
-    else if (number === null || value === null) {
-      return "N/A";
-    }
-  };
+  //   if (!isNaN(number as number)) {
+  //     const withCommas = (number as number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //     return `${withCommas}`;
+  //   }
+  //   else if (number === null || value === null) {
+  //     return "N/A";
+  //   }
+  // };
 
   if (typeof window !== "undefined") {
-  window.addEventListener("scroll", () => {
-    const btn = document.getElementById("floating-btn");
-    if (btn) {
-      if (window.scrollY > 300) {
-        btn.classList.add("opacity-100");
-        btn.classList.remove("opacity-0");
-      } else {
-        btn.classList.add("opacity-0");
-        btn.classList.remove("opacity-100");
+    window.addEventListener("scroll", () => {
+      const btn = document.getElementById("floating-btn");
+      if (btn) {
+        if (window.scrollY > 300) {
+          btn.classList.add("opacity-100");
+          btn.classList.remove("opacity-0");
+        } else {
+          btn.classList.add("opacity-0");
+          btn.classList.remove("opacity-100");
+        }
       }
-    }
-  });
-}
+    });
+  }
 
-  const handleWhatsApp = (project: any) => {
+//   const handleWhatsApp = (project: any) => {
 
-    const message = `Hi ${agentData.name}! I'm interested in ${project.title} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
+//     const message = `Hi ${agentData.name}! I'm interested in ${project.title} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
 
-Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
-    const whatsappUrl = `https://wa.me/${agentData.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+// Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
+//     const whatsappUrl = `https://wa.me/${agentData.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+//     window.open(whatsappUrl, '_blank');
+//   };
 
   //   useEffect(() => {
   //   if (agentData?.gender) {
@@ -458,16 +459,16 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
         </div>
       </div>
       <div
-  id="floating-btn"
-  className="fixed bottom-8 right-5 z-50 opacity-0 transition-opacity duration-300"
->
-  <button
-    onClick={() => handleWhatsApp(properties[0])}
-    className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
-  >
-    <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
-  </button>
-</div>
+        id="floating-btn"
+        className="fixed bottom-8 right-5 z-50 opacity-0 transition-opacity duration-300"
+      >
+        <button
+          onClick={() => handleWhatsApp(properties[0], agentData,t,i18n)}
+          className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
+        >
+          <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
+        </button>
+      </div>
 
 
       <CallToAction agent={agentData} />
