@@ -532,7 +532,7 @@ const getUnitTypeName = (apartment) => {
     subUnits: units.map((unit) => ({
       id: unit.apt_no || `Unit ${unit.id}`,
       floor: unit.floor_no,
-      size: `${unit.area} sq.ft`,
+      size: `${unit.area} ${t("sqft")}`,
       price: unit.price,
       floorPlan:
         Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
@@ -540,7 +540,8 @@ const getUnitTypeName = (apartment) => {
           : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
             ? JSON.parse(unit.floor_plan_image)[0]
             : "NO_FLOOR_PLAN",
-      status: projectData.status || t("Available"), // ✅ Translated fallback
+      status: projectData?.status?.[i18n.language] || t("Available"),
+      // status: projectData.status?.[i18n.language] || t("Available"), // ✅ Translated fallback
       apartmentType: getUnitTypeName(groupedApartment), // ✅ Localized again
     })),
   };
@@ -723,7 +724,7 @@ const amenities = projectData.facilities?.map((fac: any) => {
             className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-xl"
           >
             {/* {t(projectData.title)} */}
-            <h1>{t(projectData.title?.[i18n.language])}</h1>
+            {t(projectData.title?.[i18n.language])}
           </motion.h1>
           <div className="flex items-center text-white font-semibold mt-3">
             <MapPin className="w-5 h-5 mr-2" />
