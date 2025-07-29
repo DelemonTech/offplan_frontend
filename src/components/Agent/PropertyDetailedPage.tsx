@@ -35,6 +35,7 @@ const PropertyDetailedPage = () => {
   const [unit, setUnit] = useState<any>(location.state?.unit || null);
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const title = projectData?.title?.[i18n.language] || "N/A";
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -174,29 +175,29 @@ const PropertyDetailedPage = () => {
   })();
   // Calculate handover quarter
   const handover = (() => {
-  const delivery = projectData?.delivery_date;
-  const { i18n } = useTranslation();
-  const lang = i18n.language || "en";
+    const delivery = projectData?.delivery_date;
+    const { i18n } = useTranslation();
+    const lang = i18n.language || "en";
 
-  if (!delivery) return lang === "ar" ? "غير متوفر" : lang === "fa" ? "ناموجود" : "N/A";
+    if (!delivery) return lang === "ar" ? "غير متوفر" : lang === "fa" ? "ناموجود" : "N/A";
 
-  if (typeof delivery === "number" && delivery > 100000) {
-    const year = Math.floor(delivery / 100);
-    const month = delivery % 100;
+    if (typeof delivery === "number" && delivery > 100000) {
+      const year = Math.floor(delivery / 100);
+      const month = delivery % 100;
 
-    if (month < 1 || month > 12) return lang === "ar" ? "تاريخ غير صالح" : lang === "fa" ? "تاریخ نامعتبر" : "Invalid Date";
+      if (month < 1 || month > 12) return lang === "ar" ? "تاريخ غير صالح" : lang === "fa" ? "تاریخ نامعتبر" : "Invalid Date";
 
-    const quarter = Math.ceil(month / 3);
+      const quarter = Math.ceil(month / 3);
 
-    if (lang === "ar") return `الربع ${quarter} ${year}`;
-    if (lang === "fa") return `سه‌ماهه ${quarter} ${year}`;
-    return `Q${quarter} ${year}`;
-  }
+      if (lang === "ar") return `الربع ${quarter} ${year}`;
+      if (lang === "fa") return `سه‌ماهه ${quarter} ${year}`;
+      return `Q${quarter} ${year}`;
+    }
 
-  if (typeof delivery === "string") return delivery;
+    if (typeof delivery === "string") return delivery;
 
-  return lang === "ar" ? "غير متوفر" : lang === "fa" ? "ناموجود" : "N/A";
-})();
+    return lang === "ar" ? "غير متوفر" : lang === "fa" ? "ناموجود" : "N/A";
+  })();
   // const handover = (() => {
   //   const delivery = projectData?.delivery_date;
 
@@ -334,17 +335,40 @@ const PropertyDetailedPage = () => {
     "Jogging Track": { icon: "Run", color: "text-orange-400" },
     "Lake": { icon: "Droplet", color: "text-blue-400" }
   };
+  // const amenities = projectData.facilities?.map((fac: any) => {
+  //   // console.log(fac.name);
+  //   const facilityName = fac?.name || "Unknown";
+  //   const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
+  //   const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon
+  //   return {
+  //     name: facilityName,
+  //     IconComponent,
+  //     color: iconInfo.color,
+  //   };
+  // }) || [];
   const amenities = projectData.facilities?.map((fac: any) => {
-    // console.log(fac.name);
-    const facilityName = fac?.name || "Unknown";
-    const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
-    const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon
+    const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
+  
+    // Always use English name (or fallback) for icon mapping
+    const defaultFacilityName = fac.name?.en || "Unknown";
+  
+    // Display name in current language
+    const facilityDisplayName = fac.name?.[currentLang] || defaultFacilityName;
+  
+    const iconInfo = facilityIconMap[defaultFacilityName] || {
+      icon: "Sparkle",
+      color: "text-gray-400",
+    };
+  
+    const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
+  
     return {
-      name: facilityName,
+      name: facilityDisplayName,
       IconComponent,
       color: iconInfo.color,
     };
   }) || [];
+  
 
   const handleWhatsApp = () => {
     const currentUrl = window.location.href;
@@ -365,7 +389,7 @@ const PropertyDetailedPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header logo={logoPath} />
-       <Button
+      <Button
         variant="outline"
         className="relative m-4 border border-gradient-to-r from-pink-700 via-purple-700 to-blue-500 rounded-full px-4 py-2 hover:bg-gradient-to-r hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 hover:text-white transition-colors duration-300"
         onClick={() => navigate(-1)}
@@ -377,7 +401,7 @@ const PropertyDetailedPage = () => {
           </span>
         </div>
       </Button>
-      
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* <Button
           variant="outline"
@@ -447,8 +471,7 @@ const PropertyDetailedPage = () => {
           <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-              Explore This Exclusive Property in{" "}
-              {projectData?.title?.[i18n.language] || "N/A"}
+             {t("exclusive_property", { title })}
             </span>
           </h2>
 
@@ -465,7 +488,7 @@ const PropertyDetailedPage = () => {
                 <Home className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Overview</p>
+                <p className="text-xs text-gray-600">{t("overview")}</p>
                 <p className="text-sm font-semibold text-gray-800">{t(unit.apartmentType ? unit.apartmentType : unit.id ? `${unit.id}` : 'No Info')}</p>
               </div>
             </div>
@@ -476,8 +499,8 @@ const PropertyDetailedPage = () => {
                 <Maximize2 className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Area</p>
-                <p className="text-sm font-semibold text-gray-800">{unit.size}</p>
+                <p className="text-xs text-gray-600">{t("area")}</p>
+                <p className="text-sm font-semibold text-gray-800">{unit.size} </p>
               </div>
             </div>
 
@@ -487,7 +510,7 @@ const PropertyDetailedPage = () => {
                 <Handshake className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Handover</p>
+                <p className="text-xs text-gray-600">{t("Handover")}</p>
                 <p className="text-sm font-semibold text-gray-800">{handover}</p>
               </div>
             </div>
@@ -498,7 +521,7 @@ const PropertyDetailedPage = () => {
                 <BarChart2 className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Payment Plan</p>
+                <p className="text-xs text-gray-600">{t("Payment Plan")}</p>
                 <p className="text-sm font-semibold text-gray-800">{downPayment}</p>
               </div>
             </div>
@@ -525,7 +548,7 @@ const PropertyDetailedPage = () => {
                   </div>
                   <div>
                     <p className="text-xs text-gray-600">{amenity.name}</p>
-                    <p className="text-sm font-semibold text-gray-800">Available</p>
+                    <p className="text-sm font-semibold text-gray-800">{t("Available")}</p>
                   </div>
                 </div>
               );
@@ -556,7 +579,7 @@ const PropertyDetailedPage = () => {
         </div> */}
         <div className="bg-white rounded-xl shadow-sm p-6 mt-10">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-violet-600 mb-4">Floor Plan</h3>
+            <h3 className="text-xl font-bold text-violet-600 mb-4">{t("Floor Plan")}</h3>
 
             {unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN" ? (
               <div className="flex space-x-2">
@@ -651,7 +674,7 @@ const PropertyDetailedPage = () => {
         {/* Unit Price & Payment Plan Section */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mt-10">
           <h3 className="text-xl font-bold text-blue-600 mb-5">
-            Unit Price & Payment Plan
+            {t("Unit Price & Payment Plan")}
           </h3>
 
           {/* Parent Grid: Unit Info & Payment Plan side by side */}
@@ -686,7 +709,7 @@ const PropertyDetailedPage = () => {
             {paymentPlans.length > 0 && (
               <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500">
                 <h4 className="text-xl font-bold text-purple-600 mb-4">
-                  Payment Plan
+                  {paymentPlans[0].name?.[i18n.language] || paymentPlans[0].name?.en || "Payment Plan"}
                 </h4>
                 <div className="space-y-4">
                   {paymentPlans[0].values.map((val, idx) => (
@@ -699,7 +722,9 @@ const PropertyDetailedPage = () => {
                         <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
                           {idx + 1}
                         </span>
-                        <span className="text-gray-800 font-medium">{val.name}</span>
+                        <span className="text-gray-800 font-medium">
+                          {val.values?.[i18n.language] || val.values?.en || val.name}
+                        </span>
                       </div>
 
                       {/* Right: Value */}
@@ -894,7 +919,7 @@ const PropertyDetailedPage = () => {
 
         {/* Section 2: Need Help or More Info */}
         <div className="bg-white rounded-2xl p-6 sm:p-8 mb-10 shadow-md text-center border border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Need Help or More Info?</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("Need Help or More Info?")}</h2>
           <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
             Talk to our property advisor for pricing, viewing, and guidance.
           </p>
