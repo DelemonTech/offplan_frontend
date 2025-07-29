@@ -139,20 +139,38 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   //   const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
   //   return date.toLocaleDateString("en-US", options);
   // };
-  const formatDeliveryDate = (yyyymm: string | number) => {
+  const formatDeliveryDate = (
+    yyyymm: string | number,
+    locale: string = "en"
+  ): string => {
     if (!yyyymm) return "N/A";
 
     const str = yyyymm.toString();
     if (str.length !== 6) return "Invalid Date";
 
-    const year = str.slice(0, 4);
-    const monthIndex = parseInt(str.slice(4, 6), 10) - 1; // 0-indexed for JS Date
+    const year = parseInt(str.slice(0, 4), 10);
+    const monthIndex = parseInt(str.slice(4, 6), 10) - 1;
 
-    const date = new Date(Number(year), monthIndex);
+    const date = new Date(year, monthIndex);
     const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
 
-    return date.toLocaleDateString("en-US", options); // e.g., "September 2023"
+    return date.toLocaleDateString(locale, options); // localized output
   };
+
+  // const formatDeliveryDate = (yyyymm: string | number) => {
+  //   if (!yyyymm) return "N/A";
+
+  //   const str = yyyymm.toString();
+  //   if (str.length !== 6) return "Invalid Date";
+
+  //   const year = str.slice(0, 4);
+  //   const monthIndex = parseInt(str.slice(4, 6), 10) - 1; // 0-indexed for JS Date
+
+  //   const date = new Date(Number(year), monthIndex);
+  //   const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long" };
+
+  //   return date.toLocaleDateString("en-US", options); // e.g., "September 2023"
+  // };
 
   // const filters = [
   //   { id: 'ready', label: 'Ready', icon: Check },
@@ -828,12 +846,12 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
       const scrollY = window.scrollY;
       const triggerPoint = 300;
 
-    if (scrollY > triggerPoint) {
-      setShowFloatingBar(true);
-    } else {
-      setShowFloatingBar(false);
-    }
-  };
+      if (scrollY > triggerPoint) {
+        setShowFloatingBar(true);
+      } else {
+        setShowFloatingBar(false);
+      }
+    };
 
     // Check scroll position immediately
     handleScroll();
@@ -1099,7 +1117,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                             <div className="bg rounded-full pl-1">
                               <Star className="w-3 h-3 text-white-600 font-bold" strokeWidth={4} fill='white' />
                             </div>
-                            {t(project.subunit_count)} <span className='pr-1'>left</span>
+                            {t(project.subunit_count?.value)} {t(project.subunit_count?.label?.[i18n.language])} <span className='pr-1'>{t("left")}</span>
                           </div>
                           <img
                             src={project.cover}
@@ -1180,11 +1198,17 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                               <div className="flex flex-wrap gap-3 text-xs text-gray-600 pb-3">
                                 <div className="flex items-center gap-1">
                                   <Ruler size={12} className="text-pink-500" />
-                                  <span>{t(`From ${project.min_area} ft²`)}</span>
+                                  {/* <span>{t(`From ${project.min_area} ft²`)}</span> */}
+                                  <span>{t('fromArea', { area: project.min_area })}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Calendar size={12} className="text-blue-500" />
-                                  <span>{formatDeliveryDate(project.delivery_date)}</span>
+                                  {/* <span>{formatDeliveryDate(project.delivery_date)}</span> */}
+                                  <span>
+                                    {t("deliveryBy", {
+                                      date: formatDeliveryDate(project.delivery_date, i18n.language)
+                                    })}
+                                  </span>
                                 </div>
                                 {/* <div className="flex items-center gap-1">
                                     <CreditCard size={12} className="text-purple-500" />
