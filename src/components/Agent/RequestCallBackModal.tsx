@@ -8,9 +8,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { Mail,Calendar } from 'lucide-react';
 
 const RequestCallBackModal = ({ onClose }: { onClose: () => void }) => {
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
@@ -32,7 +35,7 @@ const RequestCallBackModal = ({ onClose }: { onClose: () => void }) => {
           <button
             className="w-full mt-4 sm:mt-4 bg-purple-200 text-gray-800 border border-gray-300 hover:bg-gray-100 font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
           >
-            <span className="text-lg"><Calendar /></span> Request Callback
+            <span className="text-lg"><Calendar /></span> {t('Request Callback')}
           </button>
         </DialogTrigger>
 

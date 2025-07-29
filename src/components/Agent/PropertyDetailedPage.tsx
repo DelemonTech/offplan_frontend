@@ -681,23 +681,23 @@ const PropertyDetailedPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Unit Info */}
             <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500">
-              <h4 className="text-xl font-bold text-purple-600 mb-4">Unit Details</h4>
+              <h4 className="text-xl font-bold text-purple-600 mb-4">{t("unit_details")}</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Unit ID</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("unit_id")}</p>
                   <p className="text-base font-medium bg-gradient-to-r from-pink-500 to-blue-400 text-transparent bg-clip-text">{unit.id}</p>
 
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Status</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("status")}</p>
                   <p className="text-base font-semibold text-green-600">{unit.status}</p>
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Size</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("size")}</p>
                   <p className="text-base font-medium text-blue-400">{unit.size}</p>
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">Unit Price</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("unit_price")}</p>
                   <p className="text-base font-bold text-purple-600">
                     AED {formatPrice(unit.price)}
                   </p>
@@ -744,26 +744,26 @@ const PropertyDetailedPage = () => {
           {[
             {
               title: 'Gallery',
-              description: 'View all unit images and renders',
-              button: 'View Gallery',
+              description: t('view_all_unit_images_and_renders'),
+              button: t('view_gallery'),
               icon: <Image />,
               bg: 'bg-pink-100',
               textColor: 'text-violet-600',
               buttonColor: 'text-violet-600 border border-violet-200',
             },
             {
-              title: 'Floor Plan',
-              description: 'Download detailed floor plan',
-              button: 'Download Plan',
+              title: t('floor_plan'),
+              description: t("download_detailed_floor_plan"),
+              button: t("download_plan"),
               icon: <FileText />,
               bg: 'bg-blue-50',
               textColor: 'text-blue-600',
               buttonColor: 'text-blue-600 border border-blue-200',
             },
             {
-              title: 'Payment Plan',
-              description: 'Flexible payment options',
-              button: 'View Details',
+              title: t("payment_plan"),
+              description: t("flexible_payment_options"),
+              button: t("view_details"),
               icon: <CreditCard />,
               bg: 'bg-green-50',
               textColor: 'text-green-600',
@@ -885,9 +885,9 @@ const PropertyDetailedPage = () => {
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-pink-600 text-white rounded-2xl mt-12 p-6 sm:p-8 shadow-lg">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold">Ready to Reserve? </h2>
+              <h2 className="text-xl sm:text-2xl font-bold">{t("ready_to_reserve")}</h2>
               <p className="text-sm sm:text-base text-white/90 mt-1">
-                Secure this unit online now with a small deposit.
+                {t("secure_unit_online")}
               </p>
             </div>
             <div className="bg-white/20 p-2 rounded-full">
@@ -901,11 +901,11 @@ const PropertyDetailedPage = () => {
               onClick={() => setShowReserveModal(true)}
               className="w-full sm:w-1/2 bg-white text-purple-700 font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-100 transition"
             >
-              <span className="text-lg"><Shield /></span> Reserve Now
+              <span className="text-lg"><Shield /></span> {t("reserve_now")}
             </button>
 
             <button className="w-full sm:w-1/2 bg-gradient-to-r from-purple-300 via-pink-400 to-pink-300 text-white font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 border border-white/30 hover:opacity-90 transition">
-              <span className="text-lg"><Calendar /></span> <p className='font-semibold'>Pay Booking Fee</p>
+              <span className="text-lg"><Calendar /></span> <p className='font-semibold'>{t("pay_booking_fee")}</p>
             </button>
           </div>
         </div>
@@ -913,15 +913,15 @@ const PropertyDetailedPage = () => {
         {/* OR Divider */}
         <div className="my-6 flex items-center justify-center gap-2 text-gray-400 text-sm font-medium">
           <div className="h-px bg-gray-300 w-10" />
-          or
+          {t("or")}
           <div className="h-px bg-gray-300 w-10" />
         </div>
 
         {/* Section 2: Need Help or More Info */}
         <div className="bg-white rounded-2xl p-6 sm:p-8 mb-10 shadow-md text-center border border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("Need Help or More Info?")}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("need_help_or_info")}</h2>
           <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
-            Talk to our property advisor for pricing, viewing, and guidance.
+            {t("talk_to_property_advisor")}
           </p>
           <div className="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white shadow-md overflow-hidden">
             <img
@@ -952,7 +952,7 @@ const PropertyDetailedPage = () => {
               href={`tel:${agent?.phone_number || ""}`}
               className="w-full sm:w-[calc(50%-0.5rem)] bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition rounded-lg"
             >
-              <span className="text-lg"><Phone /></span> Call Now
+              <span className="text-lg"><Phone /></span> {t('Call Now')}
             </a>
 
             {/* WhatsApp */}
@@ -961,7 +961,7 @@ const PropertyDetailedPage = () => {
               target="_blank"
               className="w-full sm:w-[calc(50%-0.5rem)] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
             >
-              <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> WhatsApp
+              <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> {t('WhatsApp')}
             </a>
 
             {/* Request Callback */}
