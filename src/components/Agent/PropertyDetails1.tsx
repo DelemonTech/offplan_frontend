@@ -191,7 +191,7 @@ const PropertyDetails1 = () => {
 
   const handleWhatsApp = () => {
     const currentUrl = window.location.href;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.city?.[i18n.language]}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
+    const message = `Hi ${agent?.name?.[i18n.language]}! I'm interested in ${projectData.title} in ${projectData.city?.city?.[i18n.language]}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -304,12 +304,12 @@ const PropertyDetails1 = () => {
   const priceRange =
     minPrice && maxPrice
       ? `AED ${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
-      : "Price Not Available";
+      : t("price_not_available");
 
   const areaRange =
     minArea && maxArea
       ? `${minArea} – ${maxArea} sq.ft.`
-      : "Area Not Available";
+      : t("area_not_available");
 
   // const handover = (() => {
   //   const delivery = projectData?.delivery_date;
@@ -438,22 +438,38 @@ const PropertyDetails1 = () => {
   //   {} as Record<number, string>
   // );
 
-  const getUnitTypeName = (apartment) => {
-    if (!apartment) return ""; // ⬅ Prevents error if apartment is undefined
+  // const getUnitTypeName = (apartment) => {
+  //   if (!apartment) return ""; // ⬅ Prevents error if apartment is undefined
 
-    const rooms = apartment.rooms?.toString().trim();
+  //   const rooms = apartment.rooms?.toString().trim();
 
-    if (!isNaN(Number(rooms))) {
-      return `${rooms} ${t("Bedroom")} ${apartment.unit_type}`;
-    }
-    if (rooms?.toLowerCase() === "studio") {
-      return `${t("Studio")} ${apartment.unit_type}`;
-    }
-    return apartment.unit_type || ""; // fallback to unit_type or empty
-  };
+  //   if (!isNaN(Number(rooms))) {
+  //     return `${rooms} ${t("Bedroom ")} ${t(apartment.unit_type)}`;
+  //   }
+  //   if (rooms?.toLowerCase() === "studio") {
+  //     return `${t("Studio")} ${apartment.unit_type}`;
+  //   }
+  //   return apartment.unit_type || ""; // fallback to unit_type or empty
+  // };
 
+const getUnitTypeName = (apartment) => {
+  if (!apartment) return "";
 
+  const lang = i18n.language || "en";
 
+  const roomText = apartment.rooms?.[lang] || apartment.rooms?.en;
+  const unitTypeText = apartment.unit_type?.[lang] || apartment.unit_type?.en;
+
+  if (roomText?.toLowerCase() === "studio") {
+    return `${t("Studio")} ${unitTypeText || t("Apartment")}`;
+  }
+
+  if (!isNaN(Number(roomText))) {
+    return `${roomText} ${t("Bedroom")} ${unitTypeText || t("Apartment")}`;
+  }
+
+  return unitTypeText || t("Apartment");
+};
   // Group property_units by apartment_id
   const groupedUnits = projectData.property_units.reduce((acc, unit) => {
     const roomKey = `${unit.apartment_id}`; // Group by apartment_id
@@ -478,32 +494,57 @@ const PropertyDetails1 = () => {
     {} as Record<number, string>
   );
 
-  const unitTypes = Object.entries(groupedUnits).map(([apartmentId, units]: [string, any[]], index) => {
-    // const unitTypeName = apartmentNameMap[Number(apartmentId)] || `Apartment ID ${apartmentId}`;
-    const groupedApartment = projectData.grouped_apartments[index];
-    return {
-      type: getUnitTypeName(groupedApartment),
-      available: units.length,
-      startingPrice: Math.min(...units.map((u) => u.price)),
-      icon: <Bed className="text-blue-500" />,
-      color: "bg-purple-50",
-      subUnits: units.map((unit) => ({
-        id: unit.apt_no || `Unit ${unit.id}`,
-        floor: unit.floor_no,
-        size: `${unit.area} sq.ft`,
-        price: unit.price,
-        floorPlan:
-          Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
-            ? unit.floor_plan_image[0]
-            : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
-              ? JSON.parse(unit.floor_plan_image)[0]
-              : "NO_FLOOR_PLAN",
-        status: projectData.status || "Available",
-        apartmentType: getUnitTypeName(groupedApartment),
-      })),
-    };
-  });
+  // const unitTypes = Object.entries(groupedUnits).map(([apartmentId, units]: [string, any[]], index) => {
+  //   // const unitTypeName = apartmentNameMap[Number(apartmentId)] || `Apartment ID ${apartmentId}`;
+  //   const groupedApartment = projectData.grouped_apartments[index];
+  //   return {
+  //     type: getUnitTypeName(groupedApartment),
+  //     available: units.length,
+  //     startingPrice: Math.min(...units.map((u) => u.price)),
+  //     icon: <Bed className="text-blue-500" />,
+  //     color: "bg-purple-50",
+  //     subUnits: units.map((unit) => ({
+  //       id: unit.apt_no || `Unit ${unit.id}`,
+  //       floor: unit.floor_no,
+  //       size: `${unit.area} sq.ft`,
+  //       price: unit.price,
+  //       floorPlan:
+  //         Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
+  //           ? unit.floor_plan_image[0]
+  //           : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
+  //             ? JSON.parse(unit.floor_plan_image)[0]
+  //             : "NO_FLOOR_PLAN",
+  //       status: projectData.status || t("available"),
+  //       apartmentType: getUnitTypeName(groupedApartment),
+  //     })),
+  //   };
+  // });
 
+  const unitTypes = Object.entries(groupedUnits).map(([apartmentId, units]: [string, any[]], index) => {
+  const groupedApartment = projectData.grouped_apartments[index];
+
+  return {
+    type: getUnitTypeName(groupedApartment), // ✅ Already localized
+    available: units.length,
+    startingPrice: Math.min(...units.map((u) => u.price)),
+    icon: <Bed className="text-blue-500" />,
+    color: "bg-purple-50",
+    subUnits: units.map((unit) => ({
+      id: unit.apt_no || `Unit ${unit.id}`,
+      floor: unit.floor_no,
+      size: `${unit.area} sq.ft`,
+      price: unit.price,
+      floorPlan:
+        Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
+          ? unit.floor_plan_image[0]
+          : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
+            ? JSON.parse(unit.floor_plan_image)[0]
+            : "NO_FLOOR_PLAN",
+      status: projectData.status || t("Available"), // ✅ Translated fallback
+      apartmentType: getUnitTypeName(groupedApartment), // ✅ Localized again
+    })),
+  };
+});
   const getTimeAgo = (minutesAgo: number) => {
     const now = new Date();
     const past = new Date(now.getTime() - minutesAgo * 60000);
@@ -533,22 +574,45 @@ const PropertyDetails1 = () => {
   //   };
   // }) || [];
 
-  const amenities = projectData.facilities?.map((fac: any) => {
-    const currentLang = i18n.language;
+//   const amenities = projectData.facilities?.map((fac: any) => {
+//   const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
 
-    // Get the localized facility name with fallback
-    const facilityName = fac.facilities?.[currentLang] || fac.facilities?.en || fac.name || "Unknown";
+//   const facilityName = fac.name?.[currentLang] || fac.name?.en || "Unknown";
 
-    // Find the icon and color
-    const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" };
-    const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
+//   const iconInfo = facilityIconMap[facilityName] || {
+//     icon: "Sparkle",
+//     color: "text-gray-400",
+//   };
+//   const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
 
-    return {
-      name: facilityName,
-      IconComponent,
-      color: iconInfo.color,
-    };
-  }) || [];
+//   return {
+//     name: facilityName,
+//     IconComponent,
+//     color: iconInfo.color,
+//   };
+// }) || [];
+const amenities = projectData.facilities?.map((fac: any) => {
+  const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
+
+  // Always use English name (or fallback) for icon mapping
+  const defaultFacilityName = fac.name?.en || "Unknown";
+
+  // Display name in current language
+  const facilityDisplayName = fac.name?.[currentLang] || defaultFacilityName;
+
+  const iconInfo = facilityIconMap[defaultFacilityName] || {
+    icon: "Sparkle",
+    color: "text-gray-400",
+  };
+
+  const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
+
+  return {
+    name: facilityDisplayName,
+    IconComponent,
+    color: iconInfo.color,
+  };
+}) || [];
 
   const paymentPlans = projectData.payment_plans || [];
 
@@ -682,7 +746,7 @@ const PropertyDetails1 = () => {
             <div className="flex flex-wrap gap-5 justify-center text-sm md:text-base font-semibold mt-15 py-5">
               {[
                 { text: t('Guaranteed ROI Contract'), color: 'bg-blue-50 text-blue-600', icon: IconGuarantee },
-                { text: t('Zero Risk – Escrow Protected'), color: 'bg-green-50 text-green-600', icon: IconShield }
+                // { text: t('Zero Risk – Escrow Protected'), color: 'bg-green-50 text-green-600', icon: IconShield }
               ].map((item, index) => (
                 <div
                   key={index}
@@ -869,9 +933,10 @@ const PropertyDetails1 = () => {
                       </div>
                       <div>
                         <h4 className="text-lg font-semibold text-gray-900">
-                          {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : t('No Info')}
+                          {/* {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : t('No Info')} */}
+                          {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `${t("ID")}: ${unit.subUnits[0].id}` : t('No Info')}
                         </h4>
-                        <p className="text-sm text-gray-500">{unit.available} {t("units available")}</p>
+                        <p className="text-sm text-gray-500">{unit.available} {t("units_available")}</p>
                       </div>
                     </div>
 
@@ -927,20 +992,20 @@ const PropertyDetails1 = () => {
                                 </span>
                                 <div className='float-right'>
                                   <span
-                                    className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === "Available"
+                                    className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === t("Available")
                                       ? "bg-green-100 text-green-700"
                                       : "bg-red-100 text-red-700"
                                       }`}
                                   >
-                                    {sub.status ? sub.status : "Coming Soon"}
+                                    {sub.status || t("Coming Soon")}
                                   </span>
                                 </div>
                               </div>
 
                               {/* Details */}
                               <ul className="text-gray-500 text-xs mb-2">
-                                <li>Floor: {sub.floor || "N/A"}</li>
-                                <li>Size: {sub.size}</li>
+                                <li>{t("Floor")}: {sub.floor || "N/A"}</li>
+                                <li>{t("Size")}: {sub.size}</li>
                               </ul>
 
                               {/* Price */}
@@ -987,7 +1052,7 @@ const PropertyDetails1 = () => {
                                   }}
                                   className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
                                 >
-                                  View Details
+                                  {t("View Details")}
                                 </button>
                               </div>
                             </div>
@@ -1000,7 +1065,7 @@ const PropertyDetails1 = () => {
                   {/* Fallback if no sub-units */}
                   {expandedUnit === unit.type && unit.subUnits.length === 0 && (
                     <div className="bg-gray-50 rounded-b-2xl p-4 text-center text-gray-500 border-t">
-                      No units available in this category
+                      {t("No units available in this category")}
                     </div>
                   )}
                 </motion.div>
@@ -1095,48 +1160,55 @@ const PropertyDetails1 = () => {
 
           {/* Payment Plan */}
           {paymentPlans.length > 0 && (
-            <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
-              <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-poppins text-gray-600">
-                {t("Payment Plans")}
-              </h3>
+  <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
+    <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-poppins text-gray-600">
+      {t("Payment Plans")}
+    </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {paymentPlans.map((plan, index) => (
-                  <div
-                    key={index}
-                    className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
-                  >
-                    {/* Plan Header */}
-                    <div className="mb-5 border-b pb-3">
-                      <h4 className="text-xl font-bold text-purple-600">{t(plan.name?.[i18n.language])}</h4>
-                      <p className="text-sm text-gray-500 italic">{t(plan.description?.[i18n.language])}</p>
-                    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {paymentPlans.map((plan, index) => (
+        <div
+          key={index}
+          className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
+        >
+          {/* Plan Header */}
+          <div className="mb-5 border-b pb-3">
+            <h4 className="text-xl font-bold text-purple-600">
+              {plan.name?.[i18n.language] || t(plan.name?.en || "Payment Plan")}
+            </h4>
+            <p className="text-sm text-gray-500 italic">
+              {plan.description?.[i18n.language] || t(plan.description?.en || "")}
+            </p>
+          </div>
 
-                    {/* Steps */}
-                    <div className="space-y-4">
-                      {plan.values.map((val, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
-                        >
-                          {/* Left: Step Badge & Name */}
-                          <div className="flex items-center gap-3">
-                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
-                              {idx + 1}
-                            </span>
-                            <span className="text-gray-800 font-medium">{val.name}</span>
-                          </div>
+          {/* Steps */}
+          <div className="space-y-4">
+            {plan.values.map((val, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
+              >
+                {/* Left: Step Badge & Name */}
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
+                    {idx + 1}
+                  </span>
+                  <span className="text-gray-800 font-medium">
+                    {val.values?.[i18n.language] || t(val.values?.en || val.name)}
+                  </span>
+                </div>
 
-                          {/* Right: Value */}
-                          <span className="text-blue-700 font-bold">{val.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                {/* Right: Value */}
+                <span className="text-blue-700 font-bold">{val.value}</span>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
 
         </div>
         {/* CTA */}
@@ -1145,9 +1217,11 @@ const PropertyDetails1 = () => {
           <p className="mb-4 text-white/90">
             {/* Contact {agent?.name || "our team"} today for exclusive access and personalized assistance */}
             {t("Contact {{name}} today for exclusive access and personalized assistance", {
-              name: agent?.name || "our team"
+              name: agent?.name?.[i18n.language] || "our team"
             })}
+            
           </p>
+
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href={`tel:${agent?.phone_number || ""}`}
@@ -1211,3 +1285,6 @@ const PropertyDetails1 = () => {
 };
 
 export default PropertyDetails1;
+
+
+ 

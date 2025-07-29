@@ -115,7 +115,7 @@ const RatingBox = ({ agent }) => {
           <Textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Write your short comment... (optional)"
+            placeholder={t("Write your short comment... (optional)")}
             className="min-h-[100px] bg-white/80 backdrop-blur-sm border-purple-200 focus:border-purple-400 focus:ring-purple-400/30 resize-none rounded-xl"
           />
         </div>

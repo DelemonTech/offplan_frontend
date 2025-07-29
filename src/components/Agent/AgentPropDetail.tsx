@@ -8,12 +8,14 @@ import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 import logoPath from "@/assets/OFFPLAN_MARKET.png"
 import * as LucideIcons from 'lucide-react';
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 import { useLocation } from "react-router-dom";
 // import CallToAction from "@/components/Agent/CallToAction"
 
 const AgentPropDetail = () => {
 
   const location = useLocation();
+  const { t } = useTranslation();
   const agent = location.state?.agent;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -33,6 +35,7 @@ const AgentPropDetail = () => {
     'Last down payment confirmed 1 hour ago',
     'Last offer negotiated 2 hours ago',
   ];
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
