@@ -40,8 +40,9 @@ const RatingBox = ({ agent }) => {
 
   const displayRating = hoveredRating || rating;
 
-  const localizedName =
-  i18n.language === 'fa' ? agent.fa_name : agent.name;
+  const localizedName = agent.name;
+  console.log('local',localizedName);
+  
 
   if (isSubmitted) {
     return (
@@ -63,7 +64,9 @@ const RatingBox = ({ agent }) => {
     <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200/50 shadow-lg">
       <div className="text-center mb-6">
         <h3 className="text-xl font-bold text-gray-800 mb-2">
-          ⭐ {t("How would you rate {{name}}'s consultation?", { name: localizedName })}
+          ⭐ {t("rateConsultation", { name: localizedName?.[i18n.language] })}
+
+          {/* ⭐ {t("How would you rate {{name}}'s consultation?", { name: localizedName })} */}
         </h3>
         <p className="text-gray-600 text-sm">
           {t("Share your experience with others")}

@@ -14,6 +14,8 @@ import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 import * as LucideIcons from 'lucide-react'
 import RequestCallBackModal from './RequestCallBackModal';
 import GalleryPage from './Gallery';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 // import { jsPDF } from "jspdf";
 
@@ -31,6 +33,18 @@ const PropertyDetailedPage = () => {
   const [agent, setAgent] = useState<any>(location.state?.agent || null);
   const [projectData, setProjectData] = useState<any>(location.state?.projectData || null);
   const [unit, setUnit] = useState<any>(location.state?.unit || null);
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    console.log('lng', lng);
+
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
+  const lang = i18n.language || 'en';
+
 
   // const hostUrl = import.meta.env.VITE_HOST_URL;
 
@@ -160,28 +174,52 @@ const PropertyDetailedPage = () => {
   })();
   // Calculate handover quarter
   const handover = (() => {
-    const delivery = projectData?.delivery_date;
+  const delivery = projectData?.delivery_date;
+  const { i18n } = useTranslation();
+  const lang = i18n.language || "en";
 
-    if (!delivery) return "N/A";
+  if (!delivery) return lang === "ar" ? "غير متوفر" : lang === "fa" ? "ناموجود" : "N/A";
 
-    // If it's a number in YYYYMM format (e.g., 202502)
-    if (typeof delivery === "number" && delivery > 100000) {
-      const year = Math.floor(delivery / 100);
-      const month = delivery % 100;
+  if (typeof delivery === "number" && delivery > 100000) {
+    const year = Math.floor(delivery / 100);
+    const month = delivery % 100;
 
-      if (month < 1 || month > 12) return "Invalid Date";
+    if (month < 1 || month > 12) return lang === "ar" ? "تاريخ غير صالح" : lang === "fa" ? "تاریخ نامعتبر" : "Invalid Date";
 
-      const quarter = Math.ceil(month / 3);
-      return `Q${quarter} ${year}`;
-    }
+    const quarter = Math.ceil(month / 3);
 
-    // If it's already a string like "Q4 2024"
-    if (typeof delivery === "string") {
-      return delivery;
-    }
+    if (lang === "ar") return `الربع ${quarter} ${year}`;
+    if (lang === "fa") return `سه‌ماهه ${quarter} ${year}`;
+    return `Q${quarter} ${year}`;
+  }
 
-    return "N/A";
-  })();
+  if (typeof delivery === "string") return delivery;
+
+  return lang === "ar" ? "غير متوفر" : lang === "fa" ? "ناموجود" : "N/A";
+})();
+  // const handover = (() => {
+  //   const delivery = projectData?.delivery_date;
+
+  //   if (!delivery) return "N/A";
+
+  //   // If it's a number in YYYYMM format (e.g., 202502)
+  //   if (typeof delivery === "number" && delivery > 100000) {
+  //     const year = Math.floor(delivery / 100);
+  //     const month = delivery % 100;
+
+  //     if (month < 1 || month > 12) return "Invalid Date";
+
+  //     const quarter = Math.ceil(month / 3);
+  //     return `Q${quarter} ${year}`;
+  //   }
+
+  //   // If it's already a string like "Q4 2024"
+  //   if (typeof delivery === "string") {
+  //     return delivery;
+  //   }
+
+  //   return "N/A";
+  // })();
 
   //   const featureList = [
   //   { label: 'Type', value: unitData.apartmentType, icon:  <Home />, gradient: 'from-pink-500 to-purple-500' },
@@ -317,7 +355,7 @@ const PropertyDetailedPage = () => {
     const propertyId = segments[3]; // 1782
 
     const cleanUrl = `${window.location.origin}/${username}/property-details/?id=${propertyId}`;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title} in ${projectData.city?.name}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${cleanUrl}`;
+    const message = `Hi ${agent.name}! I'm interested in ${projectData.title?.[i18n.language]} in ${projectData.city?.city?.[i18n.language]}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${cleanUrl}`;
     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -374,10 +412,10 @@ const PropertyDetailedPage = () => {
             <div className="absolute bottom-4 left-4 z-10">
 
               <h2 className="text-3xl text-white  lg:text-xl font-bold mb-1">
-                <div>{projectData.title}<br /><span className='text-2xl'> Unit ID : {unit.id}</span></div>
+                <div>{projectData.title?.[i18n.language]}<br /><span className='text-2xl'> Unit ID : {unit.id}</span></div>
               </h2>
               <p className="text-sm flex text-white  items-center gap-1 mb-8">
-                <span className="material-icons text-sm"><MapPin /></span>{projectData.city?.name}, {projectData.district?.name}
+                <span className="material-icons text-sm"><MapPin /></span>{projectData.city?.city?.[i18n.language]}, {projectData.district?.district?.[i18n.language]}
               </p>
               {/* <div className='bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold'>
                 <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">AED {formatPrice(unit.price)}</p>
@@ -410,7 +448,7 @@ const PropertyDetailedPage = () => {
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
               Explore This Exclusive Property in{" "}
-              {projectData?.title || "N/A"}
+              {projectData?.title?.[i18n.language] || "N/A"}
             </span>
           </h2>
 
@@ -428,7 +466,7 @@ const PropertyDetailedPage = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-600">Overview</p>
-                <p className="text-sm font-semibold text-gray-800">{unit.apartmentType ? unit.apartmentType : unit.id ? `${unit.id}` : 'No Info'}</p>
+                <p className="text-sm font-semibold text-gray-800">{t(unit.apartmentType ? unit.apartmentType : unit.id ? `${unit.id}` : 'No Info')}</p>
               </div>
             </div>
 
@@ -870,7 +908,7 @@ const PropertyDetailedPage = () => {
 
           {/* Name and Title */}
           <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-1">
-            {agent.name}
+            {agent.name?.[i18n.language]}
           </h3>
           <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
           <div className="text-sm text-gray-700 font-medium mb-4">
