@@ -9,6 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import RatingBox from './RatingBox';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 
 const AgentProfile = ({ agent, project }) => {
   const { t, i18n } = useTranslation();
@@ -29,12 +30,12 @@ const AgentProfile = ({ agent, project }) => {
   const [focusedField, setFocusedField] = useState('');
   const [showFullText, setShowFullText] = useState(false);
 
-  const openWhatsApp = () => {
-    const message = encodeURIComponent(`Hi ${agent.name}, I'm interested in off-plan properties. Can you help me?
+  // const openWhatsApp = () => {
+  //   const message = encodeURIComponent(`Hi ${agent.name}, I'm interested in off-plan properties. Can you help me?
 
-  Here's the link: ${window.location.href}`);
-    window.open(`https://wa.me/${agent.phone_number}?text=${message}`, '_blank');
-  };
+  // Here's the link: ${window.location.href}`);
+  //   window.open(`https://wa.me/${agent.phone_number}?text=${message}`, '_blank');
+  // };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -148,8 +149,9 @@ const remainingDescription = description.slice(truncateLength);
                 {agent && project && (
                   <div className="flex flex-col gap-4 mt-6">
                     <a
-                      href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(`Hi ${agent.name}, I'm interested in your off-plan properties.\n\nHere's the link: ${window.location.href}/property-details/?id=${project.id}`)}`}
-                      target="_blank"
+                      // href={`https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(`Hi ${agent.name}, I'm interested in your off-plan properties.\n\nHere's the link: ${window.location.href}/property-details/?id=${project.id}`)}`}
+                      // target="_blank"
+                      onClick={()=>handleWhatsApp(project,agent,t,i18n)}
                       rel="noopener noreferrer"
                     >
                       <Button

@@ -262,7 +262,7 @@ const AgentPageContent = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header logo={logoPath} />
-      <HeroSection agent={agentData} />
+      <HeroSection agent={agentData} project={properties[0]} />
       <FeaturedProjects
         agent={agentData}
         properties={properties}
