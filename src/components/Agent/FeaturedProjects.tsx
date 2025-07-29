@@ -442,8 +442,8 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
 
     const shareText = `${t("🌇 {{title}} – {{city}}, {{district}}", {
       title: t(project.title?.i18n.language),
-      city: t(project.city?.name),
-      district: t(project.district?.name)
+      city: t(project.city?.city?.[i18n.language]),
+      district: t(project.district?.district?.[i18n.language])
     })}
 📍 ${t("Location")}: ${t(project.city?.name || 'N/A')}, ${t(project.district?.name || 'N/A')}
 🏷️ ${t("Price")}: AED ${formatAED(project.low_price)}
@@ -1154,7 +1154,11 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                               <div className="flex items-center justify-center gap-4 text-sm">
                                 <div className="flex items-center gap-1">
                                   <Calendar size={14} />
-                                  <span>{formatDeliveryDate(project.delivery_date)}</span>
+                                  <span>
+                                    {t(formatDeliveryDate(project.delivery_date, i18n.language))}
+                                  </span>
+
+                                  {/* <span>{formatDeliveryDate(project.delivery_date)}</span> */}
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <CreditCard size={14} />
@@ -1174,7 +1178,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                               <div className="flex items-center text-gray-600">
                                 <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
                                 <span className="font-medium text-sm sm:text-base truncate">
-                                  {t(project.city?.name || 'Unknown City')}, {t(project.district?.name || 'Unknown District')}
+                                  {t(project.city?.name || 'Unknown City')}, {t(project.district?.district?.[i18n.language] || 'Unknown District')}
                                 </span>
                               </div>
                             </div>
@@ -1205,10 +1209,9 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                                   <Calendar size={12} className="text-blue-500" />
                                   {/* <span>{formatDeliveryDate(project.delivery_date)}</span> */}
                                   <span>
-                                    {t("deliveryBy", {
-                                      date: formatDeliveryDate(project.delivery_date, i18n.language)
-                                    })}
+                                    {t(formatDeliveryDate(project.delivery_date, i18n.language))}
                                   </span>
+
                                 </div>
                                 {/* <div className="flex items-center gap-1">
                                     <CreditCard size={12} className="text-purple-500" />
