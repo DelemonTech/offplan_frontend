@@ -489,14 +489,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       project.title?.[i18n.language] || project.title?.en || t("project.title");
 
     const cityName =
-      project?.city?.city?.[i18n.language] || project.city?.name || t("project.city");
+      project?.city?.name?.[i18n.language] || project.city?.name || t("project.city");
 
     const cityLabel =
-      project.city?.city?.[i18n.language] || project.city?.city?.en || "";
+      project.city?.name?.[i18n.language] || project.city?.name?.en || "";
 
     const districtLabel =
-      project.district?.district?.[i18n.language] ||
-      project.district?.district?.en ||
+      project.district?.name?.[i18n.language] ||
+      project.district?.name?.en ||
       "";
     //   const statusName =
     // project.status?.[i18n.language] || project.status?.en || t("N/A");
@@ -1246,7 +1246,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                               <div className="flex items-center text-gray-600">
                                 <MapPin size={16} className="mr-2 text-pink-500 flex-shrink-0" />
                                 <span className="font-medium text-sm sm:text-base truncate">
-                                  {t(project.city?.name || 'Unknown City')}, {t(project.district?.district?.[i18n.language] || 'Unknown District')}
+                                  {t(project.city?.name?.[i18n.language] || 'Unknown City')}, {t(project.district?.name?.[i18n.language] || 'Unknown District')}
                                 </span>
                               </div>
                             </div>
