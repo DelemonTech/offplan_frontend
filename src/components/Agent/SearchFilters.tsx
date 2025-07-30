@@ -67,10 +67,20 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   // get districts of selected city
   const getFilteredNeighborhoods = () => {
     if (!selectedCity || citiesData.length === 0) {
-      return []; // ✅ Return an empty array, not undefined
+      return [];
     }
+
     const city = citiesData.find((c) => c.name === selectedCity);
-    return city?.districts || [];
+    if (!city || !Array.isArray(city.districts)) {
+      return [];
+    }
+
+    // Return objects with both display name and English value
+    return city.districts.map((item) => ({
+      displayName: item.district?.[i18n.language] || item.name,
+      englishName: item.district?.en || item.name, // ✅ Always have English name for backend
+      originalName: item.name
+    }));
   };
 
 
@@ -116,17 +126,17 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   };
 
   const residentialSubtypes = [
-    { name: t('Apartment'), icon: Building },
-    { name: t('Villa'), icon: Home },
-    { name: t('Townhouse'), icon: Building },
-    { name: t('Penthouse'), icon: Building2 }
+    { name: t('Apartment'), value: 'Apartment', icon: Building },
+    { name: t('Villa'), value: 'Villa', icon: Home },
+    { name: t('Townhouse'), value: 'Townhouse', icon: Building },
+    { name: t('Penthouse'), value: 'Penthouse', icon: Building2 }
   ];
 
   const commercialSubtypes = [
-    { name: t('Office'), icon: Building },
-    { name: t('Shop'), icon: Store },
-    { name: t('Warehouse'), icon: Warehouse },
-    { name: t('Retail'), icon: ShoppingCart }
+    { name: t('Office'), value: 'Office', icon: Building },
+    { name: t('Shop'), value: 'Shop', icon: Store },
+    { name: t('Warehouse'), value: 'Warehouse', icon: Warehouse },
+    { name: t('Retail'), value: 'Retail', icon: ShoppingCart }
   ];
 
   const [userSelectedCity, setUserSelectedCity] = useState("");
@@ -155,10 +165,16 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     // window.scrollTo({ top: 930, behavior: 'smooth' });
     setIsSearchLoading(true);
 
+    const getEnglishPropertyType = (type) => {
+      if (type === t('Residential')) return 'Residential';
+      if (type === t('Commercial')) return 'Commercial';
+      return type;
+    };
+
     const filters = {
       city: selectedCity || '',
       district: selectedNeighborhood || '',
-      property_type: propertyType || '',
+      property_type: getEnglishPropertyType(propertyType) || '',
       unit_type: selectedPropertySubtype || '',
       rooms: propertyType === t('Residential') ? bedrooms?.toString() : '',
       delivery_year: deliveryYear ? parseInt(deliveryYear) : 0,
@@ -180,13 +196,10 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     // } 
     if (propertyStatus) {
       setStatusName(propertyStatus);
-      filters.property_status = propertyStatus;
+      filters.property_status = propertyStatus; // ✅ Already English
     } else {
       setStatusName('');
     }
-
-    // 👉 Optional: log the final request body
-    // console.log("🔍 Sending search filters:", filters);
 
     try {
       const response = await fetch(`${hostUrl}/properties/filter/`, {
@@ -203,20 +216,16 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
         setProperties(result.data.results || []);
         setNextPageUrl(result.data.next_page_url || null);
       }
-      // setTimeout(() => {
-      //   window.scrollTo({ top: 930, behavior: 'smooth' });
-      // }, 100);
     } catch (error) {
       console.error('❌ Search error:', error);
-    }
-    finally {
-      setIsSearchLoading(false); // ✅ Stop loading
+    } finally {
+      setIsSearchLoading(false);
     }
   };
 
   const projectStatuses = [
-    t('Ready'),
-    t('Off Plan')
+    { name: t('Ready'), value: 'Ready' },
+    { name: t('Off Plan'), value: 'Off Plan' }
   ];
 
   const deliveryYears = [
@@ -234,7 +243,13 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
 
   const handlePropertyTypeChange = (type: string) => {
     setPropertyType(type);
-    setSelectedPropertySubtype(type === t('Commercial') ? t('Office') : t('Apartment'));
+
+    // Always set English subtypes for backend
+    if (type === t('Commercial')) {
+      setSelectedPropertySubtype('Office'); // ✅ Always English
+    } else {
+      setSelectedPropertySubtype('Apartment'); // ✅ Always English
+    }
   };
 
   // useEffect(() => {
@@ -321,7 +336,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           <Select
             value={selectedNeighborhood}
             onValueChange={setSelectedNeighborhood}
-            disabled={!selectedCity} // disable until city is selected
+            disabled={!selectedCity}
           >
             <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
               <SelectValue placeholder={selectedCity ? t('Select area') : t('Select city first')} />
@@ -330,8 +345,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
               {selectedCity ? (
                 getFilteredNeighborhoods().length > 0 ? (
                   getFilteredNeighborhoods().map((district) => (
-                    <SelectItem key={district} value={district}>
-                      {district}
+                    <SelectItem key={district.englishName} value={district.englishName}> {/* ✅ Use English value */}
+                      {district.displayName} {/* ✅ Display translated name */}
                     </SelectItem>
                   ))
                 ) : (
@@ -375,15 +390,15 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             const IconComponent = subtype.icon;
             return (
               <button
-                key={subtype.name}
-                onClick={() => setSelectedPropertySubtype(subtype.name)}
-                className={`p-3 sm:p-4 rounded-xl border-2 text-center transition-all duration-300 hover:shadow-lg hover:scale-105 ${selectedPropertySubtype === subtype.name
+                key={subtype.value}
+                onClick={() => setSelectedPropertySubtype(subtype.value)} // ✅ Use English value
+                className={`p-3 sm:p-4 rounded-xl border-2 text-center transition-all duration-300 hover:shadow-lg hover:scale-105 ${selectedPropertySubtype === subtype.value // ✅ Compare with English value
                   ? 'border-pink-400 bg-gradient-to-br from-pink-50 to-blue-50 text-pink-700 shadow-md'
                   : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-white/70 bg-white/50'
                   }`}
               >
                 <IconComponent className="mx-auto mb-2" size={20} />
-                <div className="text-xs sm:text-sm font-semibold">{subtype.name}</div>
+                <div className="text-xs sm:text-sm font-semibold">{subtype.name}</div> {/* Display translated name */}
               </button>
             );
           })}
@@ -455,7 +470,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
               </SelectTrigger>
               <SelectContent className="bg-white border-gray-200 shadow-lg">
                 {developers.map((dev) => (
-                  <SelectItem key={dev} value={dev.toLowerCase()}>
+                  <SelectItem key={dev} value={dev}> {/* ✅ FIXED: Keep original casing */}
                     {dev}
                   </SelectItem>
                 ))}
@@ -471,17 +486,16 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             </div>
             <Select
               onValueChange={(value) => {
-                setPropertyStatus(value);
-                // console.log("property status: ", value);
+                setPropertyStatus(value); // ✅ Store English value
               }}
             >
               <SelectTrigger className="h-11 bg-white/70 border-gray-200 focus:border-pink-400 focus:ring-pink-300 rounded-lg">
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder={t("Select status")} />
               </SelectTrigger>
               <SelectContent className="bg-white border-gray-200 shadow-lg">
                 {projectStatuses.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {status}
+                  <SelectItem key={status.value} value={status.value}> {/* ✅ Use English value */}
+                    {status.name} {/* ✅ Display translated name */}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -505,7 +519,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
                 />
                 <div className="flex justify-between items-center mt-3 text-sm text-gray-600 font-medium">
                   <div className="text-left">
-                    <span className="block text-xs text-gray-500">Min</span>
+                    <span className="block text-xs text-gray-500">{t("Min")}</span>
                     <span className="block text-sm font-semibold">{formatCurrency(priceRange[0])}</span>
                   </div>
                   <span className="text-center text-xs text-gray-400">to</span>
@@ -533,12 +547,12 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
                 <div className="flex justify-between items-center mt-3 text-sm text-gray-600 font-medium">
                   <div className="text-left">
                     <span className="block text-xs text-gray-500">{t('Min')}</span>
-                    <span className="block text-sm font-semibold">{areaRange[0].toLocaleString()} sq ft</span>
+                    <span className="block text-sm font-semibold">{areaRange[0].toLocaleString()} {t("sq ft")}</span>
                   </div>
                   <span className="text-center text-xs text-gray-400">to</span>
                   <div className="text-right">
                     <span className="block text-xs text-gray-500">{t('Max')}</span>
-                    <span className="block text-sm font-semibold">{areaRange[1].toLocaleString()} sq ft</span>
+                    <span className="block text-sm font-semibold">{areaRange[1].toLocaleString()} {t("sq ft")}</span>
                   </div>
                 </div>
               </div>
@@ -557,7 +571,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
               </SelectTrigger>
               <SelectContent className="bg-white border-gray-200 shadow-lg">
                 {deliveryYears.map((year) => (
-                  <SelectItem key={year} value={year.toLowerCase()}>
+                  <SelectItem key={year} value={year}> {/* ✅ FIXED: Keep original value */}
                     {year}
                   </SelectItem>
                 ))}
