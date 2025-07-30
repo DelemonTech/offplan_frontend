@@ -426,7 +426,7 @@ const PropertyDetailedPage = () => {
             {/* Price Tag Clipped to Top Right */}
             <div className="absolute top-0 left-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-xs font-semibold px-4 py-1 rounded-rl-2xl rounded-br-2xl shadow-md">
               <p className="text-2xl font-bold bg-gradient-to-r from-pink-100 to-purple-200 text-transparent bg-clip-text">
-                AED {formatPrice(unit.price)}
+                {t("AED")} {formatPrice(unit.price)}
               </p>
             </div>
 
@@ -1050,11 +1050,13 @@ const PropertyDetailedPage = () => {
             </button>
 
             <h2 className="text-xl font-bold text-purple-700 mb-2">
+              {t("Request")} <span className="text-blue-600">{t("Payment Plan")}</span>
               {/* {modalType === "floor plan" && <>Request <span className="text-pink-600">Floor Plan</span></>} */}
               {/* {modalType === "gallery" && <>Request <span className="text-green-600">Gallery Access</span></>} */}
-              {modalType === "payment plan" && <>{t("Request")} <span className="text-blue-600">{t("Payment Plan")}</span></>}
+              {modalType === "payment plan" && <></>}
             </h2>
             <p className="text-gray-600 text-sm mb-4">
+             { t("Enter your details to get the full payment plan details.")}
               {/* {modalType === "floor plan" && "Enter your details to receive the floor plan for this unit."} */}
               {/* {modalType === "gallery" && "Enter your details to access the gallery and see all images."} */}
               {modalType === "payment plan" && t("Enter your details to get the full payment plan details.")}
@@ -1074,7 +1076,8 @@ const PropertyDetailedPage = () => {
                 <label className="text-sm font-bold text-gray-700">{t("WhatsApp Number")} *</label>
                 <input
                   type="tel"
-                  placeholder="+971 50 123 4567"
+                  placeholder={t("+971 50 123 4567")}
+                  dir="rtl"
                   className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
                 />
               </div>
@@ -1092,6 +1095,7 @@ const PropertyDetailedPage = () => {
                   type="submit"
                   className="w-1/2 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg shadow hover:opacity-90 transition"
                 >
+                  {t("Send Payment Plan")}
                   {/* {modalType === "floor plan" && "Send Floor Plan"} */}
                   {/* {modalType === "gallery" && "Send Gallery Access"} */}
                   {modalType === "payment plan" && t("Send Payment Plan")}
