@@ -922,7 +922,7 @@ const PropertyDetailedPage = () => {
 
         {/* Section 2: Need Help or More Info */}
         <div className="bg-white rounded-2xl p-6 sm:p-8 mb-10 shadow-md text-center border border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("need_help_or_info")}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("Need Help or More Info?")}</h2>
           <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
             {t("Talk to our property advisor for pricing, viewing, and guidance.")}
           </p>

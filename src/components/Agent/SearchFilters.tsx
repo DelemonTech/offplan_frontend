@@ -66,27 +66,17 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
 
   // get districts of selected city
   const getFilteredNeighborhoods = () => {
-    if (!selectedCity || citiesData.length === 0) {
-      return [];
-    }
+    if (!selectedCity || citiesData.length === 0) return [];
 
-    const city = citiesData.find((c) => c.name === selectedCity);
-    console.log('districts',city);
+    const city = citiesData.find((c) => c.name.en === selectedCity); // Match English name
+    if (!city || !Array.isArray(city.districts)) return [];
 
-    if (!city || !Array.isArray(city.districts)) {
-      return [];
-    }
-
-    // Return objects with both display name and English value
-
-    return city.districts.map((item) => ({
-      displayName: item.city.district?.name?.[i18n.language] || item.name,
-      englishName: item.city.district?.en || item.name, // ✅ Always have English name for backend
-      originalName: item.name,
-
+    return city.districts.map((district) => ({
+      displayName: district.name?.[i18n.language] || district.name?.en,
+      englishName: district.name?.en
     }));
   };
-  
+
 
 
   // Simulate API call to get max values
@@ -324,8 +314,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
               </SelectTrigger>
               <SelectContent>
                 {citiesData.map(city => (
-                  <SelectItem key={city.id} value={city.name?.[i18n.language]}>
-                    {city.name?.[i18n.language]}
+                  <SelectItem key={city.id} value={city.name.en}>
+                    {city.name?.[i18n.language] || city.name.en}
                   </SelectItem>
                 ))}
               </SelectContent>
