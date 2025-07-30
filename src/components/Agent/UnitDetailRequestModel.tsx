@@ -1,8 +1,22 @@
 import { useState } from "react";
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 export default function RequestPlanModal({ unitName, onClose }) {
   const [name, setName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+
+  const { t, i18n } = useTranslation();
+    const [isOpen, setIsOpen] = useState(false);
+  
+    const changeLanguage = (lng) => {
+      i18n.changeLanguage(lng);
+      console.log('lng', lng);
+  
+      document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+      setIsOpen(false);
+    };
+    const lang = i18n.language || 'en';
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,7 +28,7 @@ export default function RequestPlanModal({ unitName, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-bold text-purple-600 mb-2">Request Floor Plan</h2>
+        <h2 className="text-xl font-bold text-purple-600 mb-2">{t("Request")}{t("Floor Plan")}</h2>
         <p className="text-gray-600 mb-4">
           Enter your details to receive the floor plan for <strong>{unitName}</strong>
         </p>
@@ -23,7 +37,7 @@ export default function RequestPlanModal({ unitName, onClose }) {
             <label className="block text-sm font-medium mb-1">Name *</label>
             <input
               type="text"
-              placeholder="Enter your full name"
+              placeholder={t("Enter your full name")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -31,7 +45,7 @@ export default function RequestPlanModal({ unitName, onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">WhatsApp Number *</label>
+            <label className="block text-sm font-medium mb-1">{t("WhatsApp Number")} *</label>
             <input
               type="tel"
               placeholder="+971 50 123 4567"
@@ -47,7 +61,7 @@ export default function RequestPlanModal({ unitName, onClose }) {
               onClick={onClose}
               className="flex-1 bg-gray-200 text-gray-700 rounded-lg px-4 py-2 hover:bg-gray-300"
             >
-              Cancel
+              {t("Cancel")}
             </button>
             <button
               type="submit"

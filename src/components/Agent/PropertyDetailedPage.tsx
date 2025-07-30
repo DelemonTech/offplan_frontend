@@ -464,7 +464,7 @@ const PropertyDetailedPage = () => {
             {/* Availability badge */}
             <div className="absolute top-3 right-3">
               <span className="bg-green-500 text-white text-sm font-semibold px-3 py-2 rounded-full shadow">
-                {unit.status}
+                {t(unit.status)}
               </span>
             </div>
           </div>
@@ -612,7 +612,7 @@ const PropertyDetailedPage = () => {
                 </a>
               </div>
             ) : (
-              <span className="text-gray-500 text-sm">No Floor Plan Available</span>
+              <span className="text-gray-500 text-sm">{t("No Floor Plan Available")}</span>
             )}
           </div>
 
@@ -632,7 +632,7 @@ const PropertyDetailedPage = () => {
               </>
             ) : (
               <div className="flex items-center justify-center w-full h-72 bg-gray-100 text-gray-500 rounded-xl">
-                No Floor Plan Image
+                {t("No Floor Plan Image")}
               </div>
             )}
 
@@ -693,7 +693,7 @@ const PropertyDetailedPage = () => {
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
                   <p className="text-xs text-gray-500 font-bold mb-1">{t("Status")}</p>
-                  <p className="text-base font-semibold text-green-600">{unit.status}</p>
+                  <p className="text-base font-semibold text-green-600">{t(unit.status)}</p>
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
                   <p className="text-xs text-gray-500 font-bold mb-1">{t("Size")}</p>
@@ -702,7 +702,7 @@ const PropertyDetailedPage = () => {
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
                   <p className="text-xs text-gray-500 font-bold mb-1">{t("Unit Price")}</p>
                   <p className="text-base font-bold text-purple-600">
-                    AED {formatPrice(unit.price)}
+                    {t("AED")} {formatPrice(unit.price)}
                   </p>
                 </div>
               </div>
@@ -712,7 +712,7 @@ const PropertyDetailedPage = () => {
             {paymentPlans.length > 0 && (
               <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500">
                 <h4 className="text-xl font-bold text-purple-600 mb-4">
-                  {paymentPlans[0].name?.[i18n.language] || paymentPlans[0].name?.en || "Payment Plan"}
+                  {paymentPlans[0].name?.[i18n.language] || paymentPlans[0].name?.en || t("Payment Plan")}
                 </h4>
                 <div className="space-y-4">
                   {paymentPlans[0].values.map((val, idx) => (
@@ -746,6 +746,7 @@ const PropertyDetailedPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
           {[
             {
+              key:'gallery',
               title: t('Gallery'),
               description: t('View all unit images and renders'),
               button: t('View Gallery'),
@@ -755,6 +756,7 @@ const PropertyDetailedPage = () => {
               buttonColor: 'text-violet-600 border border-violet-200',
             },
             {
+              key:'floor_plan',
               title: t('Floor Plan'),
               description: t('Download detailed floor plan'),
               button: t('Download Plan'),
@@ -764,6 +766,7 @@ const PropertyDetailedPage = () => {
               buttonColor: 'text-blue-600 border border-blue-200',
             },
             {
+              key:'payment_plan',
               title: t('Payment Plan'),
               description: t('Flexible payment options'),
               button: t('View Details'),
@@ -789,7 +792,7 @@ const PropertyDetailedPage = () => {
               {/* Button */}
               <button
                 onClick={() => {
-                  if (card.title === "Floor Plan") {
+                  if (card.key === "floor_plan") {
                     // Programmatically open the floor plan image in new tab
                     if (unit.floorPlan && unit.floorPlan !== "NO_FLOOR_PLAN") {
                       window.open(unit.floorPlan, "_blank", "noopener,noreferrer");
@@ -797,7 +800,7 @@ const PropertyDetailedPage = () => {
                       alert("No floor plan available");
                     }
                   }
-                  else if (card.title === "Gallery") {
+                  else if (card.key === "gallery") {
                     const imageUrls = projectData?.property_images?.map(img => img.image) || [];
                     if (imageUrls.length > 0) {
                       setShowGalleryModal(true);
@@ -1048,27 +1051,27 @@ const PropertyDetailedPage = () => {
 
             <h2 className="text-xl font-bold text-purple-700 mb-2">
               {/* {modalType === "floor plan" && <>Request <span className="text-pink-600">Floor Plan</span></>} */}
-              {modalType === "gallery" && <>Request <span className="text-green-600">Gallery Access</span></>}
-              {modalType === "payment plan" && <>Request <span className="text-blue-600">Payment Plan</span></>}
+              {/* {modalType === "gallery" && <>Request <span className="text-green-600">Gallery Access</span></>} */}
+              {modalType === "payment plan" && <>{t("Request")} <span className="text-blue-600">{t("Payment Plan")}</span></>}
             </h2>
             <p className="text-gray-600 text-sm mb-4">
               {/* {modalType === "floor plan" && "Enter your details to receive the floor plan for this unit."} */}
-              {modalType === "gallery" && "Enter your details to access the gallery and see all images."}
-              {modalType === "payment plan" && "Enter your details to get the full payment plan details."}
+              {/* {modalType === "gallery" && "Enter your details to access the gallery and see all images."} */}
+              {modalType === "payment plan" && t("Enter your details to get the full payment plan details.")}
             </p>
 
             <form className="space-y-4">
               <div>
-                <label className="text-sm font-bold text-gray-700">Name *</label>
+                <label className="text-sm font-bold text-gray-700">{t("Name")} *</label>
                 <input
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder={t("Enter your full name")}
                   className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-gray-700">WhatsApp Number *</label>
+                <label className="text-sm font-bold text-gray-700">{t("WhatsApp Number")} *</label>
                 <input
                   type="tel"
                   placeholder="+971 50 123 4567"
@@ -1082,7 +1085,7 @@ const PropertyDetailedPage = () => {
                   onClick={() => setShowModal(false)}
                   className="w-1/2 border border-purple-300 text-purple-700 py-2 rounded-lg hover:bg-purple-50 transition"
                 >
-                  Cancel
+                  {t("Cancel")}
                 </button>
 
                 <button
@@ -1090,8 +1093,8 @@ const PropertyDetailedPage = () => {
                   className="w-1/2 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg shadow hover:opacity-90 transition"
                 >
                   {/* {modalType === "floor plan" && "Send Floor Plan"} */}
-                  {modalType === "gallery" && "Send Gallery Access"}
-                  {modalType === "payment plan" && "Send Payment Plan"}
+                  {/* {modalType === "gallery" && "Send Gallery Access"} */}
+                  {modalType === "payment plan" && t("Send Payment Plan")}
                 </button>
 
               </div>
@@ -1127,7 +1130,7 @@ const PropertyDetailedPage = () => {
                 <label className="text-sm font-bold text-gray-700">Full Name *</label>
                 <input
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder={t("Enter your full name")}
                   className="w-full border-2 border-purple-300 focus:border-purple-500 rounded-lg px-4 py-2 outline-none"
                 />
               </div>
