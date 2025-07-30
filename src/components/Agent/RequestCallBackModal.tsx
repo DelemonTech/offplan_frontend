@@ -11,16 +11,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import '@/i18n';
 import { Mail,Calendar } from 'lucide-react';
 
 const RequestCallBackModal = ({ onClose }: { onClose: () => void }) => {
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
     email: '',
   });
 
-  const { t, i18n } = useTranslation();
 
   const [focusedField, setFocusedField] = useState('');
 

@@ -922,7 +922,7 @@ const PropertyDetailedPage = () => {
 
         {/* Section 2: Need Help or More Info */}
         <div className="bg-white rounded-2xl p-6 sm:p-8 mb-10 shadow-md text-center border border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("Need Help or More Info?")}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("need_help_or_info")}</h2>
           <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
             {t("Talk to our property advisor for pricing, viewing, and guidance.")}
           </p>
@@ -955,7 +955,7 @@ const PropertyDetailedPage = () => {
               href={`tel:${agent?.phone_number || ""}`}
               className="w-full sm:w-[calc(50%-0.5rem)] bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition rounded-lg"
             >
-              <span className="text-lg"><Phone /></span> Call Now
+              <span className="text-lg"><Phone /></span> {t('Call Now')}
             </a>
 
             {/* WhatsApp */}
@@ -966,7 +966,7 @@ const PropertyDetailedPage = () => {
               onClick={()=>handleWhatsApp(projectData,agent,t,i18n)}
               className="w-full sm:w-[calc(50%-0.5rem)] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
             >
-              <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> WhatsApp
+              <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> {t('WhatsApp')}
             </a>
 
             {/* Request Callback */}

@@ -71,17 +71,22 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     }
 
     const city = citiesData.find((c) => c.name === selectedCity);
+    console.log('districts',city);
+
     if (!city || !Array.isArray(city.districts)) {
       return [];
     }
 
     // Return objects with both display name and English value
+
     return city.districts.map((item) => ({
-      displayName: item.district?.[i18n.language] || item.name,
-      englishName: item.district?.en || item.name, // ✅ Always have English name for backend
-      originalName: item.name
+      displayName: item.city.district?.name?.[i18n.language] || item.name,
+      englishName: item.city.district?.en || item.name, // ✅ Always have English name for backend
+      originalName: item.name,
+
     }));
   };
+  
 
 
   // Simulate API call to get max values
@@ -319,8 +324,8 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
               </SelectTrigger>
               <SelectContent>
                 {citiesData.map(city => (
-                  <SelectItem key={city.id} value={city.name}>
-                    {city.name}
+                  <SelectItem key={city.id} value={city.name?.[i18n.language]}>
+                    {city.name?.[i18n.language]}
                   </SelectItem>
                 ))}
               </SelectContent>

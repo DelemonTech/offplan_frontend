@@ -783,7 +783,7 @@ const PropertyDetails1 = () => {
           </motion.h1>
           <div className="flex items-center text-white font-semibold mt-3">
             <MapPin className="w-5 h-5 mr-2" />
-            {t(projectData.district?.district?.[i18n.language] || "Unknown District")}, {t(projectData.city?.city?.[i18n.language] || "Unknown City")}
+            {t(projectData.district?.name?.[i18n.language] || "Unknown District")}, {t(projectData.city?.name?.[i18n.language] || "Unknown City")}
           </div>
           <AnimatePresence mode="wait">
             <motion.div
