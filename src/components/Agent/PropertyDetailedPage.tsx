@@ -16,6 +16,7 @@ import RequestCallBackModal from './RequestCallBackModal';
 import GalleryPage from './Gallery';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 
 // import { jsPDF } from "jspdf";
 
@@ -228,6 +229,7 @@ const PropertyDetailedPage = () => {
   //   { label: 'Handover', value: 'Q4 2025', icon: <Calendar  />, gradient: 'from-pink-500 to-purple-500' },
   //   { label: 'Payment', value: '60/40', icon: <DollarSign  />, gradient: 'from-green-400 to-blue-400' },
   // ];
+
   const featureList = [
     {
       label: 'Type',
@@ -348,41 +350,42 @@ const PropertyDetailedPage = () => {
   // }) || [];
   const amenities = projectData.facilities?.map((fac: any) => {
     const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
-  
+
     // Always use English name (or fallback) for icon mapping
     const defaultFacilityName = fac.name?.en || "Unknown";
-  
+
     // Display name in current language
     const facilityDisplayName = fac.name?.[currentLang] || defaultFacilityName;
-  
+
     const iconInfo = facilityIconMap[defaultFacilityName] || {
       icon: "Sparkle",
       color: "text-gray-400",
     };
-  
+
     const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
-  
+
     return {
       name: facilityDisplayName,
       IconComponent,
       color: iconInfo.color,
     };
   }) || [];
-  
 
-  const handleWhatsApp = () => {
-    const currentUrl = window.location.href;
-    const pathname = window.location.pathname; // e.g., /sahar/property-details/1782/unit-details/G2-M2 (Villa)
-    const segments = pathname.split("/");
 
-    const username = segments[1]; // sahar
-    const propertyId = segments[3]; // 1782
+  // const handleWhatsApp = () => {
+  //   const currentUrl = window.location.href;
+  //   const pathname = window.location.pathname; // e.g., /sahar/property-details/1782/unit-details/G2-M2 (Villa)
+  //   const segments = pathname.split("/");
 
-    const cleanUrl = `${window.location.origin}/${username}/property-details/?id=${propertyId}`;
-    const message = `Hi ${agent.name}! I'm interested in ${projectData.title?.[i18n.language]} in ${projectData.city?.city?.[i18n.language]}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${cleanUrl}`;
-    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  //   const username = segments[1]; // sahar
+  //   const propertyId = segments[3]; // 1782
+
+  //   const cleanUrl = `${window.location.origin}/${username}/property-details/?id=${propertyId}`;
+  //   const message = `Hi ${agent.name}! I'm interested in ${projectData.title?.[i18n.language]} in ${projectData.city?.city?.[i18n.language]}. Starting from AED ${parseInt(projectData.low_price).toLocaleString()}. Can you share more details?\n\nHere’s the link: ${cleanUrl}`;
+  //   const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  //   window.open(whatsappUrl, '_blank');
+  // };
+  console.log("unit:", unit);
 
   const [fullscreenImage, setFullscreenImage] = useState(null);
 
@@ -436,7 +439,7 @@ const PropertyDetailedPage = () => {
             <div className="absolute bottom-4 left-4 z-10">
 
               <h2 className="text-3xl text-white  lg:text-xl font-bold mb-1">
-                <div>{projectData.title?.[i18n.language]}<br /><span className='text-2xl'> Unit ID : {unit.id}</span></div>
+                <div>{projectData.title?.[i18n.language]}<br /><span className='text-2xl'> {t("Unit ID :")} {unit.id}</span></div>
               </h2>
               <p className="text-sm flex text-white  items-center gap-1 mb-8">
                 <span className="material-icons text-sm"><MapPin /></span>{projectData.city?.city?.[i18n.language]}, {projectData.district?.district?.[i18n.language]}
@@ -446,9 +449,9 @@ const PropertyDetailedPage = () => {
               </div> */}
               <p className="flex items-center text-sm font-medium text-white mt-1 gap-1 bg-red-400 rounded-2xl px-3">
                 <Flame className="text-white animate-burn" />
-                Reserve 24/7 –
+                {t("Reserve 24/7 –")}
                 <span className="text-1xl font-bold text-white text-transparent bg-clip-text py-1">
-                  No Down Payment Required !
+                  {t("No Down Payment Required !")}
                 </span>
               </p>
 
@@ -471,7 +474,7 @@ const PropertyDetailedPage = () => {
           <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-             {t("exclusive_property", { title })}
+              {t("exclusive_property", { title })}
             </span>
           </h2>
 
@@ -500,7 +503,7 @@ const PropertyDetailedPage = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-600">{t("area")}</p>
-                <p className="text-sm font-semibold text-gray-800">{unit.size} </p>
+                <p className="text-sm font-semibold text-gray-800">{t(unit.size)}</p>
               </div>
             </div>
 
@@ -681,23 +684,23 @@ const PropertyDetailedPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Unit Info */}
             <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500">
-              <h4 className="text-xl font-bold text-purple-600 mb-4">{t("unit_details")}</h4>
+              <h4 className="text-xl font-bold text-purple-600 mb-4">{t("Unit Details")}</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">{t("unit_id")}</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Unit ID")}</p>
                   <p className="text-base font-medium bg-gradient-to-r from-pink-500 to-blue-400 text-transparent bg-clip-text">{unit.id}</p>
 
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">{t("status")}</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Status")}</p>
                   <p className="text-base font-semibold text-green-600">{unit.status}</p>
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">{t("size")}</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Size")}</p>
                   <p className="text-base font-medium text-blue-400">{unit.size}</p>
                 </div>
                 <div className="border bg-purple-50 rounded-xl p-4 shadow-sm">
-                  <p className="text-xs text-gray-500 font-bold mb-1">{t("unit_price")}</p>
+                  <p className="text-xs text-gray-500 font-bold mb-1">{t("Unit Price")}</p>
                   <p className="text-base font-bold text-purple-600">
                     AED {formatPrice(unit.price)}
                   </p>
@@ -743,27 +746,27 @@ const PropertyDetailedPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
           {[
             {
-              title: 'Gallery',
-              description: t('view_all_unit_images_and_renders'),
-              button: t('view_gallery'),
+              title: t('Gallery'),
+              description: t('View all unit images and renders'),
+              button: t('View Gallery'),
               icon: <Image />,
               bg: 'bg-pink-100',
               textColor: 'text-violet-600',
               buttonColor: 'text-violet-600 border border-violet-200',
             },
             {
-              title: t('floor_plan'),
-              description: t("download_detailed_floor_plan"),
-              button: t("download_plan"),
+              title: t('Floor Plan'),
+              description: t('Download detailed floor plan'),
+              button: t('Download Plan'),
               icon: <FileText />,
               bg: 'bg-blue-50',
               textColor: 'text-blue-600',
               buttonColor: 'text-blue-600 border border-blue-200',
             },
             {
-              title: t("payment_plan"),
-              description: t("flexible_payment_options"),
-              button: t("view_details"),
+              title: t('Payment Plan'),
+              description: t('Flexible payment options'),
+              button: t('View Details'),
               icon: <CreditCard />,
               bg: 'bg-green-50',
               textColor: 'text-green-600',
@@ -829,7 +832,7 @@ const PropertyDetailedPage = () => {
                     </button>
 
                     <h3 className="text-2xl font-bold text-blue-600 mb-4 text-center">
-                      Project Gallery
+                      {t("Project Gallery")}
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto">
@@ -885,9 +888,9 @@ const PropertyDetailedPage = () => {
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-pink-600 text-white rounded-2xl mt-12 p-6 sm:p-8 shadow-lg">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold">{t("ready_to_reserve")}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold">{t("Ready to Reserve?")}</h2>
               <p className="text-sm sm:text-base text-white/90 mt-1">
-                {t("secure_unit_online")}
+                {t("Secure this unit online now with a small deposit.")}
               </p>
             </div>
             <div className="bg-white/20 p-2 rounded-full">
@@ -901,11 +904,11 @@ const PropertyDetailedPage = () => {
               onClick={() => setShowReserveModal(true)}
               className="w-full sm:w-1/2 bg-white text-purple-700 font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-100 transition"
             >
-              <span className="text-lg"><Shield /></span> {t("reserve_now")}
+              <span className="text-lg"><Shield /></span> {t("Reserve Now")}
             </button>
 
             <button className="w-full sm:w-1/2 bg-gradient-to-r from-purple-300 via-pink-400 to-pink-300 text-white font-medium py-2.5 rounded-lg flex justify-center items-center gap-2 border border-white/30 hover:opacity-90 transition">
-              <span className="text-lg"><Calendar /></span> <p className='font-semibold'>{t("pay_booking_fee")}</p>
+              <span className="text-lg"><Calendar /></span> <p className='font-semibold'>{t("Pay Booking Fee")}</p>
             </button>
           </div>
         </div>
@@ -921,12 +924,12 @@ const PropertyDetailedPage = () => {
         <div className="bg-white rounded-2xl p-6 sm:p-8 mb-10 shadow-md text-center border border-gray-200">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t("need_help_or_info")}</h2>
           <p className="text-gray-600 text-sm sm:text-base mt-1 mb-6">
-            {t("talk_to_property_advisor")}
+            {t("Talk to our property advisor for pricing, viewing, and guidance.")}
           </p>
           <div className="w-20 h-20 mx-auto mb-4 rounded-full border-4 border-white shadow-md overflow-hidden">
             <img
               src={agent.profile_image_url}// Replace with actual image path or import
-              alt="Sahar Kalhor"
+              alt="agent_profile"
               className="w-full h-full object-cover"
             />
           </div>
@@ -935,10 +938,10 @@ const PropertyDetailedPage = () => {
           <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-1">
             {agent.name?.[i18n.language]}
           </h3>
-          <p className="text-gray-600 mb-4 text-sm">Your Property Advisor</p>
+          <p className="text-gray-600 mb-4 text-sm">{t("Your Property Advisor")}</p>
           <div className="text-sm text-gray-700 font-medium mb-4">
             <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full shadow">
-              Trusted Advisor – ⭐ 4.9 (38 reviews)
+              {t("Trusted Advisor")} – ⭐ {t("4.9 (38 reviews)")}
             </span>
           </div>
           {/* Description */}
@@ -957,8 +960,10 @@ const PropertyDetailedPage = () => {
 
             {/* WhatsApp */}
             <a
-              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-              target="_blank"
+              // href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              // target="_blank"
+              href=''
+              onClick={()=>handleWhatsApp(projectData,agent,t,i18n)}
               className="w-full sm:w-[calc(50%-0.5rem)] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 transition"
             >
               <span className="text-lg"><img src={IconWhatsapp} alt="WhatsApp" className="w-6 h-6" /></span> {t('WhatsApp')}
@@ -1192,7 +1197,7 @@ const PropertyDetailedPage = () => {
       {(
         <div className="fixed bottom-8 right-5 z-50">
           <button
-            onClick={handleWhatsApp} // Use the first property for WhatsApp
+            onClick={()=>handleWhatsApp(projectData,agent,t,i18n)} // Use the first property for WhatsApp
             className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
           >
             <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />

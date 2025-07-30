@@ -15,6 +15,7 @@ import IconGuarantee from "@/assets/guarantee.png"
 import IconShield from "@/assets/shield.png"
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 // import PropertyDetails1 from '../Agent/PropertyDetails1';
 
 
@@ -415,14 +416,62 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     setIsSummaryModalOpen(true);
   };
 
-  const handleWhatsApp = (project: any) => {
+//   const handleWhatsApp1 = () => {
+//   const dummyAgent = {
+//     name: {
+//       en: "Sahar Kalhor",
+//     },
+//     whatsapp_number: "+971529529687",
+//     username: "sahar"
+//   };
 
-    const message = `Hi ${agent.name}! I'm interested in ${project.title?.[i18n.language]} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
+//   const dummyProject = {
+//     id: 1202,
+//     title: {
+//       en: "Raffles"
+//     },
+//     city: {
+//       name: "Dubai"
+//     },
+//     low_price: 702000
+//   };
 
-Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
-    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+//   console.log("typeof dummyAgent.name.en:", typeof dummyAgent.name.en); // should be "string"
+//   console.log("typeof dummyProject.title.en:", typeof dummyProject.title.en); // should be "string"
+
+//   const message = `Hi ${dummyAgent.name.en}! I'm interested in ${dummyProject.title.en} in ${dummyProject.city.name}. Starting from AED ${dummyProject.low_price}. Can you share more details?`;
+
+//   alert(message); // 🔔 SEE THIS BEFORE WHATSAPP
+
+//   const whatsappUrl = `https://wa.me/${dummyAgent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+//   window.open(whatsappUrl, '_blank');
+// };
+
+
+
+//   const handleWhatsApp = (project: any) => {
+//     const localizedAgentName =
+//       agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
+//     console.log("proj: ", project.title?.[i18n.language], localizedAgentName);
+//     const translations = {
+//       en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.[i18n.language] || project.title.en} in ${project.city?.city?.[i18n.language]}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
+
+// Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
+
+//       ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${project.title?.ar} في ${project.city.name}. تبدأ الأسعار من AED ${formatAED(project.low_price)}. هل يمكنك مشاركة المزيد من التفاصيل؟
+
+// رابط العقار: https://offplan.market/sahar/property-details/?id=${project.id}`,
+
+//       fa: `${localizedAgentName} عزیز، من به ${project.title?.fa} در ${project.city.name} علاقه‌مندم. قیمت‌ها از AED ${formatAED(project.low_price)} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟
+
+// لینک ملک: https://offplan.market/sahar/property-details/?id=${project.id}`
+//     };
+
+//     const message = translations[i18n.language] || translations.en;
+//     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+//     window.open(whatsappUrl, '_blank');
+//   };
+
 
   const agentName = i18n.language === 'fa'
     ? agent.fa_name
@@ -430,31 +479,41 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
       ? agent.ar_name
       : agent.name;
 
+
   const handleShare = (project: any) => {
-    const whatsappMessage = t("Hi {{agent}}! I'm interested in {{title}} in {{city}}. Starting from AED {{price}}. Can you share more details?", {
-      agent: agentName,
-      title: t(project.title?.[i18n.language]),
-      city: t(project.city?.name),
-      price: formatAED(project.low_price)
-    });
+    console.log("sub unit count:", project.subunit_count.label);
+    const agentName =
+      agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
 
-    const whatsappLink = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+    const projectTitle =
+      project.title?.[i18n.language] || project.title?.en || t("project.title");
 
-    const shareText = `${t("🌇 {{title}} – {{city}}, {{district}}", {
-      title: t(project.title?.i18n.language),
-      city: t(project.city?.city?.[i18n.language]),
-      district: t(project.district?.district?.[i18n.language])
-    })}
-📍 ${t("Location")}: ${t(project.city?.name || 'N/A')}, ${t(project.district?.name || 'N/A')}
+    const cityName =
+      project?.city?.city?.[i18n.language] || project.city?.name || t("project.city");
+
+    const cityLabel =
+      project.city?.city?.[i18n.language] || project.city?.city?.en || "";
+
+    const districtLabel =
+      project.district?.district?.[i18n.language] ||
+      project.district?.district?.en ||
+      "";
+    //   const statusName =
+    // project.status?.[i18n.language] || project.status?.en || t("N/A");
+
+    const shareText = `🌇 ${projectTitle} – ${cityLabel}, ${districtLabel}
+📍 ${t("Location")}: ${cityLabel}, ${districtLabel}
 🏷️ ${t("Price")}: AED ${formatAED(project.low_price)}
-📐 ${t("Unit Size")}: ${project.min_area || 'N/A'} ${t("sq.ft")}
-📆 ${t("Handover")}: ${formatDeliveryDate(project.delivery_date) || 'TBA'}
-🏗️ ${t("Status")}: ${statusName || t('N/A')}
-🛏️ ${t("Available Unit(s)")}: ${project.subunit_count || 'N/A'} ${t("available")}
+📐 ${t("Unit Size")}: ${project.min_area || t("N/A")} ${t("sq.ft")}
+📆 ${t("Handover")}: ${formatDeliveryDate(project.delivery_date) || t("TBA")}
+🏗️ ${t("Status")}: ${statusName || t("N/A")}
+🛏️ ${t("Available Unit(s)")}: ${project.subunit_count?.value
+        ? `${project.subunit_count.value} ${project.subunit_count.label?.[i18n.language] || ""} ${t("available")}`.trim()
+        : t("N/A")}
 
 💳 ${t("Payment Plan")}:
    ${t("Contact")} ${agentName} ${t("for more details")}:
-📞 ${t("WhatsApp")}: ${agent.whatsapp_number.replace(/\s+/g, '')}
+📞 ${t("WhatsApp")}: ${agent.whatsapp_number.replace(/\s+/g, "")}
 
 🌟 ${t("Highlights")}:
 • ${project.highlights?.[0] || t("Final unit available")}
@@ -465,18 +524,27 @@ Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
 https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
 
     if (navigator.share) {
-      navigator.share({
-        title: t(project.title?.[i18n.language]),
-        text: shareText,
-        url: window.location.href
-      });
+      navigator
+        .share({
+          title: projectTitle,
+          text: shareText,
+          // url: window.location.href,
+        })
+        .catch((err) => console.error("Share failed:", err));
     } else {
+      // console.log("✂️ Falling back to clipboard sharing");
       navigator.clipboard.writeText(shareText).then(() => {
+        // console.log("✅ Copied to clipboard:", shareText);
+        // alert("Copied to clipboard!"); // 🔔 TEMP confirmation
         setCopiedProjectId(project.id);
         setTimeout(() => setCopiedProjectId(null), 2000);
+      }).catch((err) => {
+        console.error("❌ Clipboard failed:", err);
+        alert("Copy failed. Your browser may block clipboard access.");
       });
     }
   };
+
 
   const getActualStatusBadgeContent = (property) => {
     const status = property?.property_status;
@@ -1282,7 +1350,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                                 className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleWhatsApp(project);
+                                  handleWhatsApp(project,agent,t,i18n);
                                 }}
                               >
                                 <img
@@ -1308,8 +1376,8 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                                   )}
                                 </Button>
 
-                                {copiedProjectId === project.id && (
-                                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#7d8bff] text-white text-xs px-2 py-1 rounded shadow">
+                                {project.id && copiedProjectId === project.id && (
+                                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#7d8bff] text-white text-xs px-2 py-1 rounded shadow z-50">
                                     {t('Link Copied!')}
                                   </div>
                                 )}
@@ -1375,16 +1443,16 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
         </button>
       </div>)} */}
 
-      {showFloatingBar && (
+      {/* {showFloatingBar && (
         <div className="fixed bottom-8 right-5 z-50">
           <button
-            onClick={() => handleWhatsApp(properties[0])} // Use the first property for WhatsApp
+            onClick={() => handleWhatsApp1()} // Use the first property for WhatsApp
             className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
           >
             <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
           </button>
         </div>
-      )}
+      )} */}
 
 
       <style>

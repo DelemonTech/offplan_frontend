@@ -5,8 +5,9 @@ import { TrendingUp, MessageCircle, Play, Pause, Volume2, VolumeX } from 'lucide
 import HeroVideo from '@/static/Unlock Dubai’s Best Off-Plan Deals with Nasser Dehghan (2).mp4';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 
-const HeroSection = ({ agent }) => {
+const HeroSection = ({ agent, project }) => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = React.useState(true);
@@ -37,11 +38,11 @@ const HeroSection = ({ agent }) => {
     }
   };
 
-  const handleWhatsApp = () => {
-    const message = `Hi ${agent.name}! I'm interested in Offplan market properties. Can you share more details?`
-    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  // const handleWhatsApp = () => {
+  //   const message = `Hi ${agent.name}! I'm interested in Offplan market properties. Can you share more details?`
+  //   const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  //   window.open(whatsappUrl, '_blank');
+  // };
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden">
@@ -99,7 +100,7 @@ const HeroSection = ({ agent }) => {
           <div className="text-center space-y-3 lg:space-y-8">
             {/* Main Headline - Simplified for Mobile */}
             <div className="space-y-1 lg:space-y-4 text-white text-center font-semibold">
-              <h1 className="text-4xl sm:text-3xl lg:text-7xl font-bold bg-gradient-to-r from-pink-700 to-blue-500 bg-clip-text text-transparent leading-tight">
+              <h1 className="text-4xl sm:text-3xl lg:text-7xl font-bold bg-gradient-to-r from-pink-700 to-blue-500 bg-clip-text text-transparent leading-tight pb-3">
                 <span>
                   {/* {i18n.language === 'fa' ? agent.fa_name : agent.name} */}
                   {agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}
@@ -130,7 +131,7 @@ const HeroSection = ({ agent }) => {
 
               {/* Secondary CTA - Desktop Only */}
               <Button
-                onClick={handleWhatsApp}
+                onClick={()=>handleWhatsApp(project,agent,t,i18n)}
                 variant="outline"
                 size="lg"
                 className="hidden lg:inline-flex ml-4 border-2 border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg transition-all duration-300"

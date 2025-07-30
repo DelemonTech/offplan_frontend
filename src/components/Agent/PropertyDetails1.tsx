@@ -14,6 +14,9 @@ import IconGuarantee from "@/assets/guarantee.png";
 import IconShield from "@/assets/shield.png";
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { formatAED } from '@/utils/FormatAED';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
+
 // import CallToAction from "@/components/Agent/CallToAction"
 
 const PropertyDetails1 = () => {
@@ -189,12 +192,64 @@ const PropertyDetails1 = () => {
   //   whatsapp_number: "+971 52 952 9687",
   // };
 
-  const handleWhatsApp = () => {
-    const currentUrl = window.location.href;
-    const message = `Hi ${agent?.name?.[i18n.language]}! I'm interested in ${projectData.title} in ${projectData.city?.city?.[i18n.language]}. ${t("Starting from")} AED ${parseInt(projectData.low_price).toLocaleString()}. ${t("Can you share more details?")}\n\n${t("Here’s the link:")} ${currentUrl}`;
-    const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+//    const handleWhatsApp = (project: any) => {
+//   // Debug logging to see the actual data structure
+//   console.log('Agent object:', agent);
+//   console.log('Project object:', project);
+//   console.log('Agent name structure:', agent?.name);
+//   console.log('Project title structure:', project?.title);
+
+//   // Safe extraction with fallbacks
+//   const localizedAgentName = (() => {
+//     if (!agent?.name) return 'Agent';
+    
+//     // If agent.name is a string, use it directly
+//     if (typeof agent.name === 'string') return agent.name;
+    
+//     // If it's an object with language keys
+//     return agent.name[i18n.language] || agent.name.en || agent.name.ar || 'Agent';
+//   })();
+
+//   const projectTitle = (() => {
+//     if (!project?.title) return 'a property';
+    
+//     // If project.title is a string, use it directly
+//     if (typeof project.title === 'string') return project.title;
+    
+//     // If it's an object with language keys
+//     return project.title[i18n.language] || project.title.en || project.title.ar || 'a property';
+//   })();
+
+//   const cityName = (() => {
+//     if (!project?.city) return 'Dubai';
+    
+//     // Handle different city name structures
+//     if (typeof project.city === 'string') return project.city;
+//     if (typeof project.city.name === 'string') return project.city.name;
+//     if (typeof project.city.name === 'object') {
+//       return project.city.name[i18n.language] || project.city.name.en || project.city.name.ar || 'Dubai';
+//     }
+    
+//     return 'Dubai';
+//   })();
+
+//   const projectPrice = project?.low_price ? formatAED(project.low_price) : 'competitive prices';
+//   const projectId = project?.id || '';
+
+//   const translations = {
+//     en: `Hi ${localizedAgentName}! I'm interested in ${projectTitle} in ${cityName}. Starting from AED ${projectPrice}. Can you share more details?${projectId ? `\n\nProperty Link: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
+
+//     ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${projectTitle} في ${cityName}. تبدأ الأسعار من AED ${projectPrice}. هل يمكنك مشاركة المزيد من التفاصيل؟${projectId ? `\n\nرابط العقار: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
+
+//     fa: `${localizedAgentName} عزیز، من به ${projectTitle} در ${cityName} علاقه‌مندم. قیمت‌ها از AED ${projectPrice} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟${projectId ? `\n\nلینک ملک: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`
+//   };
+
+//   const message = translations[i18n.language] || translations.en;
+//   const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  
+//   console.log('Final message:', message); // Debug the final message
+//   window.open(whatsappUrl, '_blank');
+// };
 
   const [messages, setMessages] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -452,24 +507,24 @@ const PropertyDetails1 = () => {
   //   return apartment.unit_type || ""; // fallback to unit_type or empty
   // };
 
-const getUnitTypeName = (apartment) => {
-  if (!apartment) return "";
+  const getUnitTypeName = (apartment) => {
+    if (!apartment) return "";
 
-  const lang = i18n.language || "en";
+    const lang = i18n.language || "en";
 
-  const roomText = apartment.rooms?.[lang] || apartment.rooms?.en;
-  const unitTypeText = apartment.unit_type?.[lang] || apartment.unit_type?.en;
+    const roomText = apartment.rooms?.[lang] || apartment.rooms?.en;
+    const unitTypeText = apartment.unit_type?.[lang] || apartment.unit_type?.en;
 
-  if (roomText?.toLowerCase() === "studio") {
-    return `${t("Studio")} ${unitTypeText || t("Apartment")}`;
-  }
+    if (roomText?.toLowerCase() === "studio") {
+      return `${t("Studio")} ${unitTypeText || t("Apartment")}`;
+    }
 
-  if (!isNaN(Number(roomText))) {
-    return `${roomText} ${t("Bedroom")} ${unitTypeText || t("Apartment")}`;
-  }
+    if (!isNaN(Number(roomText))) {
+      return `${roomText} ${t("Bedroom")} ${unitTypeText || t("Apartment")}`;
+    }
 
-  return unitTypeText || t("Apartment");
-};
+    return unitTypeText || t("Apartment");
+  };
   // Group property_units by apartment_id
   const groupedUnits = projectData.property_units.reduce((acc, unit) => {
     const roomKey = `${unit.apartment_id}`; // Group by apartment_id
@@ -521,31 +576,31 @@ const getUnitTypeName = (apartment) => {
   // });
 
   const unitTypes = Object.entries(groupedUnits).map(([apartmentId, units]: [string, any[]], index) => {
-  const groupedApartment = projectData.grouped_apartments[index];
+    const groupedApartment = projectData.grouped_apartments[index];
 
-  return {
-    type: getUnitTypeName(groupedApartment), // ✅ Already localized
-    available: units.length,
-    startingPrice: Math.min(...units.map((u) => u.price)),
-    icon: <Bed className="text-blue-500" />,
-    color: "bg-purple-50",
-    subUnits: units.map((unit) => ({
-      id: unit.apt_no || `Unit ${unit.id}`,
-      floor: unit.floor_no,
-      size: `${unit.area} ${t("sqft")}`,
-      price: unit.price,
-      floorPlan:
-        Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
-          ? unit.floor_plan_image[0]
-          : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
-            ? JSON.parse(unit.floor_plan_image)[0]
-            : "NO_FLOOR_PLAN",
-      status: projectData?.status?.[i18n.language] || t("Available"),
-      // status: projectData.status?.[i18n.language] || t("Available"), // ✅ Translated fallback
-      apartmentType: getUnitTypeName(groupedApartment), // ✅ Localized again
-    })),
-  };
-});
+    return {
+      type: getUnitTypeName(groupedApartment), // ✅ Already localized
+      available: units.length,
+      startingPrice: Math.min(...units.map((u) => u.price)),
+      icon: <Bed className="text-blue-500" />,
+      color: "bg-purple-50",
+      subUnits: units.map((unit) => ({
+        id: unit.apt_no || `Unit ${unit.id}`,
+        floor: unit.floor_no,
+        size: `${unit.area} ${t("sqft")}`,
+        price: unit.price,
+        floorPlan:
+          Array.isArray(unit.floor_plan_image) && unit.floor_plan_image.length > 0
+            ? unit.floor_plan_image[0]
+            : typeof unit.floor_plan_image === "string" && unit.floor_plan_image.trim().startsWith("[")
+              ? JSON.parse(unit.floor_plan_image)[0]
+              : "NO_FLOOR_PLAN",
+        status: projectData?.status?.[i18n.language] || t("Available"),
+        // status: projectData.status?.[i18n.language] || t("Available"), // ✅ Translated fallback
+        apartmentType: getUnitTypeName(groupedApartment), // ✅ Localized again
+      })),
+    };
+  });
   const getTimeAgo = (minutesAgo: number) => {
     const now = new Date();
     const past = new Date(now.getTime() - minutesAgo * 60000);
@@ -575,45 +630,45 @@ const getUnitTypeName = (apartment) => {
   //   };
   // }) || [];
 
-//   const amenities = projectData.facilities?.map((fac: any) => {
-//   const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
+  //   const amenities = projectData.facilities?.map((fac: any) => {
+  //   const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
 
-//   const facilityName = fac.name?.[currentLang] || fac.name?.en || "Unknown";
+  //   const facilityName = fac.name?.[currentLang] || fac.name?.en || "Unknown";
 
-//   const iconInfo = facilityIconMap[facilityName] || {
-//     icon: "Sparkle",
-//     color: "text-gray-400",
-//   };
-//   const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
+  //   const iconInfo = facilityIconMap[facilityName] || {
+  //     icon: "Sparkle",
+  //     color: "text-gray-400",
+  //   };
+  //   const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
 
-//   return {
-//     name: facilityName,
-//     IconComponent,
-//     color: iconInfo.color,
-//   };
-// }) || [];
-const amenities = projectData.facilities?.map((fac: any) => {
-  const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
+  //   return {
+  //     name: facilityName,
+  //     IconComponent,
+  //     color: iconInfo.color,
+  //   };
+  // }) || [];
+  const amenities = projectData.facilities?.map((fac: any) => {
+    const currentLang = i18n.language; // e.g., 'en', 'ar', 'fa'
 
-  // Always use English name (or fallback) for icon mapping
-  const defaultFacilityName = fac.name?.en || "Unknown";
+    // Always use English name (or fallback) for icon mapping
+    const defaultFacilityName = fac.name?.en || "Unknown";
 
-  // Display name in current language
-  const facilityDisplayName = fac.name?.[currentLang] || defaultFacilityName;
+    // Display name in current language
+    const facilityDisplayName = fac.name?.[currentLang] || defaultFacilityName;
 
-  const iconInfo = facilityIconMap[defaultFacilityName] || {
-    icon: "Sparkle",
-    color: "text-gray-400",
-  };
+    const iconInfo = facilityIconMap[defaultFacilityName] || {
+      icon: "Sparkle",
+      color: "text-gray-400",
+    };
 
-  const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
+    const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle;
 
-  return {
-    name: facilityDisplayName,
-    IconComponent,
-    color: iconInfo.color,
-  };
-}) || [];
+    return {
+      name: facilityDisplayName,
+      IconComponent,
+      color: iconInfo.color,
+    };
+  }) || [];
 
   const paymentPlans = projectData.payment_plans || [];
 
@@ -911,166 +966,171 @@ const amenities = projectData.facilities?.map((fac: any) => {
         <div className="mb-10">
           {/* {units.available > 0 && unitTypes.length > 0 && ( */}
           <div>
-            <h2 className="text-2xl md:text-3xl font-sans font-extrabold text-center text-gray-600 mb-8">
+            <h2 className="text-2xl md:text-3xl font-sans font-extrabold text-center text-gray-600 mb-6">
               {t('Available Unit Types')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-              {unitTypes.map((unit, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ scale: 1 }}
-                  onClick={() => toggleUnit(unit.type)}
-                  ref={(el) => (unitRefs.current[unit.type] = el)}
-                  className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer"
-                >
-                  {/* Top: Unit Summary */}
-                  <div className="flex justify-between items-center p-5">
-                    {/* Left: Icon & Details */}
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-14 h-14 rounded-full ${unit.color} flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition`}
-                      >
-                        {unit.icon}
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900">
-                          {/* {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : t('No Info')} */}
-                          {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `${t("ID")}: ${unit.subUnits[0].id}` : t('No Info')}
-                        </h4>
-                        <p className="text-sm text-gray-500">{unit.available} {t("units_available")}</p>
-                      </div>
-                    </div>
-
-                    {/* Right: Price */}
-                    <div className="flex flex-col items-end">
-                      <p className="text-xs text-gray-400">{t("Starting from")}</p>
-                      <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
-                        AED {formatPrice(unit.startingPrice)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Expand/Collapse Button Row */}
-                  <div className="flex justify-center py-2 border-t">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent parent onClick
-                        toggleUnit(unit.type);
-                      }}
-                      className="flex items-center gap-1 text-purple-600 font-medium hover:text-purple-800 transition"
-                    >
-                      {expandedUnit === unit.type ? (
-                        <>
-                          <ChevronUp className="w-4 h-4" />
-                          {t("Hide Units")}
-                        </>
-                      ) : (
-                        <>
-                          <ChevronDown className="w-4 h-4" />
-                          {t("View Units")}
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Expanded Sub-Units */}
-                  {expandedUnit === unit.type && unit.subUnits.length > 0 && (
-                    <div className="bg-gray-50 rounded-b-2xl p-4 border-t">
-                      <div>
+              {unitTypes.length === 0 ? (
+                <div className="text-center text-gray-500 col-span-full py-6">
+                  {t("No units available")}
+                </div>
+              ) : 
+                (unitTypes.map((unit, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ scale: 1 }}
+                    onClick={() => toggleUnit(unit.type)}
+                    ref={(el) => (unitRefs.current[unit.type] = el)}
+                    className="group rounded-2xl bg-white shadow-lg border hover:border-purple-400 transition duration-300 cursor-pointer"
+                  >
+                    {/* Top: Unit Summary */}
+                    <div className="flex justify-between items-center p-5">
+                      {/* Left: Icon & Details */}
+                      <div className="flex items-center gap-4">
                         <div
-                          className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"
-                            }`}
+                          className={`w-14 h-14 rounded-full ${unit.color} flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition`}
                         >
-                          {unit.subUnits.map((sub, subIndex) => (
-                            <div
-                              key={subIndex}
-                              className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md "
-                            >
-                              {/* Top Row */}
-                              <div className="flex justify-between items-start mb-2">
-                                <span className="text-sm font-semibold text-gray-800">
-                                  ID: {sub.id}
-                                </span>
-                                <div className='float-right'>
-                                  <span
-                                    className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === t("Available")
-                                      ? "bg-green-100 text-green-700"
-                                      : "bg-red-100 text-red-700"
-                                      }`}
-                                  >
-                                    {sub.status || t("Coming Soon")}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Details */}
-                              <ul className="text-gray-500 text-xs mb-2">
-                                <li>{t("Floor")}: {sub.floor || "N/A"}</li>
-                                <li>{t("Size")}: {sub.size}</li>
-                              </ul>
-
-                              {/* Price */}
-                              <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
-                                AED {formatPrice(sub.price)}
-                              </p>
-
-                              {/* Optional: Floor Plan Image */}
-                              <div className="relative w-full h-32 rounded-lg overflow-hidden">
-                                <img
-                                  src={sub.floorPlan}
-                                  // alt={`Floor plan for ${sub.id}`}
-                                  className="w-full h-full object-cover"
-                                  // loading="lazy"
-                                  onError={(e) => {
-                                    e.currentTarget.onerror = null; // ✅ prevent infinite loop
-                                    e.currentTarget.src = "/no-floor-plan.png";
-                                  }}
-                                />
-                                {/* Watermark Overlay */}
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                                  <span className="text-white text-md font-bold opacity-60">
-                                    OFFPLAN.MARKET
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* View Details Button */}
-                              <div className="mt-3 text-center">
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`, k{agent.username}/property-detailed/${sub.id}`,
-                                    navigate(`/${agent.username}/property-details/${projectId}/unit-details/${encodeURIComponent(sub.id)}`,
-                                      {
-                                        state: {
-                                          unit: sub,
-                                          projectData,
-                                          agent,
-                                        },
-                                      });
-
-                                  }}
-                                  className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
-                                >
-                                  {t("View Details")}
-                                </button>
-                              </div>
-                            </div>
-                          ))}
+                          {unit.icon}
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">
+                            {/* {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `ID: ${unit.subUnits[0].id}` : t('No Info')} */}
+                            {unit.type ? unit.type : unit.subUnits?.[0]?.id ? `${t("ID")}: ${unit.subUnits[0].id}` : t('No Info')}
+                          </h4>
+                          <p className="text-sm text-gray-500">{unit.available} {t("units_available")}</p>
                         </div>
                       </div>
-                    </div>
-                  )}
 
-                  {/* Fallback if no sub-units */}
-                  {expandedUnit === unit.type && unit.subUnits.length === 0 && (
-                    <div className="bg-gray-50 rounded-b-2xl p-4 text-center text-gray-500 border-t">
-                      {t("No units available in this category")}
+                      {/* Right: Price */}
+                      <div className="flex flex-col items-end">
+                        <p className="text-xs text-gray-400">{t("Starting from")}</p>
+                        <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
+                          AED {formatPrice(unit.startingPrice)}
+                        </p>
+                      </div>
                     </div>
-                  )}
-                </motion.div>
-              ))}
+
+                    {/* Expand/Collapse Button Row */}
+                    <div className="flex justify-center py-2 border-t">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent parent onClick
+                          toggleUnit(unit.type);
+                        }}
+                        className="flex items-center gap-1 text-purple-600 font-medium hover:text-purple-800 transition"
+                      >
+                        {expandedUnit === unit.type ? (
+                          <>
+                            <ChevronUp className="w-4 h-4" />
+                            {t("Hide Units")}
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="w-4 h-4" />
+                            {t("View Units")}
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Expanded Sub-Units */}
+                    {expandedUnit === unit.type && unit.subUnits.length > 0 && (
+                      <div className="bg-gray-50 rounded-b-2xl p-4 border-t">
+                        <div>
+                          <div
+                            className={`grid gap-4 ${unit.subUnits.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"
+                              }`}
+                          >
+                            {unit.subUnits.map((sub, subIndex) => (
+                              <div
+                                key={subIndex}
+                                className="rounded-xl border p-3 shadow-sm bg-white hover:shadow-md "
+                              >
+                                {/* Top Row */}
+                                <div className="flex justify-between items-start mb-2">
+                                  <span className="text-sm font-semibold text-gray-800">
+                                    ID: {sub.id}
+                                  </span>
+                                  <div className='float-right'>
+                                    <span
+                                      className={`text-xs font-semibold px-2 py-1 rounded-full ${sub.status === t("Available")
+                                        ? "bg-green-100 text-green-700"
+                                        : "bg-red-100 text-red-700"
+                                        }`}
+                                    >
+                                      {sub.status || t("Coming Soon")}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Details */}
+                                <ul className="text-gray-500 text-xs mb-2">
+                                  <li>{t("Floor")}: {sub.floor || "N/A"}</li>
+                                  <li>{t("Size")}: {sub.size}</li>
+                                </ul>
+
+                                {/* Price */}
+                                <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
+                                  AED {formatPrice(sub.price)}
+                                </p>
+
+                                {/* Optional: Floor Plan Image */}
+                                <div className="relative w-full h-32 rounded-lg overflow-hidden">
+                                  <img
+                                    src={sub.floorPlan}
+                                    // alt={`Floor plan for ${sub.id}`}
+                                    className="w-full h-full object-cover"
+                                    // loading="lazy"
+                                    onError={(e) => {
+                                      e.currentTarget.onerror = null; // ✅ prevent infinite loop
+                                      e.currentTarget.src = "/no-floor-plan.png";
+                                    }}
+                                  />
+                                  {/* Watermark Overlay */}
+                                  <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                                    <span className="text-white text-md font-bold opacity-60">
+                                      OFFPLAN.MARKET
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* View Details Button */}
+                                <div className="mt-3 text-center">
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      //  navigate(`/agent/${agent.username}/unit-details/${sub.id}`, k{agent.username}/property-detailed/${sub.id}`,
+                                      navigate(`/${agent.username}/property-details/${projectId}/unit-details/${encodeURIComponent(sub.id)}`,
+                                        {
+                                          state: {
+                                            unit: sub,
+                                            projectData,
+                                            agent,
+                                          },
+                                        });
+
+                                    }}
+                                    className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-pink-600 hover:to-purple-700 transition"
+                                  >
+                                    {t("View Details")}
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Fallback if no sub-units */}
+                    {expandedUnit === unit.type && unit.subUnits.length === 0 && (
+                      <div className="bg-gray-50 rounded-b-2xl p-4 text-center text-gray-500 border-t">
+                        {t("No units available in this category")}
+                      </div>
+                    )}
+                  </motion.div>
+                )))}
             </div>
           </div>
           {/* )} */}
@@ -1161,54 +1221,54 @@ const amenities = projectData.facilities?.map((fac: any) => {
 
           {/* Payment Plan */}
           {paymentPlans.length > 0 && (
-  <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
-    <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-poppins text-gray-600">
-      {t("Payment Plans")}
-    </h3>
+            <div className="mb-10 rounded-3xl bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl p-6">
+              <h3 className="text-3xl md:text-3xl font-extrabold text-center mb-10 font-poppins text-gray-600">
+                {t("Payment Plans")}
+              </h3>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {paymentPlans.map((plan, index) => (
-        <div
-          key={index}
-          className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
-        >
-          {/* Plan Header */}
-          <div className="mb-5 border-b pb-3">
-            <h4 className="text-xl font-bold text-purple-600">
-              {plan.name?.[i18n.language] || t(plan.name?.en || "Payment Plan")}
-            </h4>
-            <p className="text-sm text-gray-500 italic">
-              {plan.description?.[i18n.language] || t(plan.description?.en || "")}
-            </p>
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {paymentPlans.map((plan, index) => (
+                  <div
+                    key={index}
+                    className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-500"
+                  >
+                    {/* Plan Header */}
+                    <div className="mb-5 border-b pb-3">
+                      <h4 className="text-xl font-bold text-purple-600">
+                        {plan.name?.[i18n.language] || t(plan.name?.en || "Payment Plan")}
+                      </h4>
+                      <p className="text-sm text-gray-500 italic">
+                        {plan.description?.[i18n.language] || t(plan.description?.en || "")}
+                      </p>
+                    </div>
 
-          {/* Steps */}
-          <div className="space-y-4">
-            {plan.values.map((val, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
-              >
-                {/* Left: Step Badge & Name */}
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
-                    {idx + 1}
-                  </span>
-                  <span className="text-gray-800 font-medium">
-                    {val.values?.[i18n.language] || t(val.values?.en || val.name)}
-                  </span>
-                </div>
+                    {/* Steps */}
+                    <div className="space-y-4">
+                      {plan.values.map((val, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl border border-gray-100 hover:shadow-md transition duration-300"
+                        >
+                          {/* Left: Step Badge & Name */}
+                          <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-md">
+                              {idx + 1}
+                            </span>
+                            <span className="text-gray-800 font-medium">
+                              {val.values?.[i18n.language] || t(val.values?.en || val.name)}
+                            </span>
+                          </div>
 
-                {/* Right: Value */}
-                <span className="text-blue-700 font-bold">{val.value}</span>
+                          {/* Right: Value */}
+                          <span className="text-blue-700 font-bold">{val.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+            </div>
+          )}
 
 
         </div>
@@ -1220,7 +1280,7 @@ const amenities = projectData.facilities?.map((fac: any) => {
             {t("Contact {{name}} today for exclusive access and personalized assistance", {
               name: agent?.name?.[i18n.language] || "our team"
             })}
-            
+
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -1233,11 +1293,12 @@ const amenities = projectData.facilities?.map((fac: any) => {
               </button>
             </a>
             <a
-              href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
-              target="_blank"
+              // href={`https://wa.me/${agent?.whatsapp_number?.replace(/\s+/g, '') || ''}?text=Hi, I'm interested in your off-plan properties`}
+              // target="_blank"
               className="flex-1"
             >
-              <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700">
+              <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700"
+              onClick={()=>handleWhatsApp(projectData,agent,t,i18n)}>
                 <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6' /> {t("Chat on WhatsApp")}</div>
               </button>
             </a>
@@ -1273,7 +1334,7 @@ const amenities = projectData.facilities?.map((fac: any) => {
       {(
         <div className="fixed bottom-8 right-5 z-50">
           <button
-            onClick={handleWhatsApp} // Use the first property for WhatsApp
+            onClick={()=>handleWhatsApp(projectData,agent,t,i18n)} // Use the first property for WhatsApp
             className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
           >
             <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
@@ -1288,4 +1349,3 @@ const amenities = projectData.facilities?.map((fac: any) => {
 export default PropertyDetails1;
 
 
- 
