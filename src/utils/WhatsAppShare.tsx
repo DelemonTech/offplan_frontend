@@ -9,7 +9,7 @@ export const handleWhatsApp = (project: any,
       agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
     console.log("proj: ", project.title?.[i18n.language], localizedAgentName);
     const translations = {
-      en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.[i18n.language] || project.title.en} in ${project.city?.city?.[i18n.language]}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
+      en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.[i18n.language] || project.title.en} in ${project.city?.name?.[i18n.language]}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
 
 Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
 

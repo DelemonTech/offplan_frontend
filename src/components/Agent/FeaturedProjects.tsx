@@ -503,7 +503,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
     const shareText = `🌇 ${projectTitle} – ${cityLabel}, ${districtLabel}
 📍 ${t("Location")}: ${cityLabel}, ${districtLabel}
-🏷️ ${t("Price")}: AED ${formatAED(project.low_price)}
+🏷️ ${t("Price")}: ${t("AED")} ${formatAED(project.low_price)}
 📐 ${t("Unit Size")}: ${project.min_area || t("N/A")} ${t("sq.ft")}
 📆 ${t("Handover")}: ${formatDeliveryDate(project.delivery_date) || t("TBA")}
 🏗️ ${t("Status")}: ${statusName || t("N/A")}
