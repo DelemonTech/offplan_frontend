@@ -159,7 +159,7 @@ const ProjectListing = ({ onRequestInfo }: ProjectListingProps) => {
         </div>
 
         {/* Projects Grid */}
-        {loading ? (
+        {t("loading") ? (
           <>
             {window.scrollTo({ top: 0, behavior: 'smooth' })}
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70 backdrop-blur-sm">
@@ -234,7 +234,7 @@ const ProjectListing = ({ onRequestInfo }: ProjectListingProps) => {
         )}
 
         {/* Load More Button */}
-        {!loading && (
+        {!t('loading') && (
           <div className="flex justify-center space-x-4 my-6 box-border">
             <Button
               onClick={handlePrevPage}

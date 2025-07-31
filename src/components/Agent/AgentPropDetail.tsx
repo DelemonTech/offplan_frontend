@@ -193,7 +193,7 @@ const AgentPropDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-500">
-        Loading property details...
+        {t("Loading property details...")}
       </div>
     );
   }

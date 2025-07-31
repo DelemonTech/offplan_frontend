@@ -118,10 +118,10 @@ const Footer = () => {
                 </span>
               </div>
               <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                UAE's premier off-plan property platform. Trusted for transparency, smart search & expert support.
+                {t("UAE's premier off-plan property platform. Trusted for transparency, smart search & expert support.")}
               </p>
               <ul className="space-y-3 text-sm">
-                {['About Us', 'Contact', 'Careers', 'Blog'].map((link) => (
+                {[t('About Us'), t('Contact'), t('Careers'), t('Blog')].map((link) => (
                   <li key={link}>
                     <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium">
                       {link}
@@ -135,7 +135,7 @@ const Footer = () => {
           {/* Quick Links */}
           <FooterSection title={t("Quick Links")} id="quicklinks">
             <ul className="space-y-3 text-sm">
-              {['FAQs', 'Privacy Policy', 'Terms of Service', 'Chat with AI', 'Help Center', 'Contact Support'].map((link) => (
+              {[t('FAQs'), t('Privacy Policy'), t('Terms of Service'), t('Chat with AI'), t('Help Center'), t('Contact Support')].map((link) => (
                 <li key={link}>
                   <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium">
                     {link}
@@ -149,14 +149,14 @@ const Footer = () => {
           <FooterSection title={t("Popular Properties")} id="properties">
             <ul className="space-y-3 text-sm">
               {[
-                'Apartments in Dubai Marina',
-                'Villas in JVC',
-                'Offices in Business Bay',
-                'Shops in Downtown',
-                'Penthouses in DIFC',
-                'Townhouses in Dubailand',
-                'Warehouses in Jebel Ali',
-                'Retail in The Springs'
+                t('Apartments in Dubai Marina'),
+                t('Villas in JVC'),
+                t('Offices in Business Bay'),
+                t('Shops in Downtown'),
+                t('Penthouses in DIFC'),
+                t('Townhouses in Dubailand'),
+                t('Warehouses in Jebel Ali'),
+                t('Retail in The Springs')
               ].map((property) => (
                 <li key={property}>
                   {/* <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium"> */}
@@ -173,7 +173,7 @@ const Footer = () => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-sm">
                   <MapPin size={16} className="text-pink-400 flex-shrink-0" />
-                  <span className="text-gray-200 font-medium">7th floor, Al Amiri Tower, Barsha Heights, Tecom, UAE</span>
+                  <span className="text-gray-200 font-medium">{t("7th floor, Al Amiri Tower, Barsha Heights, Tecom, UAE")}</span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
                   <Phone size={16} className="text-pink-400 flex-shrink-0" />

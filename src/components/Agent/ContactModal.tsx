@@ -10,6 +10,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
 
 const ContactModal = () => {
@@ -22,6 +24,17 @@ const ContactModal = () => {
   });
 
   const [focusedField, setFocusedField] = useState('');
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    console.log('lng', lng);
+
+    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    setIsOpen(false);
+  };
+  const lang = i18n.language || 'en';
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -83,7 +96,7 @@ const ContactModal = () => {
       <DialogTrigger asChild>
         <Button className="bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
           <Mail size={16} className="mr-2" />
-          Contact Us
+          {t("Contact Us")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg bg-white">
