@@ -13,11 +13,11 @@ export const handleWhatsApp = (project: any,
 
 Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
 
-      ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${project.title?.ar} في ${project.city.name}. تبدأ الأسعار من AED ${formatAED(project.low_price)}. هل يمكنك مشاركة المزيد من التفاصيل؟
+      ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${project.title?.[i18n.language]} في ${project.city?.name?.[i18n.language]}. تبدأ الأسعار من AED ${formatAED(project.low_price)}. هل يمكنك مشاركة المزيد من التفاصيل؟
 
 رابط العقار: https://offplan.market/sahar/property-details/?id=${project.id}`,
 
-      fa: `${localizedAgentName} عزیز، من به ${project.title?.fa} در ${project.city.name} علاقه‌مندم. قیمت‌ها از AED ${formatAED(project.low_price)} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟
+      fa: `${localizedAgentName} عزیز، من به ${project.title?.fa} در ${project.city?.name?.[i18n.language]} علاقه‌مندم. قیمت‌ها از AED ${formatAED(project.low_price)} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟
 
 لینک ملک: https://offplan.market/sahar/property-details/?id=${project.id}`
     };
