@@ -869,7 +869,7 @@ const PropertyDetails1 = () => {
           <h2 className="flex items-center font-sans text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
             <span className="text-gray-800 font-semibold">
-              {t("Explore This Exclusive Property in {{city-name}}", { "city-name": t(projectData.city?.city?.[i18n.language] || "N/A") })}
+              {t("Explore This Exclusive Property in {{city-name}}", { "city-name": t(projectData.city?.name?.[i18n.language] || "N/A") })}
             </span>
           </h2>
 
@@ -1005,7 +1005,7 @@ const PropertyDetails1 = () => {
                       <div className="flex flex-col items-end">
                         <p className="text-xs text-gray-400">{t("Starting from")}</p>
                         <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base">
-                          AED {formatPrice(unit.startingPrice)}
+                          {t("AED")} {formatPrice(unit.startingPrice)}
                         </p>
                       </div>
                     </div>
@@ -1071,7 +1071,7 @@ const PropertyDetails1 = () => {
 
                                 {/* Price */}
                                 <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">
-                                  AED {formatPrice(sub.price)}
+                                  {t("AED")} {formatPrice(sub.price)}
                                 </p>
 
                                 {/* Optional: Floor Plan Image */}
@@ -1163,7 +1163,7 @@ const PropertyDetails1 = () => {
           <div className="mb-8 rounded-2xl bg-white p-6 shadow">
             <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-pink-600"><MapPin className="w-5 h-5" /> {t("Location & Address")}</h3>
             <p className="text-gray-700 font-semibold">{t(projectData.title?.[i18n.language])}</p>
-            <p className="text-gray-500 mb-4">{projectData.district?.district?.[i18n.language] || "Unknown District"}, {projectData.city?.city?.[i18n.language] || "Unknown City"}</p>
+            <p className="text-gray-500 mb-4">{projectData.district?.name?.[i18n.language] || "Unknown District"}, {projectData.city?.name?.[i18n.language] || "Unknown City"}</p>
             <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
               <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-200">
                 <iframe
@@ -1203,8 +1203,8 @@ const PropertyDetails1 = () => {
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-emerald-700 list-disc list-inside font-medium">
               <li>
                 {t("Located in prime community of {{district}}, {{city}}", {
-                  district: projectData.district?.district?.[i18n.language] || "Unknown District",
-                  city: projectData.city?.city?.[i18n.language] || "Unknown City"
+                  district: projectData.district?.name?.[i18n.language] || "Unknown District",
+                  city: projectData.city?.name?.[i18n.language] || "Unknown City"
                 })}
               </li>
               {/* <li>{t("Located in prime community of {{district-name}}, {{city-name}}", { "district-name": t(projectData.district?.dist_names?.[i18n.language] || "Unknown District"), "city-name": t(projectData.city?.city_names?.[i18n.language] || "Unknown City") })}</li> */}

@@ -473,15 +473,15 @@ const AgentPropDetail = () => {
                     <h4 className="text-base sm:text-lg font-semibold text-gray-900">{unit.type}</h4>
                     <p className="text-sm text-gray-500">{unit.available} units available</p>
                     <div className="flex justify-between text-xs font-semibold text-blue-600 mt-1 w-full sm:w-auto">
-                      <span>Min: AED {formatPrice(unit.startingPrice)}</span>
-                      <span className="ml-4">Max: AED {formatPrice(unit.maxPrice)}</span>
+                      <span>Min: {t("AED")} {formatPrice(unit.startingPrice)}</span>
+                      <span className="ml-4">Max: {t("AED")} {formatPrice(unit.maxPrice)}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col items-start sm:items-end">
                   <p className="text-xs text-gray-400">Starting from</p>
                   <p className="font-bold bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-base sm:text-lg">
-                    AED {formatPrice(unit.startingPrice)}
+                    {t("AED")} {formatPrice(unit.startingPrice)}
                   </p>
                 </div>
               </div>
@@ -544,7 +544,7 @@ const AgentPropDetail = () => {
                           <li>View: {sub.view}</li>
                         </ul>
                         <p className="text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text">
-                          AED {formatPrice(sub.price)}
+                          {t("AED")} {formatPrice(sub.price)}
                         </p>
                         {sub.floorPlan && (
                           <div className="mt-2 relative rounded overflow-hidden">

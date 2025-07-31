@@ -129,7 +129,7 @@ const PropertyDetailedPage = () => {
           onClick={() => navigate(-1)}
           className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
-          Go Back
+          {t("Go Back")}
         </button>
       </div>
     );
@@ -400,7 +400,7 @@ const PropertyDetailedPage = () => {
         <div className="flex items-center gap-2">
           <LucideIcons.ArrowLeft className="w-4 h-2 bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text" />
           <span className="text-transparent bg-gradient-to-r from-pink-700 via-purple-700 to-blue-500 bg-clip-text">
-            Back
+            {t("Back")}
           </span>
         </div>
       </Button>
@@ -442,7 +442,7 @@ const PropertyDetailedPage = () => {
                 <div>{projectData.title?.[i18n.language]}<br /><span className='text-2xl'> {t("Unit ID :")} {unit.id}</span></div>
               </h2>
               <p className="text-sm flex text-white  items-center gap-1 mb-8">
-                <span className="material-icons text-sm"><MapPin /></span>{projectData.city?.city?.[i18n.language]}, {projectData.district?.district?.[i18n.language]}
+                <span className="material-icons text-sm"><MapPin /></span>{projectData.city?.name?.[i18n.language]}, {projectData.district?.district?.[i18n.language]}
               </p>
               {/* <div className='bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-semibold'>
                 <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text py-1">AED {formatPrice(unit.price)}</p>
