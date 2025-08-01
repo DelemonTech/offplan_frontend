@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { Value } from '@radix-ui/react-select';
 
 const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUrl, setPropertyType,
   setSelectedPropertySubtype,
@@ -307,19 +308,50 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
             <Globe className="mr-2 text-gray-600" size={18} />
             <label className="text-sm font-semibold text-gray-700">{t('City')}</label>
           </div>
-          {citiesData.length > 0 && (
+          {(citiesData as City[]).length > 0 && (
+            <Select
+              value={userSelectedCity || ""}
+              onValueChange={(value) => {
+                setSelectedCity(value);
+                setUserSelectedCity(value);
+              }}
+            >
+              <SelectTrigger className="h-11 bg-white/70 border-gray-200 rounded-lg">
+                <SelectValue placeholder={t("Select city")} />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from(
+                  new Map(
+                    (citiesData as City[]).map((city) => [
+                      city.name?.[i18n.language],
+                      city,
+                    ])
+                  ).values()
+                ).map((city) => {
+                  const cityName = city.name?.[i18n.language];
+                  return (
+                    <SelectItem key={city.id} value={cityName}>
+                      {cityName}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          )}
+          {/* {citiesData.length > 0 && (
             <Select value={userSelectedCity || ""} onValueChange={(value) => { setSelectedCity(value); setUserSelectedCity(value) }}>
               <SelectTrigger className="h-11 bg-white/70 border-gray-200 rounded-lg">
                 <SelectValue placeholder={t('Select city')} />
               </SelectTrigger>
               <SelectContent>
                 {citiesData.map(city => (
-                  <SelectItem key={city.id} value={city.name.en}>
-                    {city.name?.[i18n.language] || city.name.en}
+                  <SelectItem key={city.id} value={city?.name[i18n.language]}>
+                    {city?.name[i18n.language]}
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>)}
+            </Select>
+          )} */}
         </div>
 
         {/* Neighborhood */}
