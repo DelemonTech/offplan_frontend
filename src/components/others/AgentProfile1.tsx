@@ -90,9 +90,9 @@ const AgentProfile = ({ agent }: Props) => {
               <span className="text-green-700 text-xs md:text-sm font-medium">{t("Currently Online")}</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 md:mb-6">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 md:mb-6">
               {agent.name}
-            </h1>
+            </h2>
 
             <p className="text-base md:text-lg text-gray-700 mb-8 md:mb-10 leading-relaxed">
               {agent.description}

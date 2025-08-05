@@ -333,9 +333,9 @@ const ProjectDetails = ({agent, properties}) => {
                       {/* Center Overlay Text */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center text-white bg-black/40 backdrop-blur-sm rounded-xl p-6 lg:p-8 max-w-2xl mx-4">
-                          <h1 className="text-3xl lg:text-5xl font-bold mb-3">
+                          <h2 className="text-3xl lg:text-5xl font-bold mb-3">
                             {project.title}
-                          </h1>
+                          </h2>
                           <div className="flex items-center justify-center text-lg lg:text-xl">
                             <MapPin size={20} className="mr-2 text-pink-400" />
                             <span className="font-medium">{project.location}, Dubai</span>

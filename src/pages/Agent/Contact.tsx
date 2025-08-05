@@ -21,9 +21,9 @@ const Contact = () => {
       <section className="py-20 bg-gradient-to-br from-pink-600 via-purple-600 to-blue-600 text-white">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
+            <h2 className="text-4xl lg:text-6xl font-bold mb-6">
               Contact Sahar
-            </h1>
+            </h2>
             <p className="text-xl lg:text-2xl opacity-90">
               Sahar is here to help you with your ideal property in Dubai
             </p>

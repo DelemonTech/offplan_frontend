@@ -147,9 +147,9 @@ const AgentEdit = ({ agent }) => {
                                 </div>
 
                                 <div className="text-white">
-                                    <h1 className="text-5xl font-bold mb-3 bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent">
+                                    <h2 className="text-5xl font-bold mb-3 bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent">
                                         {formData.name}
-                                    </h1>
+                                    </h2>
                                     <p className="text-xl text-white/90 mb-2">@{formData.username}</p>
                                     <p className="text-lg text-white/80 max-w-md leading-relaxed">
                                         Real Estate Expert & Property Consultant

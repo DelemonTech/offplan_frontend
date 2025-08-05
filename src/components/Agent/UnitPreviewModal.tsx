@@ -86,9 +86,9 @@ const UnitPreviewModal = ({ unit, isOpen, onClose, projectTitle, projectLocation
           
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-base font-bold mb-1">
+              <h2 className="text-base font-bold mb-1">
                 {unit.type} - Unit {unit.unitNumber}
-              </h1>
+              </h2>
             </div>
             <Badge className={`${getStatusBadgeStyle(unit.status)} text-xs px-2 py-1`}>
               {unit.status}

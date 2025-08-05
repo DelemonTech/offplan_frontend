@@ -308,9 +308,9 @@ const UnitDetails = () => {
         <div className="bg-white rounded-xl shadow-lg p-6 lg:p-8 mb-8">
           {/* Project Name and Location */}
           <div className="mb-6">
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
               {unit.projectName} – Unit {unit.unitNumber}
-            </h1>
+            </h2>
             <div className="flex items-center text-gray-600 mb-4">
               <MapPin size={16} className="mr-2" />
               <span className="text-lg">{unit.location}</span>

@@ -100,12 +100,12 @@ const HeroSection = ({ agent, project }) => {
           <div className="text-center space-y-3 lg:space-y-8">
             {/* Main Headline - Simplified for Mobile */}
             <div className="space-y-1 lg:space-y-4 text-white text-center font-semibold">
-              <h1 className="text-4xl sm:text-3xl lg:text-7xl font-bold bg-gradient-to-r from-pink-700 to-blue-500 bg-clip-text text-transparent leading-tight pb-3">
+              <h2 className="text-4xl sm:text-3xl lg:text-7xl font-bold bg-gradient-to-r from-pink-700 to-blue-500 bg-clip-text text-transparent leading-tight pb-3">
                 <span>
                   {/* {i18n.language === 'fa' ? agent.fa_name : agent.name} */}
                   {agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}
                 </span>
-              </h1>
+              </h2>
               <div className='text-white/90 lg: text-2xl'>{t('Off-Plan & Ready Property Expert | Dubai & UAE')}</div>
               <p className="text-sm sm:text-base lg:text-2xl text-white/90 font-light  max-w-2xl mx-auto px-2">
 

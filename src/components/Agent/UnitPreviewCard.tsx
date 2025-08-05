@@ -99,7 +99,7 @@ const UnitPreviewCard = ({
           
           {/* Project Info */}
           <div className="mb-4">
-            <h1 className="text-2xl font-bold mb-1">{projectTitle}</h1>
+            <h2 className="text-2xl font-bold mb-1">{projectTitle}</h2>
             <div className="flex items-center text-pink-100">
               <MapPin size={14} className="mr-2" />
               <span className="text-sm">{projectLocation}</span>

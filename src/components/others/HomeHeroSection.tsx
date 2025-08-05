@@ -199,7 +199,7 @@ const HeroSection = () => {
           </div>
 
           {/* Enhanced Main Headline */}
-          <h1 className={`text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight transition-all duration-1000 ${
+          <h2 className={`text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight transition-all duration-1000 ${
             isVisible ? 'animate-headline-reveal' : ''
           }`}>
             <span className="inline-block animate-word-float" style={{ animationDelay: '0.2s' }}>
@@ -232,7 +232,7 @@ const HeroSection = () => {
             <div className="absolute -bottom-4 -left-4 animate-float-icon" style={{ animationDelay: '1s' }}>
               <Zap className="w-6 h-6 text-blue-400 animate-pulse" />
             </div>
-          </h1>
+          </h2>
 
           {/* Enhanced Subheadline */}
           <p className={`text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 ${

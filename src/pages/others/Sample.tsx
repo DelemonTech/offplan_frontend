@@ -40,7 +40,7 @@ const AgentPage = () => {
 
   return (
     <div className="agent-details">
-      <h1>{agent.name}</h1>
+      <h2>{agent.name}</h2>
       <img src={agent.profile_image_url} alt="Agent profile" />
       <p>{agent.description}</p>
       <p>📞 {agent.phone_number}</p>

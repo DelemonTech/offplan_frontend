@@ -270,7 +270,7 @@ const ProjectDetail = () => {
           <div className="lg:col-span-2 space-y-8">
             {/* Project Info */}
             <div>
-              <h1 className="text-4xl font-bold text-[#6084ee] mb-4">{project.title}</h1>
+              <h2 className="text-4xl font-bold text-[#6084ee] mb-4">{project.title}</h2>
               <div className="flex items-center text-gray-600 mb-4">
                 <MapPin className="h-5 w-5 mr-2" />
                 <span className="text-lg">{project.location}</span>

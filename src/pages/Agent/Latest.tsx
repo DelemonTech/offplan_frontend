@@ -18,9 +18,9 @@ const Latest = () => {
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex items-center justify-center mb-6">
               <Zap className="mr-3" size={32} />
-              <h1 className="text-4xl lg:text-6xl font-bold">
+              <h2 className="text-4xl lg:text-6xl font-bold">
                 Latest Projects
-              </h1>
+              </h2>
             </div>
             <p className="text-xl lg:text-2xl opacity-90">
               Newest off-plan developments just launched in Dubai

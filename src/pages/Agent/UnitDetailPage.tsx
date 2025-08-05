@@ -48,9 +48,9 @@ const agentProfile = {
 
   {/* Hero Content */}
   <div className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20 text-gray-800">
-    <h1 className="text-3xl md:text-5xl font-bold mb-4">
+    <h2 className="text-3xl md:text-5xl font-bold mb-4">
       Bay Tower – <br /> Unit ID: <span className="text-pink-600 font-extrabold">G-02</span>
-    </h1>
+    </h2>
 
     <div className="flex flex-col md:flex-row gap-2 text-base md:text-lg mb-6">
 

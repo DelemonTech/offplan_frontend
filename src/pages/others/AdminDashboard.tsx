@@ -204,7 +204,7 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Stats Cards */}
         <div>
-          <h1 className="text-xl font-semibold text-[#7786ff]">{getGreeting()}, {user?.name}</h1>
+          <h2 className="text-xl font-semibold text-[#7786ff]">{getGreeting()}, {user?.name}</h2>
           {/* <p className="text-sm text-gray-600">Good Morning, {user?.name}</p> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 py-4">

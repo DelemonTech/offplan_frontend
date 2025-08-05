@@ -70,7 +70,7 @@ const QuickViewModal = ({ project, isOpen, onClose, onViewDetails }: QuickViewMo
           <div className="text-center border-b border-gray-200 pb-3">
             <div className="flex items-center justify-center mb-1">
               <Building size={18} className="text-amber-600 mr-2" />
-              <h1 className="text-xl font-bold text-gray-800">DoubleTree By Hilton</h1>
+              <h2 className="text-xl font-bold text-gray-800">DoubleTree By Hilton</h2>
             </div>
             <div className="flex items-center justify-center text-sm text-gray-600">
               <MapPin size={14} className="mr-1 text-pink-500" />
