@@ -16,7 +16,7 @@ import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { formatAED } from '@/utils/FormatAED';
 import { handleWhatsApp } from '@/utils/WhatsAppShare';
-import { SEOHead } from '@/SEOHead';
+import { SEOHead } from '@/components/SEOHead';
 
 // import CallToAction from "@/components/Agent/CallToAction"
 

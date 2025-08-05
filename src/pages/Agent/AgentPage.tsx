@@ -18,7 +18,7 @@ import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { handleWhatsApp } from '@/utils/WhatsAppShare';
-import { SEOHead } from '@/SEOHead';
+import { SEOHead } from '@/components/SEOHead';
 
 const AgentPageContent = () => {
 
@@ -265,10 +265,12 @@ const AgentPageContent = () => {
       <SEOHead
         title={`${agentData?.name?.en || 'Agent'} | Real Estate Agent in Dubai`}
         description={`Discover ${agentData?.name?.en}'s listings, experience, and projects in UAE on Offplan.Market.`}
-        canonical={`https://offplan.market${location.pathname}`}
-        robots="index, follow"
+        keywords={`${username}, real estate agent, property listings, ${agentData?.location || ''}`}
+        canonical={`https://offplan.market/${username}`}   
+        type="profile"
+        image={agentData?.profile_image_url || '/favicon.ico'}
       />
-      <h1 className="sr-only">{agentData?.name?.en}</h1>
+      <h1 className="sr-only">{agentData?.name?.en || agentData.username}</h1>
       <Header logo={logoPath} />
       <HeroSection agent={agentData} project={properties[0]} />
       <FeaturedProjects

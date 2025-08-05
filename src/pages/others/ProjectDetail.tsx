@@ -11,6 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { MapPin, ArrowLeft, Phone, Mail, MessageCircle, Calendar, Home, Car, Building2, Users, Ruler, MapIcon, Menu, X } from 'lucide-react';
 import { toast } from 'sonner';
 import Logo from '../static/OFFPLAN.MARKET new.png';
+import { VisuallyHidden } from '@/components/ui/visually-hidden';
 
 const ProjectDetail = () => {
   const { slug } = useParams();
@@ -368,9 +369,10 @@ const ProjectDetail = () => {
                       Request Information
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
+                  <DialogContent className="sm:max-w-md sr-only">
                     <DialogHeader>
-                      <DialogTitle className="text-[#6084ee]">Request Information</DialogTitle>
+                      <DialogTitle className="text-[#6084ee] sr-only">Request Information</DialogTitle>
+                      
                     </DialogHeader>
                     <form onSubmit={handleSubmitLead} className="space-y-4">
                       <div>

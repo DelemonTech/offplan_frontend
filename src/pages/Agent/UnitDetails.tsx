@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/others/Header';
 import Footer from '@/components/others/Footer';
+import { VisuallyHidden } from '@/components/ui/visually-hidden';
 
 const UnitDetails = () => {
   const { id: projectId, unitId } = useParams<{ id: string; unitId: string }>();
@@ -506,9 +507,9 @@ const UnitDetails = () => {
 
       {/* Floor Plan Request Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md sr-only">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-gray-900">
+            <DialogTitle className="text-xl font-bold text-gray-900 sr-only">
               Request Floor Plan
             </DialogTitle>
             <DialogDescription className="text-gray-600">

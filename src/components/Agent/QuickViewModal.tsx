@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, X, Calendar, Home, DollarSign, Building, Download } from 'lucide-react';
+import { VisuallyHidden } from '../ui/visually-hidden';
 
 interface Project {
   id: number;
@@ -40,8 +41,13 @@ const QuickViewModal = ({ project, isOpen, onClose, onViewDetails }: QuickViewMo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg max-w-[95vw] p-0 overflow-hidden rounded-2xl shadow-2xl max-h-[95vh] w-full bg-white border-2 border-gray-100">
+      <DialogContent className="sm:max-w-lg max-w-[95vw] p-0 overflow-hidden rounded-2xl shadow-2xl max-h-[95vh] w-full bg-white border-2 border-gray-100 sr-only">
         {/* Background image */}
+        <VisuallyHidden>
+          <DialogHeader>
+        <DialogTitle>.</DialogTitle>
+        </DialogHeader>
+        </VisuallyHidden>
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
           style={{

@@ -17,7 +17,7 @@ import GalleryPage from './Gallery';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { handleWhatsApp } from '@/utils/WhatsAppShare';
-import { SEOHead } from '@/SEOHead';
+import { SEOHead } from '@/components/SEOHead';
 
 // import { jsPDF } from "jspdf";
 

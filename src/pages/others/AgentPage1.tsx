@@ -18,6 +18,7 @@ import { Agent } from '@/types/agent';
 import { fetchAgentDetails } from '@/components/others/AgentFetchDetails';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { VisuallyHidden } from '@/components/ui/visually-hidden';
 
 
 const AgentPage = () => {
@@ -307,9 +308,9 @@ const AgentPage = () => {
 
       {/* Request Information Modal */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md sr-only">
           <DialogHeader>
-            <DialogTitle className="text-[#6084ee]">
+            <DialogTitle className="text-[#6084ee] sr-only">
               Request Information - {selectedProject}
             </DialogTitle>
           </DialogHeader>

@@ -135,11 +135,11 @@ const PropertyDetailsModal = ({ property, isOpen, onClose, agent, setCurrentImag
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { onClose(); setCurrentImageIndex(0); } }}>
-      <DialogContent className="w-full max-w-6xl max-h-[95vh] overflow-y-auto p-0 bg-white rounded-xl">
+      <DialogContent className="w-full max-w-6xl max-h-[95vh] overflow-y-auto p-0 bg-white rounded-xl sr-only">
         <DialogHeader className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b p-4">
           <div className="flex justify-between items-start">
             <div>
-              <DialogTitle className="text-xl sm:text-2xl font-semibold text-gray-900 leading-snug">
+              <DialogTitle className="text-xl sm:text-2xl font-semibold text-gray-900 leading-snug sr-only">
                 {property.title}
               </DialogTitle>
               <div className="flex items-center text-gray-600 text-sm mt-1">

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, TrendingUp, Building, Users, DollarSign, Maximize, Phone, MessageCircle, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { VisuallyHidden } from '../ui/visually-hidden';
 
 interface Project {
   id: number;
@@ -58,7 +59,7 @@ const ProjectSummaryModal: React.FC<ProjectSummaryModalProps> = ({ project, isOp
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-w-[95vw] p-0">
+      <DialogContent className="sm:max-w-2xl max-w-[95vw] p-0 sr-only">
         <div className="relative">
           {/* Hero Image */}
           <div className="relative h-64 rounded-t-lg overflow-hidden">
@@ -85,7 +86,7 @@ const ProjectSummaryModal: React.FC<ProjectSummaryModalProps> = ({ project, isOp
           {/* Content */}
           <div className="p-6">
             <DialogHeader className="mb-6">
-              <DialogTitle className="text-xl font-bold text-center">
+              <DialogTitle className="text-xl font-bold text-center sr-only">
                 Project Summary
               </DialogTitle>
             </DialogHeader>

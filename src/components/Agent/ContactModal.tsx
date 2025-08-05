@@ -13,6 +13,7 @@ import {
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
+import { VisuallyHidden } from '../ui/visually-hidden';
 
 const ContactModal = () => {
   const [formData, setFormData] = useState({
@@ -99,9 +100,9 @@ const ContactModal = () => {
           {t("Contact Us")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg bg-white">
+      <DialogContent className="sm:max-w-lg bg-white sr-only">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-900 text-center">
+          <DialogTitle className="text-xl font-semibold text-gray-900 text-center sr-only">
             Get In Touch
           </DialogTitle>
         </DialogHeader>

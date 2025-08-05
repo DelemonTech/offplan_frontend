@@ -4,6 +4,8 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, X, Phone, MessageCircle, ExternalLink } from 'lucide-react';
+import { DialogTitle } from '@radix-ui/react-dialog';
+import { VisuallyHidden } from '../ui/visually-hidden';
 
 interface Unit {
   id: string;
@@ -65,7 +67,12 @@ const UnitPreviewModal = ({ unit, isOpen, onClose, projectTitle, projectLocation
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-sm max-w-[85vw] p-0 overflow-hidden rounded-xl shadow-xl bg-white border-0 max-h-[75vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-sm max-w-[85vw] p-0 overflow-hidden rounded-xl shadow-xl bg-white border-0 max-h-[75vh] overflow-y-auto sr-only">
+        <VisuallyHidden>
+                  <DialogHeader>
+                <DialogTitle>.</DialogTitle>
+                </DialogHeader>
+                </VisuallyHidden>
         {/* Close button */}
         <button
           onClick={onClose}

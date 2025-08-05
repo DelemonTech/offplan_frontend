@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import '@/i18n';
 import { Mail,Calendar } from 'lucide-react';
+import { VisuallyHidden } from '../ui/visually-hidden';
 
 const RequestCallBackModal = ({ onClose }: { onClose: () => void }) => {
   const { t, i18n } = useTranslation();
@@ -42,9 +43,9 @@ const RequestCallBackModal = ({ onClose }: { onClose: () => void }) => {
           </button>
         </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg bg-white">
+      <DialogContent className="sm:max-w-lg bg-white sr-only">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-900 text-center">
+          <DialogTitle className="text-xl font-semibold text-gray-900 text-center sr-only">
             {t('Request Callback')}
           </DialogTitle>
         </DialogHeader>
