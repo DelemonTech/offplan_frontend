@@ -14,10 +14,11 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="UAE Off‑Plan Properties | Offplan.Market"
-        description="Browse top UAE off‑plan property listings. Find verified projects, investor leads, and tools to grow your real estate business—only on Offplan.Market."
+        title="Off-Plan Properties in UAE | Offplan.Market"
+        description="Browse top UAE off-plan property listings. Find verified projects, investor leads, and tools to grow your real estate business—only on Offplan.Market."
+        canonical="https://offplan.market/"
       />
-      <h1 className="sr-only">Welcome to Offplan.Market</h1>
+      <h1 className="sr-only">Off-Plan Properties in UAE</h1>
       <Header />
       <HeroSection />
       <TrustedDevelopers />
