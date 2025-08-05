@@ -17,6 +17,7 @@ import GalleryPage from './Gallery';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { handleWhatsApp } from '@/utils/WhatsAppShare';
+import { SEOHead } from '@/SEOHead';
 
 // import { jsPDF } from "jspdf";
 
@@ -391,6 +392,11 @@ const PropertyDetailedPage = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      <SEOHead
+              title={`${projectData?.title?.en}| Unit ID: ${unit.id} | ${projectData?.city?.name?.en} Property for Sale`}
+              description={`Explore ${projectData?.title?.en} located in ${projectData?.city?.name?.en}. View price, units, payment plans, and more.`}
+            />
+            <h1 className="sr-only">{`${projectData?.title?.en} | ${unit.id}`}</h1>
       <Header logo={logoPath} />
       <Button
         variant="outline"

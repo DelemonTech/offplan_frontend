@@ -16,6 +16,7 @@ import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { formatAED } from '@/utils/FormatAED';
 import { handleWhatsApp } from '@/utils/WhatsAppShare';
+import { SEOHead } from '@/SEOHead';
 
 // import CallToAction from "@/components/Agent/CallToAction"
 
@@ -192,64 +193,64 @@ const PropertyDetails1 = () => {
   //   whatsapp_number: "+971 52 952 9687",
   // };
 
-//    const handleWhatsApp = (project: any) => {
-//   // Debug logging to see the actual data structure
-//   console.log('Agent object:', agent);
-//   console.log('Project object:', project);
-//   console.log('Agent name structure:', agent?.name);
-//   console.log('Project title structure:', project?.title);
+  //    const handleWhatsApp = (project: any) => {
+  //   // Debug logging to see the actual data structure
+  //   console.log('Agent object:', agent);
+  //   console.log('Project object:', project);
+  //   console.log('Agent name structure:', agent?.name);
+  //   console.log('Project title structure:', project?.title);
 
-//   // Safe extraction with fallbacks
-//   const localizedAgentName = (() => {
-//     if (!agent?.name) return 'Agent';
-    
-//     // If agent.name is a string, use it directly
-//     if (typeof agent.name === 'string') return agent.name;
-    
-//     // If it's an object with language keys
-//     return agent.name[i18n.language] || agent.name.en || agent.name.ar || 'Agent';
-//   })();
+  //   // Safe extraction with fallbacks
+  //   const localizedAgentName = (() => {
+  //     if (!agent?.name) return 'Agent';
 
-//   const projectTitle = (() => {
-//     if (!project?.title) return 'a property';
-    
-//     // If project.title is a string, use it directly
-//     if (typeof project.title === 'string') return project.title;
-    
-//     // If it's an object with language keys
-//     return project.title[i18n.language] || project.title.en || project.title.ar || 'a property';
-//   })();
+  //     // If agent.name is a string, use it directly
+  //     if (typeof agent.name === 'string') return agent.name;
 
-//   const cityName = (() => {
-//     if (!project?.city) return 'Dubai';
-    
-//     // Handle different city name structures
-//     if (typeof project.city === 'string') return project.city;
-//     if (typeof project.city.name === 'string') return project.city.name;
-//     if (typeof project.city.name === 'object') {
-//       return project.city.name[i18n.language] || project.city.name.en || project.city.name.ar || 'Dubai';
-//     }
-    
-//     return 'Dubai';
-//   })();
+  //     // If it's an object with language keys
+  //     return agent.name[i18n.language] || agent.name.en || agent.name.ar || 'Agent';
+  //   })();
 
-//   const projectPrice = project?.low_price ? formatAED(project.low_price) : 'competitive prices';
-//   const projectId = project?.id || '';
+  //   const projectTitle = (() => {
+  //     if (!project?.title) return 'a property';
 
-//   const translations = {
-//     en: `Hi ${localizedAgentName}! I'm interested in ${projectTitle} in ${cityName}. Starting from AED ${projectPrice}. Can you share more details?${projectId ? `\n\nProperty Link: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
+  //     // If project.title is a string, use it directly
+  //     if (typeof project.title === 'string') return project.title;
 
-//     ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${projectTitle} في ${cityName}. تبدأ الأسعار من AED ${projectPrice}. هل يمكنك مشاركة المزيد من التفاصيل؟${projectId ? `\n\nرابط العقار: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
+  //     // If it's an object with language keys
+  //     return project.title[i18n.language] || project.title.en || project.title.ar || 'a property';
+  //   })();
 
-//     fa: `${localizedAgentName} عزیز، من به ${projectTitle} در ${cityName} علاقه‌مندم. قیمت‌ها از AED ${projectPrice} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟${projectId ? `\n\nلینک ملک: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`
-//   };
+  //   const cityName = (() => {
+  //     if (!project?.city) return 'Dubai';
 
-//   const message = translations[i18n.language] || translations.en;
-//   const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-  
-//   console.log('Final message:', message); // Debug the final message
-//   window.open(whatsappUrl, '_blank');
-// };
+  //     // Handle different city name structures
+  //     if (typeof project.city === 'string') return project.city;
+  //     if (typeof project.city.name === 'string') return project.city.name;
+  //     if (typeof project.city.name === 'object') {
+  //       return project.city.name[i18n.language] || project.city.name.en || project.city.name.ar || 'Dubai';
+  //     }
+
+  //     return 'Dubai';
+  //   })();
+
+  //   const projectPrice = project?.low_price ? formatAED(project.low_price) : 'competitive prices';
+  //   const projectId = project?.id || '';
+
+  //   const translations = {
+  //     en: `Hi ${localizedAgentName}! I'm interested in ${projectTitle} in ${cityName}. Starting from AED ${projectPrice}. Can you share more details?${projectId ? `\n\nProperty Link: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
+
+  //     ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${projectTitle} في ${cityName}. تبدأ الأسعار من AED ${projectPrice}. هل يمكنك مشاركة المزيد من التفاصيل؟${projectId ? `\n\nرابط العقار: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`,
+
+  //     fa: `${localizedAgentName} عزیز، من به ${projectTitle} در ${cityName} علاقه‌مندم. قیمت‌ها از AED ${projectPrice} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟${projectId ? `\n\nلینک ملک: https://offplan.market/sahar/property-details/?id=${projectId}` : ''}`
+  //   };
+
+  //   const message = translations[i18n.language] || translations.en;
+  //   const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+
+  //   console.log('Final message:', message); // Debug the final message
+  //   window.open(whatsappUrl, '_blank');
+  // };
 
   const [messages, setMessages] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -697,6 +698,11 @@ const PropertyDetails1 = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEOHead
+        title={`${projectData?.title?.en} | ${projectData?.city?.name?.en} Property for Sale`}
+        description={`Explore ${projectData?.title?.en} located in ${projectData?.city?.name?.en}. View price, units, payment plans, and more.`}
+      />
+      <h1 className="sr-only">{projectData?.title?.en}</h1>
       <Header logo={logoPath} />
       <Button
         variant="outline"
@@ -974,7 +980,7 @@ const PropertyDetails1 = () => {
                 <div className="text-center text-gray-500 col-span-full py-6">
                   {t("No units available")}
                 </div>
-              ) : 
+              ) :
                 (unitTypes.map((unit, index) => (
                   <motion.div
                     key={index}
@@ -1298,7 +1304,7 @@ const PropertyDetails1 = () => {
               className="flex-1"
             >
               <button className="w-full bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700"
-              onClick={()=>handleWhatsApp(projectData,agent,t,i18n)}>
+                onClick={() => handleWhatsApp(projectData, agent, t, i18n)}>
                 <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6' /> {t("Chat on WhatsApp")}</div>
               </button>
             </a>
@@ -1334,7 +1340,7 @@ const PropertyDetails1 = () => {
       {(
         <div className="fixed bottom-8 right-5 z-50">
           <button
-            onClick={()=>handleWhatsApp(projectData,agent,t,i18n)} // Use the first property for WhatsApp
+            onClick={() => handleWhatsApp(projectData, agent, t, i18n)} // Use the first property for WhatsApp
             className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
           >
             <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />

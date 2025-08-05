@@ -18,6 +18,7 @@ import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { handleWhatsApp } from '@/utils/WhatsAppShare';
+import { SEOHead } from '@/SEOHead';
 
 const AgentPageContent = () => {
 
@@ -243,14 +244,14 @@ const AgentPageContent = () => {
     });
   }
 
-//   const handleWhatsApp = (project: any) => {
+  //   const handleWhatsApp = (project: any) => {
 
-//     const message = `Hi ${agentData.name}! I'm interested in ${project.title} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
+  //     const message = `Hi ${agentData.name}! I'm interested in ${project.title} in ${project.city.name}. Starting from AED ${formatAED(project.low_price)}. Can you share more details? 
 
-// Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
-//     const whatsappUrl = `https://wa.me/${agentData.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-//     window.open(whatsappUrl, '_blank');
-//   };
+  // Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`;
+  //     const whatsappUrl = `https://wa.me/${agentData.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  //     window.open(whatsappUrl, '_blank');
+  //   };
 
   //   useEffect(() => {
   //   if (agentData?.gender) {
@@ -261,6 +262,11 @@ const AgentPageContent = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEOHead
+        title={`${agentData?.name?.en || 'Agent'} | Real Estate Agent in ${agentData?.city?.name?.en}`}
+        description={`Discover ${agentData?.name?.en}'s listings, experience, and projects in ${agentData?.city?.name?.en} on Offplan.Market.`}
+      />
+      <h1 className="sr-only">{agentData?.name?.en}</h1>
       <Header logo={logoPath} />
       <HeroSection agent={agentData} project={properties[0]} />
       <FeaturedProjects
@@ -463,7 +469,7 @@ const AgentPageContent = () => {
         className="fixed bottom-8 right-5 z-50 opacity-0 transition-opacity duration-300"
       >
         <button
-          onClick={() => handleWhatsApp(properties[0], agentData,t,i18n)}
+          onClick={() => handleWhatsApp(properties[0], agentData, t, i18n)}
           className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
         >
           <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />

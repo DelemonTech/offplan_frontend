@@ -8,10 +8,16 @@ import TopRatedAgents from "@/components/others/HomeTopRatedAgents";
 import HowItWorks from "@/components/others/HomeHowItWorks";
 import AgentRecruitment from "@/components/others/HomeAgentRecruitment";
 import Footer from "@/components/Agent/Footer";
+import { SEOHead } from "@/SEOHead";
 
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="UAE Off‑Plan Properties | Offplan.Market"
+        description="Browse top UAE off‑plan property listings. Find verified projects, investor leads, and tools to grow your real estate business—only on Offplan.Market."
+      />
+      <h1 className="sr-only">Welcome to Offplan.Market</h1>
       <Header />
       <HeroSection />
       <TrustedDevelopers />

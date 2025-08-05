@@ -82,15 +82,15 @@ const App = () => (
             {/* <Route path="/property-details" element={<PropertyDetails2 />} />        */}
             {/* <Route path="/:username/agent-detail" element={<AgentPropDetail />} /> */}
 
-            <Route path="/:username/property-details" element={<PropertyDetails1/>} />
+            {/* <Route path="/:username/property-details" element={<PropertyDetails1/>} /> */}
             {/* <Route path="/property-details" element={<PropertyDetails2 />} /> */}
 
 
             {/* <Route path="/property-detailed" element={<PropertyDetailed />} /> */}
             <Route path="/:username/unit-details/:unitId" element={<UnitDetails1/>} />
 
-            {/* <Route path="/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
-            <Route path="/:username/property-details/:propertyId/unit-details/:unitId" element={<PropertyDetailed />} /> */}
+            {/* <Route path="/:username/property-detailed/:unitId" element={<PropertyDetailed />} /> */}
+            <Route path="/:username/property-details/:propertyId/unit-details/:unitId" element={<PropertyDetailed />} />
 
             {/* <Route path="/unit-detail" element={<UnitDetail />} />
             <Route path="/gallery" element={<GalleryPage />} />

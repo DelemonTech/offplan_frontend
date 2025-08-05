@@ -42,7 +42,7 @@ const fetchDynamicRoutes = async (): Promise<string[]> => {
       // routes.push(`/agentedit/${username}`);
       // routes.push(`/sample/${username}`);
       routes.push(`/${username}/property-details`);
-      routes.push(`/${username}/agent-detail`);
+      // routes.push(`/${username}/agent-detail`);
     }
 
     for (const property of properties) {
