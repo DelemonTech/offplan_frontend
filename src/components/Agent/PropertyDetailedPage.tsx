@@ -395,6 +395,7 @@ const PropertyDetailedPage = () => {
       <SEOHead
               title={`${projectData?.title?.en} | Unit ID: ${unit.id} | ${projectData?.city?.name?.en} Property for Sale`}
               description={`Explore ${projectData?.title?.en} located in ${projectData?.city?.name?.en}. View price, units, payment plans, and more.`}
+              canonical={`https://offplan.market${location.pathname}`}
             />
             <h1 className="sr-only">{`${projectData?.title?.en} | ${unit.id}`}</h1>
       <Header logo={logoPath} />
