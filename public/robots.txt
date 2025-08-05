@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://offplan.market/sitemap.xml.gz
+Sitemap: https://offplan.market/sitemap.xml

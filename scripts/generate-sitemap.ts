@@ -1,12 +1,13 @@
 // scripts/generate-sitemap.ts
 import fs from "fs";
-import { SitemapStream, streamToPromise } from "sitemap";
+import { SitemapStream } from "sitemap";
 import { createGzip } from "zlib";
 import axios from "axios";
+import { pipeline } from "stream/promises";
 
 const hostname = "https://offplan.market";
 const API_BASE_URL = "https://offplan.market/api";
-const AUTH_TOKEN = ""; // Add JWT if needed
+const AUTH_TOKEN = ""; // Add JWT token if needed
 
 const staticRoutes = [
   "/",
@@ -47,8 +48,7 @@ const fetchDynamicRoutes = async (): Promise<string[]> => {
     for (const property of properties) {
       const agentUsername = property.agent?.username;
       const propertyId = property.id;
-
-      const unitIds: number[] = property.units?.map((u: any) => u.id) || [1];
+      const unitIds: number[] = property.units?.map((u: any) => u.id) || [];
 
       unitIds.forEach(unitId => {
         routes.push(`/${agentUsername}/property-detailed/${unitId}`);
@@ -63,21 +63,30 @@ const fetchDynamicRoutes = async (): Promise<string[]> => {
 };
 
 const generateSitemap = async () => {
+  const allRoutes = [...staticRoutes, ...(await fetchDynamicRoutes())];
+
+  // 1. Write sitemap.xml (plain)
   const sitemap = new SitemapStream({ hostname });
-  const writeStream = fs.createWriteStream("./public/sitemap.xml.gz");
-  const pipeline = sitemap.pipe(createGzip());
-
-  const dynamicRoutes = await fetchDynamicRoutes();
-
-  [...staticRoutes, ...dynamicRoutes].forEach(url => {
+  const xmlFile = fs.createWriteStream("./public/sitemap.xml");
+  for (const url of allRoutes) {
     sitemap.write({ url, changefreq: "weekly", priority: 0.8 });
-  });
-
+  }
   sitemap.end();
+  await pipeline(sitemap, xmlFile);
+  console.log("✅ sitemap.xml created");
 
-  const buffer = await streamToPromise(pipeline);
-  fs.writeFileSync("./public/sitemap.xml.gz", buffer);
-  console.log("✅ sitemap.xml.gz created successfully.");
+  // 2. Compress and write sitemap.xml.gz
+  const sitemap2 = new SitemapStream({ hostname });
+  const gzip = createGzip();
+  const gzipFile = fs.createWriteStream("./public/sitemap.xml.gz");
+
+  allRoutes.forEach(url => {
+    sitemap2.write({ url, changefreq: "weekly", priority: 0.8 });
+  });
+  sitemap2.end();
+
+  await pipeline(sitemap2, gzip, gzipFile);
+  console.log("✅ sitemap.xml.gz created");
 };
 
 generateSitemap();
