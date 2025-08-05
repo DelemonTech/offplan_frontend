@@ -265,6 +265,8 @@ const AgentPageContent = () => {
       <SEOHead
         title={`${agentData?.name?.en || 'Agent'} | Real Estate Agent in ${agentData?.city?.name?.en}`}
         description={`Discover ${agentData?.name?.en}'s listings, experience, and projects in ${agentData?.city?.name?.en} on Offplan.Market.`}
+        canonical={`https://offplan.market${location.pathname}`}
+        robots="index, follow"
       />
       <h1 className="sr-only">{agentData?.name?.en}</h1>
       <Header logo={logoPath} />
