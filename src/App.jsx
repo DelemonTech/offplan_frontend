@@ -46,7 +46,7 @@ const App = () => (
         <ScrollToTop />
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<Login />} />
+            {/*<Route path="/login" element={<Login />} />
             <Route 
               path="/admin/dashboard" 
               element={
@@ -62,14 +62,14 @@ const App = () => (
                   <AgentDashboard />
                 </ProtectedRoute>
               } 
-            />
+            />*/}
             {/* <Route path="/projects/:slug" element={<ProjectDetail />} /> */}
             {/* <Route path="/projects/:slug" element={<AgentDetail />} />/ */}
             <Route path="/:username" element={<AgentPage />} />
             {/* <Route path="/:agentUsername/farsi" element={<AgentFarsi/> } /> */}
-            <Route path="/agentProfile" element={<AgentProfile/>}/>
+            {/* <Route path="/agentProfile" element={<AgentProfile/>}/> */}
             {/* <Route path="/propertydetail/:slug" element={<PropDetail/>}/> */}
-            <Route path="/sample/:username" element={<Sample />} />
+            {/* <Route path="/sample/:username" element={<Sample />} /> */}
             {/* <Route path="/:agentUsername/v1" element={<AgentPageVariation1 />} />
             <Route path="/:agentUsername/v2" element={<AgentPageVariation2 />} />
             <Route path="/:agentUsername/v3" element={<AgentPageVariation3 />} />
@@ -79,22 +79,22 @@ const App = () => (
 
             <Route path="/:username/property-details" element={<PropertyDetails1/>} /> {/*Original*/}    
         
-            <Route path="/property-details" element={<PropertyDetails2 />} />       
-            <Route path="/:username/agent-detail" element={<AgentPropDetail />} />
+            {/* <Route path="/property-details" element={<PropertyDetails2 />} />        */}
+            {/* <Route path="/:username/agent-detail" element={<AgentPropDetail />} /> */}
 
             <Route path="/:username/property-details" element={<PropertyDetails1/>} />
-            <Route path="/property-details" element={<PropertyDetails2 />} />
+            {/* <Route path="/property-details" element={<PropertyDetails2 />} /> */}
 
 
-            <Route path="/property-detailed" element={<PropertyDetailed />} />
+            {/* <Route path="/property-detailed" element={<PropertyDetailed />} /> */}
             <Route path="/:username/unit-details/:unitId" element={<UnitDetails1/>} />
 
-            <Route path="/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
-            <Route path="/:username/property-details/:propertyId/unit-details/:unitId" element={<PropertyDetailed />} />
+            {/* <Route path="/:username/property-detailed/:unitId" element={<PropertyDetailed />} />
+            <Route path="/:username/property-details/:propertyId/unit-details/:unitId" element={<PropertyDetailed />} /> */}
 
-            <Route path="/unit-detail" element={<UnitDetail />} />
+            {/* <Route path="/unit-detail" element={<UnitDetail />} />
             <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/agentedit/:username" element={<AgentEdit />} />
+            <Route path="/agentedit/:username" element={<AgentEdit />} /> */}
 
             <Route path="*" element={<NotFound />} />
           </Routes>

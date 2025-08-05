@@ -10,6 +10,15 @@ import '@/i18n';
 import { useTranslation } from 'react-i18next';
 import { Value } from '@radix-ui/react-select';
 
+// Define the City type if not imported from elsewhere
+type City = {
+  id: string | number;
+  name: { [lang: string]: string };
+  districts?: Array<{
+    name: { [lang: string]: string };
+  }>;
+};
+
 const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUrl, setPropertyType,
   setSelectedPropertySubtype,
   setBedrooms,
