@@ -11,14 +11,14 @@ const AUTH_TOKEN = ""; // Add JWT token if needed
 
 const staticRoutes = [
   "/",
-  "/login",
-  "/admin/dashboard",
-  "/dashboard",
-  "/agentProfile",
-  "/property-details",
-  "/property-detailed",
-  "/unit-detail",
-  "/gallery",
+  // "/login",
+  // "/admin/dashboard",
+  // "/dashboard",
+  // "/agentProfile",
+  // "/property-details",
+  // "/property-detailed",
+  // "/unit-detail",
+  // "/gallery",
 ];
 
 const fetchDynamicRoutes = async (): Promise<string[]> => {
@@ -39,8 +39,8 @@ const fetchDynamicRoutes = async (): Promise<string[]> => {
     for (const agent of agents) {
       const username = agent.username;
       routes.push(`/${username}`);
-      routes.push(`/agentedit/${username}`);
-      routes.push(`/sample/${username}`);
+      // routes.push(`/agentedit/${username}`);
+      // routes.push(`/sample/${username}`);
       routes.push(`/${username}/property-details`);
       routes.push(`/${username}/agent-detail`);
     }
