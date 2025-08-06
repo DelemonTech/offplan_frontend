@@ -69,10 +69,8 @@ const UnitPreviewModal = ({ unit, isOpen, onClose, projectTitle, projectLocation
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-sm max-w-[85vw] p-0 overflow-hidden rounded-xl shadow-xl bg-white border-0 max-h-[75vh] overflow-y-auto sr-only">
         <VisuallyHidden>
-                  <DialogHeader>
-                <DialogTitle>.</DialogTitle>
-                </DialogHeader>
-                </VisuallyHidden>
+        <DialogTitle>.</DialogTitle>
+        </VisuallyHidden>
         {/* Close button */}
         <button
           onClick={onClose}
