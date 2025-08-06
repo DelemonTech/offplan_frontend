@@ -3,14 +3,13 @@ import { SitemapStream } from "sitemap";
 import { createGzip } from "zlib";
 import axios from "axios";
 import { pipeline } from "stream/promises";
+import xmlFormatter from "xml-formatter"; // << ADD THIS
 
 const hostname = "https://offplan.market";
 const API_BASE_URL = "https://offplan.market/api";
-const AUTH_TOKEN = ""; // Optional: JWT if your API is protected
+const AUTH_TOKEN = ""; // Optional
 
-const staticRoutes = [
-  "/",
-];
+const staticRoutes = ["/"];
 
 const fetchDynamicRoutes = async (): Promise<string[]> => {
   const routes: string[] = [];
@@ -28,9 +27,8 @@ const fetchDynamicRoutes = async (): Promise<string[]> => {
     const properties = propertiesRes.data?.data?.results || [];
 
     for (const agent of agents) {
-      const username = agent.username;
-      routes.push(`/${username}`);
-      routes.push(`/${username}/property-details`);
+      routes.push(`/${agent.username}`);
+      routes.push(`/${agent.username}/property-details`);
     }
 
     for (const property of properties) {
@@ -38,9 +36,11 @@ const fetchDynamicRoutes = async (): Promise<string[]> => {
       const propertyId = property.id;
       const unitIds: number[] = property.units?.map((u: any) => u.id) || [];
 
-      unitIds.forEach(unitId => {
+      unitIds.forEach((unitId) => {
         routes.push(`/${agentUsername}/property-detailed/${unitId}`);
-        routes.push(`/${agentUsername}/property-details/${propertyId}/unit-details/${unitId}`);
+        routes.push(
+          `/${agentUsername}/property-details/${propertyId}/unit-details/${unitId}`
+        );
       });
     }
   } catch (err) {
@@ -52,45 +52,44 @@ const fetchDynamicRoutes = async (): Promise<string[]> => {
 
 const generateSitemap = async () => {
   const allRoutes = [...staticRoutes, ...(await fetchDynamicRoutes())];
-
   const date = new Date().toISOString();
 
-  // 1. Write sitemap.xml
-  const sitemap = new SitemapStream({ hostname });
-  const xmlFile = fs.createWriteStream("./public/sitemap.xml");
-  for (const url of allRoutes) {
-    sitemap.write({
-      url,
-      changefreq: "weekly",
-      priority: 0.8,
-      lastmod: date,
-    });
-  }
-  sitemap.end();
-  await pipeline(sitemap, xmlFile);
-  console.log("✅ sitemap.xml created");
+  //
+  // 1) Generate XML into a string
+  //
+  const sitemapStream = new SitemapStream({ hostname });
 
-  // 2. sitemap.xml.gz
-  const sitemap2 = new SitemapStream({ hostname });
+  allRoutes.forEach((url) => {
+    sitemapStream.write({ url, changefreq: "weekly", priority: 0.8, lastmod: date });
+  });
+  sitemapStream.end();
+
+  let rawXml = "";
+  for await (const chunk of sitemapStream) {
+    rawXml += chunk.toString();
+  }
+
+  //
+  // 2) Pretty-print
+  //
+  const formattedXml = xmlFormatter(rawXml, { indentation: "  " });
+  fs.writeFileSync("./public/sitemap.xml", formattedXml);
+  console.log("✅ Pretty sitemap.xml created");
+
+  //
+  // 3) Also write compressed version
+  //
+  const gzipStream = new SitemapStream({ hostname });
   const gzip = createGzip();
   const gzipFile = fs.createWriteStream("./public/sitemap.xml.gz");
 
-  for (const url of allRoutes) {
-    sitemap2.write({
-      url,
-      changefreq: "weekly",
-      priority: 0.8,
-      lastmod: date,
-    });
-  }
-  sitemap2.end();
-  await pipeline(sitemap2, gzip, gzipFile);
+  allRoutes.forEach((url) => {
+    gzipStream.write({ url, changefreq: "weekly", priority: 0.8, lastmod: date });
+  });
+  gzipStream.end();
+  await pipeline(gzipStream, gzip, gzipFile);
   console.log("✅ sitemap.xml.gz created");
-
-  // 3. robots.txt to advertise the sitemap
-  const robotsContent = `User-agent: *\nAllow: /\n\nSitemap: ${hostname}/sitemap.xml\n`;
-  fs.writeFileSync("./public/robots.txt", robotsContent);
-  console.log("✅ robots.txt created/updated");
 };
+
 
 generateSitemap();

@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://offplan.market/sitemap.xml
+Sitemap: https://offplan.market/sitemap.xml.gz
