@@ -27,7 +27,7 @@ export const Header = () => {
   const menuItems = [
     { label: t('Home'), icon: <LayoutDashboard className="w-4 h-4" /> },
     { label: t('Agents'), icon: <Users className="w-4 h-4" /> },
-    { label: t('Blog'), icon: <Building2 className="w-4 h-4" /> },
+    { label: t('Blogs'), icon: <Building2 className="w-4 h-4" /> },
   ];
 
   const currentTime = new Date().toLocaleTimeString('en-US', {
