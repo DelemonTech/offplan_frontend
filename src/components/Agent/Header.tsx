@@ -23,11 +23,10 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
 
   const navigationLinks = [
     { href: "/", label: t('Home') },
-    { href: "#", label: t('Exclusive') },
     { href: "#", label: t('Latest') },
     { href: "#", label: t('About') },
     { href: "#", label: t('Contact') },
-    { href: "#", label: t('Blog') },
+    { href: `/blog`, label: t('Blog') },
   ];
  
   return (

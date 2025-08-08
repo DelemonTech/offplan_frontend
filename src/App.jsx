@@ -25,6 +25,8 @@ import ScrollToTop from "./components/Agent/ScrollToTop";
 import GalleryPage from "@/components/Agent/Gallery";
 import AgentEdit from "@/components/Agent/AgentEdit";
 import { SEOHead } from "@/components/SEOHead";
+import BlogDetail from "@/components/Blog/BlogDetail";
+import BlogListing from "@/components/Blog/BlogListing";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,8 @@ const App = () => (
                   path="/:username/property-details/:propertyId/unit-details/:unitId" 
                   element={<PropertyDetailed />} 
                 />
+                <Route path="/blog" element={<BlogListing/>}/>
+                <Route path="/blog/:slug" element={<BlogDetail/>}/>
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

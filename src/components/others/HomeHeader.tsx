@@ -25,9 +25,9 @@ export const Header = () => {
   const navigate = useNavigate();
   const overlayRef = useRef(null);
   const menuItems = [
-    { label: t('Projects'), icon: <LayoutDashboard className="w-4 h-4" /> },
+    { label: t('Home'), icon: <LayoutDashboard className="w-4 h-4" /> },
     { label: t('Agents'), icon: <Users className="w-4 h-4" /> },
-    { label: t('Developers'), icon: <Building2 className="w-4 h-4" /> },
+    { label: t('Blog'), icon: <Building2 className="w-4 h-4" /> },
   ];
 
   const currentTime = new Date().toLocaleTimeString('en-US', {
@@ -88,9 +88,9 @@ export const Header = () => {
             </div>
 
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#projects" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Projects")}</a>
+              <a href="/" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Home")}</a>
               <a href="#agents" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Agents")}</a>
-              <a href="#developers" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Developers")}</a>
+              <a href="/blog" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Blog")}</a>
 
               {/* <div className="relative group py-2">
                 <button className="flex items-center text-gray-700 hover:text-[#6084ee] transition">
