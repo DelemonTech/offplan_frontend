@@ -1,4 +1,4 @@
-// Enhanced BlogDetail.tsx with matching theme
+// Enhanced BlogDetail.tsx with proper content styling
 import React, { useEffect, useState, useRef } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -65,7 +65,7 @@ const BlogDetail: React.FC = () => {
                 setPost(data);
 
                 // Load related posts
-                const relatedRes = await fetch(`${hostUrl}/api/api/blogs/`);
+                const relatedRes = await fetch(`${hostUrl}/api/blogs/`);
                 const relatedData = await relatedRes.json();
                 const related = (relatedData.results || relatedData)
                     .filter((blog: BlogType) => blog.slug !== slug)
@@ -84,7 +84,7 @@ const BlogDetail: React.FC = () => {
     useEffect(() => {
         if (post && contentRef.current) {
             const timer = setTimeout(() => {
-                const headings = contentRef.current?.querySelectorAll('h2, h3');
+                const headings = contentRef.current?.querySelectorAll('h1, h2, h3, h4, h5, h6');
                 const toc: TableOfContentsItem[] = [];
 
                 headings?.forEach((heading, index) => {
@@ -136,6 +136,86 @@ const BlogDetail: React.FC = () => {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
+
+    // Enhanced content processing function to handle plain text with proper formatting
+    const processContent = (text: string) => {
+        let processedText = text;
+
+        // First, decode any HTML entities
+        const textArea = document.createElement('textarea');
+        textArea.innerHTML = processedText;
+        processedText = textArea.value;
+
+        // Check if content already has proper HTML structure (like <p>, <ul>, <li> tags)
+        const hasHtmlStructure = /<(p|div|ul|ol|li|h[1-6])\b[^>]*>/i.test(processedText);
+
+        if (hasHtmlStructure) {
+            // Content already has HTML structure, just clean it up and enhance it
+
+            // Fix any malformed lists by ensuring proper ul/ol structure
+            processedText = processedText.replace(/<li([^>]*)>(.*?)<\/li>\s*(?!<\/[uo]l>)(?=<li)/g, '<li$1>$2</li>');
+
+            // Wrap orphaned <li> elements in <ul>
+            processedText = processedText.replace(/(<li\b[^>]*>.*?<\/li>)(?!\s*<\/[uo]l>)(?!\s*<li)/g, '<ul>$1</ul>');
+
+            // Clean up multiple consecutive <ul> or <ol> tags
+            processedText = processedText.replace(/<\/ul>\s*<ul>/g, '');
+            processedText = processedText.replace(/<\/ol>\s*<ol>/g, '');
+
+            // Ensure proper spacing after headings
+            processedText = processedText.replace(/(<\/h[1-6]>)\s*(<p)/g, '$1\n\n$2');
+
+            // Fix spacing around lists
+            processedText = processedText.replace(/(<\/p>)\s*(<[uo]l>)/g, '$1\n\n$2');
+            processedText = processedText.replace(/(<\/[uo]l>)\s*(<p)/g, '$1\n\n$2');
+
+        } else {
+            // Content is plain text, convert it to HTML structure
+
+            // Handle different types of line breaks and spacing
+            processedText = processedText.replace(/\n\s*\n\s*\n/g, '</p><p>'); // Triple line breaks
+            processedText = processedText.replace(/\n\s*\n/g, '</p><p>'); // Double line breaks
+            processedText = processedText.replace(/\n/g, '<br>'); // Single line breaks
+
+            // Wrap the entire content in paragraphs if not already done
+            if (!processedText.startsWith('<p>')) {
+                processedText = '<p>' + processedText + '</p>';
+            }
+
+            // Handle numbered sections
+            processedText = processedText.replace(/^(\d+\.\s+)(.+)$/gm, '<h3>$1$2</h3>');
+
+            // Handle section headers (lines that end with a colon)
+            processedText = processedText.replace(/<p>([^<]+:)<br>/g, '<h4>$1</h4><p>');
+
+            // Handle bullet points with dashes or bullets - be more specific
+            processedText = processedText.replace(/<p>([–•\-]\s+)(.+?)<\/p>/g, '<ul><li>$2</li></ul>');
+
+            // Clean up consecutive ul tags
+            processedText = processedText.replace(/<\/ul>\s*<ul>/g, '');
+        }
+
+        // Common enhancements for both cases
+
+        // Make URLs clickable with proper styling
+        processedText = processedText.replace(
+            /(https?:\/\/[^\s<]+)/g,
+            '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-2 hover:decoration-blue-800 transition-colors duration-200 font-medium">$1</a>'
+        );
+
+        // Handle FAQ sections
+        processedText = processedText.replace(/<p>(Q\d+:.*?)<br>/g, '<h4 class="faq-question">$1</h4><p>');
+
+        // Handle Step-by-Step sections
+        processedText = processedText.replace(/<p>(Step \d+:.*?)<br>/g, '<h4 class="step-title">$1</h4><p>');
+
+        // Clean up any empty paragraphs
+        processedText = processedText.replace(/<p>\s*<\/p>/g, '');
+        processedText = processedText.replace(/<p><br><\/p>/g, '');
+
+        return processedText;
+    };
+    
 
     const handleContactSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -278,10 +358,8 @@ const BlogDetail: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
-            <>
-                {/* Your app components */}
-                <Toaster position="top-right" />
-            </>
+            <Toaster position="top-right" />
+
             {/* Background Effects */}
             <div className="absolute inset-0 opacity-30">
                 <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
@@ -377,14 +455,128 @@ const BlogDetail: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Content */}
+                        {/* Content with enhanced formatting for plain text content */}
                         <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
-                            {/* <pre
-                                style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-                                className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900 prose-img:rounded-xl prose-img:shadow-lg"
-                            > */}
-                            <div dangerouslySetInnerHTML={{ __html: content }} />
-                            {/* </pre> */}
+                            <div
+                                ref={contentRef}
+                                className="prose prose-lg max-w-none leading-relaxed
+                                    prose-headings:font-bold prose-headings:text-gray-900 prose-headings:mb-6 prose-headings:mt-8 prose-headings:leading-tight
+                                    prose-h1:text-3xl prose-h1:mb-8 prose-h1:mt-0 prose-h1:bg-gradient-to-r prose-h1:from-purple-600 prose-h1:to-pink-600 prose-h1:bg-clip-text prose-h1:text-transparent
+                                    prose-h2:text-2xl prose-h2:mb-6 prose-h2:mt-10 prose-h2:text-gray-800 prose-h2:border-l-4 prose-h2:border-purple-500 prose-h2:pl-4 prose-h2:py-2
+                                    prose-h3:text-xl prose-h3:mb-4 prose-h3:mt-8 prose-h3:text-gray-700 prose-h3:font-semibold prose-h3:bg-gradient-to-r prose-h3:from-blue-600 prose-h3:to-purple-600 prose-h3:bg-clip-text prose-h3:text-transparent
+                                    prose-h4:text-lg prose-h4:mb-3 prose-h4:mt-6 prose-h4:text-gray-600 prose-h4:font-semibold
+                                    prose-p:text-gray-700 prose-p:leading-loose prose-p:mb-8 prose-p:text-lg prose-p:whitespace-pre-line
+                                    prose-br:mb-4
+                                    prose-ul:mb-8 prose-ul:space-y-3 prose-ul:pl-6 prose-ul:list-disc
+                                    prose-ol:mb-8 prose-ol:space-y-3 prose-ol:pl-6 prose-ol:list-decimal
+                                    prose-li:text-gray-700 prose-li:text-lg prose-li:leading-loose prose-li:mb-2
+                                    prose-strong:text-gray-900 prose-strong:font-semibold
+                                    prose-em:text-gray-800 prose-em:italic
+                                    prose-blockquote:border-l-4 prose-blockquote:border-purple-500 prose-blockquote:pl-6 prose-blockquote:py-4 prose-blockquote:bg-purple-50/50 prose-blockquote:rounded-r-lg prose-blockquote:my-8 prose-blockquote:italic
+                                    prose-img:rounded-xl prose-img:shadow-lg prose-img:mb-8 prose-img:w-full prose-img:h-auto prose-img:mt-4
+                                    prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-gray-800
+                                    prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:p-6 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-pre:mb-8 prose-pre:mt-4
+                                    prose-table:w-full prose-table:mb-8 prose-table:border-collapse prose-table:mt-4
+                                    prose-th:bg-gray-50 prose-th:border prose-th:border-gray-300 prose-th:px-4 prose-th:py-3 prose-th:text-left prose-th:font-semibold prose-th:text-gray-900
+                                    prose-td:border prose-td:border-gray-300 prose-td:px-4 prose-td:py-3 prose-td:text-gray-700
+                                    prose-hr:border-gray-300 prose-hr:my-12 prose-hr:border-t-2"
+                                style={{
+                                    lineHeight: '1.8',
+                                }}
+                                dangerouslySetInnerHTML={{
+                                    __html: processContent(decodedContent)
+                                }}
+                            />
+
+                            {/* Enhanced CSS for better content formatting */}
+                            <style>{`
+    .prose a {
+        color: #2563eb !important;
+        text-decoration: underline !important;
+        font-weight: 500 !important;
+        text-underline-offset: 2px !important;
+    }
+    .prose a:hover {
+        color: #1d4ed8 !important;
+        text-decoration: underline !important;
+    }
+    .prose p {
+        margin-bottom: 1.5rem !important;
+        line-height: 1.8 !important;
+    }
+    .prose ul {
+        margin-top: 1.5rem !important;
+        margin-bottom: 2rem !important;
+        padding-left: 1.5rem !important;
+        list-style-type: disc !important;
+    }
+    .prose ol {
+        margin-top: 1.5rem !important;
+        margin-bottom: 2rem !important;
+        padding-left: 1.5rem !important;
+        list-style-type: decimal !important;
+    }
+    .prose ul li, .prose ol li {
+        margin-bottom: 0.75rem !important;
+        line-height: 1.7 !important;
+        padding-left: 0.25rem !important;
+        position: relative;
+    }
+    .prose ul li::marker {
+        color: #7c3aed !important;
+        font-weight: bold !important;
+    }
+    .prose ol li::marker {
+        color: #7c3aed !important;
+        font-weight: bold !important;
+    }
+    .prose li > p {
+        margin-bottom: 0.5rem !important;
+        display: inline;
+    }
+    .prose li strong {
+        color: #374151 !important;
+        font-weight: 600 !important;
+    }
+    .prose h2 {
+        margin-top: 3rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    .prose h3 {
+        margin-top: 2.5rem !important;
+        margin-bottom: 1rem !important;
+        border-left: 4px solid #8b5cf6;
+        padding-left: 1rem;
+    }
+    .prose h4 {
+        margin-top: 2rem !important;
+        margin-bottom: 1rem !important;
+    }
+    .prose hr {
+        margin: 3rem 0 !important;
+        border-top: 2px solid #e5e7eb !important;
+    }
+    .prose .faq-question {
+        color: #7c3aed !important;
+        font-weight: 600 !important;
+        margin-top: 2rem !important;
+        margin-bottom: 1rem !important;
+        border-left: 4px solid #7c3aed;
+        padding-left: 1rem;
+        background: linear-gradient(to right, #f3e8ff, #fdf4ff);
+        padding: 1rem;
+        border-radius: 0.5rem;
+    }
+    .prose .step-title {
+        background: linear-gradient(to right, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 600 !important;
+        margin-top: 1.5rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+`}</style>
                         </div>
 
                         {/* Contact Form */}
@@ -466,7 +658,6 @@ const BlogDetail: React.FC = () => {
                                             placeholder="Tell us about your inquiry..."
                                         />
                                     </div>
-                                    {/* Checkbox for updates - add this to your form */}
                                     <div className="flex items-start space-x-3">
                                         <input
                                             type="checkbox"

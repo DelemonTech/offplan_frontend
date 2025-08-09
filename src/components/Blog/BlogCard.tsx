@@ -116,9 +116,11 @@ const BlogCard: React.FC<BlogCardProps> = ({
           </h3>
 
 
-          <p className="text-gray-600 mb-4 line-clamp-3">
-            {displayExcerpt}
-          </p>
+          {/* <p className="text-gray-600 mb-4 line-clamp-3"> */}
+            <div
+              dangerouslySetInnerHTML={{ __html: displayExcerpt }}
+            />
+          {/* </p> */}
 
           <button
             onClick={() => onReadMore(slug)}
