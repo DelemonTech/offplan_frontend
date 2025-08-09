@@ -23,10 +23,9 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
 
   const navigationLinks = [
     { href: "/", label: t('Home') },
-    { href: "#", label: t('Latest') },
     { href: "#", label: t('About') },
     { href: "#", label: t('Contact') },
-    { href: `/blog`, label: t('Blog') },
+    { href: `/blogs`, label: t('Blogs') },
   ];
  
   return (
@@ -104,7 +103,7 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
                 {/* Footer with gradient background */}
                 <div className="p-4 bg-gradient-to-r from-pink-50 to-blue-50 rounded-t-xl">
                   <p className="text-sm text-gray-600 text-center">
-                    {t('footer.tagline')}
+                    {t('offplan.market©2025')}
                   </p>
                 </div>
               </div>

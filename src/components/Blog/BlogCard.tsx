@@ -41,7 +41,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
     };
 
     i18next.on('languageChanged', handleLanguageChange);
-    
+
     return () => {
       i18next.off('languageChanged', handleLanguageChange);
     };
@@ -83,43 +83,51 @@ const BlogCard: React.FC<BlogCardProps> = ({
   };
 
   return (
-    <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
-      <div className="relative overflow-hidden">
-        <img 
-          src={image} 
-          alt={displayTitle} 
-          className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
-      
-      <div className="p-6">
-        <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-          <div className="flex items-center gap-1">
-            <User size={14} />
-            <span>{author}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Calendar size={14} />
-            <span>{formatDate(created_at)}</span>
-          </div>
+    <div
+      className="cursor-pointer"
+      onClick={() => onReadMore(slug)}
+    >
+      <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
+        <div className="relative overflow-hidden">
+          <img
+            src={image}
+            alt={displayTitle}
+            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
-        
-        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
-          {displayTitle}
-        </h3>
-        
-        <p className="text-gray-600 mb-4 line-clamp-3">
-          {displayExcerpt}
-        </p>
-        
-        <button
-          onClick={() => onReadMore(slug)}
-          className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-200"
-        >
-          Read more
-          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
-        </button>
+
+        <div className="p-6">
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+            <div className="flex items-center gap-1">
+              <User size={14} />
+              <span>{author}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Calendar size={14} />
+              <span>{formatDate(created_at)}</span>
+            </div>
+          </div>
+
+          <h3
+            className="text-xl font-bold bg-gradient-to-br from-pink-600 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-3 line-clamp-2 transition-all duration-200 group-hover:brightness-110"
+          >
+            {displayTitle}
+          </h3>
+
+
+          <p className="text-gray-600 mb-4 line-clamp-3">
+            {displayExcerpt}
+          </p>
+
+          <button
+            onClick={() => onReadMore(slug)}
+            className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-200"
+          >
+            Read more
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
+          </button>
+        </div>
       </div>
     </div>
   );

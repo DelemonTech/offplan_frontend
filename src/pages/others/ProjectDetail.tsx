@@ -24,7 +24,7 @@ const ProjectDetail = () => {
     email: ''
   });
 
-  const menuItems = ['Home', 'Exclusive', 'Latest', 'About', 'Contact', 'Blog'];
+  const menuItems = ['Home', 'Exclusive', 'Latest', 'About', 'Contact', 'Blogs'];
 
   // Mock project data - in real app, this would come from API
   const agent = {

@@ -49,7 +49,7 @@ const App = () => (
                   path="/:username/property-details/:propertyId/unit-details/:unitId" 
                   element={<PropertyDetailed />} 
                 />
-                <Route path="/blog" element={<BlogListing/>}/>
+                <Route path="/blogs" element={<BlogListing/>}/>
                 <Route path="/blog/:slug" element={<BlogDetail/>}/>
                 <Route path="*" element={<NotFound />} />
               </Routes>

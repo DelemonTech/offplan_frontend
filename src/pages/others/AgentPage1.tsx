@@ -45,7 +45,7 @@ const AgentPage = () => {
   });
 
 
-  const menuItems = [t('Home'), t('Exclusive'), t('Latest'), t('About'), t('Contact'), t('Blog')];
+  const menuItems = [t('Home'), t('Exclusive'), t('Latest'), t('About'), t('Contact'), t('Blogs')];
 
   // Mock agent data - in real app, this would come from API based on agentUsername
   // const agent = {

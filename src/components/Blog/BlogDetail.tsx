@@ -1,11 +1,12 @@
-// Enhanced BlogDetail.tsx
-import React, { useEffect, useState } from 'react';
+// Enhanced BlogDetail.tsx with matching theme
+import React, { useEffect, useState, useRef } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Calendar, User, Tag, ArrowLeft, Share2, BookOpen, Clock } from 'lucide-react';
+import { Calendar, User, Tag, ArrowLeft, Share2, BookOpen, Clock, Mail, Phone, MessageSquare, Send, Sparkles, Star, UserCheck, ExternalLink } from 'lucide-react';
 import i18next from 'i18next';
 import Header from '../Agent/Header';
 import logoPath from "@/assets/OFFPLAN_MARKET.png";
+import Footer from '@/components/Agent/Footer'
 
 interface BlogType {
     id: number;
@@ -24,27 +25,48 @@ interface BlogType {
     reading_time?: number;
 }
 
+interface TableOfContentsItem {
+    id: string;
+    title: string;
+    level: number;
+}
+
+interface ContactFormData {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+}
+
 const BlogDetail: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
     const [post, setPost] = useState<BlogType | null>(null);
     const [relatedPosts, setRelatedPosts] = useState<BlogType[]>([]);
     const [loading, setLoading] = useState(true);
+    const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>([]);
+    const [activeSection, setActiveSection] = useState<string>('');
+    const [contactForm, setContactForm] = useState<ContactFormData>({
+        name: '', email: '', phone: '', message: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const contentRef = useRef<HTMLDivElement>(null);
     const lang = i18next.language;
+    const hostUrl = import.meta.env.VITE_HOST_URL;
 
     useEffect(() => {
         async function loadBlog() {
             try {
-                const res = await fetch(`http://127.0.0.1:8000/api/api/blogs/${slug}/`);
+                const res = await fetch(`${hostUrl}/api/blogs/${slug}/`);
                 const data = await res.json();
                 setPost(data);
-                
+
                 // Load related posts
-                const relatedRes = await fetch('http://127.0.0.1:8000/api/api/blogs/');
+                const relatedRes = await fetch(`${hostUrl}/api/api/blogs/`);
                 const relatedData = await relatedRes.json();
                 const related = (relatedData.results || relatedData)
-                  .filter((blog: BlogType) => blog.slug !== slug)
-                  .slice(0, 3);
+                    .filter((blog: BlogType) => blog.slug !== slug)
+                    .slice(0, 3);
                 setRelatedPosts(related);
             } catch (error) {
                 console.error('Error loading blog:', error);
@@ -55,18 +77,103 @@ const BlogDetail: React.FC = () => {
         loadBlog();
     }, [slug]);
 
+    // Generate table of contents from H2 tags
+    useEffect(() => {
+        if (post && contentRef.current) {
+            const timer = setTimeout(() => {
+                const headings = contentRef.current?.querySelectorAll('h2, h3');
+                const toc: TableOfContentsItem[] = [];
+
+                headings?.forEach((heading, index) => {
+                    const id = `heading-${index}`;
+                    heading.id = id;
+
+                    toc.push({
+                        id,
+                        title: heading.textContent || '',
+                        level: parseInt(heading.tagName.charAt(1))
+                    });
+                });
+
+                setTableOfContents(toc);
+            }, 100);
+
+            return () => clearTimeout(timer);
+        }
+    }, [post]);
+
+    // Scroll spy for active section
+    useEffect(() => {
+        const handleScroll = () => {
+            const headings = tableOfContents.map(item =>
+                document.getElementById(item.id)
+            ).filter(Boolean);
+
+            const scrollTop = window.scrollY;
+            const current = headings.find((heading, index) => {
+                const nextHeading = headings[index + 1];
+                const currentTop = heading!.offsetTop - 100;
+                const nextTop = nextHeading ? nextHeading.offsetTop - 100 : Infinity;
+
+                return scrollTop >= currentTop && scrollTop < nextTop;
+            });
+
+            if (current) {
+                setActiveSection(current.id);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [tableOfContents]);
+
+    const scrollToSection = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    const handleContactSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            // Replace with your actual contact form submission logic
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
+
+            alert('Thank you for your message! We\'ll get back to you soon.');
+            setContactForm({ name: '', email: '', phone: '', message: '' });
+        } catch (error) {
+            alert('There was an error sending your message. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleContactAgent = () => {
+        window.open('https://offplan.market#agents', '_blank');
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setContactForm(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+
     if (loading) {
         return (
-            <div>
+            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
                 <Header logo={logoPath} />
                 <div className="container mx-auto py-12 px-4">
                     <div className="animate-pulse">
-                        <div className="h-96 bg-gray-200 rounded-2xl mb-8"></div>
-                        <div className="h-8 bg-gray-200 rounded mb-4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
+                        <div className="h-96 bg-gradient-to-r from-purple-200 to-pink-200 rounded-3xl mb-8 shadow-xl"></div>
+                        <div className="h-8 bg-gradient-to-r from-blue-200 to-purple-200 rounded-lg mb-4"></div>
+                        <div className="h-4 bg-gradient-to-r from-pink-200 to-blue-200 rounded-lg w-1/2 mb-8"></div>
                         <div className="space-y-4">
                             {[...Array(10)].map((_, i) => (
-                                <div key={i} className="h-4 bg-gray-200 rounded"></div>
+                                <div key={i} className="h-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg"></div>
                             ))}
                         </div>
                     </div>
@@ -77,16 +184,20 @@ const BlogDetail: React.FC = () => {
 
     if (!post) {
         return (
-            <div>
+            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
                 <Header logo={logoPath} />
                 <div className="container mx-auto py-12 px-4 text-center">
-                    <h1 className="text-2xl font-bold text-gray-600">Article not found</h1>
-                    <button
-                        onClick={() => navigate('/blog')}
-                        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                        Back to Blog
-                    </button>
+                    <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-12 border border-white/20 max-w-md mx-auto">
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-4">
+                            Article not found
+                        </h1>
+                        <button
+                            onClick={() => navigate('/blogs')}
+                            className="px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white !text-white rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                        >
+                            Back to Blog
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -119,136 +230,316 @@ const BlogDetail: React.FC = () => {
         }
     };
 
+    const decodeHtmlEntities = (str: string) => {
+        const textArea = document.createElement('textarea');
+        textArea.innerHTML = str;
+        return textArea.value;
+    };
+
+    const decodedContent = decodeHtmlEntities(content);
+
     return (
-        <div className="min-h-screen bg-gray-50">
-            <SEOHead 
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute inset-0 opacity-30">
+                <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
+            </div>
+
+            <SEOHead
                 title={title}
                 description={post.content.substring(0, 160).replace(/<[^>]*>/g, '')}
                 image={post.image}
             />
             <Header logo={logoPath} />
-            
+
             {/* Back Button */}
-            <div className="container mx-auto px-4 pt-8">
+            <div className="container mx-auto px-4 pt-8 relative z-10">
                 <button
-                    onClick={() => navigate('/blog')}
-                    className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    onClick={() => navigate('/blogs')}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md text-gray-700 hover:text-gray-900 rounded-xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-xl transform hover:scale-105"
                 >
                     <ArrowLeft size={20} />
                     Back to Articles
                 </button>
             </div>
 
-            <article className="container mx-auto py-8 px-4">
-                <div className="max-w-4xl mx-auto">
-                    {/* Hero Image */}
-                    <div className="relative rounded-2xl overflow-hidden mb-8">
-                        <img 
-                            src={post.image} 
-                            alt={title} 
-                            className="w-full h-96 object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        <div className="absolute bottom-6 left-6 right-6 text-white">
-                            {post.category && (
-                                <span className="inline-block bg-blue-600 px-3 py-1 rounded-full text-sm font-medium mb-3">
-                                    {post.category}
-                                </span>
-                            )}
-                            <h1 className="text-4xl md:text-5xl font-bold leading-tight">{title}</h1>
-                        </div>
-                    </div>
-
-                    {/* Meta Information */}
-                    <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                        <div className="flex flex-wrap items-center justify-between gap-4">
-                            <div className="flex items-center gap-6 text-gray-600">
-                                <div className="flex items-center gap-2">
-                                    <User size={18} />
-                                    <span className="font-medium">{post.author}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Calendar size={18} />
-                                    <span>{formatDate(post.created_at)}</span>
-                                </div>
-                                {post.reading_time && (
-                                    <div className="flex items-center gap-2">
-                                        <Clock size={18} />
-                                        <span>{post.reading_time} min read</span>
+            <div className="container mx-auto py-8 px-4 relative z-10">
+                <div className="max-w-7xl mx-auto flex gap-8">
+                    {/* Main Content */}
+                    <article className="flex-1 max-w-4xl">
+                        {/* Hero Image */}
+                        <div className="relative rounded-3xl overflow-hidden mb-8 shadow-2xl group">
+                            <img
+                                src={post.image}
+                                alt={title}
+                                className="w-full h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                            <div className="absolute bottom-6 left-6 right-6 text-white">
+                                {post.category && (
+                                    <div className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-2 rounded-full text-sm font-medium mb-4 shadow-lg">
+                                        <Sparkles size={16} />
+                                        {post.category}
                                     </div>
                                 )}
+                                <h1 className="text-4xl md:text-5xl font-bold leading-tight bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                                    {title}
+                                </h1>
                             </div>
-                            <button
-                                onClick={handleShare}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                <Share2 size={18} />
-                                Share
-                            </button>
                         </div>
-                        
-                        {post.tags && post.tags.length > 0 && (
-                            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
-                                <Tag size={18} className="text-gray-400" />
-                                <div className="flex flex-wrap gap-2">
-                                    {post.tags.map((tag, index) => (
-                                        <span
-                                            key={index}
-                                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                                        >
-                                            {tag}
+
+                        {/* Meta Information */}
+                        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 mb-8 border border-white/20">
+                            <div className="flex flex-wrap items-center justify-between gap-4">
+                                <div className="flex items-center gap-6 text-gray-600">
+                                    <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
+                                        <User size={18} className="text-purple-500" />
+                                        <span className="font-medium">{post.author}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl">
+                                        <Calendar size={18} className="text-pink-500" />
+                                        <span>{formatDate(post.created_at)}</span>
+                                    </div>
+                                    {post.reading_time && (
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
+                                            <Clock size={18} className="text-purple-500" />
+                                            <span>{post.reading_time} min read</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <button
+                                    onClick={handleShare}
+                                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                                >
+                                    <Share2 size={18} />
+                                    Share
+                                </button>
+                            </div>
+
+                            {post.tags && post.tags.length > 0 && (
+                                <div className="flex items-center gap-2 mt-6 pt-6 border-t border-gray-100">
+                                    <Tag size={18} className="text-gray-400" />
+                                    <div className="flex flex-wrap gap-2">
+                                        {post.tags.map((tag, index) => (
+                                            <span
+                                                key={index}
+                                                className="px-3 py-1 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 rounded-full text-sm border border-gray-200 hover:shadow-sm transition-all duration-300"
+                                            >
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
+                            <div
+                                ref={contentRef}
+                                className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900 prose-img:rounded-xl prose-img:shadow-lg"
+                                dangerouslySetInnerHTML={{ __html: decodedContent }}
+                            />
+                        </div>
+
+                        {/* Contact Form */}
+                        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20 relative overflow-hidden">
+                            {/* Background gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-pink-50/50 via-purple-50/50 to-blue-50/50"></div>
+
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl shadow-lg">
+                                        <MessageSquare size={24} className="text-white" />
+                                    </div>
+                                    <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                                        Get in Touch
+                                    </h2>
+                                </div>
+                                <p className="text-gray-600 mb-8 text-lg">
+                                    Have questions about this article or need more information? We'd love to hear from you!
+                                </p>
+                                <form onSubmit={handleContactSubmit} className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Full Name *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="name"
+                                                name="name"
+                                                value={contactForm.name}
+                                                onChange={handleInputChange}
+                                                required
+                                                className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
+                                                placeholder="Your full name"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Phone Number
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                id="phone"
+                                                name="phone"
+                                                value={contactForm.phone}
+                                                onChange={handleInputChange}
+                                                className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
+                                                placeholder="Your phone number"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                                            Email Address *
+                                        </label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={contactForm.email}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
+                                            placeholder="your@email.com"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                                            Message *
+                                        </label>
+                                        <textarea
+                                            id="message"
+                                            name="message"
+                                            value={contactForm.message}
+                                            onChange={handleInputChange}
+                                            required
+                                            rows={5}
+                                            className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl resize-vertical"
+                                            placeholder="Tell us about your inquiry..."
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 font-medium"
+                                    >
+                                        <Send size={18} />
+                                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        {/* Related Posts */}
+                        {relatedPosts.length > 0 && (
+                            <section className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-white/20">
+                                <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                                    <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg">
+                                        <BookOpen size={24} className="text-white" />
+                                    </div>
+                                    <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                                        Related Articles
+                                    </span>
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    {relatedPosts.map((relatedPost) => {
+                                        const relatedTitle = lang === 'ar' ? relatedPost.title_ar :
+                                            lang === 'fa' ? relatedPost.title_fa :
+                                                relatedPost.title;
+                                        return (
+                                            <div
+                                                key={relatedPost.id}
+                                                className="group cursor-pointer bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+                                                onClick={() => navigate(`/blogs/${relatedPost.slug}`)}
+                                            >
+                                                <img
+                                                    src={relatedPost.image}
+                                                    alt={relatedTitle}
+                                                    className="w-full h-40 object-cover rounded-xl mb-4 group-hover:scale-110 transition-transform duration-500"
+                                                />
+                                                <h3 className="font-semibold text-gray-900 group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:via-purple-500 group-hover:to-blue-500 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2 mb-2">
+                                                    {relatedTitle}
+                                                </h3>
+                                                <p className="text-sm text-gray-500">
+                                                    {formatDate(relatedPost.created_at)}
+                                                </p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        )}
+                    </article>
+
+                    {/* Table of Contents Sidebar */}
+                    <aside className="hidden lg:block w-80">
+                        <div className="sticky top-8">
+                            {tableOfContents.length > 0 && (
+                                <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 mb-6 border border-white/20">
+                                    <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg">
+                                            <BookOpen size={20} className="text-white" />
+                                        </div>
+                                        <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                                            Table of Contents
                                         </span>
-                                    ))}
+                                    </h3>
+                                    <nav className="space-y-2">
+                                        {tableOfContents.map((item) => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => scrollToSection(item.id)}
+                                                className={`block w-full text-left px-4 py-3 rounded-xl transition-all duration-300 text-sm ${activeSection === item.id
+                                                        ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-600 font-medium border-l-4 border-purple-500 shadow-lg'
+                                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-purple-50 hover:shadow-md'
+                                                    } ${item.level === 3 ? 'ml-4' : ''}`}
+                                            >
+                                                {item.title}
+                                            </button>
+                                        ))}
+                                    </nav>
+                                </div>
+                            )}
+
+                            {/* Quick Contact Card */}
+                            <div className="bg-gradient-to-br from-pink-400 via-purple-400 to-blue-500 rounded-3xl shadow-2xl p-6 text-white relative overflow-hidden">
+                                {/* Background effects */}
+                                <div className="absolute inset-0 opacity-20">
+                                    <div className="absolute top-2 right-2 w-16 h-16 bg-white rounded-full blur-xl animate-pulse"></div>
+                                    <div className="absolute bottom-2 left-2 w-12 h-12 bg-white rounded-full blur-xl animate-pulse delay-300"></div>
+                                </div>
+
+                                <div className="relative z-10 text-center">
+                                    <div className="mb-6">
+                                        <UserCheck size={36} className="mx-auto mb-2 " />
+                                        <h2 className="text-4xl md:text-4xl font-bold mb-4">
+                                            Ready to Invest?
+                                        </h2>
+                                        <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+                                            Connect with our expert agents for personalized guidance and exclusive property opportunities in Dubai's thriving real estate market.
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={handleContactAgent}
+                                        className="inline-flex items-center gap-3 px-10 py-5 bg-white/20 hover:bg-white/30 rounded-2xl backdrop-blur-sm transition-all duration-300 transform hover:scale-105 font-semibold text-xl border border-white/30"
+                                    >
+                                        Contact Our Agents Now
+                                        <ExternalLink size={28} className='animate-bounce'/>
+                                    </button>
                                 </div>
                             </div>
-                        )}
-                    </div>
-
-                    {/* Content */}
-                    <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                        <div 
-                            className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900 prose-img:rounded-xl"
-                            dangerouslySetInnerHTML={{ __html: content }} 
-                        />
-                    </div>
-
-                    {/* Related Posts */}
-                    {relatedPosts.length > 0 && (
-                        <section className="bg-white rounded-2xl shadow-lg p-8">
-                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                                <BookOpen size={24} />
-                                Related Articles
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {relatedPosts.map((relatedPost) => {
-                                    const relatedTitle = lang === 'ar' ? relatedPost.title_ar : 
-                                                        lang === 'fa' ? relatedPost.title_fa : 
-                                                        relatedPost.title;
-                                    return (
-                                        <div
-                                            key={relatedPost.id}
-                                            className="group cursor-pointer"
-                                            onClick={() => navigate(`/blog/${relatedPost.slug}`)}
-                                        >
-                                            <img
-                                                src={relatedPost.image}
-                                                alt={relatedTitle}
-                                                className="w-full h-40 object-cover rounded-xl mb-3 group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                            <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
-                                                {relatedTitle}
-                                            </h3>
-                                            <p className="text-sm text-gray-500 mt-1">
-                                                {formatDate(relatedPost.created_at)}
-                                            </p>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </section>
-                    )}
+                        </div>
+                    </aside>
                 </div>
-            </article>
+            </div>
+
+            <Footer />
         </div>
     );
 };

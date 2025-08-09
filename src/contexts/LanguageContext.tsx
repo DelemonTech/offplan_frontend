@@ -21,7 +21,7 @@ const translations = {
     'nav.latest': 'Latest',
     'nav.about': 'About',
     'nav.contact': 'Contact',
-    'nav.blog': 'Blog',
+    'nav.blogs': 'Blogs',
     'nav.language': 'Language',
     
     // Hero Section
@@ -168,7 +168,7 @@ const translations = {
     'nav.latest': 'الأحدث',
     'nav.about': 'حولنا',
     'nav.contact': 'اتصل بنا',
-    'nav.blog': 'المدونة',
+    'nav.blogs': 'المدونة',
     'nav.language': 'اللغة',
     
     // Hero Section
@@ -315,7 +315,7 @@ const translations = {
     'nav.latest': 'جدیدترین',
     'nav.about': 'درباره ما',
     'nav.contact': 'تماس با ما',
-    'nav.blog': 'وبلاگ',
+    'nav.blogs': 'وبلاگ',
     'nav.language': 'زبان',
     
     // Hero Section

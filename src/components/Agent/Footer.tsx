@@ -121,7 +121,7 @@ const Footer = () => {
                 {t("UAE's premier off-plan property platform. Trusted for transparency, smart search & expert support.")}
               </p>
               <ul className="space-y-3 text-sm">
-                {[t('About Us'), t('Contact'), t('Careers'), t('Blog')].map((link) => (
+                {[t('About Us'), t('Contact'), t('Careers'), t('Blogs')].map((link) => (
                   <li key={link}>
                     <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium">
                       {link}

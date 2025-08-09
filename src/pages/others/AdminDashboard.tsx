@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     password: ''
   });
 
-  const menuItems = [t('Home'), t('Exclusive'), t('Latest'), t('About'), t('Blog')];
+  const menuItems = [t('Home'), t('Exclusive'), t('Latest'), t('About'), t('Blogs')];
 
   // Mock data - in real app, this would come from API
   const [agents] = useState([

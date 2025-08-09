@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LogOut, User, Bell, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
@@ -10,8 +11,10 @@ import exp from 'constants';
 import { Button } from "@/components/ui/button";
 import { Menu, LayoutDashboard, Users, Building2 } from "lucide-react";
 import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
+import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
+import logoPath from '@/assets/OFFPLAN_MARKET_female.png';
 
-export const Header = () => {
+export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const changeLanguage = (lng: string) => {
@@ -35,6 +38,13 @@ export const Header = () => {
     minute: '2-digit',
     hour12: true
   });
+
+  const navigationLinks = [
+    { href: "/", label: t('Home') },
+    { href: "#", label: t('About') },
+    { href: "#", label: t('Contact') },
+    { href: `/blogs`, label: t('Blogs') },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -68,8 +78,8 @@ export const Header = () => {
   }, [isOpen]);
 
   useEffect(() => {
-      document.dir = i18n.language === 'fa' ? 'rtl' : 'ltr';
-    }, [i18n.language]);
+    document.dir = i18n.language === 'fa' ? 'rtl' : 'ltr';
+  }, [i18n.language]);
 
   return (
     <>
@@ -86,34 +96,69 @@ export const Header = () => {
                 />
               </div>
             </div>
-
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="/" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Home")}</a>
-              <a href="#agents" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Agents")}</a>
-              <a href="/blog" className="text-gray-700 hover:text-offplan-purple transition-colors">{t("Blog")}</a>
-
-              {/* <div className="relative group py-2">
-                <button className="flex items-center text-gray-700 hover:text-[#6084ee] transition">
-                  🌐
-                  <span className="ml-1 hidden sm:inline">{t('Language')}</span>
-                </button>
-                <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg border rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                  <button
-                    onClick={() => changeLanguage('en')}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                  >
-                    {t("English (UK)")}
-                  </button>
-                  <button
-                    onClick={() => changeLanguage('fa')}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                  >
-                    {t("Farsi (Persian)")}
-                  </button>
-                </div>
-              </div> */}
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="text-gray-600 hover:text-pink-500 transition-colors font-medium"
+                >
+                  {link.label}
+                </Link>
+              ))}
               <LanguageSwitcher />
             </nav>
+
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                {/* <button className="md:hidden p-2">
+                <div className="w-6 h-0.5 bg-gray-600 mb-1"></div>
+                <div className="w-6 h-0.5 bg-gray-600 mb-1"></div>
+                <div className="w-6 h-0.5 bg-gray-600"></div>
+              </button> */}
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px] bg-white">
+                <div className="flex flex-col h-full">
+                  {/* Header with close button */}
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <Link to="/" className="md:hidden">
+                      <img src={logoPath} alt="Logo" className="h-8" />
+                    </Link>
+                    {/* <SheetClose asChild>
+                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                      <X size={20} className="text-gray-600" />
+                    </button>
+                  </SheetClose> */}
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex-1 py-4">
+                    <div className="space-y-1 px-4">
+                      {navigationLinks.map((link) => (
+                        <Link
+                          key={link.label}
+                          to={link.href}
+                          className="block py-2 px-4 text-gray-700 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition-all duration-200 text-base font-medium"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+
+                      {/* Language Switcher */}
+                      <LanguageSwitcher mobile />
+                    </div>
+                  </nav>
+
+                  {/* Footer with gradient background */}
+                  <div className="p-4 bg-gradient-to-r from-pink-50 to-blue-50 rounded-t-xl">
+                    <p className="text-sm text-gray-600 text-center">
+                      {t('offplan.market©2025')}
+                    </p>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
 
             <div className="flex items-center space-x-4">
               <Button variant="outline" className="hidden md:inline-flex">
@@ -144,9 +189,9 @@ export const Header = () => {
               ></div>
 
               {/* Dropdown menu below header */}
-              <div
-                className="fixed top-16 left-4 right-4 bg-white z-50 shadow-md px-4 pb-4 flex flex-col space-y-3 rounded-lg overflow-auto inline-flex max-w-[calc(100vw-2rem)]">
-                {/* {menuItems.map((item) => (
+              {/* <div
+                className="fixed top-16 left-4 right-4 bg-white z-50 shadow-md px-4 pb-4 flex flex-col space-y-3 rounded-lg overflow-auto inline-flex max-w-[calc(100vw-2rem)]"> */}
+              {/* {menuItems.map((item) => (
                   <button
                     key={item.label}
                     onClick={() => {
@@ -158,9 +203,9 @@ export const Header = () => {
                     <div className='flex items-center space-x-2'>{item.icon}<span>{item.label}</span></div>
                   </button>
                 ))} */}
-                {/* <hr /> */}
-                {/* Language on Mobile */}
-                {/* <div>
+              {/* <hr /> */}
+              {/* Language on Mobile */}
+              {/* <div>
                   <p className="text-gray-600 text-sm mb-1">🌐 Language</p>
                   <button
                     onClick={() => changeLanguage('en')}
@@ -175,8 +220,8 @@ export const Header = () => {
                     {t("Farsi (Persian)")}
                   </button>
                 </div> */}
-                <LanguageSwitcher mobile/>
-              </div>
+              {/* <LanguageSwitcher mobile /> */}
+              {/* </div> */}
             </>
 
           )}
