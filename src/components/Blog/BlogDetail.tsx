@@ -7,6 +7,8 @@ import i18next from 'i18next';
 import Header from '../Agent/Header';
 import logoPath from "@/assets/OFFPLAN_MARKET.png";
 import Footer from '@/components/Agent/Footer'
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 interface BlogType {
     id: number;
@@ -36,6 +38,7 @@ interface ContactFormData {
     email: string;
     phone: string;
     message: string;
+    agreeUpdates: boolean;
 }
 
 const BlogDetail: React.FC = () => {
@@ -47,7 +50,7 @@ const BlogDetail: React.FC = () => {
     const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>([]);
     const [activeSection, setActiveSection] = useState<string>('');
     const [contactForm, setContactForm] = useState<ContactFormData>({
-        name: '', email: '', phone: '', message: ''
+        name: '', email: '', phone: '', message: '', agreeUpdates: false
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
@@ -139,13 +142,38 @@ const BlogDetail: React.FC = () => {
         setIsSubmitting(true);
 
         try {
-            // Replace with your actual contact form submission logic
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
+            const hostUrl = import.meta.env.VITE_HOST_URL;
+            const response = await fetch(`${hostUrl}/contact/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: contactForm.name,
+                    phone_number: contactForm.phone,
+                    email: contactForm.email,
+                    message: contactForm.message,
+                    agree_updates: contactForm.agreeUpdates,
+                }),
+            });
 
-            alert('Thank you for your message! We\'ll get back to you soon.');
-            setContactForm({ name: '', email: '', phone: '', message: '' });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Server error response:', errorData);
+                throw new Error('Submission failed');
+            }
+
+            setContactForm({
+                name: '',
+                email: '',
+                phone: '',
+                message: '',
+                agreeUpdates: false
+            });
+
+            toast.success('✅ Inquiry sent successfully!');
+
         } catch (error) {
-            alert('There was an error sending your message. Please try again.');
+            console.error('Network or server error:', error);
+            toast.error('❌ Failed to send inquiry. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -156,10 +184,20 @@ const BlogDetail: React.FC = () => {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setContactForm(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
+        const { name, value, type } = e.target;
+
+        if (type === 'checkbox') {
+            const checked = (e.target as HTMLInputElement).checked;
+            setContactForm(prev => ({
+                ...prev,
+                [name]: checked
+            }));
+        } else {
+            setContactForm(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     if (loading) {
@@ -240,6 +278,10 @@ const BlogDetail: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+            <>
+                {/* Your app components */}
+                <Toaster position="top-right" />
+            </>
             {/* Background Effects */}
             <div className="absolute inset-0 opacity-30">
                 <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
@@ -337,11 +379,12 @@ const BlogDetail: React.FC = () => {
 
                         {/* Content */}
                         <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
-                            <div
-                                ref={contentRef}
+                            {/* <pre
+                                style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
                                 className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900 prose-img:rounded-xl prose-img:shadow-lg"
-                                dangerouslySetInnerHTML={{ __html: decodedContent }}
-                            />
+                            > */}
+                            <div dangerouslySetInnerHTML={{ __html: content }} />
+                            {/* </pre> */}
                         </div>
 
                         {/* Contact Form */}
@@ -423,6 +466,20 @@ const BlogDetail: React.FC = () => {
                                             placeholder="Tell us about your inquiry..."
                                         />
                                     </div>
+                                    {/* Checkbox for updates - add this to your form */}
+                                    <div className="flex items-start space-x-3">
+                                        <input
+                                            type="checkbox"
+                                            id="agreeUpdates"
+                                            name="agreeUpdates"
+                                            checked={contactForm.agreeUpdates}
+                                            onChange={handleInputChange}
+                                            className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded transition-all duration-200"
+                                        />
+                                        <label htmlFor="agreeUpdates" className="text-sm text-gray-600 leading-relaxed">
+                                            I agree to receive updates about new properties and market insights
+                                        </label>
+                                    </div>
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
@@ -495,8 +552,8 @@ const BlogDetail: React.FC = () => {
                                                 key={item.id}
                                                 onClick={() => scrollToSection(item.id)}
                                                 className={`block w-full text-left px-4 py-3 rounded-xl transition-all duration-300 text-sm ${activeSection === item.id
-                                                        ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-600 font-medium border-l-4 border-purple-500 shadow-lg'
-                                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-purple-50 hover:shadow-md'
+                                                    ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-600 font-medium border-l-4 border-purple-500 shadow-lg'
+                                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-purple-50 hover:shadow-md'
                                                     } ${item.level === 3 ? 'ml-4' : ''}`}
                                             >
                                                 {item.title}
@@ -530,7 +587,7 @@ const BlogDetail: React.FC = () => {
                                         className="inline-flex items-center gap-3 px-10 py-5 bg-white/20 hover:bg-white/30 rounded-2xl backdrop-blur-sm transition-all duration-300 transform hover:scale-105 font-semibold text-xl border border-white/30"
                                     >
                                         Contact Our Agents Now
-                                        <ExternalLink size={28} className='animate-bounce'/>
+                                        <ExternalLink size={28} className='animate-bounce' />
                                     </button>
                                 </div>
                             </div>
