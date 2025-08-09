@@ -149,7 +149,10 @@ const BlogDetail: React.FC = () => {
                 title = post.title;
             }
 
-            return title || 'Untitled';
+            return title?.length > 60 
+                ? "Dubai Off-Plan Property Guide 2025–2026" 
+                : title || "Untitled";
+
         } catch (error) {
             console.warn('Error getting safe title:', error);
             return post.title || 'Untitled';
