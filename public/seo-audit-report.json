@@ -1,0 +1,970 @@
+{
+  "timestamp": "2025-08-09T12:11:21.450Z",
+  "summary": {
+    "goodCount": 0,
+    "warningCount": 6,
+    "errorCount": 0,
+    "total": 6,
+    "componentsSummary": {
+      "totalPageComponents": 65,
+      "componentsWithSEO": 7,
+      "componentsWithIssues": 62
+    }
+  },
+  "fileAudits": [
+    {
+      "file": "components\\Agent\\AgentEdit.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\AgentProfile.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\AgentPropDetail.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\CallToAction.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\ContactModal.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\FeaturedProjects.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\FloatingContact.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\Footer.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\Gallery.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\Header.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\HeroSection.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\InquiryForm.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\LanguageSwitcher.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\ProjectSummaryModal.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\PropertyDetailedPage.tsx",
+      "hasSEOHeadImport": true,
+      "hasSEOHeadUsage": true,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\PropertyDetails.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\PropertyDetails1.tsx",
+      "hasSEOHeadImport": true,
+      "hasSEOHeadUsage": true,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\PropertyDetails2.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\QuickViewModal.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\RatingBox.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\RequestCallBackModal.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\SearchFilters.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\SharedStories.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\StatisticsSection.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\StoryGenerator.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\UnitDetailRequestModel.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\UnitPreviewCard.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Agent\\UnitPreviewModal.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Blog\\BlogCard.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\Blog\\BlogDetail.tsx",
+      "hasSEOHeadImport": true,
+      "hasSEOHeadUsage": true,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\AgentProfile1.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\Footer.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\FooterAdmin.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\Header.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeAgentRecruitment.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeDeveloperSection.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeHeader.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeHeroSection.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeHowItWorks.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeProjectSearchTool.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeTopRatedAgents.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeTrustedDevelopers.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\HomeWhyTrustUs.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\ProjectListing.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\PropertyFilters.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "components\\others\\ProtectedRoute.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\About.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\AgentPage.tsx",
+      "hasSEOHeadImport": true,
+      "hasSEOHeadUsage": true,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\Blog.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\Contact.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\ExclusiveProjects.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\Latest.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\ProjectDetails.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\UnitDetailPage.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\Agent\\UnitDetails.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\NotFound.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\others\\AdminDashboard.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\others\\AgentDashboard.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\others\\AgentPage1.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\others\\Login.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\others\\ProjectDetail.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    },
+    {
+      "file": "pages\\others\\Sample.tsx",
+      "hasSEOHeadImport": false,
+      "hasSEOHeadUsage": false,
+      "hasHelmet": false,
+      "isPageComponent": true,
+      "needsSEO": true,
+      "issues": [
+        "❌ No SEOHead or Helmet import found",
+        "❌ No SEO component usage found",
+        "❌ No title prop found",
+        "❌ No description prop found"
+      ]
+    }
+  ],
+  "contentChecks": [
+    {
+      "url": "/",
+      "title": "OffPlan Market - Premium Real Estate Properties",
+      "description": "Discover premium off-plan properties and connect with top real estate agents. Find your dream home with OffPlan Market",
+      "hasTitle": true,
+      "hasDescription": true,
+      "titleLength": 47,
+      "descriptionLength": 118,
+      "issues": [
+        "⚠️ Description too short (< 120 chars)"
+      ],
+      "status": "warning"
+    },
+    {
+      "url": "/blogs",
+      "title": "Latest Real Estate Insights | Blog",
+      "description": "Stay updated with the latest trends, tips, and insights in Dubai real estate market.",
+      "hasTitle": true,
+      "hasDescription": true,
+      "titleLength": 34,
+      "descriptionLength": 84,
+      "issues": [
+        "⚠️ Description too short (< 120 chars)"
+      ],
+      "status": "warning"
+    },
+    {
+      "url": "/blog/off-plan-properties-in-dubai-your-20252026-guide-to-best-real-estate-investment",
+      "title": "Off-Plan Properties in Dubai: Your 2025–2026 Guide to Best Real Estate Investment",
+      "description": "Dubai continues to shine as one of the world&rsquo;s most attractive real estate markets, drawing investors from across the globe with its strong economy, inves",
+      "hasTitle": true,
+      "hasDescription": true,
+      "titleLength": 81,
+      "descriptionLength": 160,
+      "issues": [
+        "⚠️ Title too long (> 60 chars)"
+      ],
+      "status": "warning"
+    },
+    {
+      "url": "/sahar",
+      "title": "[object Object] - Real Estate Agent Profile",
+      "description": "Connect with [object Object] for exclusive property deals in Dubai",
+      "hasTitle": true,
+      "hasDescription": true,
+      "titleLength": 43,
+      "descriptionLength": 66,
+      "issues": [
+        "⚠️ Description too short (< 120 chars)"
+      ],
+      "status": "warning"
+    },
+    {
+      "url": "/erfani",
+      "title": "[object Object] - Real Estate Agent Profile",
+      "description": "Connect with [object Object] for exclusive property deals in Dubai",
+      "hasTitle": true,
+      "hasDescription": true,
+      "titleLength": 43,
+      "descriptionLength": 66,
+      "issues": [
+        "⚠️ Description too short (< 120 chars)"
+      ],
+      "status": "warning"
+    },
+    {
+      "url": "/hari",
+      "title": "[object Object] - Real Estate Agent Profile",
+      "description": "Connect with [object Object] for exclusive property deals in Dubai",
+      "hasTitle": true,
+      "hasDescription": true,
+      "titleLength": 43,
+      "descriptionLength": 66,
+      "issues": [
+        "⚠️ Description too short (< 120 chars)"
+      ],
+      "status": "warning"
+    }
+  ],
+  "workingEndpoints": {
+    "blogs": "https://offplan.market/api/api/blogs/",
+    "agents": "https://offplan.market/api/agents/list",
+    "properties": "https://offplan.market/api/properties/"
+  },
+  "recommendations": [
+    "Add SEOHead component to all page components",
+    "Ensure titles are 30-60 characters long",
+    "Ensure descriptions are 120-160 characters long",
+    "Use unique titles and descriptions for each page",
+    "Include target keywords in titles",
+    "Write compelling descriptions that encourage clicks",
+    "Test and fix API endpoints for dynamic content"
+  ]
+}

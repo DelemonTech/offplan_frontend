@@ -1,20 +1,49 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+Allow: /blogs
+Allow: /blog/
 
-User-agent: *
-Allow: /
-
+# Sitemap location
 Sitemap: https://offplan.market/sitemap.xml
 Sitemap: https://offplan.market/sitemap.xml.gz
+
+# Crawl delay (optional - adjust as needed)
+Crawl-delay: 1
+
+# Block admin areas
+Disallow: /admin
+Disallow: /login
+Disallow: /dashboard
+
+# Allow blog content for better SEO
+Allow: /blog/*
+Allow: /blogs/*
+
+# Block any temporary or test pages
+Disallow: /test/
+Disallow: /temp/
+Disallow: /*.json
+Disallow: /api/
+
+# Allow important assets for proper rendering
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.webp
+Allow: /*.svg
+
+# Block query parameters that don't add value
+Disallow: /*?utm_*
+Disallow: /*?ref=*
+Disallow: /*?source=*
+
+# Special rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot  
+Allow: /
+Crawl-delay: 2

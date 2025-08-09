@@ -9,7 +9,11 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate:sitemap": "tsx scripts/generate-sitemap.ts"
+    "generate-sitemap": "tsx scripts/sitemap-generator.ts",
+    "seo:check": "tsx scripts/quick-seo-check.ts",
+    "seo:audit": "tsx scripts/seo-audit.ts", 
+    "seo:all": "npm run seo:check && npm run seo:audit",
+    "build:seo": "npm run generate-sitemap"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
