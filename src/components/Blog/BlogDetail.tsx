@@ -1,4 +1,4 @@
-// Enhanced BlogDetail.tsx with proper content styling
+// Enhanced BlogDetail.tsx with comprehensive null safety and improved TOC
 import React, { useEffect, useState, useRef } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -49,180 +49,341 @@ const BlogDetail: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>([]);
     const [activeSection, setActiveSection] = useState<string>('');
+    const [error, setError] = useState<string | null>(null);
     const [contactForm, setContactForm] = useState<ContactFormData>({
         name: '', email: '', phone: '', message: '', agreeUpdates: false
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
-    const lang = i18next.language;
-    const hostUrl = import.meta.env.VITE_HOST_URL;
+    const lang = i18next.language || 'en';
+    const hostUrl = import.meta.env.VITE_HOST_URL || '';
 
     useEffect(() => {
         async function loadBlog() {
+            if (!slug) {
+                setError('No blog slug provided');
+                setLoading(false);
+                return;
+            }
+
             try {
+                setLoading(true);
+                setError(null);
+
                 const res = await fetch(`${hostUrl}/api/blogs/${slug}/`);
+
+                if (!res.ok) {
+                    throw new Error(`Failed to load blog: ${res.status} ${res.statusText}`);
+                }
+
                 const data = await res.json();
+
+                if (!data || !data.id) {
+                    throw new Error('Blog data is empty or invalid');
+                }
+
                 setPost(data);
 
                 // Load related posts
-                const relatedRes = await fetch(`${hostUrl}/api/blogs/`);
-                const relatedData = await relatedRes.json();
-                const related = (relatedData.results || relatedData)
-                    .filter((blog: BlogType) => blog.slug !== slug)
-                    .slice(0, 3);
-                setRelatedPosts(related);
+                try {
+                    const relatedRes = await fetch(`${hostUrl}/api/blogs/`);
+                    if (relatedRes.ok) {
+                        const relatedData = await relatedRes.json();
+                        const results = relatedData.results || relatedData || [];
+                        const related = Array.isArray(results)
+                            ? results
+                                .filter((blog: BlogType) => blog && blog.slug && blog.slug !== slug)
+                                .slice(0, 3)
+                            : [];
+                        setRelatedPosts(related);
+                    }
+                } catch (relatedError) {
+                    console.warn('Failed to load related posts:', relatedError);
+                    // Don't fail the entire component if related posts fail
+                }
+
             } catch (error) {
                 console.error('Error loading blog:', error);
+                setError(error instanceof Error ? error.message : 'Failed to load blog');
             } finally {
                 setLoading(false);
             }
         }
+
         loadBlog();
-    }, [slug]);
+    }, [slug, hostUrl]);
 
-    // Generate table of contents from H2 tags
-    useEffect(() => {
-        if (post && contentRef.current) {
-            const timer = setTimeout(() => {
-                const headings = contentRef.current?.querySelectorAll('h1, h2, h3, h4, h5, h6');
-                const toc: TableOfContentsItem[] = [];
+    // Safe content extraction with comprehensive null checks
+    const getSafeContent = (): string => {
+        if (!post) return '';
 
-                headings?.forEach((heading, index) => {
-                    const id = `heading-${index}`;
-                    heading.id = id;
+        let content = '';
 
-                    toc.push({
-                        id,
-                        title: heading.textContent || '',
-                        level: parseInt(heading.tagName.charAt(1))
-                    });
-                });
+        try {
+            if (lang === 'ar' && post.content_ar) {
+                content = post.content_ar;
+            } else if (lang === 'fa' && post.content_fa) {
+                content = post.content_fa;
+            } else if (post.content) {
+                content = post.content;
+            }
 
-                setTableOfContents(toc);
-            }, 100);
-
-            return () => clearTimeout(timer);
+            return content || '';
+        } catch (error) {
+            console.warn('Error getting safe content:', error);
+            return post.content || '';
         }
-    }, [post]);
+    };
+
+    const getSafeTitle = (): string => {
+        if (!post) return 'Loading...';
+
+        try {
+            let title = '';
+
+            if (lang === 'ar' && post.title_ar) {
+                title = post.title_ar;
+            } else if (lang === 'fa' && post.title_fa) {
+                title = post.title_fa;
+            } else if (post.title) {
+                title = post.title;
+            }
+
+            return title || 'Untitled';
+        } catch (error) {
+            console.warn('Error getting safe title:', error);
+            return post.title || 'Untitled';
+        }
+    };
+
+    const decodeHtmlEntities = (str: string): string => {
+        if (!str || typeof str !== 'string') return '';
+
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.innerHTML = str;
+            return textArea.value || str;
+        } catch (error) {
+            console.warn('Error decoding HTML entities:', error);
+            return str;
+        }
+    };
+
+    const generateTOCFromContent = (content: string): TableOfContentsItem[] => {
+        if (!content || typeof content !== 'string') return [];
+
+        const toc: TableOfContentsItem[] = [];
+
+        try {
+            const decodedContent = decodeHtmlEntities(content);
+
+            // Only look for actual HTML header tags (h1-h6)
+            const headerRegex = /<h([1-6])[^>]*>(.*?)<\/h[1-6]>/gi;
+            let match;
+            let index = 0;
+
+            while ((match = headerRegex.exec(decodedContent)) !== null) {
+                const level = parseInt(match[1]);
+                const title = match[2]
+                    .replace(/<[^>]*>/g, '') // Remove any HTML tags inside headers
+                    .trim();
+
+                if (title && title.length > 0) {
+                    toc.push({
+                        id: `heading-${index}-${level}`,
+                        title: title,
+                        level: level
+                    });
+                    index++;
+                }
+            }
+
+            console.log('Generated TOC with', toc.length, 'header tags:', toc);
+
+        } catch (error) {
+            console.error('Error parsing content for TOC:', error);
+        }
+
+        return toc;
+    };
+
+    // Updated useEffect for TOC generation - only header tags
+    useEffect(() => {
+        if (!post) return;
+
+        const timer = setTimeout(() => {
+            const content = getSafeContent();
+            if (!content) return;
+
+            try {
+                // Generate TOC only from actual header tags
+                let toc = generateTOCFromContent(content);
+
+                // If no headers found in content, try DOM-based approach after render
+                if (toc.length === 0 && contentRef.current) {
+                    setTimeout(() => {
+                        if (!contentRef.current) return;
+
+                        const headings = contentRef.current.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                        const domToc: TableOfContentsItem[] = [];
+
+                        headings.forEach((heading, index) => {
+                            const headingText = heading.textContent?.trim();
+                            if (headingText && headingText.length > 0) {
+                                const id = `heading-dom-${index}`;
+                                heading.id = id; // Assign ID to the actual element
+
+                                domToc.push({
+                                    id,
+                                    title: headingText,
+                                    level: parseInt(heading.tagName.charAt(1))
+                                });
+                            }
+                        });
+
+                        if (domToc.length > 0) {
+                            setTableOfContents(domToc);
+                            console.log('Generated DOM-based TOC with', domToc.length, 'headers:', domToc);
+                        }
+                    }, 500);
+                } else if (toc.length > 0) {
+                    setTableOfContents(toc);
+
+                    // Add IDs to actual elements after DOM is updated
+                    setTimeout(() => {
+                        if (!contentRef.current) return;
+
+                        toc.forEach((item) => {
+                            // Look for the exact header text in the DOM
+                            const headerElements = contentRef.current!.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                            headerElements.forEach((element) => {
+                                const elementText = element.textContent?.trim();
+                                if (elementText === item.title && !element.id) {
+                                    element.id = item.id;
+                                }
+                            });
+                        });
+                    }, 300);
+                }
+
+            } catch (error) {
+                console.error('Error generating table of contents:', error);
+            }
+        }, 600);
+
+        return () => clearTimeout(timer);
+    }, [post, lang]);
 
     // Scroll spy for active section
     useEffect(() => {
+        if (tableOfContents.length === 0) return;
+
         const handleScroll = () => {
-            const headings = tableOfContents.map(item =>
-                document.getElementById(item.id)
-            ).filter(Boolean);
+            try {
+                const headings = tableOfContents
+                    .map(item => document.getElementById(item.id))
+                    .filter((element): element is HTMLElement => element !== null);
 
-            const scrollTop = window.scrollY;
-            const current = headings.find((heading, index) => {
-                const nextHeading = headings[index + 1];
-                const currentTop = heading!.offsetTop - 100;
-                const nextTop = nextHeading ? nextHeading.offsetTop - 100 : Infinity;
+                if (headings.length === 0) return;
 
-                return scrollTop >= currentTop && scrollTop < nextTop;
-            });
+                const scrollTop = window.scrollY;
+                const current = headings.find((heading, index) => {
+                    const nextHeading = headings[index + 1];
+                    const currentTop = heading.offsetTop - 100;
+                    const nextTop = nextHeading ? nextHeading.offsetTop - 100 : Infinity;
 
-            if (current) {
-                setActiveSection(current.id);
+                    return scrollTop >= currentTop && scrollTop < nextTop;
+                });
+
+                if (current && current.id) {
+                    setActiveSection(current.id);
+                }
+            } catch (error) {
+                console.warn('Error in scroll handler:', error);
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, [tableOfContents]);
 
     const scrollToSection = (id: string) => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setActiveSection(id);
+            }
+        } catch (error) {
+            console.warn('Error scrolling to section:', error);
         }
     };
 
-    // Enhanced content processing function to handle plain text with proper formatting
-    const processContent = (text: string) => {
+    // Enhanced content processing function
+    const processContent = (text: string): string => {
+        if (!text || typeof text !== 'string') return '';
+
         let processedText = text;
 
-        // First, decode any HTML entities
-        const textArea = document.createElement('textarea');
-        textArea.innerHTML = processedText;
-        processedText = textArea.value;
+        try {
+            // First, decode any HTML entities
+            processedText = decodeHtmlEntities(processedText);
 
-        // Check if content already has proper HTML structure (like <p>, <ul>, <li> tags)
-        const hasHtmlStructure = /<(p|div|ul|ol|li|h[1-6])\b[^>]*>/i.test(processedText);
+            // Check if content already has proper HTML structure
+            const hasHtmlStructure = /<(p|div|ul|ol|li|h[1-6])\b[^>]*>/i.test(processedText);
 
-        if (hasHtmlStructure) {
-            // Content already has HTML structure, just clean it up and enhance it
+            if (hasHtmlStructure) {
+                // Content already has HTML structure, clean it up
+                processedText = processedText.replace(/<li([^>]*)>(.*?)<\/li>\s*(?!<\/[uo]l>)(?=<li)/g, '<li$1>$2</li>');
+                processedText = processedText.replace(/(<li\b[^>]*>.*?<\/li>)(?!\s*<\/[uo]l>)(?!\s*<li)/g, '<ul>$1</ul>');
+                processedText = processedText.replace(/<\/ul>\s*<ul>/g, '');
+                processedText = processedText.replace(/<\/ol>\s*<ol>/g, '');
+                processedText = processedText.replace(/(<\/h[1-6]>)\s*(<p)/g, '$1\n\n$2');
+                processedText = processedText.replace(/(<\/p>)\s*(<[uo]l>)/g, '$1\n\n$2');
+                processedText = processedText.replace(/(<\/[uo]l>)\s*(<p)/g, '$1\n\n$2');
+            } else {
+                // Convert plain text to HTML structure
+                processedText = processedText.replace(/\n\s*\n\s*\n/g, '</p><p>');
+                processedText = processedText.replace(/\n\s*\n/g, '</p><p>');
+                processedText = processedText.replace(/\n/g, '<br>');
 
-            // Fix any malformed lists by ensuring proper ul/ol structure
-            processedText = processedText.replace(/<li([^>]*)>(.*?)<\/li>\s*(?!<\/[uo]l>)(?=<li)/g, '<li$1>$2</li>');
+                if (!processedText.startsWith('<p>')) {
+                    processedText = '<p>' + processedText + '</p>';
+                }
 
-            // Wrap orphaned <li> elements in <ul>
-            processedText = processedText.replace(/(<li\b[^>]*>.*?<\/li>)(?!\s*<\/[uo]l>)(?!\s*<li)/g, '<ul>$1</ul>');
-
-            // Clean up multiple consecutive <ul> or <ol> tags
-            processedText = processedText.replace(/<\/ul>\s*<ul>/g, '');
-            processedText = processedText.replace(/<\/ol>\s*<ol>/g, '');
-
-            // Ensure proper spacing after headings
-            processedText = processedText.replace(/(<\/h[1-6]>)\s*(<p)/g, '$1\n\n$2');
-
-            // Fix spacing around lists
-            processedText = processedText.replace(/(<\/p>)\s*(<[uo]l>)/g, '$1\n\n$2');
-            processedText = processedText.replace(/(<\/[uo]l>)\s*(<p)/g, '$1\n\n$2');
-
-        } else {
-            // Content is plain text, convert it to HTML structure
-
-            // Handle different types of line breaks and spacing
-            processedText = processedText.replace(/\n\s*\n\s*\n/g, '</p><p>'); // Triple line breaks
-            processedText = processedText.replace(/\n\s*\n/g, '</p><p>'); // Double line breaks
-            processedText = processedText.replace(/\n/g, '<br>'); // Single line breaks
-
-            // Wrap the entire content in paragraphs if not already done
-            if (!processedText.startsWith('<p>')) {
-                processedText = '<p>' + processedText + '</p>';
+                processedText = processedText.replace(/^(\d+\.\s+)(.+)$/gm, '<h3>$1$2</h3>');
+                processedText = processedText.replace(/<p>([^<]+:)<br>/g, '<h4>$1</h4><p>');
+                processedText = processedText.replace(/<p>([–•\-]\s+)(.+?)<\/p>/g, '<ul><li>$2</li></ul>');
+                processedText = processedText.replace(/<\/ul>\s*<ul>/g, '');
             }
 
-            // Handle numbered sections
-            processedText = processedText.replace(/^(\d+\.\s+)(.+)$/gm, '<h3>$1$2</h3>');
+            // Make URLs clickable
+            processedText = processedText.replace(
+                /(https?:\/\/[^\s<]+)/g,
+                '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-2 hover:decoration-blue-800 transition-colors duration-200 font-medium">$1</a>'
+            );
 
-            // Handle section headers (lines that end with a colon)
-            processedText = processedText.replace(/<p>([^<]+:)<br>/g, '<h4>$1</h4><p>');
+            // Handle FAQ and Step sections
+            processedText = processedText.replace(/<p>(Q\d+:.*?)<br>/g, '<h4 class="faq-question">$1</h4><p>');
+            processedText = processedText.replace(/<p>(Step \d+:.*?)<br>/g, '<h4 class="step-title">$1</h4><p>');
 
-            // Handle bullet points with dashes or bullets - be more specific
-            processedText = processedText.replace(/<p>([–•\-]\s+)(.+?)<\/p>/g, '<ul><li>$2</li></ul>');
+            // Clean up empty paragraphs
+            processedText = processedText.replace(/<p>\s*<\/p>/g, '');
+            processedText = processedText.replace(/<p><br><\/p>/g, '');
 
-            // Clean up consecutive ul tags
-            processedText = processedText.replace(/<\/ul>\s*<ul>/g, '');
+            return processedText;
+        } catch (error) {
+            console.error('Error processing content:', error);
+            return text; // Return original text if processing fails
         }
-
-        // Common enhancements for both cases
-
-        // Make URLs clickable with proper styling
-        processedText = processedText.replace(
-            /(https?:\/\/[^\s<]+)/g,
-            '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-2 hover:decoration-blue-800 transition-colors duration-200 font-medium">$1</a>'
-        );
-
-        // Handle FAQ sections
-        processedText = processedText.replace(/<p>(Q\d+:.*?)<br>/g, '<h4 class="faq-question">$1</h4><p>');
-
-        // Handle Step-by-Step sections
-        processedText = processedText.replace(/<p>(Step \d+:.*?)<br>/g, '<h4 class="step-title">$1</h4><p>');
-
-        // Clean up any empty paragraphs
-        processedText = processedText.replace(/<p>\s*<\/p>/g, '');
-        processedText = processedText.replace(/<p><br><\/p>/g, '');
-
-        return processedText;
     };
-    
+
 
     const handleContactSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
         try {
-            const hostUrl = import.meta.env.VITE_HOST_URL;
             const response = await fetch(`${hostUrl}/contact/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -280,6 +441,56 @@ const BlogDetail: React.FC = () => {
         }
     };
 
+    const formatDate = (dateString: string): string => {
+        if (!dateString) return 'Date not available';
+
+        try {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (error) {
+            console.warn('Error formatting date:', error);
+            return 'Date not available';
+        }
+    };
+
+    const handleShare = async () => {
+        const title = getSafeTitle();
+        const url = window.location.href;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({ title, url });
+            } catch (error) {
+                console.log('Error sharing:', error);
+                // Fallback to clipboard
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(url);
+                    toast.success('Link copied to clipboard!');
+                }
+            }
+        } else {
+            // Fallback for browsers without native sharing
+            if (navigator.clipboard) {
+                try {
+                    await navigator.clipboard.writeText(url);
+                    toast.success('Link copied to clipboard!');
+                } catch (error) {
+                    console.warn('Could not copy to clipboard:', error);
+                    // Last resort - show URL in prompt
+                    prompt('Copy this link:', url);
+                }
+            }
+        }
+    };
+
+    // Get safe values for rendering
+    const title = getSafeTitle();
+    const content = getSafeContent();
+    const decodedContent = decodeHtmlEntities(content);
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
@@ -300,14 +511,14 @@ const BlogDetail: React.FC = () => {
         );
     }
 
-    if (!post) {
+    if (error || !post) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
                 <Header logo={logoPath} />
                 <div className="container mx-auto py-12 px-4 text-center">
                     <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-12 border border-white/20 max-w-md mx-auto">
                         <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-4">
-                            Article not found
+                            {error || 'Article not found'}
                         </h1>
                         <button
                             onClick={() => navigate('/blogs')}
@@ -320,41 +531,6 @@ const BlogDetail: React.FC = () => {
             </div>
         );
     }
-
-    const title = lang === 'ar' ? post.title_ar : lang === 'fa' ? post.title_fa : post.title;
-    const content = lang === 'ar' ? post.content_ar : lang === 'fa' ? post.content_fa : post.content;
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
-
-    const handleShare = async () => {
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: title,
-                    url: window.location.href,
-                });
-            } catch (error) {
-                console.log('Error sharing:', error);
-            }
-        } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link copied to clipboard!');
-        }
-    };
-
-    const decodeHtmlEntities = (str: string) => {
-        const textArea = document.createElement('textarea');
-        textArea.innerHTML = str;
-        return textArea.value;
-    };
-
-    const decodedContent = decodeHtmlEntities(content);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
@@ -369,8 +545,8 @@ const BlogDetail: React.FC = () => {
 
             <SEOHead
                 title={title}
-                description={post.content.substring(0, 160).replace(/<[^>]*>/g, '')}
-                image={post.image}
+                description={content ? content.substring(0, 160).replace(/<[^>]*>/g, '') : 'Blog article'}
+                image={post.image || ''}
             />
             <Header logo={logoPath} />
 
@@ -392,9 +568,13 @@ const BlogDetail: React.FC = () => {
                         {/* Hero Image */}
                         <div className="relative rounded-3xl overflow-hidden mb-8 shadow-2xl group">
                             <img
-                                src={post.image}
+                                src={post.image || '/placeholder-image.jpg'}
                                 alt={title}
                                 className="w-full h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = '/placeholder-image.jpg';
+                                }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                             <div className="absolute bottom-6 left-6 right-6 text-white">
@@ -416,7 +596,7 @@ const BlogDetail: React.FC = () => {
                                 <div className="flex items-center gap-6 text-gray-600">
                                     <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
                                         <User size={18} className="text-purple-500" />
-                                        <span className="font-medium">{post.author}</span>
+                                        <span className="font-medium">{post.author || 'Unknown Author'}</span>
                                     </div>
                                     <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl">
                                         <Calendar size={18} className="text-pink-500" />
@@ -438,7 +618,7 @@ const BlogDetail: React.FC = () => {
                                 </button>
                             </div>
 
-                            {post.tags && post.tags.length > 0 && (
+                            {post.tags && Array.isArray(post.tags) && post.tags.length > 0 && (
                                 <div className="flex items-center gap-2 mt-6 pt-6 border-t border-gray-100">
                                     <Tag size={18} className="text-gray-400" />
                                     <div className="flex flex-wrap gap-2">
@@ -455,7 +635,7 @@ const BlogDetail: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Content with enhanced formatting for plain text content */}
+                        {/* Content with enhanced formatting */}
                         <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
                             <div
                                 ref={contentRef}
@@ -490,93 +670,93 @@ const BlogDetail: React.FC = () => {
 
                             {/* Enhanced CSS for better content formatting */}
                             <style>{`
-    .prose a {
-        color: #2563eb !important;
-        text-decoration: underline !important;
-        font-weight: 500 !important;
-        text-underline-offset: 2px !important;
-    }
-    .prose a:hover {
-        color: #1d4ed8 !important;
-        text-decoration: underline !important;
-    }
-    .prose p {
-        margin-bottom: 1.5rem !important;
-        line-height: 1.8 !important;
-    }
-    .prose ul {
-        margin-top: 1.5rem !important;
-        margin-bottom: 2rem !important;
-        padding-left: 1.5rem !important;
-        list-style-type: disc !important;
-    }
-    .prose ol {
-        margin-top: 1.5rem !important;
-        margin-bottom: 2rem !important;
-        padding-left: 1.5rem !important;
-        list-style-type: decimal !important;
-    }
-    .prose ul li, .prose ol li {
-        margin-bottom: 0.75rem !important;
-        line-height: 1.7 !important;
-        padding-left: 0.25rem !important;
-        position: relative;
-    }
-    .prose ul li::marker {
-        color: #7c3aed !important;
-        font-weight: bold !important;
-    }
-    .prose ol li::marker {
-        color: #7c3aed !important;
-        font-weight: bold !important;
-    }
-    .prose li > p {
-        margin-bottom: 0.5rem !important;
-        display: inline;
-    }
-    .prose li strong {
-        color: #374151 !important;
-        font-weight: 600 !important;
-    }
-    .prose h2 {
-        margin-top: 3rem !important;
-        margin-bottom: 1.5rem !important;
-    }
-    .prose h3 {
-        margin-top: 2.5rem !important;
-        margin-bottom: 1rem !important;
-        border-left: 4px solid #8b5cf6;
-        padding-left: 1rem;
-    }
-    .prose h4 {
-        margin-top: 2rem !important;
-        margin-bottom: 1rem !important;
-    }
-    .prose hr {
-        margin: 3rem 0 !important;
-        border-top: 2px solid #e5e7eb !important;
-    }
-    .prose .faq-question {
-        color: #7c3aed !important;
-        font-weight: 600 !important;
-        margin-top: 2rem !important;
-        margin-bottom: 1rem !important;
-        border-left: 4px solid #7c3aed;
-        padding-left: 1rem;
-        background: linear-gradient(to right, #f3e8ff, #fdf4ff);
-        padding: 1rem;
-        border-radius: 0.5rem;
-    }
-    .prose .step-title {
-        background: linear-gradient(to right, #3b82f6, #8b5cf6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-weight: 600 !important;
-        margin-top: 1.5rem !important;
-        margin-bottom: 0.75rem !important;
-    }
-`}</style>
+                                .prose a {
+                                    color: #2563eb !important;
+                                    text-decoration: underline !important;
+                                    font-weight: 500 !important;
+                                    text-underline-offset: 2px !important;
+                                }
+                                .prose a:hover {
+                                    color: #1d4ed8 !important;
+                                    text-decoration: underline !important;
+                                }
+                                .prose p {
+                                    margin-bottom: 1.5rem !important;
+                                    line-height: 1.8 !important;
+                                }
+                                .prose ul {
+                                    margin-top: 1.5rem !important;
+                                    margin-bottom: 2rem !important;
+                                    padding-left: 1.5rem !important;
+                                    list-style-type: disc !important;
+                                }
+                                .prose ol {
+                                    margin-top: 1.5rem !important;
+                                    margin-bottom: 2rem !important;
+                                    padding-left: 1.5rem !important;
+                                    list-style-type: decimal !important;
+                                }
+                                .prose ul li, .prose ol li {
+                                    margin-bottom: 0.75rem !important;
+                                    line-height: 1.7 !important;
+                                    padding-left: 0.25rem !important;
+                                    position: relative;
+                                }
+                                .prose ul li::marker {
+                                    color: #7c3aed !important;
+                                    font-weight: bold !important;
+                                }
+                                .prose ol li::marker {
+                                    color: #7c3aed !important;
+                                    font-weight: bold !important;
+                                }
+                                .prose li > p {
+                                    margin-bottom: 0.5rem !important;
+                                    display: inline;
+                                }
+                                .prose li strong {
+                                    color: #374151 !important;
+                                    font-weight: 600 !important;
+                                }
+                                .prose h2 {
+                                    margin-top: 3rem !important;
+                                    margin-bottom: 1.5rem !important;
+                                }
+                                .prose h3 {
+                                    margin-top: 2.5rem !important;
+                                    margin-bottom: 1rem !important;
+                                    border-left: 4px solid #8b5cf6;
+                                    padding-left: 1rem;
+                                }
+                                .prose h4 {
+                                    margin-top: 2rem !important;
+                                    margin-bottom: 1rem !important;
+                                }
+                                .prose hr {
+                                    margin: 3rem 0 !important;
+                                    border-top: 2px solid #e5e7eb !important;
+                                }
+                                .prose .faq-question {
+                                    color: #7c3aed !important;
+                                    font-weight: 600 !important;
+                                    margin-top: 2rem !important;
+                                    margin-bottom: 1rem !important;
+                                    border-left: 4px solid #7c3aed;
+                                    padding-left: 1rem;
+                                    background: linear-gradient(to right, #f3e8ff, #fdf4ff);
+                                    padding: 1rem;
+                                    border-radius: 0.5rem;
+                                }
+                                .prose .step-title {
+                                    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+                                    -webkit-background-clip: text;
+                                    -webkit-text-fill-color: transparent;
+                                    background-clip: text;
+                                    font-weight: 600 !important;
+                                    margin-top: 1.5rem !important;
+                                    margin-bottom: 0.75rem !important;
+                                }
+                            `}</style>
                         </div>
 
                         {/* Contact Form */}
@@ -696,19 +876,26 @@ const BlogDetail: React.FC = () => {
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                     {relatedPosts.map((relatedPost) => {
-                                        const relatedTitle = lang === 'ar' ? relatedPost.title_ar :
-                                            lang === 'fa' ? relatedPost.title_fa :
-                                                relatedPost.title;
+                                        if (!relatedPost) return null;
+
+                                        const relatedTitle = lang === 'ar' && relatedPost.title_ar ? relatedPost.title_ar :
+                                            lang === 'fa' && relatedPost.title_fa ? relatedPost.title_fa :
+                                                relatedPost.title || 'Untitled';
+
                                         return (
                                             <div
-                                                key={relatedPost.id}
+                                                key={relatedPost.id || Math.random()}
                                                 className="group cursor-pointer bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
                                                 onClick={() => navigate(`/blogs/${relatedPost.slug}`)}
                                             >
                                                 <img
-                                                    src={relatedPost.image}
+                                                    src={relatedPost.image || '/placeholder-image.jpg'}
                                                     alt={relatedTitle}
                                                     className="w-full h-40 object-cover rounded-xl mb-4 group-hover:scale-110 transition-transform duration-500"
+                                                    onError={(e) => {
+                                                        const target = e.target as HTMLImageElement;
+                                                        target.src = '/placeholder-image.jpg';
+                                                    }}
                                                 />
                                                 <h3 className="font-semibold text-gray-900 group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:via-purple-500 group-hover:to-blue-500 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2 mb-2">
                                                     {relatedTitle}
@@ -737,20 +924,45 @@ const BlogDetail: React.FC = () => {
                                             Table of Contents
                                         </span>
                                     </h3>
-                                    <nav className="space-y-2">
-                                        {tableOfContents.map((item) => (
+                                    <div className="text-sm text-gray-500 mb-4">
+                                        {tableOfContents.length} section{tableOfContents.length !== 1 ? 's' : ''} found
+                                    </div>
+                                    <nav className="space-y-2 max-h-96 overflow-y-auto">
+                                        {tableOfContents.map((item, index) => (
                                             <button
-                                                key={item.id}
+                                                key={item.id || index}
                                                 onClick={() => scrollToSection(item.id)}
                                                 className={`block w-full text-left px-4 py-3 rounded-xl transition-all duration-300 text-sm ${activeSection === item.id
-                                                    ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-600 font-medium border-l-4 border-purple-500 shadow-lg'
-                                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-purple-50 hover:shadow-md'
-                                                    } ${item.level === 3 ? 'ml-4' : ''}`}
+                                                        ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-600 font-medium border-l-4 border-purple-500 shadow-lg'
+                                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-purple-50 hover:shadow-md'
+                                                    } ${item.level === 3 ? 'ml-4' :
+                                                        item.level === 4 ? 'ml-8' :
+                                                            item.level > 4 ? 'ml-12' : ''
+                                                    }`}
+                                                title={item.title}
                                             >
-                                                {item.title}
+                                                <span className="block truncate">
+                                                    {item.title}
+                                                </span>
+                                                <span className="text-xs text-gray-400">
+                                                    Level {item.level}
+                                                </span>
                                             </button>
                                         ))}
                                     </nav>
+                                </div>
+                            )}
+
+                            {/* Show message when no TOC is available */}
+                            {tableOfContents.length === 0 && (
+                                <div className="bg-white/60 backdrop-blur-md rounded-3xl shadow-lg p-6 mb-6 border border-white/20">
+                                    <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-700">
+                                        <BookOpen size={18} />
+                                        Table of Contents
+                                    </h3>
+                                    <p className="text-sm text-gray-500">
+                                        No sections detected in this article. The content will load below.
+                                    </p>
                                 </div>
                             )}
 
@@ -764,7 +976,7 @@ const BlogDetail: React.FC = () => {
 
                                 <div className="relative z-10 text-center">
                                     <div className="mb-6">
-                                        <UserCheck size={36} className="mx-auto mb-2 " />
+                                        <UserCheck size={36} className="mx-auto mb-2" />
                                         <h2 className="text-4xl md:text-4xl font-bold mb-4">
                                             Ready to Invest?
                                         </h2>
