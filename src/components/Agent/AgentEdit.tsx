@@ -20,7 +20,6 @@ const AgentEdit = ({ agent }) => {
     const { username } = useParams();
     const navigate = useNavigate();
 
-
     useEffect(() => {
         const fetchAgentData = async () => {
             try {
