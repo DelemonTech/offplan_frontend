@@ -703,7 +703,7 @@ const PropertyDetails1 = () => {
         description={`Explore ${projectData?.title?.en} located in ${projectData?.city?.name?.en}. View price, units, payment plans, and more.`}
         canonical={`https://offplan.market${location.pathname}`}
       />
-      <h1 className="sr-only">{projectData?.title?.en}</h1>
+      {/* <h1 className="sr-only">{projectData?.title?.en}</h1> */}
       <Header logo={logoPath} />
       <Button
         variant="outline"

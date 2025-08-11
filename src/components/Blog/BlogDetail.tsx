@@ -932,7 +932,7 @@ const BlogDetail: React.FC = () => {
                                                 <div
                                                     key={relatedPost.id || Math.random()}
                                                     className="group cursor-pointer bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
-                                                    onClick={() => navigate(`/blogs/${relatedPost.slug}`)}
+                                                    onClick={() => navigate(`/blog/${relatedPost.slug}`)}
                                                 >
                                                     <img
                                                         src={relatedPost.image || '/placeholder-image.jpg'}
