@@ -29,15 +29,16 @@ export const SEOHead = ({
   publishedTime,
   modifiedTime,
 }: SEOProps) => {
-  const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+  const fullTitle = title.includes(siteName) ? title : `${title}`;
   const fullImageUrl = image.startsWith('http') ? image : `${window.location.origin}${image}`;
   const currentUrl = canonical || window.location.href;
+  const fullDescription = description;
 
   return (
     <Helmet>
       {/* Basic Meta Tags */}
       <title>{fullTitle}</title>
-      <meta name="description" content={description} />
+      <meta name="description" content={fullDescription} />
       {keywords && <meta name="keywords" content={keywords} />}
       {author && <meta name="author" content={author} />}
       <meta name="robots" content={robots} />

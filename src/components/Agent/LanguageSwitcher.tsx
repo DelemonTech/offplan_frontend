@@ -53,6 +53,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ mobile = false }) =
                   borderRadius: "2px",
                 }}
                 title={lang.name}
+                alt={lang.name}
               />
             </span>
             <span className={`text-base ${lang.code === 'ar' || lang.code === 'fa' ? 'font-medium' : ''}`}>
@@ -91,6 +92,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ mobile = false }) =
                 borderRadius: "2px",
               }}
               title={lang.name}
+              alt={lang.name}
             />
           </span>
           <span className={`text-xs font-medium ${lang.code === 'ar' || lang.code === 'fa' ? 'font-semibold' : ''}`}>

@@ -25,6 +25,8 @@ interface BlogType {
     category?: string;
     tags?: string[];
     reading_time?: number;
+    meta_title?: string;
+    meta_description?: string;
 }
 
 interface TableOfContentsItem {
@@ -57,6 +59,14 @@ const BlogDetail: React.FC = () => {
     const contentRef = useRef<HTMLDivElement>(null);
     const lang = i18next.language || 'en';
     const hostUrl = import.meta.env.VITE_HOST_URL || '';
+    // const [metaDesc, setMetaDesc] = useState();
+
+    useEffect(() => {
+        if (post?.meta_description) {
+            console.log("metaDesc updated:", post.meta_description);
+        }
+    }, [post]);
+
 
     useEffect(() => {
         async function loadBlog() {
@@ -83,6 +93,9 @@ const BlogDetail: React.FC = () => {
                 }
 
                 setPost(data);
+                // console.log("data",data);
+
+
 
                 // Load related posts
                 try {
@@ -96,6 +109,12 @@ const BlogDetail: React.FC = () => {
                                 .slice(0, 3)
                             : [];
                         setRelatedPosts(related);
+                        // setMetaDesc(relatedData?.results?.meta_description);
+
+                        // post.meta_description = data.meta_description;
+                        console.log("blog", data.meta_description);
+                        // setMetaDesc(data.meta_description);
+                        // console.log("metaDesc", metaDesc);
                     }
                 } catch (relatedError) {
                     console.warn('Failed to load related posts:', relatedError);
@@ -149,8 +168,8 @@ const BlogDetail: React.FC = () => {
                 title = post.title;
             }
 
-            return title?.length > 60 
-                ? "Dubai Off-Plan Property Guide 2025–2026" 
+            return title?.length > 60
+                ? "Dubai Off-Plan Property Guide 2025–2026"
                 : title || "Untitled";
 
         } catch (error) {
@@ -201,7 +220,7 @@ const BlogDetail: React.FC = () => {
                 }
             }
 
-            console.log('Generated TOC with', toc.length, 'header tags:', toc);
+            // console.log('Generated TOC with', toc.length, 'header tags:', toc);
 
         } catch (error) {
             console.error('Error parsing content for TOC:', error);
@@ -489,6 +508,7 @@ const BlogDetail: React.FC = () => {
         }
     };
 
+
     // Get safe values for rendering
     const title = getSafeTitle();
     const content = getSafeContent();
@@ -535,114 +555,127 @@ const BlogDetail: React.FC = () => {
         );
     }
 
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
-            <Toaster position="top-right" />
+        <>
+            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+                <Toaster position="top-right" />
 
-            {/* Background Effects */}
-            <div className="absolute inset-0 opacity-30">
-                <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
-            </div>
+                {/* Background Effects */}
+                <div className="absolute inset-0 opacity-30">
+                    <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
+                    <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
+                </div>
 
-            <SEOHead
-                title={title}
-                description={content ? content.substring(0, 160).replace(/<[^>]*>/g, '') : 'Blog article'}
-                image={post.image || ''}
-            />
-            <Header logo={logoPath} />
+                {!location.pathname.startsWith('/blogs/') && (
+                    <>
+                        {console.log("SEO Description:", post?.meta_description)}
+                        <SEOHead
+                            title={post?.meta_title || post?.title || 'Blog'}
+                            description={
+                                post?.meta_description ||
+                                (post?.content ? post.content.substring(0, 160).replace(/<[^>]*>/g, '') : 'Blog article')
+                            }
+                            image={post?.image || ''}
+                            canonical={`${window.location.origin}${location.pathname}`}
+                        />
+                    </>
+                )}
 
-            {/* Back Button */}
-            <div className="container mx-auto px-4 pt-8 relative z-10">
-                <button
-                    onClick={() => navigate('/blogs')}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md text-gray-700 hover:text-gray-900 rounded-xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-xl transform hover:scale-105"
-                >
-                    <ArrowLeft size={20} />
-                    Back to Articles
-                </button>
-            </div>
 
-            <div className="container mx-auto py-8 px-4 relative z-10">
-                <div className="max-w-7xl mx-auto flex gap-8">
-                    {/* Main Content */}
-                    <article className="flex-1 max-w-4xl">
-                        {/* Hero Image */}
-                        <div className="relative rounded-3xl overflow-hidden mb-8 shadow-2xl group">
-                            <img
-                                src={post.image || '/placeholder-image.jpg'}
-                                alt={title}
-                                className="w-full h-96 object-cover group-hover:scale-105 transition-transform duration-700"
-                                onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.src = '/placeholder-image.jpg';
-                                }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                            <div className="absolute bottom-6 left-6 right-6 text-white">
-                                {post.category && (
-                                    <div className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-2 rounded-full text-sm font-medium mb-4 shadow-lg">
-                                        <Sparkles size={16} />
-                                        {post.category}
-                                    </div>
-                                )}
-                                <h1 className="text-4xl md:text-5xl font-bold leading-tight bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                                    {title}
-                                </h1>
-                            </div>
-                        </div>
+                <Header logo={logoPath} />
 
-                        {/* Meta Information */}
-                        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 mb-8 border border-white/20">
-                            <div className="flex flex-wrap items-center justify-between gap-4">
-                                <div className="flex items-center gap-6 text-gray-600">
-                                    <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
-                                        <User size={18} className="text-purple-500" />
-                                        <span className="font-medium">{post.author || 'Unknown Author'}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl">
-                                        <Calendar size={18} className="text-pink-500" />
-                                        <span>{formatDate(post.created_at)}</span>
-                                    </div>
-                                    {post.reading_time && (
-                                        <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
-                                            <Clock size={18} className="text-purple-500" />
-                                            <span>{post.reading_time} min read</span>
+                {/* Back Button */}
+                <div className="container mx-auto px-4 pt-8 relative z-10">
+                    <button
+                        onClick={() => navigate('/blogs')}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md text-gray-700 hover:text-gray-900 rounded-xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-xl transform hover:scale-105"
+                    >
+                        <ArrowLeft size={20} />
+                        Back to Articles
+                    </button>
+                </div>
+
+                <div className="container mx-auto py-8 px-4 relative z-10">
+                    <div className="max-w-7xl mx-auto flex gap-8">
+                        {/* Main Content */}
+                        <article className="flex-1 max-w-4xl">
+                            {/* Hero Image */}
+                            <div className="relative rounded-3xl overflow-hidden mb-8 shadow-2xl group">
+                                <img
+                                    src={post.image || '/placeholder-image.jpg'}
+                                    alt={title}
+                                    className="w-full h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = '/placeholder-image.jpg';
+                                    }}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                                <div className="absolute bottom-6 left-6 right-6 text-white">
+                                    {post.category && (
+                                        <div className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-2 rounded-full text-sm font-medium mb-4 shadow-lg">
+                                            <Sparkles size={16} />
+                                            {post.category}
                                         </div>
                                     )}
+                                    <h1 className="text-4xl md:text-5xl font-bold leading-tight bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                                        {title}
+                                    </h1>
                                 </div>
-                                <button
-                                    onClick={handleShare}
-                                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-                                >
-                                    <Share2 size={18} />
-                                    Share
-                                </button>
                             </div>
 
-                            {post.tags && Array.isArray(post.tags) && post.tags.length > 0 && (
-                                <div className="flex items-center gap-2 mt-6 pt-6 border-t border-gray-100">
-                                    <Tag size={18} className="text-gray-400" />
-                                    <div className="flex flex-wrap gap-2">
-                                        {post.tags.map((tag, index) => (
-                                            <span
-                                                key={index}
-                                                className="px-3 py-1 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 rounded-full text-sm border border-gray-200 hover:shadow-sm transition-all duration-300"
-                                            >
-                                                {tag}
-                                            </span>
-                                        ))}
+                            {/* Meta Information */}
+                            <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 mb-8 border border-white/20">
+                                <div className="flex flex-wrap items-center justify-between gap-4">
+                                    <div className="flex items-center gap-6 text-gray-600">
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
+                                            <User size={18} className="text-purple-500" />
+                                            <span className="font-medium">{post.author || 'Unknown Author'}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-pink-50 to-blue-50 rounded-xl">
+                                            <Calendar size={18} className="text-pink-500" />
+                                            <span>{formatDate(post.created_at)}</span>
+                                        </div>
+                                        {post.reading_time && (
+                                            <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
+                                                <Clock size={18} className="text-purple-500" />
+                                                <span>{post.reading_time} min read</span>
+                                            </div>
+                                        )}
                                     </div>
+                                    <button
+                                        onClick={handleShare}
+                                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                                    >
+                                        <Share2 size={18} />
+                                        Share
+                                    </button>
                                 </div>
-                            )}
-                        </div>
 
-                        {/* Content with enhanced formatting */}
-                        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
-                            <div
-                                ref={contentRef}
-                                className="prose prose-lg max-w-none leading-relaxed
+                                {post.tags && Array.isArray(post.tags) && post.tags.length > 0 && (
+                                    <div className="flex items-center gap-2 mt-6 pt-6 border-t border-gray-100">
+                                        <Tag size={18} className="text-gray-400" />
+                                        <div className="flex flex-wrap gap-2">
+                                            {post.tags.map((tag, index) => (
+                                                <span
+                                                    key={index}
+                                                    className="px-3 py-1 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 rounded-full text-sm border border-gray-200 hover:shadow-sm transition-all duration-300"
+                                                >
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Content with enhanced formatting */}
+                            <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
+                                <div
+                                    ref={contentRef}
+                                    className="prose prose-lg max-w-none leading-relaxed
                                     prose-headings:font-bold prose-headings:text-gray-900 prose-headings:mb-6 prose-headings:mt-8 prose-headings:leading-tight
                                     prose-h1:text-3xl prose-h1:mb-8 prose-h1:mt-0 prose-h1:bg-gradient-to-r prose-h1:from-purple-600 prose-h1:to-pink-600 prose-h1:bg-clip-text prose-h1:text-transparent
                                     prose-h2:text-2xl prose-h2:mb-6 prose-h2:mt-10 prose-h2:text-gray-800 prose-h2:border-l-4 prose-h2:border-purple-500 prose-h2:pl-4 prose-h2:py-2
@@ -663,16 +696,16 @@ const BlogDetail: React.FC = () => {
                                     prose-th:bg-gray-50 prose-th:border prose-th:border-gray-300 prose-th:px-4 prose-th:py-3 prose-th:text-left prose-th:font-semibold prose-th:text-gray-900
                                     prose-td:border prose-td:border-gray-300 prose-td:px-4 prose-td:py-3 prose-td:text-gray-700
                                     prose-hr:border-gray-300 prose-hr:my-12 prose-hr:border-t-2"
-                                style={{
-                                    lineHeight: '1.8',
-                                }}
-                                dangerouslySetInnerHTML={{
-                                    __html: processContent(decodedContent)
-                                }}
-                            />
+                                    style={{
+                                        lineHeight: '1.8',
+                                    }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: processContent(decodedContent)
+                                    }}
+                                />
 
-                            {/* Enhanced CSS for better content formatting */}
-                            <style>{`
+                                {/* Enhanced CSS for better content formatting */}
+                                <style>{`
                                 .prose a {
                                     color: #2563eb !important;
                                     text-decoration: underline !important;
@@ -760,250 +793,251 @@ const BlogDetail: React.FC = () => {
                                     margin-bottom: 0.75rem !important;
                                 }
                             `}</style>
-                        </div>
+                            </div>
 
-                        {/* Contact Form */}
-                        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20 relative overflow-hidden">
-                            {/* Background gradient */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-pink-50/50 via-purple-50/50 to-blue-50/50"></div>
+                            {/* Contact Form */}
+                            <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 border border-white/20 relative overflow-hidden">
+                                {/* Background gradient */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-pink-50/50 via-purple-50/50 to-blue-50/50"></div>
 
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl shadow-lg">
-                                        <MessageSquare size={24} className="text-white" />
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl shadow-lg">
+                                            <MessageSquare size={24} className="text-white" />
+                                        </div>
+                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                                            Get in Touch
+                                        </h2>
                                     </div>
-                                    <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-                                        Get in Touch
-                                    </h2>
-                                </div>
-                                <p className="text-gray-600 mb-8 text-lg">
-                                    Have questions about this article or need more information? We'd love to hear from you!
-                                </p>
-                                <form onSubmit={handleContactSubmit} className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <p className="text-gray-600 mb-8 text-lg">
+                                        Have questions about this article or need more information? We'd love to hear from you!
+                                    </p>
+                                    <form onSubmit={handleContactSubmit} className="space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Full Name *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="name"
+                                                    name="name"
+                                                    value={contactForm.name}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                    className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
+                                                    placeholder="Your full name"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Phone Number
+                                                </label>
+                                                <input
+                                                    type="tel"
+                                                    id="phone"
+                                                    name="phone"
+                                                    value={contactForm.phone}
+                                                    onChange={handleInputChange}
+                                                    className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
+                                                    placeholder="Your phone number"
+                                                />
+                                            </div>
+                                        </div>
                                         <div>
-                                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Full Name *
+                                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Email Address *
                                             </label>
                                             <input
-                                                type="text"
-                                                id="name"
-                                                name="name"
-                                                value={contactForm.name}
+                                                type="email"
+                                                id="email"
+                                                name="email"
+                                                value={contactForm.email}
                                                 onChange={handleInputChange}
                                                 required
                                                 className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
-                                                placeholder="Your full name"
+                                                placeholder="your@email.com"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Phone Number
+                                            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Message *
                                             </label>
-                                            <input
-                                                type="tel"
-                                                id="phone"
-                                                name="phone"
-                                                value={contactForm.phone}
+                                            <textarea
+                                                id="message"
+                                                name="message"
+                                                value={contactForm.message}
                                                 onChange={handleInputChange}
-                                                className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
-                                                placeholder="Your phone number"
+                                                required
+                                                rows={5}
+                                                className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl resize-vertical"
+                                                placeholder="Tell us about your inquiry..."
                                             />
                                         </div>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Email Address *
-                                        </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={contactForm.email}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl"
-                                            placeholder="your@email.com"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Message *
-                                        </label>
-                                        <textarea
-                                            id="message"
-                                            name="message"
-                                            value={contactForm.message}
-                                            onChange={handleInputChange}
-                                            required
-                                            rows={5}
-                                            className="w-full px-4 py-3 border-0 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:shadow-xl resize-vertical"
-                                            placeholder="Tell us about your inquiry..."
-                                        />
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <input
-                                            type="checkbox"
-                                            id="agreeUpdates"
-                                            name="agreeUpdates"
-                                            checked={contactForm.agreeUpdates}
-                                            onChange={handleInputChange}
-                                            className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded transition-all duration-200"
-                                        />
-                                        <label htmlFor="agreeUpdates" className="text-sm text-gray-600 leading-relaxed">
-                                            I agree to receive updates about new properties and market insights
-                                        </label>
-                                    </div>
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 font-medium"
-                                    >
-                                        <Send size={18} />
-                                        {isSubmitting ? 'Sending...' : 'Send Message'}
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        {/* Related Posts */}
-                        {relatedPosts.length > 0 && (
-                            <section className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-white/20">
-                                <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
-                                    <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg">
-                                        <BookOpen size={24} className="text-white" />
-                                    </div>
-                                    <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-                                        Related Articles
-                                    </span>
-                                </h2>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                    {relatedPosts.map((relatedPost) => {
-                                        if (!relatedPost) return null;
-
-                                        const relatedTitle = lang === 'ar' && relatedPost.title_ar ? relatedPost.title_ar :
-                                            lang === 'fa' && relatedPost.title_fa ? relatedPost.title_fa :
-                                                relatedPost.title || 'Untitled';
-
-                                        return (
-                                            <div
-                                                key={relatedPost.id || Math.random()}
-                                                className="group cursor-pointer bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
-                                                onClick={() => navigate(`/blogs/${relatedPost.slug}`)}
-                                            >
-                                                <img
-                                                    src={relatedPost.image || '/placeholder-image.jpg'}
-                                                    alt={relatedTitle}
-                                                    className="w-full h-40 object-cover rounded-xl mb-4 group-hover:scale-110 transition-transform duration-500"
-                                                    onError={(e) => {
-                                                        const target = e.target as HTMLImageElement;
-                                                        target.src = '/placeholder-image.jpg';
-                                                    }}
-                                                />
-                                                <h3 className="font-semibold text-gray-900 group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:via-purple-500 group-hover:to-blue-500 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2 mb-2">
-                                                    {relatedTitle}
-                                                </h3>
-                                                <p className="text-sm text-gray-500">
-                                                    {formatDate(relatedPost.created_at)}
-                                                </p>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </section>
-                        )}
-                    </article>
-
-                    {/* Table of Contents Sidebar */}
-                    <aside className="hidden lg:block w-80">
-                        <div className="sticky top-8">
-                            {tableOfContents.length > 0 && (
-                                <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 mb-6 border border-white/20">
-                                    <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
-                                        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg">
-                                            <BookOpen size={20} className="text-white" />
+                                        <div className="flex items-start space-x-3">
+                                            <input
+                                                type="checkbox"
+                                                id="agreeUpdates"
+                                                name="agreeUpdates"
+                                                checked={contactForm.agreeUpdates}
+                                                onChange={handleInputChange}
+                                                className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded transition-all duration-200"
+                                            />
+                                            <label htmlFor="agreeUpdates" className="text-sm text-gray-600 leading-relaxed">
+                                                I agree to receive updates about new properties and market insights
+                                            </label>
                                         </div>
-                                        <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-                                            Table of Contents
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 font-medium"
+                                        >
+                                            <Send size={18} />
+                                            {isSubmitting ? 'Sending...' : 'Send Message'}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {/* Related Posts */}
+                            {relatedPosts.length > 0 && (
+                                <section className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-white/20">
+                                    <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg">
+                                            <BookOpen size={24} className="text-white" />
+                                        </div>
+                                        <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                                            Related Articles
                                         </span>
-                                    </h3>
-                                    <div className="text-sm text-gray-500 mb-4">
-                                        {tableOfContents.length} section{tableOfContents.length !== 1 ? 's' : ''} found
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        {relatedPosts.map((relatedPost) => {
+                                            if (!relatedPost) return null;
+
+                                            const relatedTitle = lang === 'ar' && relatedPost.title_ar ? relatedPost.title_ar :
+                                                lang === 'fa' && relatedPost.title_fa ? relatedPost.title_fa :
+                                                    relatedPost.title || 'Untitled';
+
+                                            return (
+                                                <div
+                                                    key={relatedPost.id || Math.random()}
+                                                    className="group cursor-pointer bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+                                                    onClick={() => navigate(`/blogs/${relatedPost.slug}`)}
+                                                >
+                                                    <img
+                                                        src={relatedPost.image || '/placeholder-image.jpg'}
+                                                        alt={relatedTitle}
+                                                        className="w-full h-40 object-cover rounded-xl mb-4 group-hover:scale-110 transition-transform duration-500"
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            target.src = '/placeholder-image.jpg';
+                                                        }}
+                                                    />
+                                                    <h3 className="font-semibold text-gray-900 group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:via-purple-500 group-hover:to-blue-500 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2 mb-2">
+                                                        {relatedTitle}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-500">
+                                                        {formatDate(relatedPost.created_at)}
+                                                    </p>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                    <nav className="space-y-2 max-h-96 overflow-y-auto">
-                                        {tableOfContents.map((item, index) => (
-                                            <button
-                                                key={item.id || index}
-                                                onClick={() => scrollToSection(item.id)}
-                                                className={`block w-full text-left px-4 py-3 rounded-xl transition-all duration-300 text-sm ${activeSection === item.id
+                                </section>
+                            )}
+                        </article>
+
+                        {/* Table of Contents Sidebar */}
+                        <aside className="hidden lg:block w-80">
+                            <div className="sticky top-8">
+                                {tableOfContents.length > 0 && (
+                                    <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 mb-6 border border-white/20">
+                                        <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                                            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg">
+                                                <BookOpen size={20} className="text-white" />
+                                            </div>
+                                            <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                                                Table of Contents
+                                            </span>
+                                        </h3>
+                                        <div className="text-sm text-gray-500 mb-4">
+                                            {tableOfContents.length} section{tableOfContents.length !== 1 ? 's' : ''} found
+                                        </div>
+                                        <nav className="space-y-2 max-h-96 overflow-y-auto">
+                                            {tableOfContents.map((item, index) => (
+                                                <button
+                                                    key={item.id || index}
+                                                    onClick={() => scrollToSection(item.id)}
+                                                    className={`block w-full text-left px-4 py-3 rounded-xl transition-all duration-300 text-sm ${activeSection === item.id
                                                         ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-600 font-medium border-l-4 border-purple-500 shadow-lg'
                                                         : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-purple-50 hover:shadow-md'
-                                                    } ${item.level === 3 ? 'ml-4' :
-                                                        item.level === 4 ? 'ml-8' :
-                                                            item.level > 4 ? 'ml-12' : ''
-                                                    }`}
-                                                title={item.title}
-                                            >
-                                                <span className="block truncate">
-                                                    {item.title}
-                                                </span>
-                                                <span className="text-xs text-gray-400">
-                                                    Level {item.level}
-                                                </span>
-                                            </button>
-                                        ))}
-                                    </nav>
-                                </div>
-                            )}
+                                                        } ${item.level === 3 ? 'ml-4' :
+                                                            item.level === 4 ? 'ml-8' :
+                                                                item.level > 4 ? 'ml-12' : ''
+                                                        }`}
+                                                    title={item.title}
+                                                >
+                                                    <span className="block truncate">
+                                                        {item.title}
+                                                    </span>
+                                                    <span className="text-xs text-gray-400">
+                                                        Level {item.level}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </nav>
+                                    </div>
+                                )}
 
-                            {/* Show message when no TOC is available */}
-                            {tableOfContents.length === 0 && (
-                                <div className="bg-white/60 backdrop-blur-md rounded-3xl shadow-lg p-6 mb-6 border border-white/20">
-                                    <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-700">
-                                        <BookOpen size={18} />
-                                        Table of Contents
-                                    </h3>
-                                    <p className="text-sm text-gray-500">
-                                        No sections detected in this article. The content will load below.
-                                    </p>
-                                </div>
-                            )}
-
-                            {/* Quick Contact Card */}
-                            <div className="bg-gradient-to-br from-pink-400 via-purple-400 to-blue-500 rounded-3xl shadow-2xl p-6 text-white relative overflow-hidden">
-                                {/* Background effects */}
-                                <div className="absolute inset-0 opacity-20">
-                                    <div className="absolute top-2 right-2 w-16 h-16 bg-white rounded-full blur-xl animate-pulse"></div>
-                                    <div className="absolute bottom-2 left-2 w-12 h-12 bg-white rounded-full blur-xl animate-pulse delay-300"></div>
-                                </div>
-
-                                <div className="relative z-10 text-center">
-                                    <div className="mb-6">
-                                        <UserCheck size={36} className="mx-auto mb-2" />
-                                        <h2 className="text-4xl md:text-4xl font-bold mb-4">
-                                            Ready to Invest?
-                                        </h2>
-                                        <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-                                            Connect with our expert agents for personalized guidance and exclusive property opportunities in Dubai's thriving real estate market.
+                                {/* Show message when no TOC is available */}
+                                {tableOfContents.length === 0 && (
+                                    <div className="bg-white/60 backdrop-blur-md rounded-3xl shadow-lg p-6 mb-6 border border-white/20">
+                                        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-700">
+                                            <BookOpen size={18} />
+                                            Table of Contents
+                                        </h3>
+                                        <p className="text-sm text-gray-500">
+                                            No sections detected in this article. The content will load below.
                                         </p>
                                     </div>
+                                )}
 
-                                    <button
-                                        onClick={handleContactAgent}
-                                        className="inline-flex items-center gap-3 px-10 py-5 bg-white/20 hover:bg-white/30 rounded-2xl backdrop-blur-sm transition-all duration-300 transform hover:scale-105 font-semibold text-xl border border-white/30"
-                                    >
-                                        Contact Our Agents Now
-                                        <ExternalLink size={28} className='animate-bounce' />
-                                    </button>
+                                {/* Quick Contact Card */}
+                                <div className="bg-gradient-to-br from-pink-400 via-purple-400 to-blue-500 rounded-3xl shadow-2xl p-6 text-white relative overflow-hidden">
+                                    {/* Background effects */}
+                                    <div className="absolute inset-0 opacity-20">
+                                        <div className="absolute top-2 right-2 w-16 h-16 bg-white rounded-full blur-xl animate-pulse"></div>
+                                        <div className="absolute bottom-2 left-2 w-12 h-12 bg-white rounded-full blur-xl animate-pulse delay-300"></div>
+                                    </div>
+
+                                    <div className="relative z-10 text-center">
+                                        <div className="mb-6">
+                                            <UserCheck size={36} className="mx-auto mb-2" />
+                                            <h2 className="text-4xl md:text-4xl font-bold mb-4">
+                                                Ready to Invest?
+                                            </h2>
+                                            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+                                                Connect with our expert agents for personalized guidance and exclusive property opportunities in Dubai's thriving real estate market.
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            onClick={handleContactAgent}
+                                            className="inline-flex items-center gap-3 px-10 py-5 bg-white/20 hover:bg-white/30 rounded-2xl backdrop-blur-sm transition-all duration-300 transform hover:scale-105 font-semibold text-xl border border-white/30"
+                                        >
+                                            Contact Our Agents Now
+                                            <ExternalLink size={28} className='animate-bounce' />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </aside>
+                        </aside>
+                    </div>
                 </div>
-            </div>
 
-            <Footer />
-        </div>
+                <Footer />
+            </div>
+        </>
     );
 };
 
