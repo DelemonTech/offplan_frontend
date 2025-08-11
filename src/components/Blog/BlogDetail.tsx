@@ -631,7 +631,7 @@ const BlogDetail: React.FC = () => {
                                         </div>
                                     )}
                                     <h1 className="text-4xl md:text-5xl font-bold leading-tight bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                                        <h1>{getTranslatedField(post?.title, post?.title_ar, post?.title_fa)}</h1>
+                                        {title}
                                     </h1>
                                 </div>
                             </div>

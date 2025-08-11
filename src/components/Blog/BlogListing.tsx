@@ -138,6 +138,7 @@ const BlogListing: React.FC = () => {
       <SEOHead 
         title="Latest Real Estate Insights | Blog"
         description="Stay updated with the latest trends, tips, and insights in Dubai real estate market."
+        canonical={`${window.location.origin}${location.pathname}`}
       />
       <Header logo={logoPath} />
       
