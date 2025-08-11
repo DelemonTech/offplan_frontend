@@ -132,6 +132,12 @@ const BlogDetail: React.FC = () => {
         loadBlog();
     }, [slug, hostUrl]);
 
+    const getTranslatedField = (en: string, ar?: string, fa?: string) => {
+    if (lang === 'ar' && ar) return ar;
+    if (lang === 'fa' && fa) return fa;
+    return en;
+};
+
     // Safe content extraction with comprehensive null checks
     const getSafeContent = (): string => {
         if (!post) return '';
@@ -153,6 +159,7 @@ const BlogDetail: React.FC = () => {
             return post.content || '';
         }
     };
+    
 
     const getSafeTitle = (): string => {
         if (!post) return 'Loading...';
@@ -168,15 +175,18 @@ const BlogDetail: React.FC = () => {
                 title = post.title;
             }
 
-            return title?.length > 60
-                ? "Dubai Off-Plan Property Guide 2025–2026"
-                : title || "Untitled";
+            // Fallback if empty
+            if (!title) title = 'Untitled';
+
+            // Limit length but ensure we return something
+            return title.length <= 100 ? title : title.substring(0, 100) + '...';
 
         } catch (error) {
             console.warn('Error getting safe title:', error);
-            return post.title || 'Untitled';
+            return post?.title || 'Untitled';
         }
     };
+
 
     const decodeHtmlEntities = (str: string): string => {
         if (!str || typeof str !== 'string') return '';
@@ -621,7 +631,7 @@ const BlogDetail: React.FC = () => {
                                         </div>
                                     )}
                                     <h1 className="text-4xl md:text-5xl font-bold leading-tight bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                                        {title}
+                                        <h1>{getTranslatedField(post?.title, post?.title_ar, post?.title_fa)}</h1>
                                     </h1>
                                 </div>
                             </div>
