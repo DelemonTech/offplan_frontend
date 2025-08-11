@@ -133,10 +133,10 @@ const BlogDetail: React.FC = () => {
     }, [slug, hostUrl]);
 
     const getTranslatedField = (en: string, ar?: string, fa?: string) => {
-    if (lang === 'ar' && ar) return ar;
-    if (lang === 'fa' && fa) return fa;
-    return en;
-};
+        if (lang === 'ar' && ar) return ar;
+        if (lang === 'fa' && fa) return fa;
+        return en;
+    };
 
     // Safe content extraction with comprehensive null checks
     const getSafeContent = (): string => {
@@ -159,7 +159,7 @@ const BlogDetail: React.FC = () => {
             return post.content || '';
         }
     };
-    
+
 
     const getSafeTitle = (): string => {
         if (!post) return 'Loading...';
@@ -391,8 +391,15 @@ const BlogDetail: React.FC = () => {
 
             // Make URLs clickable
             processedText = processedText.replace(
-                /(https?:\/\/[^\s<]+)/g,
-                '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-2 hover:decoration-blue-800 transition-colors duration-200 font-medium">$1</a>'
+                /(^|[^">])(https?:\/\/[^\s<]+)/g,
+                (match, prefix, url) => {
+                    // If this URL is already part of an <a> tag, skip
+                    if (prefix.endsWith('href=')) {
+                        return match;
+                    }
+                    return `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer" 
+            class="text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-2 hover:decoration-blue-800 transition-colors duration-200 font-medium">${url}</a>`;
+                }
             );
 
             // Handle FAQ and Step sections
