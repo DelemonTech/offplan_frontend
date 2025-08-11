@@ -416,61 +416,61 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     setIsSummaryModalOpen(true);
   };
 
-//   const handleWhatsApp1 = () => {
-//   const dummyAgent = {
-//     name: {
-//       en: "Sahar Kalhor",
-//     },
-//     whatsapp_number: "+971529529687",
-//     username: "sahar"
-//   };
+  //   const handleWhatsApp1 = () => {
+  //   const dummyAgent = {
+  //     name: {
+  //       en: "Sahar Kalhor",
+  //     },
+  //     whatsapp_number: "+971529529687",
+  //     username: "sahar"
+  //   };
 
-//   const dummyProject = {
-//     id: 1202,
-//     title: {
-//       en: "Raffles"
-//     },
-//     city: {
-//       name: "Dubai"
-//     },
-//     low_price: 702000
-//   };
+  //   const dummyProject = {
+  //     id: 1202,
+  //     title: {
+  //       en: "Raffles"
+  //     },
+  //     city: {
+  //       name: "Dubai"
+  //     },
+  //     low_price: 702000
+  //   };
 
-//   console.log("typeof dummyAgent.name.en:", typeof dummyAgent.name.en); // should be "string"
-//   console.log("typeof dummyProject.title.en:", typeof dummyProject.title.en); // should be "string"
+  //   console.log("typeof dummyAgent.name.en:", typeof dummyAgent.name.en); // should be "string"
+  //   console.log("typeof dummyProject.title.en:", typeof dummyProject.title.en); // should be "string"
 
-//   const message = `Hi ${dummyAgent.name.en}! I'm interested in ${dummyProject.title.en} in ${dummyProject.city.name}. Starting from AED ${dummyProject.low_price}. Can you share more details?`;
+  //   const message = `Hi ${dummyAgent.name.en}! I'm interested in ${dummyProject.title.en} in ${dummyProject.city.name}. Starting from AED ${dummyProject.low_price}. Can you share more details?`;
 
-//   alert(message); // 🔔 SEE THIS BEFORE WHATSAPP
+  //   alert(message); // 🔔 SEE THIS BEFORE WHATSAPP
 
-//   const whatsappUrl = `https://wa.me/${dummyAgent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-//   window.open(whatsappUrl, '_blank');
-// };
+  //   const whatsappUrl = `https://wa.me/${dummyAgent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  //   window.open(whatsappUrl, '_blank');
+  // };
 
 
 
-//   const handleWhatsApp = (project: any) => {
-//     const localizedAgentName =
-//       agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
-//     console.log("proj: ", project.title?.[i18n.language], localizedAgentName);
-//     const translations = {
-//       en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.[i18n.language] || project.title.en} in ${project.city?.city?.[i18n.language]}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
+  //   const handleWhatsApp = (project: any) => {
+  //     const localizedAgentName =
+  //       agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
+  //     console.log("proj: ", project.title?.[i18n.language], localizedAgentName);
+  //     const translations = {
+  //       en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.[i18n.language] || project.title.en} in ${project.city?.city?.[i18n.language]}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
 
-// Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
+  // Property Link: https://offplan.market/sahar/property-details/?id=${project.id}`,
 
-//       ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${project.title?.ar} في ${project.city.name}. تبدأ الأسعار من AED ${formatAED(project.low_price)}. هل يمكنك مشاركة المزيد من التفاصيل؟
+  //       ar: `مرحبًا ${localizedAgentName}، أنا مهتم بـ ${project.title?.ar} في ${project.city.name}. تبدأ الأسعار من AED ${formatAED(project.low_price)}. هل يمكنك مشاركة المزيد من التفاصيل؟
 
-// رابط العقار: https://offplan.market/sahar/property-details/?id=${project.id}`,
+  // رابط العقار: https://offplan.market/sahar/property-details/?id=${project.id}`,
 
-//       fa: `${localizedAgentName} عزیز، من به ${project.title?.fa} در ${project.city.name} علاقه‌مندم. قیمت‌ها از AED ${formatAED(project.low_price)} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟
+  //       fa: `${localizedAgentName} عزیز، من به ${project.title?.fa} در ${project.city.name} علاقه‌مندم. قیمت‌ها از AED ${formatAED(project.low_price)} شروع می‌شود. می‌تونی اطلاعات بیشتری ارسال کنی؟
 
-// لینک ملک: https://offplan.market/sahar/property-details/?id=${project.id}`
-//     };
+  // لینک ملک: https://offplan.market/sahar/property-details/?id=${project.id}`
+  //     };
 
-//     const message = translations[i18n.language] || translations.en;
-//     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-//     window.open(whatsappUrl, '_blank');
-//   };
+  //     const message = translations[i18n.language] || translations.en;
+  //     const whatsappUrl = `https://wa.me/${agent.whatsapp_number.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
+  //     window.open(whatsappUrl, '_blank');
+  //   };
 
 
   const agentName = i18n.language === 'fa'
@@ -826,34 +826,47 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
   // };
 
 
+  // Helper: read csrftoken from cookies
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
   useEffect(() => {
     const filters = location.state?.filters;
-    if (!filters) return;
-    if (!statusName) return; // Wait for status
-    if (!isCityReady) return; // Wait until city fetch completes
+    if (!filters || !statusName || !isCityReady) return;
 
     const fetchFilteredProperties = async () => {
       setIsSearchLoading(true);
-      // document.body.style.overflow = 'hidden';
       try {
+        const csrftoken = getCookie('csrftoken');
+
         const response = await fetch(`${hostUrl}/properties/filter/`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken, // send CSRF token header
+          },
+          credentials: 'include', // send cookies
           body: JSON.stringify(filters),
         });
+
         const result = await response.json();
         if (result.status && result.data) {
           setProperties(result.data.results || []);
           setNextPageUrl(result.data.next_page_url || null);
-
-          // setTimeout(() => {
-          //   window.scrollTo({ top: 930, behavior: 'smooth' });
-          // }, 100);
         }
-        const section = document.getElementById('featured-projects');
-        // if (section) {
-        //   section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // }
         console.log("Filters being sent:", filters);
       } catch (error) {
         console.error('Error:', error);
@@ -865,6 +878,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
 
     fetchFilteredProperties();
   }, [location.state?.filters, statusName, isCityReady]);
+
 
   // useEffect(() => {
   //   window.scrollTo({ top: 930, behavior: 'smooth' });
@@ -1350,7 +1364,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                                 className="hover:bg-green-50 hover:border-green-300 transition-all duration-300 rounded-xl border-2"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleWhatsApp(project,agent,t,i18n);
+                                  handleWhatsApp(project, agent, t, i18n);
                                 }}
                               >
                                 <img
