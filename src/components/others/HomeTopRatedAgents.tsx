@@ -25,6 +25,8 @@ const TopRatedAgents = () => {
     setIsOpen(false);
   };
 
+  const hostUrl = import.meta.env.VITE_HOST_URL;
+
 
   // Mock data with enhanced details
   // const agents = [
@@ -132,7 +134,7 @@ const TopRatedAgents = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/agents/frontend/")
+    fetch(`${hostUrl}/agents/frontend/`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
