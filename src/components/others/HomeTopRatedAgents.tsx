@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
+import axios from "axios";
 
 const TopRatedAgents = () => {
   const { t, i18n } = useTranslation();
@@ -23,54 +24,56 @@ const TopRatedAgents = () => {
     document.dir = lng === 'fa' ? 'rtl' : 'ltr';
     setIsOpen(false);
   };
+
+
   // Mock data with enhanced details
-  const agents = [
-    {
-      id: 1,
-      name: t("Sahar Kalhor"),
-      username: "sahar",
-      avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/sahar-crawler.webp" alt="Sahar Kalhor" className="w-full h-full object-cover rounded-full" />,
-      nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: ['en', 'ar', 'fa'],
-      rating: 4.9,
-      reviews: 127,
-      specialties: [t("Luxury Properties"), t("Investment")],
-      totalSales: "150+",
-      responseTime: "< 30 min",
-      badge: t("Top Performer"),
-      color: "from-pink-400 via-purple-500 to-indigo-600"
-    },
-    {
-      id: 2,
-      name: t("Mohammed Erfani"),
-      username: "erfani",
-      avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/erfani-crawler.webp" alt="Mohammed Erfani" className='overflow-hidden rounded-full' />,
-      nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: ['en', 'ar', 'fa'],
-      rating: 4.9,
-      reviews: 95,
-      specialties: [t("Commercial"), t("Residential")],
-      totalSales: "125+",
-      responseTime: "< 30 min",
-      badge: t("Rising Star"),
-      color: "from-orange-400 via-red-500 to-pink-600"
-    },
-    {
-      id: 3,
-      name: t("Maryam"),
-      username: "maryam",
-      avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/maryam-crawler.webp" alt="Maryam" className='overflow-hidden rounded-full' />,
-      nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-      languages: ['en', 'ar', 'fa'],
-      rating: 4.9,
-      reviews: 89,
-      specialties: [t("First-time Buyers"), t("Rentals")],
-      totalSales: "120+",
-      responseTime: "< 30 min",
-      badge: t("Expert"),
-      color: "from-emerald-400 via-teal-500 to-cyan-600"
-    },
-  ];
+  // const agents = [
+  //   {
+  //     id: 1,
+  //     name: t("Sahar Kalhor"),
+  //     username: "sahar",
+  //     avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/sahar-crawler.webp" alt="Sahar Kalhor" className="w-full h-full object-cover rounded-full" />,
+  //     nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
+  //     languages: ['en', 'ar', 'fa'],
+  //     rating: 4.9,
+  //     reviews: 127,
+  //     specialties: [t("Luxury Properties"), t("Investment")],
+  //     totalSales: "150+",
+  //     responseTime: "< 30 min",
+  //     badge: t("Top Performer"),
+  //     color: "from-pink-400 via-purple-500 to-indigo-600"
+  //   },
+  //   {
+  //     id: 2,
+  //     name: t("Mohammed Erfani"),
+  //     username: "erfani",
+  //     avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/erfani-crawler.webp" alt="Mohammed Erfani" className='overflow-hidden rounded-full' />,
+  //     nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
+  //     languages: ['en', 'ar', 'fa'],
+  //     rating: 4.9,
+  //     reviews: 95,
+  //     specialties: [t("Commercial"), t("Residential")],
+  //     totalSales: "125+",
+  //     responseTime: "< 30 min",
+  //     badge: t("Rising Star"),
+  //     color: "from-orange-400 via-red-500 to-pink-600"
+  //   },
+  //   {
+  //     id: 3,
+  //     name: t("Maryam"),
+  //     username: "maryam",
+  //     avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/maryam-crawler.webp" alt="Maryam" className='overflow-hidden rounded-full' />,
+  //     nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
+  //     languages: ['en', 'ar', 'fa'],
+  //     rating: 4.9,
+  //     reviews: 89,
+  //     specialties: [t("First-time Buyers"), t("Rentals")],
+  //     totalSales: "120+",
+  //     responseTime: "< 30 min",
+  //     badge: t("Expert"),
+  //     color: "from-emerald-400 via-teal-500 to-cyan-600"
+  //   },
+  // ];
 
 
   useEffect(() => {
@@ -124,6 +127,37 @@ const TopRatedAgents = () => {
     // Redirect to agent page
     window.location.href = `/${username}`; // or with language: `/${lng}/${username}`
   };
+
+  const [agents, setAgents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/agents/frontend/")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })  
+      .then((data) => {
+        setAgents(Array.isArray(data.results) ? data.results : []);
+        // console.log("agent",data.results);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching agents:", err);
+        setAgents([]);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <p>Loading agents...</p>;
+  }
+
+  if (!agents.length) {
+    return <p>No agents found.</p>;
+  }
 
   return (
     <section
@@ -450,7 +484,7 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
           `}></div>
 
           <div className="relative w-full h-full bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full border-4 border-white/30 flex items-center justify-center shadow-2xl overflow-hidden">
-            {agent.avatar}
+            <img src={agent.avatar} alt="profile"></img>
           </div>
 
 
@@ -467,7 +501,7 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
             {agent.name}
           </h3>
           <span className="text-4xl animate-bounce" style={{ animationDuration: '2s' }}>
-            {agent.nationality}
+            <img src={agent.nationality} alt="flag" />
           </span>
         </div>
 
@@ -566,9 +600,9 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
             ))}
           </div>
           <span className="font-black text-white text-xl drop-shadow-lg">{agent.rating}</span>
-          <span className="text-white/70 text-sm">
+          {/* <span className="text-white/70 text-sm">
             ({agent.reviews} {t("reviews")})
-          </span>
+          </span> */}
         </div>
 
         {/* Enhanced CTAs */}
