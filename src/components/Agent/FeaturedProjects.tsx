@@ -65,6 +65,8 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log("Properties - new :",properties);
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     document.dir = lng === 'fa' ? 'rtl' : 'ltr';
