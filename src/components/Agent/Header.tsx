@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Search, Globe, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const { username } = useParams();
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -22,9 +23,9 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
   };
 
   const navigationLinks = [
-    { href: "/", label: t('Home') },
-    { href: "#", label: t('About') },
-    { href: "#", label: t('Contact') },
+    { href: `/`, label: t('Home') },
+    { href: `/about`, label: t('About') },
+    { href: `/contact`, label: t('Contact') },
     { href: `/blogs`, label: t('Blogs') },
   ];
  
@@ -32,7 +33,7 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
     <header className="bg-white shadow-sm sticky top-0 z-50" dir='ltr'>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to={`/${username}`} className="flex items-center space-x-2">
             {/* <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-400 to-blue-500"></div> */}
             <span className="text-xl font-bold">
               {/* <span className="text-pink-500">OFFPLAN</span>
@@ -71,7 +72,7 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
               <div className="flex flex-col h-full">
                 {/* Header with close button */}
                 <div className="flex items-center justify-between p-4 border-b">
-                  <Link to="/" className="md:hidden">
+                  <Link to={`/${username}`} className="md:hidden">
                     <img src={logo} alt="Logo" className="h-8" />
                   </Link>
                   {/* <SheetClose asChild>

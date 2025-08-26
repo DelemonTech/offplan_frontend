@@ -41,8 +41,8 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
 
   const navigationLinks = [
     { href: "/", label: t('Home') },
-    { href: "#", label: t('About') },
-    { href: "#", label: t('Contact') },
+    { href: "/about", label: t('About') },
+    { href: "/contact", label: t('Contact') },
     { href: `/blogs`, label: t('Blogs') },
   ];
 
@@ -92,7 +92,7 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                 <img
                   src="/lovable-uploads/11b303ba-efcb-483b-86ae-d82efdb9c016.png"
                   alt="Off Plan Market"
-                  className="h-12 max-w-[60vw] w-auto object-contain"
+                  className="h-10 max-w-[60vw] w-auto object-contain"
                 />
               </div>
             </div>
@@ -160,7 +160,7 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
               </SheetContent>
             </Sheet>
 
-            <div className="flex items-center space-x-4">
+            {/* <div className="flex items-center space-x-4">
               <Button variant="outline" className="hidden md:inline-flex">
                 {t("Login")}
               </Button>
@@ -177,7 +177,7 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                 </button>
               </div>
 
-            </div>
+            </div> */}
 
           </div>
           {isOpen && (

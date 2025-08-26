@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, Filter, Grid, List, Sparkles, Star, UserCheck, ExternalLink } from 'lucide-react';
 import BlogCard from './BlogCard';
 import { SEOHead } from '@/components/SEOHead';
-import Header from '../Agent/Header';
+import Header from '@/components/others/HomeHeader';
 import logoPath from "@/assets/OFFPLAN_MARKET.png";
 import i18next from 'i18next';
 import Footer from '@/components/Agent/Footer'
@@ -140,7 +140,7 @@ const BlogListing: React.FC = () => {
         description="Stay updated with the latest trends, tips, and insights in Dubai real estate market."
         canonical={`${window.location.origin}${location.pathname}`}
       />
-      <Header logo={logoPath} />
+      <Header />
       
       {/* Hero Section */}
       <section className="relative py-2 lg:py-12 overflow-hidden">
@@ -150,7 +150,7 @@ const BlogListing: React.FC = () => {
           <div className="absolute bottom-20 right-20 w-32 h-32 bg-gradient-to-r from-blue-300 to-indigo-300 rounded-full blur-3xl animate-pulse delay-300"></div>
         </div>
         
-        <div className="container mx-auto px-4 text-center relative z-10">
+        <div className="container mx-auto px-4 text-center relative z-10 py-12">
           <div className="inline-flex items-center gap-2 mb-6">
             <div className="relative">
               <Sparkles className="w-8 h-8 md:w-12 md:h-12 text-pink-500 animate-pulse" />
