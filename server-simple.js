@@ -1,50 +1,81 @@
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import express from 'express'
+import { createServer as createViteServer } from 'vite'
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Serve static files from dist directory
-app.use(express.static(path.join(__dirname, 'dist'), {
-  maxAge: '1y',
-  etag: true,
-  lastModified: true,
-  setHeaders: (res, path) => {
-    // Set proper cache headers for different file types
-    if (path.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
-    } else if (path.endsWith('.js') || path.endsWith('.css')) {
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-    } else if (path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.gif') || path.endsWith('.svg')) {
-      res.setHeader('Cache-Control', 'public, max-age=31536000');
+async function createServer() {
+  const app = express()
+
+  const vite = await createViteServer({
+    server: { middlewareMode: true },
+    appType: 'custom'
+  })
+
+  app.use(vite.middlewares)
+
+  // Serve static files
+  app.use(express.static('dist'))
+
+  app.use('*', async (req, res, next) => {
+    const url = req.originalUrl
+
+    try {
+      // Read index.html
+      let template = fs.readFileSync(
+        path.resolve(__dirname, 'index.html'),
+        'utf-8'
+      )
+
+      // Apply Vite HTML transforms
+      template = await vite.transformIndexHtml(url, template)
+
+      // Load server entry
+      const { render } = await vite.ssrLoadModule('/src/entry-server-simple.jsx')
+
+      // Create context for StaticRouter
+      const context = {}
+
+      // Render app HTML
+      const { app: appHtml, helmetContext } = await render(url, context)
+
+      // Inject app HTML and meta tags
+      const { helmet } = helmetContext
+      const html = template
+        .replace(`<!--ssr-outlet-->`, appHtml)
+        .replace('<!--head-tags-->', 
+          helmet.title.toString() + 
+          helmet.meta.toString() + 
+          helmet.link.toString() + 
+          helmet.script.toString() +
+          helmet.style.toString()
+        )
+
+      res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
+    } catch (e) {
+      vite.ssrFixStacktrace(e)
+      console.error('SSR Error:', e.message)
+      console.error(e.stack)
+      
+      // Fallback to client-side rendering
+      try {
+        let template = fs.readFileSync(
+          path.resolve(__dirname, 'index.html'),
+          'utf-8'
+        )
+        template = await vite.transformIndexHtml(url, template)
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(template)
+      } catch (fallbackError) {
+        res.status(500).end('Server Error')
+      }
     }
-    
-    // Security headers
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  }
-}));
+  })
 
-// Handle all routes for SPA
-app.get('*', (req, res) => {
-  const indexPath = path.join(__dirname, 'dist', 'index.html');
-  
-  // Check if the file exists
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    res.status(404).send('Page not found');
-  }
-});
+  app.listen(3000, () => {
+    console.log('SSR Server running at http://localhost:3000')
+  })
+}
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📁 Serving static files from: ${path.join(__dirname, 'dist')}`);
-  console.log(`🔒 Security headers enabled`);
-  console.log(`⚡ Caching optimized for performance`);
-});
+createServer().catch(console.error)
