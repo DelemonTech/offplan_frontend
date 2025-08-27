@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 
 interface SEOProps {
   title: string;
@@ -79,66 +79,65 @@ export const SEOHead = ({
     })
   };
 
-  // Pre-render meta tags for better SEO
-  useEffect(() => {
-    // Update document title immediately
+  // Immediate head updates for better SEO (runs before browser paint)
+  useLayoutEffect(() => {
+    // Immediate synchronous updates (no waiting for React render cycle)
+    const updateMetaTag = (selector: string, attribute: string, value: string, createIfMissing = true) => {
+      const element = document.querySelector(selector) as HTMLElement;
+      if (element) {
+        element.setAttribute(attribute, value);
+      } else if (createIfMissing) {
+        const newElement = document.createElement(selector.includes('[property=') ? 'meta' : selector.includes('link[') ? 'link' : 'meta');
+        if (selector.includes('[property=')) {
+          const property = selector.match(/property="([^"]+)"/)?.[1];
+          if (property) newElement.setAttribute('property', property);
+        } else if (selector.includes('[name=')) {
+          const name = selector.match(/name="([^"]+)"/)?.[1];
+          if (name) newElement.setAttribute('name', name);
+        } else if (selector.includes('[rel=')) {
+          const rel = selector.match(/rel="([^"]+)"/)?.[1];
+          if (rel) newElement.setAttribute('rel', rel);
+        }
+        newElement.setAttribute(attribute, value);
+        document.head.appendChild(newElement);
+      }
+    };
+
+    // Update title immediately
     document.title = fullTitle;
-    
+
     // Update meta description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute('content', fullDescription);
+    updateMetaTag('meta[name="description"]', 'content', fullDescription);
 
     // Update canonical URL
-    let canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (!canonicalLink) {
-      canonicalLink = document.createElement('link');
-      canonicalLink.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonicalLink);
+    updateMetaTag('link[rel="canonical"]', 'href', currentUrl);
+
+    // Update keywords
+    if (keywords) {
+      updateMetaTag('meta[name="keywords"]', 'content', keywords);
     }
-    canonicalLink.setAttribute('href', currentUrl);
 
     // Update Open Graph tags
-    const updateOGTag = (property: string, content: string) => {
-      let ogTag = document.querySelector(`meta[property="${property}"]`);
-      if (!ogTag) {
-        ogTag = document.createElement('meta');
-        ogTag.setAttribute('property', property);
-        document.head.appendChild(ogTag);
-      }
-      ogTag.setAttribute('content', content);
-    };
-
-    updateOGTag('og:title', fullTitle);
-    updateOGTag('og:description', description);
-    updateOGTag('og:image', fullImageUrl);
-    updateOGTag('og:url', currentUrl);
-    updateOGTag('og:type', type);
-    updateOGTag('og:site_name', siteName);
-    updateOGTag('og:locale', locale);
+    updateMetaTag('meta[property="og:title"]', 'content', fullTitle);
+    updateMetaTag('meta[property="og:description"]', 'content', description);
+    updateMetaTag('meta[property="og:image"]', 'content', fullImageUrl);
+    updateMetaTag('meta[property="og:url"]', 'content', currentUrl);
+    updateMetaTag('meta[property="og:type"]', 'content', type);
+    updateMetaTag('meta[property="og:site_name"]', 'content', siteName);
+    updateMetaTag('meta[property="og:locale"]', 'content', locale);
 
     // Update Twitter Card tags
-    const updateTwitterTag = (name: string, content: string) => {
-      let twitterTag = document.querySelector(`meta[name="${name}"]`);
-      if (!twitterTag) {
-        twitterTag = document.createElement('meta');
-        twitterTag.setAttribute('name', name);
-        document.head.appendChild(twitterTag);
-      }
-      twitterTag.setAttribute('content', content);
-    };
+    updateMetaTag('meta[name="twitter:card"]', 'content', 'summary_large_image');
+    updateMetaTag('meta[name="twitter:title"]', 'content', fullTitle);
+    updateMetaTag('meta[name="twitter:description"]', 'content', description);
+    updateMetaTag('meta[name="twitter:image"]', 'content', fullImageUrl);
 
-    updateTwitterTag('twitter:card', 'summary_large_image');
-    updateTwitterTag('twitter:title', fullTitle);
-    updateTwitterTag('twitter:description', description);
-    updateTwitterTag('twitter:image', fullImageUrl);
-    updateTwitterTag('twitter:site', '@offplanmarket');
+  }, [fullTitle, fullDescription, currentUrl, description, fullImageUrl, type, siteName, locale, keywords]);
 
-  }, [fullTitle, fullDescription, currentUrl, description, fullImageUrl, type, siteName, locale]);
+  // Debug logging (remove in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('SEOHead: Meta tags updated for', fullTitle);
+  }
 
   return (
     <Helmet>

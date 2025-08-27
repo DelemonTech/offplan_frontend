@@ -5,15 +5,65 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Title & description will be set dynamically via React Helmet -->
+  <!-- Default SEO Meta Tags (Immediate Loading) -->
+  <title>OffPlan Market - Premium Real Estate Properties | Dubai UAE</title>
+  <meta name="description" content="Discover premium off-plan properties in Dubai UAE. Connect with top real estate agents, find luxury homes, and invest in Dubai's thriving property market with OffPlan Market." />
+  <meta name="keywords" content="Dubai real estate, off-plan properties, property investment, UAE real estate, luxury homes, Dubai property market, real estate agents" />
+  <link rel="canonical" href="https://offplan.market/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://offplan.market/" />
+  <meta property="og:title" content="OffPlan Market - Premium Real Estate Properties | Dubai UAE" />
+  <meta property="og:description" content="Discover premium off-plan properties in Dubai UAE. Connect with top real estate agents, find luxury homes, and invest in Dubai's thriving property market." />
+  <meta property="og:image" content="/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png" />
+  <meta property="og:site_name" content="OffPlan Market" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://offplan.market/" />
+  <meta name="twitter:title" content="OffPlan Market - Premium Real Estate Properties | Dubai UAE" />
+  <meta name="twitter:description" content="Discover premium off-plan properties in Dubai UAE. Connect with top real estate agents, find luxury homes, and invest in Dubai's thriving property market." />
+  <meta name="twitter:image" content="/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png" />
+
+  <!-- Additional SEO Meta Tags -->
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="OffPlan Market" />
+  <meta name="geo.region" content="AE" />
+  <meta name="geo.placename" content="Dubai, UAE" />
+  <meta name="geo.position" content="25.2048;55.2708" />
+  <meta name="ICBM" content="25.2048, 55.2708" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "OffPlan Market",
+    "url": "https://offplan.market",
+    "logo": "https://offplan.market/favicon.ico",
+    "description": "Dubai's premier off-plan property platform connecting investors with verified agents and exclusive developer deals.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Dubai",
+      "addressRegion": "Dubai",
+      "addressCountry": "AE"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+971-52-952-9687",
+      "contactType": "Customer Service"
+    }
+  }
+  </script>
+
   <!--head-tags-->
-  
+  <!-- These will override the defaults when React Helmet loads -->
+
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/apple-touch-icon-180.png" />
-
-  <!-- Social preview defaults (can be overridden by React Helmet) -->
-  <meta property="og:image" content="/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png" />
 
   <!-- DNS Prefetch -->
   <link rel="dns-prefetch" href="//fonts.googleapis.com" />
