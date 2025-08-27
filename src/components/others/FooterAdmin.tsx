@@ -23,7 +23,7 @@ const FooterAdmin = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Handle form submission here
-        console.log('Inquiry form submitted');
+        // console.log('Inquiry form submitted');
     };
 
     return (

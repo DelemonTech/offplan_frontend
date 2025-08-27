@@ -34,8 +34,8 @@ const Footer = () => {
       return;
     }
     // TODO: Proceed with form submission logic (API call, etc)
-    console.log('Inquiry form submitted');
-    console.log('Recaptcha value:', recaptchaValue);
+    // console.log('Inquiry form submitted');
+    // console.log('Recaptcha value:', recaptchaValue);
   };
 
   return (

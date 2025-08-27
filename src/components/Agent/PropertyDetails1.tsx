@@ -29,7 +29,7 @@ const PropertyDetails1 = () => {
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    console.log('lng', lng);
+    // console.log('lng', lng);
 
     document.dir = lng === 'fa' ? 'rtl' : 'ltr';
     setIsOpen(false);

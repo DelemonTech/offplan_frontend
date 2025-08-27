@@ -65,14 +65,14 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log("Properties - new :",properties);
+  // console.log("Properties - new :",properties);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     document.dir = lng === 'fa' ? 'rtl' : 'ltr';
     setIsOpen(false);
   };
-  console.log("Status Name:", statusName);
+  // console.log("Status Name:", statusName);
   const [activeFilterKey, setActiveFilterKey] = useState('ready');
 
   const isRTL = i18n.dir() === 'rtl';
@@ -322,7 +322,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
       ...(statusName !== t('All') && { property_status: statusName }),
       // sales_status: '',
     };
-    console.log("statusName:", statusName);
+    // console.log("statusName:", statusName);
     if (statusName === t('All')) {
       setSelectedCity('');
       setSelectedNeighborhood('');
@@ -483,7 +483,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
 
   const handleShare = (project: any) => {
-    console.log("sub unit count:", project.subunit_count.label);
+    // console.log("sub unit count:", project.subunit_count.label);
     const agentName =
       agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
 
@@ -673,7 +673,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
         // Convert filter key to English status
         const englishStatus = getEnglishStatusFromFilterKey(activeFilterKey);
 
-        console.log("Fetching cities for filter key:", activeFilterKey, "-> English status:", englishStatus);
+        // console.log("Fetching cities for filter key:", activeFilterKey, "-> English status:", englishStatus);
 
         const response = await fetch(
           `${hostUrl}/properties/city/count/?status=${encodeURIComponent(englishStatus)}`
@@ -732,7 +732,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
       ...(englishStatus !== 'Total' && { property_status: englishStatus })
     };
 
-    console.log("Updated filters with English status:", updatedFilters);
+    // console.log("Updated filters with English status:", updatedFilters);
 
     setSelectedCity(city);
     setSearchFilters(updatedFilters);
@@ -869,7 +869,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
           setProperties(result.data.results || []);
           setNextPageUrl(result.data.next_page_url || null);
         }
-        console.log("Filters being sent:", filters);
+        // console.log("Filters being sent:", filters);
       } catch (error) {
         console.error('Error:', error);
       } finally {

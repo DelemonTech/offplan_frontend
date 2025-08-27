@@ -44,7 +44,7 @@ const AgentProfile = ({ agent, project }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Consultation request:', formData);
+    // console.log('Consultation request:', formData);
     // Handle form submission here
   };
 

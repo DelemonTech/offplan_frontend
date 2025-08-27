@@ -11,7 +11,7 @@ export default function RequestPlanModal({ unitName, onClose }) {
   
     const changeLanguage = (lng) => {
       i18n.changeLanguage(lng);
-      console.log('lng', lng);
+      // console.log('lng', lng);
   
       document.dir = lng === 'fa' ? 'rtl' : 'ltr';
       setIsOpen(false);
@@ -21,7 +21,7 @@ export default function RequestPlanModal({ unitName, onClose }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle sending floor plan here
-    console.log("Name:", name, "WhatsApp:", whatsapp);
+    // console.log("Name:", name, "WhatsApp:", whatsapp);
     onClose(); // Close modal after submission
   };
 

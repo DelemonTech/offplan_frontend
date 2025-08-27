@@ -7,7 +7,7 @@ export const handleWhatsApp = (project: any,
 ) => {
     const localizedAgentName =
       agent.name?.[i18n.language] || agent.name?.en || t("agent.name");
-    console.log("proj: ", project.title?.[i18n.language], localizedAgentName);
+    // console.log("proj: ", project.title?.[i18n.language], localizedAgentName);
     const translations = {
       en: `Hi ${localizedAgentName}! I'm interested in ${project.title?.[i18n.language] || project.title.en} in ${project.city?.name?.[i18n.language]}. Starting from AED ${formatAED(project.low_price)}. Can you share more details?
 

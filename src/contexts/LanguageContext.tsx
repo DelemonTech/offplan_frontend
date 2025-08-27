@@ -461,11 +461,17 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [language, setLanguageState] = useState<Language>('en');
 
   useEffect(() => {
-    const storedLang = localStorage.getItem("i18nextLng") as Language;
-    const initialLang = storedLang || 'en';
-    setLanguageState(initialLang);
-    document.dir = initialLang === 'ar' || initialLang === 'fa' ? 'rtl' : 'ltr';
-  }, []);
+  const storedLang = localStorage.getItem("i18nextLng");
+  // normalize (convert en-US → en, ar-SA → ar, etc.)
+  const normalizedLang = storedLang ? storedLang.split("-")[0] : null;
+
+  const initialLang: Language = (normalizedLang as Language) || "en";
+
+  setLanguageState(initialLang);
+  i18n.changeLanguage(initialLang);
+  document.dir = initialLang === "ar" || initialLang === "fa" ? "rtl" : "ltr";
+}, []);
+
 
   const setLanguage = (lang: Language) => {
     localStorage.setItem("i18nextLng", lang);

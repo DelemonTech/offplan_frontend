@@ -41,7 +41,7 @@ const RatingBox = ({ agent }) => {
   const displayRating = hoveredRating || rating;
 
   const localizedName = agent.name;
-  console.log('local',localizedName);
+  // console.log('local',localizedName);
   
 
   if (isSubmitted) {

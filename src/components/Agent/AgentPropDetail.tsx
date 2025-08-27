@@ -257,7 +257,7 @@ const AgentPropDetail = () => {
 
   // console.log(projectData.facilities);
   const amenities = projectData.facilities?.map((fac: any) => {
-    console.log(fac.name);
+    // console.log(fac.name);
     const facilityName = fac?.name || "Unknown";
     const iconInfo = facilityIconMap[facilityName] || { icon: "Sparkle", color: "text-gray-400" }; // Fallback for unknown facilities
     const IconComponent = LucideIcons[iconInfo.icon] || LucideIcons.Sparkle; // dynamically get the icon

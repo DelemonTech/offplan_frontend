@@ -111,11 +111,11 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
 
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                {/* <button className="md:hidden p-2">
+                <button className="md:hidden p-2">
                 <div className="w-6 h-0.5 bg-gray-600 mb-1"></div>
                 <div className="w-6 h-0.5 bg-gray-600 mb-1"></div>
                 <div className="w-6 h-0.5 bg-gray-600"></div>
-              </button> */}
+              </button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[280px] bg-white">
                 <div className="flex flex-col h-full">

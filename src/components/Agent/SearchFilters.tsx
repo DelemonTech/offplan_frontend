@@ -69,7 +69,7 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     setIsOpen(false);
   };
 
-  console.log("Cities:", citiesData);
+  // console.log("Cities:", citiesData);
 
 
   // get the selected city object

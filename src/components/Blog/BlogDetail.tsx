@@ -63,7 +63,7 @@ const BlogDetail: React.FC = () => {
 
     useEffect(() => {
         if (post?.meta_description) {
-            console.log("metaDesc updated:", post.meta_description);
+            // console.log("metaDesc updated:", post.meta_description);
         }
     }, [post]);
 
@@ -112,7 +112,7 @@ const BlogDetail: React.FC = () => {
                         // setMetaDesc(relatedData?.results?.meta_description);
 
                         // post.meta_description = data.meta_description;
-                        console.log("blog", data.meta_description);
+                        // console.log("blog", data.meta_description);
                         // setMetaDesc(data.meta_description);
                         // console.log("metaDesc", metaDesc);
                     }
@@ -275,7 +275,7 @@ const BlogDetail: React.FC = () => {
 
                         if (domToc.length > 0) {
                             setTableOfContents(domToc);
-                            console.log('Generated DOM-based TOC with', domToc.length, 'headers:', domToc);
+                            // console.log('Generated DOM-based TOC with', domToc.length, 'headers:', domToc);
                         }
                     }, 500);
                 } else if (toc.length > 0) {
@@ -503,7 +503,7 @@ const BlogDetail: React.FC = () => {
             try {
                 await navigator.share({ title, url });
             } catch (error) {
-                console.log('Error sharing:', error);
+                // console.log('Error sharing:', error);
                 // Fallback to clipboard
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(url);
@@ -587,7 +587,7 @@ const BlogDetail: React.FC = () => {
 
                 {!location.pathname.startsWith('/blogs/') && (
                     <>
-                        {console.log("SEO Description:", post?.meta_description)}
+                        {/* {console.log("SEO Description:", post?.meta_description)} */}
                         <SEOHead
                             title={post?.meta_title || post?.title || 'Blog'}
                             description={
