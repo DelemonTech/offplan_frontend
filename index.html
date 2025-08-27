@@ -5,7 +5,70 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Title & description will be set dynamically via React Helmet -->
+  <!-- Default SEO Meta Tags - Visible to crawlers immediately -->
+  <title>OffPlan Market - Premium Real Estate Properties | Dubai Off-Plan Investment</title>
+  <meta name="description" content="Discover premium off-plan properties and connect with top real estate agents. Find your dream home with OffPlan Market's comprehensive property listings in Dubai, UAE." />
+  <meta name="keywords" content="real estate, off-plan properties, property investment, real estate agents, luxury homes, property listings, Dubai real estate, UAE properties" />
+  <meta name="author" content="OffPlan Market" />
+  <meta name="robots" content="index, follow" />
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://offplan.market/" />
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="OffPlan Market - Premium Real Estate Properties" />
+  <meta property="og:description" content="Discover premium off-plan properties and connect with top real estate agents. Find your dream home with OffPlan Market's comprehensive property listings." />
+  <meta property="og:image" content="https://offplan.market/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png" />
+  <meta property="og:url" content="https://offplan.market/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="OffPlan Market" />
+  <meta property="og:locale" content="en_US" />
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OffPlan Market - Premium Real Estate Properties" />
+  <meta name="twitter:description" content="Discover premium off-plan properties and connect with top real estate agents. Find your dream home with OffPlan Market's comprehensive property listings." />
+  <meta name="twitter:image" content="https://offplan.market/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png" />
+  <meta name="twitter:site" content="@offplanmarket" />
+  
+  <!-- Additional SEO Meta Tags -->
+  <meta name="theme-color" content="#000000" />
+  <meta name="msapplication-TileColor" content="#000000" />
+  <meta name="format-detection" content="telephone=no" />
+  
+  <!-- Language and Region -->
+  <meta http-equiv="content-language" content="en" />
+  <meta name="geo.region" content="AE" />
+  <meta name="geo.placename" content="Dubai" />
+  <meta name="geo.position" content="25.2048;55.2708" />
+  <meta name="ICBM" content="25.2048, 55.2708" />
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "OffPlan Market - Premium Real Estate Properties",
+    "description": "Discover premium off-plan properties and connect with top real estate agents. Find your dream home with OffPlan Market's comprehensive property listings.",
+    "url": "https://offplan.market/",
+    "image": "https://offplan.market/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png",
+    "publisher": {
+      "@type": "Organization",
+      "name": "OffPlan Market",
+      "url": "https://offplan.market/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://offplan.market/favicon.ico"
+      }
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://offplan.market/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
   <!--head-tags-->
   
   <!-- Icons -->
@@ -34,7 +97,13 @@
   </script>
 </head>
 <body>
-  <div id="root"><!--ssr-outlet--></div>
-  <script type="module" src="/src/entry-client.jsx"></script>
+  <div id="root">
+    <!-- Default H1 for SEO - Visible to crawlers immediately -->
+    <h1 style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
+      Off-Plan Properties in UAE - Premium Real Estate Investment Platform
+    </h1>
+    <!--ssr-outlet-->
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
