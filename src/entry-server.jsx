@@ -20,19 +20,19 @@ export function render(url, context) {
   const helmetContext = {}
 
   const app = ReactDOMServer.renderToString(
-    <HelmetProvider context={helmetContext}>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <LanguageProvider>
-            <TooltipProvider>
-              <StaticRouter location={url} context={context}>
+    <StaticRouter location={url} context={context}>
+      <HelmetProvider context={helmetContext}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <LanguageProvider>
+              <TooltipProvider>
                 <App />
-              </StaticRouter>
-            </TooltipProvider>
-          </LanguageProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
+              </TooltipProvider>
+            </LanguageProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
+    </StaticRouter>
   )
 
   return { app, helmetContext }

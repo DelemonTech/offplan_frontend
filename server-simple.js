@@ -16,7 +16,10 @@ async function createServer() {
 
   app.use(vite.middlewares)
 
-    app.use('*', async (req, res, next) => {
+  // Serve static files
+  app.use(express.static('dist'))
+
+  app.use('*', async (req, res, next) => {
     const url = req.originalUrl
 
     try {
@@ -30,18 +33,18 @@ async function createServer() {
       template = await vite.transformIndexHtml(url, template)
 
       // Load server entry
-      const { render } = await vite.ssrLoadModule('/src/entry-server.jsx')
+      const { render } = await vite.ssrLoadModule('/src/entry-server-simple.jsx')
 
       // Create context for StaticRouter
       const context = {}
 
       // Render app HTML
-      const { app, helmetContext } = await render(url, context)
+      const { app: appHtml, helmetContext } = await render(url, context)
 
       // Inject app HTML and meta tags
       const { helmet } = helmetContext
       const html = template
-        .replace(`<!--ssr-outlet-->`, app)
+        .replace(`<!--ssr-outlet-->`, appHtml)
         .replace('<!--head-tags-->', 
           helmet.title.toString() + 
           helmet.meta.toString() + 
@@ -53,14 +56,26 @@ async function createServer() {
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
     } catch (e) {
       vite.ssrFixStacktrace(e)
+      console.error('SSR Error:', e.message)
       console.error(e.stack)
-      res.status(500).end(e.stack)
+      
+      // Fallback to client-side rendering
+      try {
+        let template = fs.readFileSync(
+          path.resolve(__dirname, 'index.html'),
+          'utf-8'
+        )
+        template = await vite.transformIndexHtml(url, template)
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(template)
+      } catch (fallbackError) {
+        res.status(500).end('Server Error')
+      }
     }
   })
 
   app.listen(3000, () => {
-    console.log('Server running at http://localhost:3000')
+    console.log('SSR Server running at http://localhost:3000')
   })
 }
 
-createServer()
+createServer().catch(console.error)

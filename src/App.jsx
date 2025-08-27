@@ -1,9 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 // import Login from "./pages/others/Login";
@@ -32,41 +30,33 @@ import Contact from "@/pages/Agent/Contact";
 import AboutPage from "@/pages/About";
 import ContactPage from "@/pages/Contact";
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <LanguageProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <ScrollToTop />
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/:username" element={<AgentPage />} />
-                <Route path="/:username/property-details" element={<PropertyDetails1 />} />
-                <Route path="/:username/unit-details/:unitId" element={<UnitDetails1 />} />
-                <Route 
-                  path="/:username/property-details/:propertyId/unit-details/:unitId" 
-                  element={<PropertyDetailed />} 
-                />
-                {/* <Route path="/:username/about" element={<About />} />
-                <Route path="/:username/contact" element={<Contact />} /> */}
-                <Route path="/blogs" element={<BlogListing/>}/>
-                <Route path="/blog/:slug" element={<BlogDetail/>}/>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </LanguageProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
+  <AuthProvider>
+    <LanguageProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/:username" element={<AgentPage />} />
+          <Route path="/:username/property-details" element={<PropertyDetails1 />} />
+          <Route path="/:username/unit-details/:unitId" element={<UnitDetails1 />} />
+          <Route 
+            path="/:username/property-details/:propertyId/unit-details/:unitId" 
+            element={<PropertyDetailed />} 
+          />
+          {/* <Route path="/:username/about" element={<About />} />
+          <Route path="/:username/contact" element={<Contact />} /> */}
+          <Route path="/blogs" element={<BlogListing/>}/>
+          <Route path="/blog/:slug" element={<BlogDetail/>}/>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </TooltipProvider>
+    </LanguageProvider>
+  </AuthProvider>
 );
 
 export default App;

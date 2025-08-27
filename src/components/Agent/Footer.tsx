@@ -97,6 +97,20 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-900 text-white rounded-t-2xl overflow-hidden">
+      {/* SEO Navigation Section - Visible to crawlers */}
+      <section className="bg-gray-800 py-4 px-6 border-b border-gray-700">
+        <div className="container mx-auto">
+          <nav className="flex flex-wrap justify-center gap-6 text-sm">
+            <a href="/" className="text-gray-300 hover:text-white transition-colors">Home</a>
+            <a href="/about" className="text-gray-300 hover:text-white transition-colors">About Us</a>
+            <a href="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</a>
+            <a href="/blogs" className="text-gray-300 hover:text-white transition-colors">Real Estate Blog</a>
+            <a href="/privacy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
+            <a href="/terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
+          </nav>
+        </div>
+      </section>
+      
       {/* AI Chat CTA Section */}
       <div className="bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 ">
         <div className="max-w-6xl mx-auto px-4 text-center">

@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
 
 interface SEOProps {
   title: string;
@@ -77,6 +78,67 @@ export const SEOHead = ({
       }
     })
   };
+
+  // Pre-render meta tags for better SEO
+  useEffect(() => {
+    // Update document title immediately
+    document.title = fullTitle;
+    
+    // Update meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute('content', fullDescription);
+
+    // Update canonical URL
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.setAttribute('href', currentUrl);
+
+    // Update Open Graph tags
+    const updateOGTag = (property: string, content: string) => {
+      let ogTag = document.querySelector(`meta[property="${property}"]`);
+      if (!ogTag) {
+        ogTag = document.createElement('meta');
+        ogTag.setAttribute('property', property);
+        document.head.appendChild(ogTag);
+      }
+      ogTag.setAttribute('content', content);
+    };
+
+    updateOGTag('og:title', fullTitle);
+    updateOGTag('og:description', description);
+    updateOGTag('og:image', fullImageUrl);
+    updateOGTag('og:url', currentUrl);
+    updateOGTag('og:type', type);
+    updateOGTag('og:site_name', siteName);
+    updateOGTag('og:locale', locale);
+
+    // Update Twitter Card tags
+    const updateTwitterTag = (name: string, content: string) => {
+      let twitterTag = document.querySelector(`meta[name="${name}"]`);
+      if (!twitterTag) {
+        twitterTag = document.createElement('meta');
+        twitterTag.setAttribute('name', name);
+        document.head.appendChild(twitterTag);
+      }
+      twitterTag.setAttribute('content', content);
+    };
+
+    updateTwitterTag('twitter:card', 'summary_large_image');
+    updateTwitterTag('twitter:title', fullTitle);
+    updateTwitterTag('twitter:description', description);
+    updateTwitterTag('twitter:image', fullImageUrl);
+    updateTwitterTag('twitter:site', '@offplanmarket');
+
+  }, [fullTitle, fullDescription, currentUrl, description, fullImageUrl, type, siteName, locale]);
 
   return (
     <Helmet>

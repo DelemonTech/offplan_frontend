@@ -159,7 +159,7 @@ const BlogListing: React.FC = () => {
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent leading-tight">
-            Latest Insights
+            Latest Real Estate Insights & Market Trends
           </h1>
           
           <p className="text-xl md:text-2xl lg:text-3xl text-gray-700 max-w-4xl mx-auto font-medium leading-relaxed">
