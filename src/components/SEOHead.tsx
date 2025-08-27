@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 interface SEOProps {
   title: string;
@@ -37,14 +37,14 @@ export const SEOHead = ({
   const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
   const fullImageUrl = image.startsWith('http') ? image : `${window.location.origin}${image}`;
   const currentUrl = canonical || window.location.href;
-  const fullDescription = description;
+  // No need for fullDescription since we're not modifying the description
 
   // Enhanced structured data
   const structuredData = {
     "@context": "https://schema.org",
     "@type": type === 'article' ? 'Article' : 'WebSite',
     "name": fullTitle,
-    "description": fullDescription,
+    "description": description,
     "url": currentUrl,
     "image": fullImageUrl,
     "publisher": {
@@ -79,60 +79,10 @@ export const SEOHead = ({
     })
   };
 
-  // Immediate head updates for better SEO (runs before browser paint)
+  // Update document title immediately when component mounts
   useLayoutEffect(() => {
-    // Immediate synchronous updates (no waiting for React render cycle)
-    const updateMetaTag = (selector: string, attribute: string, value: string, createIfMissing = true) => {
-      const element = document.querySelector(selector) as HTMLElement;
-      if (element) {
-        element.setAttribute(attribute, value);
-      } else if (createIfMissing) {
-        const newElement = document.createElement(selector.includes('[property=') ? 'meta' : selector.includes('link[') ? 'link' : 'meta');
-        if (selector.includes('[property=')) {
-          const property = selector.match(/property="([^"]+)"/)?.[1];
-          if (property) newElement.setAttribute('property', property);
-        } else if (selector.includes('[name=')) {
-          const name = selector.match(/name="([^"]+)"/)?.[1];
-          if (name) newElement.setAttribute('name', name);
-        } else if (selector.includes('[rel=')) {
-          const rel = selector.match(/rel="([^"]+)"/)?.[1];
-          if (rel) newElement.setAttribute('rel', rel);
-        }
-        newElement.setAttribute(attribute, value);
-        document.head.appendChild(newElement);
-      }
-    };
-
-    // Update title immediately
     document.title = fullTitle;
-
-    // Update meta description
-    updateMetaTag('meta[name="description"]', 'content', fullDescription);
-
-    // Update canonical URL
-    updateMetaTag('link[rel="canonical"]', 'href', currentUrl);
-
-    // Update keywords
-    if (keywords) {
-      updateMetaTag('meta[name="keywords"]', 'content', keywords);
-    }
-
-    // Update Open Graph tags
-    updateMetaTag('meta[property="og:title"]', 'content', fullTitle);
-    updateMetaTag('meta[property="og:description"]', 'content', description);
-    updateMetaTag('meta[property="og:image"]', 'content', fullImageUrl);
-    updateMetaTag('meta[property="og:url"]', 'content', currentUrl);
-    updateMetaTag('meta[property="og:type"]', 'content', type);
-    updateMetaTag('meta[property="og:site_name"]', 'content', siteName);
-    updateMetaTag('meta[property="og:locale"]', 'content', locale);
-
-    // Update Twitter Card tags
-    updateMetaTag('meta[name="twitter:card"]', 'content', 'summary_large_image');
-    updateMetaTag('meta[name="twitter:title"]', 'content', fullTitle);
-    updateMetaTag('meta[name="twitter:description"]', 'content', description);
-    updateMetaTag('meta[name="twitter:image"]', 'content', fullImageUrl);
-
-  }, [fullTitle, fullDescription, currentUrl, description, fullImageUrl, type, siteName, locale, keywords]);
+  }, [fullTitle]);
 
   // Debug logging (remove in production)
   if (process.env.NODE_ENV === 'development') {
@@ -143,7 +93,7 @@ export const SEOHead = ({
     <Helmet>
       {/* Basic Meta Tags */}
       <title>{fullTitle}</title>
-      <meta name="description" content={fullDescription} />
+      <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       {author && <meta name="author" content={author} />}
       <meta name="robots" content={robots} />
