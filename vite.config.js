@@ -1,20 +1,25 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import path from 'path';
-import ssr from 'vite-plugin-ssr/plugin' 
+import { resolve } from 'path'
 
-
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), ssr()],
+  plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'), // <-- maps @ to /src
-      '@components': path.resolve(__dirname, './src/components')
+      "@": resolve(__dirname, "./src"),
     },
   },
-  server: {
-    host: '0.0.0.0', // required to expose on LAN
-    port: 5173,      // optional: set fixed port
+  ssr: {
+    // SSR configuration
+    noExternal: ['react-helmet-async'],
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        server: resolve(__dirname, 'src/entry-server.jsx'),
+      },
+    },
   },
 })

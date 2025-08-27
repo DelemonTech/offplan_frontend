@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Title & description will be set dynamically via React Helmet -->
+  <!--head-tags-->
   
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico" />
@@ -33,11 +34,7 @@
   </script>
 </head>
 <body>
-  <div id="root">
-    <h1 style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
-      Off-Plan Properties in UAE
-    </h1>
-  </div>
+  <div id="root"><!--ssr-outlet--></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
