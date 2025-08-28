@@ -60,18 +60,13 @@ const BlogDetail: React.FC = () => {
     const lang = i18next.language || 'en';
     const hostUrl = import.meta.env.VITE_HOST_URL || '';
     // const [metaDesc, setMetaDesc] = useState();
-
-    useEffect(() => {
-        if (post?.meta_description) {
-            // console.log("metaDesc updated:", post.meta_description);
-        }
-    }, [post]);
-
+    const [notFound, setNotFound] = useState(false);
 
     useEffect(() => {
         async function loadBlog() {
             if (!slug) {
                 setError('No blog slug provided');
+                setNotFound(true); // NEW: Set 404 state
                 setLoading(false);
                 return;
             }
@@ -79,8 +74,17 @@ const BlogDetail: React.FC = () => {
             try {
                 setLoading(true);
                 setError(null);
+                setNotFound(false); // NEW: Reset 404 state
 
                 const res = await fetch(`${hostUrl}/api/blogs/${slug}/`);
+
+                // FIXED: Proper 404 handling
+                if (res.status === 404) {
+                    setNotFound(true);
+                    setError('Blog post not found');
+                    setLoading(false);
+                    return;
+                }
 
                 if (!res.ok) {
                     throw new Error(`Failed to load blog: ${res.status} ${res.statusText}`);
@@ -89,13 +93,11 @@ const BlogDetail: React.FC = () => {
                 const data = await res.json();
 
                 if (!data || !data.id) {
+                    setNotFound(true);
                     throw new Error('Blog data is empty or invalid');
                 }
 
                 setPost(data);
-                // console.log("data",data);
-
-
 
                 // Load related posts
                 try {
@@ -109,21 +111,15 @@ const BlogDetail: React.FC = () => {
                                 .slice(0, 3)
                             : [];
                         setRelatedPosts(related);
-                        // setMetaDesc(relatedData?.results?.meta_description);
-
-                        // post.meta_description = data.meta_description;
-                        // console.log("blog", data.meta_description);
-                        // setMetaDesc(data.meta_description);
-                        // console.log("metaDesc", metaDesc);
                     }
                 } catch (relatedError) {
                     console.warn('Failed to load related posts:', relatedError);
-                    // Don't fail the entire component if related posts fail
                 }
 
             } catch (error) {
                 console.error('Error loading blog:', error);
                 setError(error instanceof Error ? error.message : 'Failed to load blog');
+                setNotFound(true); // NEW: Set 404 state on error
             } finally {
                 setLoading(false);
             }
@@ -187,6 +183,38 @@ const BlogDetail: React.FC = () => {
         }
     };
 
+    const generateStructuredData = () => {
+        if (!post) return null;
+
+        const structuredData = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": getSafeTitle(),
+            "description": post.meta_description || (post.content ? post.content.substring(0, 160).replace(/<[^>]*>/g, '') : ''),
+            "image": post.image ? (post.image.startsWith('http') ? post.image : `${window.location.origin}${post.image}`) : null,
+            "author": {
+                "@type": "Person",
+                "name": post.author || "Unknown Author"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Offplan Market",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": `${window.location.origin}${logoPath}`
+                }
+            },
+            "datePublished": post.created_at,
+            "dateModified": post.created_at,
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": window.location.href
+            },
+            "url": window.location.href
+        };
+
+        return JSON.stringify(structuredData);
+    };
 
     const decodeHtmlEntities = (str: string): string => {
         if (!str || typeof str !== 'string') return '';
@@ -531,6 +559,46 @@ const BlogDetail: React.FC = () => {
     const content = getSafeContent();
     const decodedContent = decodeHtmlEntities(content);
 
+    if (notFound) {
+        // Set document title for 404 pages
+        useEffect(() => {
+            document.title = 'Page Not Found - Offplan Market';
+            // NEW: Add proper meta tags for 404 pages
+            const metaRobots = document.querySelector('meta[name="robots"]');
+            if (metaRobots) {
+                metaRobots.setAttribute('content', 'noindex, nofollow');
+            } else {
+                const newMetaRobots = document.createElement('meta');
+                newMetaRobots.name = 'robots';
+                newMetaRobots.content = 'noindex, nofollow';
+                document.head.appendChild(newMetaRobots);
+            }
+        }, []);
+
+         return (
+            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+                <Header logo={logoPath} />
+                <div className="container mx-auto py-12 px-4 text-center">
+                    <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-12 border border-white/20 max-w-md mx-auto">
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-4">
+                            404 - Article Not Found
+                        </h1>
+                        <p className="text-gray-600 mb-6">
+                            The blog post you're looking for doesn't exist or has been moved.
+                        </p>
+                        <button
+                            onClick={() => navigate('/blogs')}
+                            className="px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white !text-white rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                        >
+                            Back to Blog
+                        </button>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
@@ -585,7 +653,7 @@ const BlogDetail: React.FC = () => {
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
                 </div>
 
-                {!location.pathname.startsWith('/blogs/') && (
+                {/* {!location.pathname.startsWith('/blog/') && ( */}
                     <>
                         {/* {console.log("SEO Description:", post?.meta_description)} */}
                         <SEOHead
@@ -598,7 +666,7 @@ const BlogDetail: React.FC = () => {
                             canonical={`${window.location.origin}${location.pathname}`}
                         />
                     </>
-                )}
+                {/* )} */}
 
 
                 <Header logo={logoPath} />
