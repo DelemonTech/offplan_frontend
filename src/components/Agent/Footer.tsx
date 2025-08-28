@@ -110,7 +110,7 @@ const Footer = () => {
           </nav>
         </div>
       </section>
-      
+
       {/* AI Chat CTA Section */}
       <div className="bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 ">
         <div className="max-w-6xl mx-auto px-4 text-center">
@@ -135,13 +135,30 @@ const Footer = () => {
                 {t("UAE's premier off-plan property platform. Trusted for transparency, smart search & expert support.")}
               </p>
               <ul className="space-y-3 text-sm">
-                {[t('About Us'), t('Contact'), t('Careers'), t('Blogs')].map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium">
-                      {link}
-                    </a>
-                  </li>
-                ))}
+                <li>
+                  <a
+                    href="/about"
+                    className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                  >
+                    {t('About Us')}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/contact"
+                    className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                  >
+                    {t('Contact')}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/blogs"
+                    className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                  >
+                    {t('Blogs')}
+                  </a>
+                </li>
               </ul>
             </div>
           </FooterSection>
@@ -149,13 +166,45 @@ const Footer = () => {
           {/* Quick Links */}
           <FooterSection title={t("Quick Links")} id="quicklinks">
             <ul className="space-y-3 text-sm">
-              {[t('FAQs'), t('Privacy Policy'), t('Terms of Service'), t('Chat with AI'), t('Help Center'), t('Contact Support')].map((link) => (
+              {/* {[t('FAQs'), t('Privacy Policy'), t('Terms of Service'), t('Chat with AI'), t('Help Center'), t('Contact Support')].map((link) => (
                 <li key={link}>
                   <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium">
                     {link}
                   </a>
                 </li>
-              ))}
+              ))} */}
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                >
+                  {t('FAQs')}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                >
+                  {t('Privacy Policy')}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/contact"
+                  className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                >
+                  {t('Contact Support')}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://offplan.market/sitemap.xml"
+                  className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                >
+                  {t('Sitemap')}
+                </a>
+              </li>
             </ul>
           </FooterSection>
 
@@ -174,7 +223,7 @@ const Footer = () => {
               ].map((property) => (
                 <li key={property}>
                   {/* <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium"> */}
-                    {property}
+                  {property}
                   {/* </a> */}
                 </li>
               ))}
