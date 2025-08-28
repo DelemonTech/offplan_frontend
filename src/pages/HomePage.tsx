@@ -39,8 +39,8 @@ const HomePage = () => {
     <div className="min-h-screen bg-background" data-component="homepage">
       {/* Enhanced SEO Head with comprehensive meta tags */}
       <SEOHead
-        title="OffPlan Market - Premium Off-Plan Properties in UAE | Dubai Real Estate"
-        description="Discover premium off-plan properties in Dubai and UAE. Connect with top real estate agents, explore luxury developments, and find your dream home with OffPlan Market's comprehensive property listings and expert guidance."
+        title="OffPlan Market - Premium Off-Plan Properties in UAE"
+        description="Discover premium off-plan properties in Dubai and UAE. Connect with top real estate agents and find your dream home with OffPlan Market's property listings."
         keywords="off-plan properties UAE, Dubai real estate, property investment, luxury homes Dubai, real estate agents UAE, new developments Dubai, off-plan apartments, Dubai properties for sale, UAE property market, real estate investment Dubai"
         canonical="https://offplan.market/"
         type="website"
