@@ -58,14 +58,14 @@ const HomePage = () => {
       </div>
 
       {/* Visible H1 for users */}
-      <div className="text-center py-8">
+      {/* <div className="text-center py-8">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Off-Plan Properties in UAE
         </h1>
         <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto px-4">
           Your gateway to premium real estate investments and luxury living
         </p>
-      </div>
+      </div> */}
 
       {/* Main content sections */}
       <Header />
