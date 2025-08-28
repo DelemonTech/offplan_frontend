@@ -1,10 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
+import ssr from 'vite-plugin-ssr/plugin';
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), ssr()],
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
@@ -15,11 +17,6 @@ export default defineConfig({
     noExternal: ['react-helmet-async'],
   },
   build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        server: resolve(__dirname, 'src/entry-server.jsx'),
-      },
-    },
+    
   },
 })
