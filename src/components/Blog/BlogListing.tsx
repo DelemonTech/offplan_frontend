@@ -34,26 +34,45 @@ const BlogListing: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [currentPage, setCurrentPage] = useState(1);
-  const blogsPerPage = 9;
+  const [currentPage, setCurrentPage] = useState(() => {
+  const saved = sessionStorage.getItem('blogPage');
+    return saved ? Number(saved) : 1;
+  });
+  const [nextPage, setNextPage] = useState<string | null>(null);
+  const [prevPage, setPrevPage] = useState<string | null>(null);
+  const [count, setCount] = useState(0);
+
+  const blogsPerPage = 12;
+  console.log('currentpage: ', currentPage);
+  const start = (currentPage - 1) * blogsPerPage + 1;
+  const end = Math.min(currentPage * blogsPerPage, count);
+
+  useEffect(() => {
+    sessionStorage.setItem('blogPage', currentPage.toString());
+  }, [currentPage]);
+
   const lang = i18next.language;
   const hostUrl = import.meta.env.VITE_HOST_URL
 
-  useEffect(() => {
-    async function loadBlogs() {
-      try {
-        const res = await fetch(`${hostUrl}/api/blogs/`);
-        const data = await res.json();
-        setBlogs(data.results || data);
-        setFilteredBlogs(data.results || data);
-      } catch (error) {
-        console.error('Error loading blogs:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadBlogs();
-  }, []);
+  const fetchBlogs = async (url = `${hostUrl}/api/blogs/`) => {
+  setLoading(true);
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    setBlogs(data.results || []);  // use paginated results
+    setNextPage(data.next);
+    setPrevPage(data.previous);
+    setCount(data.count);
+  } catch (error) {
+    console.error("Error loading blogs:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+useEffect(() => {
+  fetchBlogs();
+}, []);
 
   useEffect(() => {
     let filtered = blogs;
@@ -82,7 +101,7 @@ const BlogListing: React.FC = () => {
   // Pagination
   const indexOfLastBlog = currentPage * blogsPerPage;
   const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
-  const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
+  const currentBlogs = filteredBlogs.slice(start - 1, end );
   const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage);
 
   const handleReadMore = (slug: string) => {
@@ -93,6 +112,18 @@ const BlogListing: React.FC = () => {
   const handleContactAgent = () => {
     window.open('https://offplan.market#agents', '_blank');
   };
+
+  const handlePrev = async () => {
+  if (!prevPage) return;
+  await fetchBlogs(prevPage);  // wait for API
+  setCurrentPage(prev => prev - 1);
+};
+
+const handleNext = async () => {
+  if (!nextPage) return;
+  await fetchBlogs(nextPage);
+  setCurrentPage(prev => prev + 1);
+};
 
   if (loading) {
     return (
@@ -249,7 +280,7 @@ const BlogListing: React.FC = () => {
         <div className="mb-8">
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg border border-white/20 inline-block">
             <p className="text-gray-700 font-medium">
-              Showing <span className="text-purple-600 font-bold">{indexOfFirstBlog + 1}-{Math.min(indexOfLastBlog, filteredBlogs.length)}</span> of <span className="text-pink-600 font-bold">{filteredBlogs.length}</span> articles
+              Showing <span className="text-purple-600 font-bold">{blogs.length}</span> of <span className="text-pink-600 font-bold">{count}</span> articles
             </p>
           </div>
         </div>
@@ -273,41 +304,33 @@ const BlogListing: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-3 mb-16">
-                <button
-                  className="px-6 py-3 bg-white/80 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white/90 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 text-gray-700 font-medium"
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(prev => prev - 1)}
-                >
-                  Previous
-                </button>
-                
-                <div className="flex gap-2">
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button
-                      key={i + 1}
-                      className={`px-4 py-3 rounded-2xl transition-all duration-300 transform hover:scale-105 font-medium ${
-                        currentPage === i + 1
-                          ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white shadow-xl'
-                          : 'bg-white/80 backdrop-blur-md border border-white/20 text-gray-700 hover:bg-white/90 hover:shadow-lg'
-                      }`}
-                      onClick={() => setCurrentPage(i + 1)}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-                </div>
-                
-                <button
-                  className="px-6 py-3 bg-white/80 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white/90 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 text-gray-700 font-medium"
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage(prev => prev + 1)}
-                >
-                  Next
-                </button>
-              </div>
-            )}
+            {(nextPage || prevPage) && (
+  <div className="flex justify-center items-center gap-3 mb-16">
+    {/* Previous Button */}
+    <button
+      className="px-6 py-3 bg-white/80 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white/90 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 text-gray-700 font-medium"
+      disabled={!prevPage}
+      onClick={handlePrev}
+    >
+      Previous
+    </button>
+
+    {/* Page Info */}
+    <div className="px-4 py-3 bg-white/80 backdrop-blur-md border border-white/20 rounded-2xl text-gray-700 font-medium">
+      Showing {blogs.length} of {count}
+    </div>
+
+    {/* Next Button */}
+    <button
+      className="px-6 py-3 bg-white/80 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white/90 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 text-gray-700 font-medium"
+      disabled={!nextPage}
+      onClick={handleNext}
+    >
+      Next
+    </button>
+  </div>
+)}
+
           </>
         ) : (
           <div className="text-center py-20">
