@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, MessageCircle, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { TrendingUp, MessageCircle, Play, Pause, Volume2, VolumeX, Calendar } from 'lucide-react';
 import HeroVideo from '@/static/Unlock Dubai’s Best Off-Plan Deals with Nasser Dehghan (2).mp4';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
@@ -141,6 +141,17 @@ const HeroSection = ({ agent, project }) => {
                   {/* {i18n.language === 'fa' ? agent.fa_name : agent.name} */}
                   {agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}
                 </span>
+              </Button>
+
+              <Button
+                onClick={() => {
+                  window.open("https://calendly.com/kalhorsahar9/30min", '_blank');
+                }}
+                size="lg"
+                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+              >
+                <Calendar size={16} className="mr-2" />
+                {t('Schedule a meeting')}
               </Button>
             </div>
 
