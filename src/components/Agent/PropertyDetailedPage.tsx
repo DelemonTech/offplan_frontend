@@ -989,7 +989,14 @@ const PropertyDetailedPage = () => {
             </button> */}
 
             {showCallbackModal && (
-              <RequestCallBackModal onClose={() => setShowCallbackModal(false)} />
+              <a
+                            href={agent.calendly_url || ''} target="_blank"
+                            className="flex-1"
+                          >
+                            <button className="w-full bg-blue-400 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-600">
+                              <div className='flex flex-row gap-2 justify-center'><LucideIcons.Calendar className='w-5 h-5' /> {t("Book online Meeting")}</div>
+                            </button>
+                          </a>
             )}
           </div>
 

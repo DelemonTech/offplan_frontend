@@ -139,6 +139,7 @@ const Footer = () => {
                   <a
                     href="/about"
                     className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                    id='about-us'
                   >
                     {t('About Us')}
                   </a>
@@ -147,6 +148,7 @@ const Footer = () => {
                   <a
                     href="/contact"
                     className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                    id='contact'
                   >
                     {t('Contact')}
                   </a>
@@ -155,6 +157,7 @@ const Footer = () => {
                   <a
                     href="/blogs"
                     className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                    id='blogs'
                   >
                     {t('Blogs')}
                   </a>
@@ -177,6 +180,7 @@ const Footer = () => {
                 <a
                   href="#"
                   className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                  id='faqs'
                 >
                   {t('FAQs')}
                 </a>
@@ -185,6 +189,7 @@ const Footer = () => {
                 <a
                   href="#"
                   className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                  id='privacy-policy'
                 >
                   {t('Privacy Policy')}
                 </a>
@@ -193,6 +198,7 @@ const Footer = () => {
                 <a
                   href="/contact"
                   className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                  id='contact-support'
                 >
                   {t('Contact Support')}
                 </a>
@@ -201,6 +207,7 @@ const Footer = () => {
                 <a
                   href="https://offplan.market/sitemap.xml"
                   className="text-gray-300 hover:text-pink-400 transition-colors font-medium"
+                  id='sitemap'
                 >
                   {t('Sitemap')}
                 </a>
@@ -212,18 +219,18 @@ const Footer = () => {
           <FooterSection title={t("Popular Properties")} id="properties">
             <ul className="space-y-3 text-sm">
               {[
-                t('Apartments in Dubai Marina'),
-                t('Villas in JVC'),
-                t('Offices in Business Bay'),
-                t('Shops in Downtown'),
-                t('Penthouses in DIFC'),
-                t('Townhouses in Dubailand'),
-                t('Warehouses in Jebel Ali'),
-                t('Retail in The Springs')
+                { id: "dubai-marina", label: t('Apartments in Dubai Marina') },
+                { id: "jvc-villas", label: t('Villas in JVC') },
+                { id: "business-bay-offices", label: t('Offices in Business Bay') },
+                { id: "downtown-shops", label: t('Shops in Downtown') },
+                { id: "difc-penthouses", label: t('Penthouses in DIFC') },
+                { id: "dubailand-townhouses", label: t('Townhouses in Dubailand') },
+                { id: "jebel-ali-warehouses", label: t('Warehouses in Jebel Ali') },
+                { id: "springs-retail", label: t('Retail in The Springs') }
               ].map((property) => (
-                <li key={property}>
+                <li key={property.id}>
                   {/* <a href="#" className="text-gray-300 hover:text-pink-400 transition-colors font-medium"> */}
-                  {property}
+                  {property.label}
                   {/* </a> */}
                 </li>
               ))}

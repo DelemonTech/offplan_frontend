@@ -1,7 +1,11 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+<<<<<<< Updated upstream
 import { TrendingUp, MessageCircle, Play, Pause, Volume2, VolumeX, Calendar } from 'lucide-react';
+=======
+import { TrendingUp, MessageCircle, Play, Pause, Volume2, VolumeX, Target, Calendar } from 'lucide-react';
+>>>>>>> Stashed changes
 import HeroVideo from '@/static/Unlock Dubai’s Best Off-Plan Deals with Nasser Dehghan (2).mp4';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
@@ -61,7 +65,7 @@ const HeroSection = ({ agent, project }) => {
           }}
         >
           <source src={agent.introduction_video_url} type="video/mp4" />
-          <source src="/path-to-your-video.webm" type="video/webm" />
+          {/* <source src="/path-to-your-video.webm" type="video/webm" /> */}
           {/* Fallback image */}
           {/* <img 
             src="/lovable-uploads/8eae98ca-021a-42e1-b6ed-4146adf704b1.png" 
@@ -114,7 +118,7 @@ const HeroSection = ({ agent, project }) => {
             </div>
 
             {/* CTA Button - Single Button for Mobile */}
-            <div className="flex justify-center items-center pt-3 lg:pt-6 px-4 gap-3">
+            <div className="flex flex-col lg:flex-row justify-center items-center pt-3 lg:pt-6 px-4 gap-5">
               <Button
                 onClick={() => {
                   const el = document.getElementById('featured-projects');
@@ -123,24 +127,29 @@ const HeroSection = ({ agent, project }) => {
                   }
                 }}
                 size="lg"
-                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 min-w-[240px]"
               >
                 <TrendingUp size={16} className="mr-2" />
                 {t('Explore Projects')}
               </Button>
 
-              {/* Secondary CTA - Desktop Only */}
               <Button
-                onClick={()=>handleWhatsApp(project,agent,t,i18n)}
+                onClick={() => handleWhatsApp(project, agent, t, i18n)}
                 variant="outline"
                 size="lg"
-                className="hidden lg:inline-flex ml-4 border-2 border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg transition-all duration-300"
+                className="border-2 border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg transition-all duration-300 min-w-[240px]"
               >
                 <MessageCircle size={16} className="mr-2" />
-                {t('Chat with')} <span>
-                  {/* {i18n.language === 'fa' ? agent.fa_name : agent.name} */}
-                  {agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}
-                </span>
+                {t('Chat with')} <span>{agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}</span>
+              </Button>
+
+              <Button
+                onClick={() => { window.open(agent.calendly_url, '_blank'); }}
+                size="lg"
+                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 min-w-[240px]"
+              >
+                <Calendar size={16} className="mr-2" />
+                {t('Book online Meeting')}
               </Button>
 
               <Button
@@ -154,6 +163,7 @@ const HeroSection = ({ agent, project }) => {
                 {t('Schedule a meeting')}
               </Button>
             </div>
+
 
             {/* Trust Indicators - Desktop Only */}
             <div className="hidden lg:flex flex-wrap justify-center items-center gap-6 pt-8">

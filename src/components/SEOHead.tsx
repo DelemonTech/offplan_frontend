@@ -80,13 +80,13 @@ export const SEOHead = ({
   };
 
   // Update document title immediately when component mounts
-  useLayoutEffect(() => {
-    document.title = fullTitle;
-  }, [fullTitle]);
+  // useLayoutEffect(() => {
+  //   document.title = fullTitle;
+  // }, [fullTitle]);
 
   // Debug logging (remove in production)
   if (process.env.NODE_ENV === 'development') {
-    console.log('SEOHead: Meta tags updated for', fullTitle);
+    // console.log('SEOHead: Meta tags updated for', fullTitle);
   }
 
   return (
