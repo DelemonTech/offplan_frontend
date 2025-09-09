@@ -29,6 +29,7 @@ import About from "@/pages/Agent/About";
 import Contact from "@/pages/Agent/Contact";
 import AboutPage from "@/pages/About";
 import ContactPage from "@/pages/Contact";
+import EmaarDeveloperProfile from "@/pages/Emaar";
 
 const App = () => (
   <AuthProvider>
@@ -50,6 +51,7 @@ const App = () => (
           />
           {/* <Route path="/:username/about" element={<About />} />
           <Route path="/:username/contact" element={<Contact />} /> */}
+          <Route path="/emaar" element={<EmaarDeveloperProfile />} />
           <Route path="/blogs" element={<BlogListing/>}/>
           <Route path="/blog/:slug" element={<BlogDetail/>}/>
           <Route path="*" element={<NotFound />} />
