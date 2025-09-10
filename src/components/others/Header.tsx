@@ -11,6 +11,8 @@ import exp from 'constants';
 export const Header = () => {
     const { t, i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
+    const [isDevelopersOpen, setIsDevelopersOpen] = useState(false);
+    const developersRef = useRef(null);
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
         document.dir = lng === 'fa' ? 'rtl' : 'ltr';
@@ -27,6 +29,13 @@ export const Header = () => {
         hour12: true
     });
 
+    const developersItems = [
+    { href: "/emaar", label: "EMAAR" },
+    { href: "/damac", label: "DAMAC" },
+    { href: "/azizi", label: "AZIZI" },
+    { href: "/object1", label: "OBJECT 1" },
+   ];
+
     const handleLogout = () => {
         logout();
         navigate('/');
@@ -41,8 +50,15 @@ export const Header = () => {
             ) {
                 setIsMobileOverlayVisible(false);
             }
+            // Handle developers dropdown outside click
+            if (
+                developersRef.current &&
+                !(developersRef.current as any).contains(event.target)
+            ) {
+                setIsDevelopersOpen(false);
+            }
         };
-        if (isMobileOverlayVisible) {
+        if (isMobileOverlayVisible || isDevelopersOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         } else {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -50,7 +66,7 @@ export const Header = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isMobileOverlayVisible]);
+    }, [isMobileOverlayVisible, isDevelopersOpen]);
 
     const handleAvatarClick = () => {
         if (window.innerWidth < 768) {

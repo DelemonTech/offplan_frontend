@@ -30,6 +30,9 @@ import Contact from "@/pages/Agent/Contact";
 import AboutPage from "@/pages/About";
 import ContactPage from "@/pages/Contact";
 import EmaarDeveloperProfile from "@/pages/Emaar";
+import DamacDeveloperProfile from "@/pages/Damac";
+import AziziDeveloperProfile from "@/pages/Azizi";
+import Object1DeveloperProfile from "@/pages/Object1";
 
 const App = () => (
   <AuthProvider>
@@ -52,6 +55,9 @@ const App = () => (
           {/* <Route path="/:username/about" element={<About />} />
           <Route path="/:username/contact" element={<Contact />} /> */}
           <Route path="/emaar" element={<EmaarDeveloperProfile />} />
+          <Route path="/damac" element={<DamacDeveloperProfile />} />
+          <Route path="/azizi" element={<AziziDeveloperProfile />} />
+          <Route path="/object1" element={<Object1DeveloperProfile />} />
           <Route path="/blogs" element={<BlogListing/>}/>
           <Route path="/blog/:slug" element={<BlogDetail/>}/>
           <Route path="*" element={<NotFound />} />

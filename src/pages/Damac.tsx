@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, Award, Users, Globe, MapPin, Star, Sparkles, ExternalLink, Trophy, Shield, Target, TrendingUp, CheckCircle, Calendar, Heart, Home, Camera, Play, ChevronRight, ArrowRight, Phone, Mail, Clock, Eye, Download, Share2, Check } from 'lucide-react';
+import { Building2, Award, Users, Globe, MapPin, Star, Sparkles, ExternalLink, Trophy, Shield, Target, TrendingUp, CheckCircle, Calendar, Heart, Home, Camera, Play, ChevronRight, ArrowRight, Phone, Mail, Clock, Eye, Download, Share2, Check, Crown, Gem, Palette } from 'lucide-react';
 import Header from '@/components/others/HomeHeader';
 import Footer from "@/components/Agent/Footer";
-import emaar from '@/assets/HomePage/Emaar-properties.png';
+import damac from '@/assets/HomePage/DAMAC_Properties.png';
 
-const EmaarDeveloperProfile = () => {
+const DamacDeveloperProfile = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [currentSlide, setCurrentSlide] = useState(0);
-   const [copied, setCopied] = useState(false);
-   const [shareLoading, setShareLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
 
-  const handleShare = async () => {
+   const handleShare = async () => {
     setShareLoading(true);
     
     const shareData = {
@@ -111,58 +111,58 @@ ${shareData.text}
   const featuredProjects = [
     {
       id: 1,
-      name: "Burj Khalifa",
-      image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&h=400&fit=crop",
-      location: "Downtown Dubai",
-      status: "Completed",
-      type: "Mixed-Use Tower",
-      year: "2010",
-      units: "900+ Units"
-    },
-    {
-      id: 2,
-      name: "Dubai Creek Harbour",
-      image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop",
-      location: "Dubai Creek",
-      status: "Under Development",
-      type: "Master Community",
-      year: "2025",
-      units: "40,000+ Units"
-    },
-    {
-      id: 3,
-      name: "Arabian Ranches",
-      image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=600&h=400&fit=crop",
-      location: "Dubai",
-      status: "Completed",
-      type: "Villa Community",
-      year: "2004",
-      units: "4,000+ Villas"
-    },
-    {
-      id: 4,
-      name: "Dubai Hills Estate",
-      image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop",
-      location: "Mohammed Bin Rashid City",
+      name: "DAMAC Hills 2",
+      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop",
+      location: "Dubailand",
       status: "Under Development",
       type: "Master Community",
       year: "2024",
-      units: "18,000+ Units"
+      units: "10,000+ Units"
+    },
+    {
+      id: 2,
+      name: "Aykon City",
+      image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop",
+      location: "Sheikh Zayed Road",
+      status: "Under Development",
+      type: "Mixed-Use Development",
+      year: "2025",
+      units: "3,000+ Units"
+    },
+    {
+      id: 3,
+      name: "DAMAC Lagoons",
+      image: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=600&h=400&fit=crop",
+      location: "Dubailand",
+      status: "Launched",
+      type: "Waterfront Community",
+      year: "2026",
+      units: "8,000+ Units"
+    },
+    {
+      id: 4,
+      name: "Marina Heights",
+      image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop",
+      location: "Dubai Marina",
+      status: "Completed",
+      type: "Residential Tower",
+      year: "2019",
+      units: "500+ Units"
     }
   ];
 
   const handleExploreProperties = () => {
-    // window.open('https://properties.emaar.com/', '_blank');
-    window.open('https://offplan.market/sahar', '_blank');
+    // window.open('https://damacproperties.com/', '_blank');
+    window.open('https://offplan.market/erfani', '_blank');
   };
 
   const handleContactAgent = () => {
-    window.open('https://offplan.market/sahar', '_blank');
+    window.open('https://offplan.market/erfani', '_blank');
   };
 
   const handleWhatsApp = () => {
-    const message = `Hi Sahar! I'm interested in Offplan market EMAAR properties. Can you share more details?`
-    const whatsappUrl = `https://wa.me/971529529687?text=${encodeURIComponent(message)}`;
+    const message = `Hi Mohammed Erfani! I'm interested in Offplan market DAMAC properties. Can you share more details?`;
+    const whatsappUrl = `https://wa.me/971509467111?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -175,7 +175,7 @@ ${shareData.text}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
-        <Header />
+      <Header />
       {/* Background Effects */}
       <div className="mt-10 opacity-30">
         <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
@@ -186,10 +186,10 @@ ${shareData.text}
       <div className="container mx-auto px-4 relative z-10 py-8">
         {/* Developer Header */}
         <div
-        className="rounded-3xl shadow-2xl p-8 mb-8 border border-white/20 relative overflow-hidden bg-cover bg-center"
-        style={{
-            backgroundImage: "url('https://cdn.emaar.com/wp-content/uploads/2025/08/MONTIVA_DCH_HOMEPAGE_BANNER_MOBILE_1080x1920.jpg')",
-        }}
+          className="rounded-3xl shadow-2xl p-8 mb-8 border border-white/20 relative overflow-hidden bg-cover bg-center"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&h=600&fit=crop')",
+          }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-purple-50/50 to-pink-50/50"></div>
           
@@ -197,36 +197,36 @@ ${shareData.text}
             {/* Developer Logo & Basic Info */}
             <div className="text-center lg:text-left">
               <div className="w-32 h-32 bg-gradient-to-r from-white to-white rounded-3xl flex items-center justify-center mx-auto lg:mx-0 mb-6 shadow-2xl">
-                <img src={emaar} />
+                <div className="text-orange-600 font-bold text-2xl"><img src={damac} alt="DAMAC Properties" className='rounded-3xl'/></div>
               </div>
               <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent">
-                EMAAR Properties
+                DAMAC Properties
               </h1>
-              <p className="bg-gradient-to-r from-blue-700 to-red-500 text-lg mb-4 bg-clip-text text-transparent font-semibold">Premium Developer Since 1997</p>
+              <p className="bg-gradient-to-r from-blue-700 to-red-500 text-lg mb-4 bg-clip-text text-transparent font-semibold">Luxury Developer Since 2002</p>
               <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                 ))}
-                <span className="text-gray-600 ml-2">(4.8/5)</span>
+                <span className="text-gray-600 ml-2">(4.7/5)</span>
               </div>
             </div>
 
             {/* Key Statistics */}
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-white/60 rounded-2xl shadow-lg">
-                <div className="text-3xl font-bold text-blue-600 mb-1">27+</div>
+                <div className="text-3xl font-bold text-blue-600 mb-1">22+</div>
                 <div className="text-gray-600 text-sm">Years Experience</div>
               </div>
               <div className="text-center p-4 bg-white/60 rounded-2xl shadow-lg">
-                <div className="text-3xl font-bold text-purple-600 mb-1">100+</div>
+                <div className="text-3xl font-bold text-purple-600 mb-1">80+</div>
                 <div className="text-gray-600 text-sm">Projects Delivered</div>
               </div>
               <div className="text-center p-4 bg-white/60 rounded-2xl shadow-lg">
-                <div className="text-3xl font-bold text-pink-600 mb-1">50K+</div>
-                <div className="text-gray-600 text-sm">Units Delivered</div>
+                <div className="text-3xl font-bold text-pink-600 mb-1">44K+</div>
+                <div className="text-gray-600 text-sm">Homes Delivered</div>
               </div>
               <div className="text-center p-4 bg-white/60 rounded-2xl shadow-lg">
-                <div className="text-3xl font-bold text-green-600 mb-1">15+</div>
+                <div className="text-3xl font-bold text-green-600 mb-1">12+</div>
                 <div className="text-gray-600 text-sm">Countries</div>
               </div>
             </div>
@@ -253,7 +253,7 @@ ${shareData.text}
               
               <div className="flex gap-2">
                 <button className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-white/80 text-gray-700 rounded-xl hover:shadow-lg transition-all duration-300 font-medium border border-gray-200"
-                onClick={() => {window.open('https://properties.emaar.com/wp-content/uploads/2025/03/Emaar-Properties-IR-2024_English_F.pdf', '_blank');}}>
+                onClick={() => {window.open('https://prod-cdn.damacproperties.com/uploads/magazine/luxlife-full-mag-eng.pdf', '_blank');}}>
                   <Download size={18} />
                   Download Brochure
                 </button>
@@ -318,16 +318,16 @@ ${shareData.text}
                     <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
                       <Calendar className="text-white" size={24} />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">1997</div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">2002</div>
                     <div className="text-gray-600 text-sm">Established</div>
                   </div>
                   
                   <div className="text-center p-6 bg-white/60 rounded-2xl shadow-lg">
                     <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Globe className="text-white" size={24} />
+                      <Crown className="text-white" size={24} />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">Global</div>
-                    <div className="text-gray-600 text-sm">Presence</div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">Luxury</div>
+                    <div className="text-gray-600 text-sm">Focus</div>
                   </div>
                   
                   <div className="text-center p-6 bg-white/60 rounded-2xl shadow-lg">
@@ -348,9 +348,9 @@ ${shareData.text}
                 </div>
 
                 <p className="text-gray-700 text-lg leading-relaxed">
-                  Emaar Properties is Dubai's most valuable and actively traded real estate development company. 
-                  Since 1997, we have delivered world-class developments that have become global landmarks, 
-                  including the iconic Burj Khalifa and the vibrant Downtown Dubai community.
+                  DAMAC Properties is a leading luxury real estate developer in the Middle East. Since 2002, 
+                  we have delivered over 44,000 homes and have a development portfolio of over 44,000 units 
+                  at various stages of progress worldwide. Known for our luxury developments and partnerships with world-renowned brands.
                 </p>
               </div>
             </div>
@@ -427,7 +427,7 @@ ${shareData.text}
             
             <div className="relative z-10">
               <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                All Projects by Emaar
+                All Projects by DAMAC
               </h2>
               
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -442,7 +442,9 @@ ${shareData.text}
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-xl font-bold text-gray-900">{project.name}</h3>
                         <span className={`px-2 py-1 text-xs rounded-full ${
-                          project.status === 'Completed' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'
+                          project.status === 'Completed' ? 'bg-green-100 text-green-600' : 
+                          project.status === 'Launched' ? 'bg-blue-100 text-blue-600' :
+                          'bg-orange-100 text-orange-600'
                         }`}>
                           {project.status}
                         </span>
@@ -466,7 +468,7 @@ ${shareData.text}
                   onClick={handleExploreProperties}
                   className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-white rounded-2xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 font-semibold"
                 >
-                  View All Emaar Properties
+                  View All DAMAC Properties
                   <ExternalLink size={20} />
                 </button>
               </div>
@@ -490,24 +492,24 @@ ${shareData.text}
                     <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Trophy className="text-white" size={28} />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">World's Tallest Building</h3>
-                    <p className="text-gray-600 text-sm">Burj Khalifa - 828 meters</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Developer of the Year</h3>
+                    <p className="text-gray-600 text-sm">Arabian Business Awards</p>
                   </div>
                   
                   <div className="text-center p-6 bg-white/60 rounded-2xl shadow-lg">
                     <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Award className="text-white" size={28} />
+                      <Crown className="text-white" size={28} />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">World's Largest Mall</h3>
-                    <p className="text-gray-600 text-sm">The Dubai Mall</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Luxury Developer</h3>
+                    <p className="text-gray-600 text-sm">Middle East Excellence</p>
                   </div>
                   
                   <div className="text-center p-6 bg-white/60 rounded-2xl shadow-lg">
                     <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Star className="text-white" size={28} />
+                      <Gem className="text-white" size={28} />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Best Developer</h3>
-                    <p className="text-gray-600 text-sm">Multiple Years Winner</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Design Excellence</h3>
+                    <p className="text-gray-600 text-sm">International Property Awards</p>
                   </div>
                 </div>
               </div>
@@ -526,32 +528,32 @@ ${shareData.text}
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex-shrink-0"></div>
                     <div>
-                      <div className="font-semibold text-gray-900">1997 - Company Founded</div>
-                      <div className="text-gray-600 text-sm">Emaar Properties established in Dubai</div>
+                      <div className="font-semibold text-gray-900">2002 - Company Founded</div>
+                      <div className="text-gray-600 text-sm">DAMAC Properties established in Dubai</div>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex-shrink-0"></div>
                     <div>
-                      <div className="font-semibold text-gray-900">2004 - Emirates Hills Launch</div>
-                      <div className="text-gray-600 text-sm">First luxury villa community</div>
+                      <div className="font-semibold text-gray-900">2013 - London Expansion</div>
+                      <div className="text-gray-600 text-sm">First international project launched</div>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex-shrink-0"></div>
                     <div>
-                      <div className="font-semibold text-gray-900">2010 - Burj Khalifa Completed</div>
-                      <div className="text-gray-600 text-sm">World's tallest building opened</div>
+                      <div className="font-semibold text-gray-900">2017 - Brand Partnerships</div>
+                      <div className="text-gray-600 text-sm">Collaborations with Versace, Fendi, and Bugatti</div>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex-shrink-0"></div>
                     <div>
-                      <div className="font-semibold text-gray-900">Present - Global Expansion</div>
-                      <div className="text-gray-600 text-sm">Operating in 15+ countries worldwide</div>
+                      <div className="font-semibold text-gray-900">Present - Innovation Leader</div>
+                      <div className="text-gray-600 text-sm">Pioneer in luxury themed developments</div>
                     </div>
                   </div>
                 </div>
@@ -566,21 +568,21 @@ ${shareData.text}
             
             <div className="relative z-10">
               <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                About Emaar Properties
+                About DAMAC Properties
               </h2>
               
               <div className="space-y-8">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Company Overview</h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    Emaar Properties PJSC is a global property development and management company headquartered in the United Arab Emirates. 
-                    The company is listed on the Dubai Financial Market and is one of the world's most valuable and actively traded 
-                    real estate development companies.
+                    DAMAC Properties is a leading luxury real estate developer in the Middle East with a strong presence 
+                    across the region. Since 2002, we have delivered over 44,000 homes and have a development portfolio 
+                    of over 44,000 units at various stages of progress worldwide.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
-                    Since its establishment in 1997, Emaar has delivered homes to more than 100,000 customers in the UAE and 
-                    international markets. The company's development portfolio includes high-rise towers, luxury homes, 
-                    communities, commercial centers, hotels, and shopping malls.
+                    The company is known for iconic developments and partnerships with world-renowned fashion and 
+                    automotive brands including Versace, Fendi, Bugatti, and Trump. DAMAC Properties trades on 
+                    the London Stock Exchange and is valued at over $2.5 billion.
                   </p>
                 </div>
 
@@ -590,19 +592,19 @@ ${shareData.text}
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <CheckCircle className="text-green-500" size={20} />
-                        <span className="text-gray-700">Excellence in Quality</span>
+                        <span className="text-gray-700">Luxury & Excellence</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <CheckCircle className="text-green-500" size={20} />
-                        <span className="text-gray-700">Customer-Centric Approach</span>
+                        <span className="text-gray-700">Innovation in Design</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <CheckCircle className="text-green-500" size={20} />
-                        <span className="text-gray-700">Innovation & Sustainability</span>
+                        <span className="text-gray-700">Brand Partnerships</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <CheckCircle className="text-green-500" size={20} />
-                        <span className="text-gray-700">Community Development</span>
+                        <span className="text-gray-700">Customer Satisfaction</span>
                       </div>
                     </div>
                   </div>
@@ -612,14 +614,42 @@ ${shareData.text}
                     <div className="space-y-2 text-gray-700">
                       <p>• United Arab Emirates (Headquarters)</p>
                       <p>• Saudi Arabia</p>
-                      <p>• Egypt</p>
-                      <p>• Turkey</p>
-                      <p>• India</p>
-                      <p>• Pakistan</p>
-                      <p>• Syria</p>
+                      <p>• Qatar</p>
                       <p>• Jordan</p>
                       <p>• Lebanon</p>
-                      <p>• Morocco</p>
+                      <p>• United Kingdom</p>
+                      <p>• Oman</p>
+                      <p>• Iraq</p>
+                      <p>• Turkey</p>
+                      <p>• Canada</p>
+                      <p>• Thailand</p>
+                      <p>• Maldives</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Brand Partnerships</h4>
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    DAMAC Properties is renowned for its exclusive partnerships with world-famous luxury brands, 
+                    creating unique themed developments that offer residents an unparalleled lifestyle experience.
+                  </p>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="text-center p-4 bg-white/60 rounded-xl shadow-md">
+                      <Palette className="w-8 h-8 mx-auto mb-2 text-purple-600" />
+                      <div className="font-semibold text-sm">Versace</div>
+                    </div>
+                    <div className="text-center p-4 bg-white/60 rounded-xl shadow-md">
+                      <Crown className="w-8 h-8 mx-auto mb-2 text-amber-600" />
+                      <div className="font-semibold text-sm">Fendi</div>
+                    </div>
+                    <div className="text-center p-4 bg-white/60 rounded-xl shadow-md">
+                      <Trophy className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+                      <div className="font-semibold text-sm">Bugatti</div>
+                    </div>
+                    <div className="text-center p-4 bg-white/60 rounded-xl shadow-md">
+                      <Building2 className="w-8 h-8 mx-auto mb-2 text-orange-600" />
+                      <div className="font-semibold text-sm">Trump</div>
                     </div>
                   </div>
                 </div>
@@ -630,13 +660,12 @@ ${shareData.text}
                     className="inline-flex items-center gap-3 px-8 py-3 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white rounded-2xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 font-semibold text-lg"
                   >
                     <Phone size={24} />
-                    Connect with Emaar Agent Sahar
+                    Connect with DAMAC Agent Erfani
                     <ArrowRight size={20} />
                   </button>
                 </div>
               </div>
             </div>
-          {/* </main> */}
           </div>
         )}
       </div>
@@ -645,4 +674,4 @@ ${shareData.text}
   );
 };
 
-export default EmaarDeveloperProfile;
+export default DamacDeveloperProfile;

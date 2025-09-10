@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import emaar from '@/assets/HomePage/Emaar-properties.png';
 import damac from '@/assets/HomePage/DAMAC_Properties.png';
 import sobha from '@/assets/HomePage/Sobha-Dubai.png';
+import object1 from '@/assets/HomePage/object-1.jpg';
 import nakheel from '@/assets/HomePage/Nakheel.png';
 import azizi from '@/assets/HomePage/azizi.png';
 import meraas from '@/assets/HomePage/Meraas_Properties.png';
@@ -14,6 +15,8 @@ const TrustedDevelopers = () => {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
   const sectionRef = useRef(null);
   const logoRefs = useRef([]);
+
+  const hostUrl = window.location.href;
 
   // Mouse tracking
   useEffect(() => {
@@ -60,12 +63,13 @@ const TrustedDevelopers = () => {
   }, [visibleLogos]);
 
   const developers = [
-    { name: "EMAAR", logo: `${emaar}`, color: "from-blue-500 to-indigo-600"},
-    { name: "DAMAC", logo: `${damac}`, color: "from-purple-500 to-pink-600" },
-    { name: "SOBHA", logo: `${sobha}` , color: "from-green-500 to-emerald-600" },
-    { name: "NAKHEEL", logo: `${nakheel}` , color: "from-orange-500 to-red-600" },
-    { name: "AZIZI", logo: `${azizi}`, color: "from-cyan-500 to-blue-600" },
-    { name: "MERAAS", logo:`${meraas}`, color: "from-violet-500 to-purple-600" }
+    { name: "EMAAR", logo: `${emaar}`, color: "from-blue-500 to-indigo-600", slug: "emaar" },
+    { name: "DAMAC", logo: `${damac}`, color: "from-purple-500 to-pink-600", slug: "damac" },
+    { name: "AZIZI", logo: `${azizi}`, color: "from-cyan-500 to-blue-600", slug: "azizi" },
+    { name: "OBJECT 1", logo: `${object1}`, color: "from-purple-500 to-pink-600", slug: "object1" },
+    // { name: "SOBHA", logo: `${sobha}` , color: "from-green-500 to-emerald-600", slug: "#" },
+    { name: "NAKHEEL", logo: `${nakheel}` , color: "from-orange-500 to-red-600", slug: "#" },
+    { name: "MERAAS", logo:`${meraas}`, color: "from-violet-500 to-purple-600", slug: "#" }
   ];
 
   return (
@@ -150,7 +154,7 @@ const TrustedDevelopers = () => {
                   ${visibleLogos.includes(index) ? 'animate-card-slide-up opacity-100' : 'opacity-0 translate-y-10'}
                 `}
                 // style={{ animationDelay: `${index * 50}ms` }}
-              >
+              ><a href={`${hostUrl}${developer.slug}`} target="_blank" rel="noopener noreferrer">
                 <div className="relative">
                   {/* Logo Container */}
                   <div className={`
@@ -160,6 +164,7 @@ const TrustedDevelopers = () => {
                     group-hover:shadow-purple-500/25
                   `}>
                     <div className="flex items-center justify-center w-full h-full p-2">
+                      
                       <img
                         src={`${developer.logo}`} // Add `logoSrc` field in developers array
                         alt={`${developer.name} Logo`}
@@ -215,6 +220,7 @@ const TrustedDevelopers = () => {
                     ))}
                   </div>
                 </div>
+                </a>
               </div>
             ))}
           </div>

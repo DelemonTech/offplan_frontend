@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut, User, Bell, X } from 'lucide-react';
+import { LogOut, User, Bell, X, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,9 @@ import logoPath from '@/assets/OFFPLAN_MARKET_female.png';
 export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDevelopersOpen, setIsDevelopersOpen] = useState(false);
+  const developersRef = useRef(null);
+  
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     document.dir = lng === 'fa' ? 'rtl' : 'ltr';
@@ -46,6 +49,14 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
     { href: `/blogs`, label: t('Blogs') },
   ];
 
+  // Developers dropdown items
+  const developersItems = [
+    { href: "/emaar", label: "EMAAR" },
+    { href: "/damac", label: "DAMAC" },
+    { href: "/azizi", label: "AZIZI" },
+    { href: "/object1", label: "OBJECT 1" },
+  ];
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -54,8 +65,16 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
       ) {
         setIsMobileOverlayVisible(false);
       }
+      
+      // Handle developers dropdown outside click
+      if (
+        developersRef.current &&
+        !(developersRef.current as any).contains(event.target)
+      ) {
+        setIsDevelopersOpen(false);
+      }
     };
-    if (isMobileOverlayVisible) {
+    if (isMobileOverlayVisible || isDevelopersOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -63,13 +82,14 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isMobileOverlayVisible]);
+  }, [isMobileOverlayVisible, isDevelopersOpen]);
 
   const handleAvatarClick = () => {
     if (window.innerWidth < 768) {
       setIsMobileOverlayVisible(true);
     }
   };
+  
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'auto';
     return () => {
@@ -106,6 +126,41 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                   {link.label}
                 </Link>
               ))}
+              
+              {/* Developers Dropdown */}
+              <div 
+                ref={developersRef}
+                className="relative"
+                onMouseEnter={() => setIsDevelopersOpen(true)}
+                onMouseLeave={() => setIsDevelopersOpen(false)}
+               >
+                <button
+                  onClick={() => setIsDevelopersOpen(!isDevelopersOpen)}
+                  className="flex items-center space-x-1 text-gray-600 hover:text-pink-500 transition-colors font-medium"
+                >
+                  <span>{t('Developers')}</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${isDevelopersOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {/* Dropdown Menu - Removed mt-2 gap and positioned directly */}
+                {isDevelopersOpen && (
+                  <div className="absolute top-full left-0 pt-1 w-48 z-50">
+                    <div className="bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                      {developersItems.map((item) => (
+                        <Link
+                          key={item.label}
+                          to={item.href}
+                          className="block px-4 py-2 text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-colors"
+                          onClick={() => setIsDevelopersOpen(false)}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
               <LanguageSwitcher />
             </nav>
 
@@ -124,11 +179,6 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                     <Link to="/" className="md:hidden">
                       <img src={logoPath} alt="Logo" className="h-8" />
                     </Link>
-                    {/* <SheetClose asChild>
-                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                      <X size={20} className="text-gray-600" />
-                    </button>
-                  </SheetClose> */}
                   </div>
 
                   {/* Navigation Links */}
@@ -145,6 +195,23 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                         </Link>
                       ))}
 
+                      {/* Mobile Developers Section */}
+                      <div className="py-2">
+                        <div className="px-4 py-2 text-gray-900 font-medium border-b border-gray-200">
+                          {t('Developers')}
+                        </div>
+                        {developersItems.map((item) => (
+                          <Link
+                            key={item.label}
+                            to={item.href}
+                            className="block py-2 px-8 text-gray-600 hover:text-pink-500 hover:bg-pink-50 rounded-lg transition-all duration-200 text-sm"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+
                       {/* Language Switcher */}
                       <LanguageSwitcher mobile />
                     </div>
@@ -159,26 +226,6 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                 </div>
               </SheetContent>
             </Sheet>
-
-            {/* <div className="flex items-center space-x-4">
-              <Button variant="outline" className="hidden md:inline-flex">
-                {t("Login")}
-              </Button>
-              <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hidden md:inline-flex font-semibold text-white">
-                {t("Get Started")}
-              </Button>
-              <div className="md:hidden">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="text-gray-700 focus:outline-none"
-                  aria-label="Toggle Menu"
-                >
-                  {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-              </div>
-
-            </div> */}
-
           </div>
           {isOpen && (
             <>
@@ -187,43 +234,7 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                 onClick={() => setIsOpen(false)}
                 className="fixed inset-0 bg-black/20 z-40"
               ></div>
-
-              {/* Dropdown menu below header */}
-              {/* <div
-                className="fixed top-16 left-4 right-4 bg-white z-50 shadow-md px-4 pb-4 flex flex-col space-y-3 rounded-lg overflow-auto inline-flex max-w-[calc(100vw-2rem)]"> */}
-              {/* {menuItems.map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => {
-                      setIsOpen(false);
-                      // Add route navigation here if needed
-                    }}
-                    className="text-gray-700 hover:text-[#6084ee] hover:text-500 text-base text-left"
-                  >
-                    <div className='flex items-center space-x-2'>{item.icon}<span>{item.label}</span></div>
-                  </button>
-                ))} */}
-              {/* <hr /> */}
-              {/* Language on Mobile */}
-              {/* <div>
-                  <p className="text-gray-600 text-sm mb-1">🌐 Language</p>
-                  <button
-                    onClick={() => changeLanguage('en')}
-                    className="block w-full text-left px-2 py-1 text-sm hover:bg-gray-100"
-                  >
-                    {t("English (UK)")}
-                  </button>
-                  <button
-                    onClick={() => changeLanguage('fa')}
-                    className="block w-full text-left px-2 py-1 text-sm hover:bg-gray-100"
-                  >
-                    {t("Farsi (Persian)")}
-                  </button>
-                </div> */}
-              {/* <LanguageSwitcher mobile /> */}
-              {/* </div> */}
             </>
-
           )}
         </div>
       </header>
@@ -238,13 +249,8 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
             >
               <X />
             </button>
-
-            {/* <p className="text-sm font-medium mb-4">Dubai, UAE</p> */}
-
-
           </div>
         </div>
-
       )}
     </>
   );
