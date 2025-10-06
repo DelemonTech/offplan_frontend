@@ -401,7 +401,7 @@ const PropertyDetailedPage = () => {
       <Header logo={logoPath} />
       <Button
         variant="outline"
-        className="relative m-4 border border-gradient-to-r from-pink-700 via-purple-700 to-blue-500 rounded-full px-4 py-2 hover:bg-gradient-to-r hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 hover:text-white transition-colors duration-300"
+        className="relative top-16 m-4 border border-gradient-to-r from-pink-700 via-purple-700 to-blue-500 rounded-full px-4 py-2 hover:bg-gradient-to-r hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 hover:text-white transition-colors duration-300"
         onClick={() => navigate(-1)}
       >
         <div className="flex items-center gap-2">
@@ -422,7 +422,7 @@ const PropertyDetailedPage = () => {
           Back to Project
         </Button> */}
 
-        <div className="relative rounded-xl overflow-hidden shadow-lg mb-8 mt-1">
+        <div className="relative top-14 rounded-xl overflow-hidden shadow-lg mb-8 mt-1">
           <div className="relative h-[350px] lg:h-[450px]">
             <img
               src={projectData.cover}
@@ -476,7 +476,7 @@ const PropertyDetailedPage = () => {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Heading */}
           <h2 className="flex items-center text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />

@@ -1194,6 +1194,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
                         key={project.id}
                         className="group hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden border-0 shadow-lg bg-white/95 backdrop-blur-sm cursor-pointer relative hover:scale-[1.02] animate-fade-in"
                       // onClick={() => handleProjectSummary(project)}
+                        onClick={() => handleViewDetails(project.id)}
                       >
                         <div className="relative overflow-hidden">
                           {/* Top Left - Units Left */}

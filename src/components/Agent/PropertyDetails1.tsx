@@ -707,7 +707,7 @@ const PropertyDetails1 = () => {
       <Header logo={logoPath} />
       <Button
         variant="outline"
-        className="relative m-4 border border-gradient-to-r from-pink-700 via-purple-700 to-blue-500 rounded-full px-4 py-2 hover:bg-gradient-to-r hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 hover:text-white transition-colors duration-300"
+        className="relative top-16 m-4 border border-gradient-to-r from-pink-700 via-purple-700 to-blue-500 rounded-full px-4 py-2 hover:bg-gradient-to-r hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 hover:text-white transition-colors duration-300 z-30"
         onClick={() => navigate(-1)}
       >
         <div className="flex items-center gap-2">
@@ -725,7 +725,7 @@ const PropertyDetails1 = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative rounded-3xl overflow-hidden mb-5 shadow-lg h-[500px]"
+        className="relative top-14 rounded-3xl overflow-hidden mb-5 shadow-lg h-[500px]"
       >
         {/* Top Left - Units Left */}
         <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-400 to-orange-700 text-white text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-20">
@@ -871,7 +871,7 @@ const PropertyDetails1 = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/*  */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Heading */}
           <h2 className="flex items-center font-sans text-lg sm:text-xl font-medium text-gray-600 italic mb-2 py-2 gap-2">
             <Compass className="w-5 h-5 text-primary-500" />
