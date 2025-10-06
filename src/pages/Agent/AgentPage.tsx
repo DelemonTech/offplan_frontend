@@ -270,7 +270,7 @@ const AgentPageContent = () => {
         type="profile"
         image={agentData?.profile_image_url || '/favicon.ico'}
       />
-      <h1 className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden">{agentData?.name?.en || agentData.username}</h1>
+      <h1 className="sr-only">{agentData?.name?.en || agentData.username}</h1>
       <Header logo={logoPath} />
       <HeroSection agent={agentData} project={properties[0]} />
       <FeaturedProjects

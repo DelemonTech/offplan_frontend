@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Menu, LayoutDashboard, Users, Building2 } from "lucide-react";
 import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { DialogTitle } from "@radix-ui/react-dialog"
 import logoPath from '@/assets/OFFPLAN_MARKET_female.png';
 
 export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => {
@@ -22,7 +24,8 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
   
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    document.dir = lng === 'fa' ? 'rtl' : 'ltr';
+    document.documentElement.dir = lng === 'fa' || lng === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lng;
     setIsOpen(false);
     window.location.reload();
   };
@@ -98,25 +101,26 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
   }, [isOpen]);
 
   useEffect(() => {
-    document.dir = i18n.language === 'fa' ? 'rtl' : 'ltr';
-  }, [i18n.language]);
+  document.documentElement.dir = i18n.language === 'fa' ? 'rtl' : 'ltr';
+}, [i18n.language]);
+
 
   return (
     <>
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-slate-200" dir='ltr'>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <div className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent">
                 <img
                   src="/lovable-uploads/11b303ba-efcb-483b-86ae-d82efdb9c016.png"
                   alt="Off Plan Market"
-                  className="h-10 max-w-[60vw] w-auto object-contain"
+                  className="h-10 w-auto max-w-full object-contain"
                 />
               </div>
             </div>
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center gap-8">
               {navigationLinks.map((link) => (
                 <Link
                   key={link.label}
@@ -172,7 +176,10 @@ export const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string
                 <div className="w-6 h-0.5 bg-gray-600"></div>
               </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] bg-white">
+              <SheetContent side={i18n.language === 'fa' ? 'left' : 'right'} className="w-[280px] bg-white">
+                <DialogTitle>
+                  <VisuallyHidden>Mobile Navigation</VisuallyHidden>
+                </DialogTitle>
                 <div className="flex flex-col h-full">
                   {/* Header with close button */}
                   <div className="flex items-center justify-between p-4 border-b">

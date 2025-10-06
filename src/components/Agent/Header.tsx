@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, Globe, X, ChevronDown } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { DialogTitle } from "@radix-ui/react-dialog"
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/Agent/LanguageSwitcher';
 import maleLogo from '@/assets/OFFPLAN_MARKET_male.png';
@@ -68,7 +70,7 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
     }, [isMobileOverlayVisible, isDevelopersOpen]);
  
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50" dir='ltr'>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to={`/${username}`} className="flex items-center space-x-2">
@@ -139,7 +141,10 @@ const Header = ({ logo = "/OFFPLAN_MARKET_default.png" }: { logo?: string }) => 
                 <div className="w-6 h-0.5 bg-gray-600"></div>
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] bg-white">
+            <SheetContent side={i18n.language === 'fa' ? 'left' : 'right'} className="w-[280px] bg-white">
+              <DialogTitle>
+                <VisuallyHidden>Mobile Navigation</VisuallyHidden>
+              </DialogTitle>
               <div className="flex flex-col h-full">
                 {/* Header with close button */}
                 <div className="flex items-center justify-between p-4 border-b">

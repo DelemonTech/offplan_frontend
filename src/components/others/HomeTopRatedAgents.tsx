@@ -486,8 +486,9 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
           `}></div>
 
           <div className="relative w-full h-full bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full border-4 border-white/30 flex items-center justify-center shadow-2xl overflow-hidden">
-            <img src={agent.avatar} alt="profile"></img>
+            <img src={agent.avatar} alt="profile" className="w-full h-full object-cover rounded-full" />
           </div>
+
 
 
           {/* Status indicator with pulse animation */}

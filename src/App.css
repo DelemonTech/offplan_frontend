@@ -5,6 +5,27 @@
   text-align: center;
 }
 
+* {
+  max-width: 100%;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+.container {
+  overflow-x: hidden;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

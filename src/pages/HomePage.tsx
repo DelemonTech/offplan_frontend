@@ -9,6 +9,7 @@ import HowItWorks from "@/components/others/HomeHowItWorks";
 import AgentRecruitment from "@/components/others/HomeAgentRecruitment";
 import Footer from "@/components/Agent/Footer";
 import { SEOHead } from "@/components/SEOHead";
+import CookieBanner from "@/components/others/CookieBanner";
 
 const HomePage = () => {
   useEffect(() => {
@@ -48,7 +49,7 @@ const HomePage = () => {
       />
 
       {/* SEO-friendly H1 tag - moved to top for better SEO */}
-      <div className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden">
+      <div className="sr-only">
         {/* <h1>OffPlan Market - Premium Off-Plan Properties in UAE and Dubai</h1> */}
         <p>
           Discover the best off-plan properties in Dubai and across the UAE. 
@@ -79,6 +80,8 @@ const HomePage = () => {
         <AgentRecruitment />
       </main>
       <Footer />
+
+      <CookieBanner />
 
       {/* Additional structured data for better SEO */}
       <script
