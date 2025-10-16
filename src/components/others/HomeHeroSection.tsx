@@ -214,7 +214,7 @@ const HeroSection = () => {
                   filter: 'drop-shadow(0 0 30px rgba(147, 51, 234, 0.8))'
                 }}
               >
-                {t("Off-Plan Properties")}
+                <h1>{t("Off-Plan Properties")}</h1>
               </span>
               {/* Animated underline */}
               {/* <div className="absolute bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 animate-underline-grow rounded-full blur-sm"></div>
