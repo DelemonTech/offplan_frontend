@@ -657,7 +657,7 @@ const BlogDetail: React.FC = () => {
                     <>
                         {/* {console.log("SEO Description:", post?.meta_description)} */}
                         <SEOHead
-                            title={post?.meta_title || post?.title || 'Blog'}
+                            title={post?.meta_title || 'Blog'}
                             description={
                                 post?.meta_description ||
                                 (post?.content ? post.content.substring(0, 160).replace(/<[^>]*>/g, '') : 'Blog article')
