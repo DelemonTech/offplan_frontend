@@ -90,6 +90,8 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.3",
+    "vite-plugin-html-meta": "^1.0.3",
+    "vite-plugin-meta-tags": "^0.1.4",
     "xml-formatter": "^3.6.6",
     "zod": "^3.23.8"
   },
