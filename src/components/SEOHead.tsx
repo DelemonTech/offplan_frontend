@@ -34,7 +34,7 @@ export const SEOHead = ({
   articleSection,
   articleTags,
 }: SEOProps) => {
-  const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+  const fullTitle = title.includes(siteName) ? title : `${title}`;
   const fullImageUrl = image.startsWith('http') ? image : `${window.location.origin}${image}`;
   const currentUrl = canonical || window.location.href;
   // No need for fullDescription since we're not modifying the description
