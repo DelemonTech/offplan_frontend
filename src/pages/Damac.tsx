@@ -197,7 +197,7 @@ ${shareData.text}
             {/* Developer Logo & Basic Info */}
             <div className="text-center lg:text-left">
               <div className="w-32 h-32 bg-gradient-to-r from-white to-white rounded-3xl flex items-center justify-center mx-auto lg:mx-0 mb-6 shadow-2xl">
-                <div className="text-orange-600 font-bold text-2xl"><img src={damac} alt="DAMAC Properties" className='rounded-3xl'/></div>
+                <div className="text-orange-600 font-bold text-2xl"><img src={damac} alt="DAMAC Properties" className="w-24 h-24 object-contain"/></div>
               </div>
               <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent">
                 DAMAC Properties

@@ -3,6 +3,7 @@ import { Building2, Award, Users, Globe, MapPin, Star, Sparkles, ExternalLink, T
 import Header from '@/components/others/HomeHeader';
 import Footer from "@/components/Agent/Footer";
 import object1 from '@/assets/HomePage/object-1.jpg';
+import { SEOHead } from "@/components/SEOHead";
 
 const Object1DeveloperProfile = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -166,6 +167,15 @@ ${shareData.text}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+      {/* Enhanced SEO Head with comprehensive meta tags */}
+      <SEOHead
+        title="Top Agents for Object1 Properties | Trusted Experts"
+        description="Find the best agents for Object1 Properties offering expert guidance, market insights, and personalized service to help you buy or sell your dream property easily."
+        keywords="off-plan properties UAE, Dubai real estate, property investment, luxury homes Dubai, real estate agents UAE, new developments Dubai, off-plan apartments, Dubai properties for sale, UAE property market, real estate investment Dubai"
+        canonical="https://offplan.market/"
+        type="website"
+        image="https://offplan.market/lovable-uploads/93c61de1-b334-4926-a59a-2934c6cb5135.png"
+      />
       {/* Background Effects */}
       <Header />
       <div className="mt-10 opacity-30">
@@ -187,14 +197,15 @@ ${shareData.text}
           <div className="relative z-10 grid lg:grid-cols-3 gap-8 items-center">
             {/* Developer Logo & Basic Info */}
             <div className="text-center lg:text-left">
-              <div className="w-32 h-32 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl flex items-center justify-center mx-auto lg:mx-0 mb-6 shadow-2xl">
+              <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center mx-auto lg:mx-0 mb-6 shadow-2xl">
                 <div className="text-white text-6xl font-bold">
-                  <img src={object1} alt="Object 1 Logo" className='rounded-3xl'/>
+                  <img src={object1} alt="Object 1 Logo" className="w-24 h-24 object-contain"/>
                 </div>
               </div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent">
+              <h1 className='sr-only'>Agents for Object1 properties</h1>
+              <p className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent">
                 Object 1
-              </h1>
+              </p>
               <p className="bg-gradient-to-r from-blue-700 to-red-500 text-lg mb-4 bg-clip-text text-transparent font-semibold">Visionary Development Since 2015</p>
               <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
                 {[...Array(5)].map((_, i) => (
