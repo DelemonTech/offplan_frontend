@@ -50,7 +50,7 @@ const HomePage = () => {
 
       {/* SEO-friendly H1 tag - moved to top for better SEO */}
       <div className="sr-only">
-        <h1>OffPlan Market - Premium Off-Plan Properties in UAE and Dubai</h1>
+        {/* <h1>OffPlan Market - Premium Off-Plan Properties in UAE and Dubai</h1> */}
         <p>
           Discover the best off-plan properties in Dubai and across the UAE. 
           Our platform connects you with trusted real estate agents and premier 
