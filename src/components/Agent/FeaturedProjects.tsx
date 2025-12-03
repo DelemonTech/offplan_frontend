@@ -73,7 +73,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
     setIsOpen(false);
   };
   // console.log("Status Name:", statusName);
-  const [activeFilterKey, setActiveFilterKey] = useState('ready');
+  const [activeFilterKey, setActiveFilterKey] = useState('offplan');
 
   const isRTL = i18n.dir() === 'rtl';
 

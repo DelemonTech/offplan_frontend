@@ -139,14 +139,14 @@ const HeroSection = ({ agent, project }) => {
                 {t('Chat with')} <span>{agent.name?.[i18n.language] || agent.name?.en || t("agent.name")}</span>
               </Button>
 
-              <Button
+              {agent.calendly_url && <Button
                 onClick={() => { window.open(agent.calendly_url, '_blank'); }}
                 size="lg"
                 className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-0 min-w-[240px]"
               >
                 <Calendar size={16} className="mr-2" />
                 {t('Book online Meeting')}
-              </Button>
+              </Button>}
             </div>
 
 

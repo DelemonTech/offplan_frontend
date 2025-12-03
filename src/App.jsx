@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import AdminDashboard from "./pages/others/AdminDashboard";
 import AgentDashboard from "./pages/others/AgentDashboard";
+import AllAgentsPage from "@/components/others/AllAgentsPage";
 import AgentPage from "./pages/Agent/AgentPage";
 import AgentProfile from "./components/others/AgentProfile1";
 import PropertyDetails1 from "@/components/Agent/PropertyDetails1";
@@ -58,6 +59,7 @@ const App = () => (
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/agents" element={<AllAgentsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/:username" element={<AgentPage />} />

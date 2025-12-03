@@ -27,57 +27,6 @@ const TopRatedAgents = () => {
 
   const hostUrl = import.meta.env.VITE_HOST_URL;
 
-
-  // Mock data with enhanced details
-  // const agents = [
-  //   {
-  //     id: 1,
-  //     name: t("Sahar Kalhor"),
-  //     username: "sahar",
-  //     avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/sahar-crawler.webp" alt="Sahar Kalhor" className="w-full h-full object-cover rounded-full" />,
-  //     nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-  //     languages: ['en', 'ar', 'fa'],
-  //     rating: 4.9,
-  //     reviews: 127,
-  //     specialties: [t("Luxury Properties"), t("Investment")],
-  //     totalSales: "150+",
-  //     responseTime: "< 30 min",
-  //     badge: t("Top Performer"),
-  //     color: "from-pink-400 via-purple-500 to-indigo-600"
-  //   },
-  //   {
-  //     id: 2,
-  //     name: t("Mohammed Erfani"),
-  //     username: "erfani",
-  //     avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/erfani-crawler.webp" alt="Mohammed Erfani" className='overflow-hidden rounded-full' />,
-  //     nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-  //     languages: ['en', 'ar', 'fa'],
-  //     rating: 4.9,
-  //     reviews: 95,
-  //     specialties: [t("Commercial"), t("Residential")],
-  //     totalSales: "125+",
-  //     responseTime: "< 30 min",
-  //     badge: t("Rising Star"),
-  //     color: "from-orange-400 via-red-500 to-pink-600"
-  //   },
-  //   {
-  //     id: 3,
-  //     name: t("Maryam"),
-  //     username: "maryam",
-  //     avatar: <img src="https://s3.us-east-1.amazonaws.com/offplan.market/maryam-crawler.webp" alt="Maryam" className='overflow-hidden rounded-full' />,
-  //     nationality: <img src='https://flagcdn.com/32x24/ae.png' alt='AE' />,
-  //     languages: ['en', 'ar', 'fa'],
-  //     rating: 4.9,
-  //     reviews: 89,
-  //     specialties: [t("First-time Buyers"), t("Rentals")],
-  //     totalSales: "120+",
-  //     responseTime: "< 30 min",
-  //     badge: t("Expert"),
-  //     color: "from-emerald-400 via-teal-500 to-cyan-600"
-  //   },
-  // ];
-
-
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (sectionRef.current) {
@@ -120,14 +69,11 @@ const TopRatedAgents = () => {
     return () => clearInterval(interval);
   }, [isAnimating, hoveredCard]);
 
-  // const { i18n } = useTranslation();
   const handleLanguageChange = (lng: string, username: string) => {
     setLanguage(lng as 'en' | 'ar' | 'fa');
     i18n.changeLanguage(lng);
     document.dir = lng === 'ar' || lng === 'fa' ? 'rtl' : 'ltr';
-
-    // Redirect to agent page
-    window.location.href = `/${username}`; // or with language: `/${lng}/${username}`
+    window.location.href = `/${username}`;
   };
 
   const [agents, setAgents] = useState<any[]>([]);
@@ -143,7 +89,6 @@ const TopRatedAgents = () => {
       })  
       .then((data) => {
         setAgents(Array.isArray(data.results) ? data.results : []);
-        // console.log("agent",data.results);
         setLoading(false);
       })
       .catch((err) => {
@@ -346,7 +291,10 @@ const TopRatedAgents = () => {
 
         {/* Enhanced CTA */}
         <div className="text-center mt-6">
-          <button className="group relative inline-flex items-center justify-center px-12 py-3 text-xl font-bold text-white transition-all duration-500 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50">
+          <Link 
+            to="/agents" 
+            className="group relative inline-flex items-center justify-center px-12 py-3 text-xl font-bold text-white transition-all duration-500 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50"
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl group-hover:shadow-blue-500/50 transition-all duration-500"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition-all duration-500"></div>
             <div className="absolute inset-0.1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl animate-gradient-shift"></div>
@@ -354,7 +302,7 @@ const TopRatedAgents = () => {
               <span>{t("View All Agents")}</span>
               <TrendingUp className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
             </span>
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -489,8 +437,6 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
             <img src={agent.avatar} alt="profile" className="w-full h-full object-cover rounded-full" />
           </div>
 
-
-
           {/* Status indicator with pulse animation */}
           <div className="absolute -bottom-1 -right-1 w-10 h-10 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
             <div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
@@ -603,9 +549,6 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
             ))}
           </div>
           <span className="font-black text-white text-xl drop-shadow-lg">{agent.rating}</span>
-          {/* <span className="text-white/70 text-sm">
-            ({agent.reviews} {t("reviews")})
-          </span> */}
         </div>
 
         {/* Enhanced CTAs */}
@@ -613,7 +556,6 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
           <Link
             to={`/${agent.username}`}
             className="group relative block w-full overflow-hidden rounded-2xl"
-            // target="_blank" // optional: if you truly want a new tab
             rel="noopener noreferrer"
           >
             <div className={`relative bg-gradient-to-r ${agent.color} p-4 hover:scale-105 hover:shadow-2xl shadow-lg transition-all duration-500`}>
@@ -625,11 +567,6 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
               </div>
             </div>
           </Link>
-
-          {/* <button className="group w-full bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm border-2 border-white/30 text-white p-4 rounded-2xl font-semibold transition-all duration-500 hover:scale-105 hover:bg-white/30 hover:shadow-xl flex items-center justify-center space-x-3">
-            <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-            <span>{t("Contact Now")}</span>
-          </button> */}
         </div>
       </div>
     </div>

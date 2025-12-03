@@ -111,7 +111,7 @@ const AgentPageContent = () => {
   const [properties, setPropertiesData] = useState([]);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [statusName, setStatusName] = useState(t("Ready"));
+  const [statusName, setStatusName] = useState(t("offplan"));
 
 
 
