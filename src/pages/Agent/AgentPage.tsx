@@ -481,7 +481,7 @@ const AgentPageContent = () => {
       </div>
 
 
-      <CallToAction agent={agentData} />
+      <CallToAction property={properties[0]} agent={agentData} t={t} i18n={i18n} />
       <Footer />
     </div>
   );

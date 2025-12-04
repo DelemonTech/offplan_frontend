@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle, ArrowRight, Zap } from 'lucide-react';
 import '@/i18n';
 import { useTranslation } from 'react-i18next';
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
 
-const CallToAction = ({agent}) => {
-  const { t, i18n } = useTranslation();
+const CallToAction = ({property,agent,t,i18n}) => {
+  // const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const changeLanguage = (lng) => {
@@ -59,9 +60,10 @@ const CallToAction = ({agent}) => {
 
           {/* CTA Button */}
           <div className="flex justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold px-8 py-4 text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
+            <Button size="lg" className="bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold px-8 py-4 text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
+            onClick={() => { handleWhatsApp(property, agent, t, i18n) }}>
               <MessageCircle size={20} className="mr-2" />
-              {t('Chat with AI Now')}
+              {t('Chat with Agent Now')}
               <ArrowRight size={20} className="ml-2" />
             </Button>
           </div>

@@ -988,7 +988,7 @@ const PropertyDetailedPage = () => {
               <span className="text-lg"><Calendar /></span> Request Callback
             </button> */}
 
-            {showCallbackModal && (
+            {showCallbackModal && agent.calendly_url &&(
               <a
                             href={agent.calendly_url || ''} target="_blank"
                             className="flex-1"

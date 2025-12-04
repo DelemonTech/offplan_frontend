@@ -1056,7 +1056,7 @@ const PropertyDetails1 = () => {
                                 {/* Top Row */}
                                 <div className="flex justify-between items-start mb-2">
                                   <span className="text-sm font-semibold text-gray-800">
-                                    ID: {sub.id}
+                                    Unit ID: {sub.id}
                                   </span>
                                   <div className='float-right'>
                                     <span
@@ -1309,14 +1309,14 @@ const PropertyDetails1 = () => {
                 <div className='flex flex-row gap-2 justify-center'><img src={IconWhatsapp} className='w-6 h-6' /> {t("Chat on WhatsApp")}</div>
               </button>
             </a>
-            <a
+            {agent.calendly_url && <a
               href={agent?.calendly_url || "#"} target="_blank"
               className="flex-1"
             >
               <button className="w-full bg-green-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-600">
                 <div className='flex flex-row gap-2 justify-center'><LucideIcons.Calendar className='w-5 h-5' /> {t("Book online Meeting")}</div>
               </button>
-            </a>
+            </a>}
           </div>
         </div>
       </div>

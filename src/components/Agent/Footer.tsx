@@ -98,7 +98,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white rounded-t-2xl overflow-hidden">
       {/* SEO Navigation Section - Visible to crawlers */}
-      <section className="bg-gray-800 py-4 px-6 border-b border-gray-700">
+      <section className="bg-gradient-to-r from-pink-500 to-blue-500 py-4 px-6 border-b border-gray-700">
         <div className="container mx-auto">
           <nav className="flex flex-wrap justify-center gap-6 text-sm">
             <a href="/" className="text-gray-300 hover:text-white transition-colors">Home</a>
@@ -112,11 +112,11 @@ const Footer = () => {
       </section>
 
       {/* AI Chat CTA Section */}
-      <div className="bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 ">
+      {/* <div className="bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 ">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-lg font-medium">{t('Need help choosing? Chat with our AI — support!')} 🤖</p>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Footer Content */}
       <div className="max-w-6xl mx-auto px-4 py-12">
