@@ -78,6 +78,7 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
   const isRTL = i18n.dir() === 'rtl';
 
   const hostUrl = import.meta.env.VITE_HOST_URL;
+  const microserviceUrl = import.meta.env.VITE_MICROSERVICE_URL;
 
   const [selectedProperty, setSelectedProperty] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -854,7 +855,7 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
       try {
         const csrftoken = getCookie('csrftoken');
 
-        const response = await fetch(`${hostUrl}/properties/filter/`, {
+        const response = await fetch(`${microserviceUrl}/properties/filter/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

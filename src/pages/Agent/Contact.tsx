@@ -85,14 +85,14 @@ const Contact = () => {
   };
 
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/971529529687', '_blank');
+    window.open('https://wa.me/971552554245', '_blank');
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOHead
-        title="Contact Sahar Kalhor - Senior Property Consultant | OFFPLAN.MARKET"
-        description="Get in touch with Sahar Kalhor for expert property consultation in Dubai. Call +971 52 952 9687 or send a message for personalized real estate advice."
+        title="Contact Nasser - Senior Property Consultant | OFFPLAN.MARKET"
+        description="Get in touch with Sahar Kalhor for expert property consultation in Dubai. Call +971 55 255 4245 or send a message for personalized real estate advice."
         keywords="contact Sahar Kalhor, Dubai property consultant, real estate agent contact, property investment advice"
         canonical={`https://offplan.market/${username}/contact`}
         type="website"
@@ -136,7 +136,7 @@ const Contact = () => {
                       S
                     </AvatarFallback>
                   </Avatar>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">Sahar Kalhor</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">Nasser</h3>
                   <p className="text-pink-600 font-semibold">Senior Property Consultant</p>
                 </div>
                 
@@ -144,7 +144,7 @@ const Contact = () => {
                   <div className="flex items-center space-x-3">
                     <Phone className="text-pink-500" size={20} />
                     <div className="flex-1">
-                      <p className="text-gray-900 font-semibold">+971 52 952 9687</p>
+                      <p className="text-gray-900 font-semibold">+971 55 255 4245</p>
                     </div>
                     <button
                       onClick={handleWhatsAppClick}

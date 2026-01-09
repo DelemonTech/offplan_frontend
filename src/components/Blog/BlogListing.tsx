@@ -7,6 +7,9 @@ import Header from '@/components/others/HomeHeader';
 import logoPath from "@/assets/OFFPLAN_MARKET.png";
 import i18next from 'i18next';
 import Footer from '@/components/Agent/Footer'
+import IconWhatsapp from "@/assets/icon-whatsapp.svg";
+import { handleWhatsApp } from '@/utils/WhatsAppShare';
+
 
 interface BlogType {
   id: number;
@@ -125,15 +128,27 @@ const handleNext = async () => {
   setCurrentPage(prev => prev + 1);
 };
 
+const handleWhatsApp = (blog: BlogType) => {
+  const localizedBlogTitle =
+    lang === 'ar' ? blog.title_ar || blog.title :
+    lang === 'fa' ? blog.title_fa || blog.title :
+    blog.title;
+  const message = `Hi! I'm interested in your blog post titled "${localizedBlogTitle}". Can you share more details?
+
+Blog Link: https://offplan.market/blog/${blog.slug}`;
+  const whatsappUrl = `https://wa.me/971552554245?text=${encodeURIComponent(message)}`;
+  window.open(whatsappUrl, '_blank');
+}
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
         {/* Background Effects */}
-        <div className="absolute inset-0 opacity-30">
+        {/* <div className="absolute inset-0 opacity-30">
           <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
-        </div>
+        </div> */}
         
         <Header logo={logoPath} />
         <div className="container mx-auto py-12 px-4 relative z-10">
@@ -160,11 +175,11 @@ const handleNext = async () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 opacity-30">
+      {/* <div className="absolute inset-0 opacity-30">
         <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
-      </div>
+      </div> */}
 
       <SEOHead 
         title="Latest Real Estate Insights | Blog"
@@ -390,7 +405,17 @@ const handleNext = async () => {
           </div>
         </div>
       </div>
-      
+      <div
+        id="floating-btn"
+        className="fixed bottom-8 right-5 z-50 opacity-100 transition-opacity duration-300"
+      >
+        <button
+          onClick={() => handleWhatsApp(blogs[0])}
+          className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300"
+        >
+          <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
+        </button>
+      </div>
       <Footer/>
     </div>
   );

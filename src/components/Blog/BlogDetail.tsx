@@ -9,6 +9,7 @@ import logoPath from "@/assets/OFFPLAN_MARKET.png";
 import Footer from '@/components/Agent/Footer'
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
+import IconWhatsapp from "@/assets/icon-whatsapp.svg";
 
 interface BlogType {
     id: number;
@@ -61,6 +62,18 @@ const BlogDetail: React.FC = () => {
     const hostUrl = import.meta.env.VITE_HOST_URL || '';
     // const [metaDesc, setMetaDesc] = useState();
     const [notFound, setNotFound] = useState(false);
+
+    const [showWhatsApp, setShowWhatsApp] = useState(false);
+
+    useEffect(() => {
+        const onScroll = () => {
+            setShowWhatsApp(window.scrollY > 300);
+        };
+
+        window.addEventListener('scroll', onScroll);
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
 
     useEffect(() => {
         async function loadBlog() {
@@ -445,6 +458,22 @@ const BlogDetail: React.FC = () => {
         }
     };
 
+    const handleWhatsApp = (blog: BlogType) => {
+        if (!blog) return;
+
+        const localizedTitle =
+            lang === 'ar' ? blog.title_ar || blog.title :
+            lang === 'fa' ? blog.title_fa || blog.title :
+            blog.title;
+
+        const message = `Hi! I'm interested in your blog post titled "${localizedTitle}". Can you share more details?
+
+    Blog Link: https://offplan.market/blog/${blog.slug}`;
+
+        const whatsappUrl = `https://wa.me/971552554245?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    };
+
 
     const handleContactSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -647,11 +676,11 @@ const BlogDetail: React.FC = () => {
                 <Toaster position="top-right" />
 
                 {/* Background Effects */}
-                <div className="absolute inset-0 opacity-30">
+                {/* <div className="absolute inset-0 opacity-30">
                     <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
                     <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
-                </div>
+                </div> */}
 
                 {/* {!location.pathname.startsWith('/blog/') && ( */}
                     <>
@@ -1119,6 +1148,22 @@ const BlogDetail: React.FC = () => {
                         </aside>
                     </div>
                 </div>
+                {post && (
+                <div
+                    id="floating-btn"
+                    className={`fixed bottom-8 right-5 z-50 transition-opacity duration-300 ${
+                        showWhatsApp ? 'opacity-100' : 'opacity-0'
+                    }`}
+                >
+                    <button
+                        onClick={() => handleWhatsApp(post)}
+                        className="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+                        aria-label="Contact via WhatsApp"
+                    >
+                        <img src={IconWhatsapp} alt="WhatsApp" className="w-10 h-10" />
+                    </button>
+                </div>
+            )}
 
                 <Footer />
             </div>

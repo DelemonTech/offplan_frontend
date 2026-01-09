@@ -41,7 +41,7 @@ const PropertyDetails1 = () => {
   const pathname = window.location.pathname;
   const segments = pathname.split("/");
   const username = segments[1]; // ✅ directly get username from URL
-  const hostUrl = import.meta.env.VITE_HOST_URL;
+  const hostUrl = import.meta.env.VITE_MICROSERVICE_URL;
 
   // If agent is null, fetch agent immediately
   if (!agent && username) {

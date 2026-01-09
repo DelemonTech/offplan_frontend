@@ -86,7 +86,7 @@ const Contact = () => {
   };
 
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/971529529687', '_blank');
+    window.open('https://wa.me/971552554245', '_blank');
   };
 
   const handleContactAgent = () => {
@@ -96,11 +96,11 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 opacity-30">
+      {/* <div className="absolute inset-0 opacity-30">
         <div className="absolute top-10 left-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
-      </div>
+      </div> */}
 
       <SEOHead
         title="Contact OFFPLAN.MARKET - Get in Touch | Dubai Real Estate"
@@ -183,7 +183,7 @@ const Contact = () => {
                         <Phone className="text-white" size={20} />
                       </div>
                       <div className="flex-1">
-                        <p className="text-gray-900 font-semibold">+971 52 952 9687</p>
+                        <p className="text-gray-900 font-semibold">+971 55 255 4245</p>
                       </div>
                       <button
                         onClick={handleWhatsAppClick}
@@ -249,7 +249,7 @@ const Contact = () => {
                     </button>
                     
                     <a
-                      href="tel:+971529529687"
+                      href="tel:+971552554245"
                       className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-4 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3 shadow-lg hover:shadow-2xl"
                     >
                       <Phone size={20} />

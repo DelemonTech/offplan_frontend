@@ -100,7 +100,14 @@ const ContactModal = () => {
           {t("Contact Us")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg bg-white sr-only">
+      <DialogContent className="
+        w-full
+        max-w-full
+        sm:max-w-xl
+        md:max-w-2xl
+        lg:max-w-[60vw]
+        bg-white
+      ">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-900 text-center sr-only">
             Get In Touch
