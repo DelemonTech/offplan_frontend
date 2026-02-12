@@ -893,6 +893,63 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
     fetchFilteredProperties();
   }, [location.state?.filters, statusName, isCityReady]);
 
+  // Add this new useEffect for initial load
+useEffect(() => {
+  const fetchInitialProperties = async () => {
+    if (!activeFilterKey || !isCityReady) return;
+    
+    setIsSearchLoading(true);
+    
+    try {
+      const englishStatus = getEnglishStatusFromFilterKey(activeFilterKey);
+      
+      // Build initial filters
+      const initialFilters = {
+        low_price: 0,
+        max_price: 100000000,
+        min_area: 0,
+        max_area: 50000,
+      };
+      
+      // Only add status if not "Total"
+      if (englishStatus && englishStatus !== 'Total') {
+        initialFilters.property_status = englishStatus;
+      }
+      
+      console.log('🔍 Fetching initial properties with filters:', initialFilters);
+      
+      const csrftoken = getCookie('csrftoken');
+      const response = await fetch(`${microserviceUrl}/properties/filter/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        credentials: 'include',
+        body: JSON.stringify(initialFilters),
+      });
+
+      const result = await response.json();
+      
+      if (result.status && result.data) {
+        setProperties(result.data.results || []);
+        setNextPageUrl(result.data.next_page_url || null);
+        console.log('✅ Loaded', result.data.results?.length || 0, 'initial properties');
+      }
+    } catch (error) {
+      console.error('❌ Error fetching initial properties:', error);
+      setProperties([]);
+      setNextPageUrl(null);
+    } finally {
+      setIsSearchLoading(false);
+    }
+  };
+
+  // Only run on initial mount when cities are ready
+  if (isCityReady && properties.length === 0) {
+    fetchInitialProperties();
+  }
+}, [activeFilterKey, isCityReady]);
 
   // useEffect(() => {
   //   window.scrollTo({ top: 930, behavior: 'smooth' });
