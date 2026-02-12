@@ -16,7 +16,7 @@ const TrustedDevelopers = () => {
   const sectionRef = useRef(null);
   const logoRefs = useRef([]);
 
-  const hostUrl = window.location.href;
+  const hostUrl = window.location.origin;
 
   // Mouse tracking
   useEffect(() => {
@@ -154,7 +154,7 @@ const TrustedDevelopers = () => {
                   ${visibleLogos.includes(index) ? 'animate-card-slide-up opacity-100' : 'opacity-0 translate-y-10'}
                 `}
                 // style={{ animationDelay: `${index * 50}ms` }}
-              ><a href={`${hostUrl}${developer.slug}`} target="_blank" rel="noopener noreferrer">
+              ><a href={`${hostUrl}/${developer.slug}`} target="_blank" rel="noopener noreferrer">
                 <div className="relative">
                   {/* Logo Container */}
                   <div className={`

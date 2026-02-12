@@ -384,32 +384,43 @@ const FeaturedProjects = ({ agent, properties, nextPageUrl, setProperties, setNe
 
   const [loadingProjectId, setLoadingProjectId] = useState(null);
 
-  const handleViewDetails = async (projectId) => {
+const handleViewDetails = async (projectId) => {
     try {
-      setLoadingProjectId(projectId); // show loader for this button
+      setLoadingProjectId(projectId);
 
-      const res = await fetch(`https://panel.estaty.app/api/v1/getProperty?id=${projectId}`, {
-        method: 'POST',
+      // 1. Use the Microservice URL from env or direct string
+      const microserviceBase = import.meta.env.VITE_MICROSERVICE_URL || "https://microservice.x-opp.com/api";
+      
+      const res = await fetch(`${microserviceBase}/property/${projectId}/`, {
+        method: 'GET', // Microservices usually use GET for fetching details
         headers: {
-          'App-key': import.meta.env.VITE_ESTATY_API_KEY,
           'Content-Type': 'application/json',
+          // Add any microservice specific headers here if required
         },
       });
 
-      // console.log("project ID : ", projectId);
+      if (!res.ok) throw new Error("Failed to fetch from microservice");
 
       const data = await res.json();
-      // console.log("data : ", data);
 
-      setSelectedProperty(data.property);
+      // 2. Map the data. 
+      // If your microservice returns the property object directly, use 'data'.
+      // If it's nested like the old API, keep 'data.property'.
+      const propertyToStore = data.property || data; 
+      setSelectedProperty(propertyToStore);
 
+      // 3. Navigate
       navigate(`/${agent.username}/property-details/?id=${projectId}`, {
-        state: { agent }
+        state: { 
+          agent,
+          projectData: propertyToStore // Passing data forward to avoid extra fetches
+        }
       });
+
     } catch (error) {
       console.error("Error fetching property details:", error);
     } finally {
-      setLoadingProjectId(null); // remove loader
+      setLoadingProjectId(null);
     }
   };
 

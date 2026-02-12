@@ -317,20 +317,29 @@ const AgentRecruitment = () => {
           </div>
 
           {/* Enhanced CTA Section */}
-          <div className="text-center relative">
-            <div className="relative inline-block group">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500 scale-110"></div>
-              <Button className="relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-12 py-6 rounded-2xl font-bold shadow-2xl border-0 transition-all duration-500 transform group-hover:scale-105 group-hover:-translate-y-1">
-                <span className="flex items-center space-x-3">
-                  <span>{t("Join as an Agent")}</span>
-                  <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
-              </Button>
+         <div className="text-center relative">
+  <div className="relative inline-block group">
+    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500 scale-110"></div>
+    
+    {/* Wrap the Button in an anchor tag */}
+    <a 
+      href="https://wa.me/971552554245?text=Hello, I would like to join as an agent." 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="block" // Ensures the link takes the full shape of the button
+    >
+      <Button className="relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-12 py-6 rounded-2xl font-bold shadow-2xl border-0 transition-all duration-500 transform group-hover:scale-105 group-hover:-translate-y-1">
+        <span className="flex items-center space-x-3">
+          <span>{t("Join as an Agent")}</span>
+          <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+        </span>
+      </Button>
+      </a>
             </div>
             
-            <p className="text-slate-600 mt-6 text-lg">
+            {/* <p className="text-slate-600 mt-6 text-lg">
               {t("Already an agent?")} <a href="#" className="text-purple-600 hover:text-purple-800 font-bold transition-colors duration-300 hover:underline">{t("Sign in here")}</a>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

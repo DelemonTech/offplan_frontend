@@ -301,7 +301,7 @@ const HeroSection = () => {
             </Button></a>
 
             {/* Third Button */}
-            <a href="#steps">
+            {/* <a href="#steps">
             <Button 
               className="relative overflow-hidden bg-transparent border-2 border-white/50 text-white hover:bg-white hover:text-purple-900 text-lg px-12 py-5 flex items-center justify-center w-full sm:w-auto min-w-[200px] rounded-xl shadow-xl transition-all duration-500 hover:scale-105 hover:border-white"
               onMouseEnter={() => setHoveredButton(2)}
@@ -310,7 +310,7 @@ const HeroSection = () => {
               <TrendingUp className="w-5 h-5 mr-2" />
               <span className="font-bold">{t("List Your Project")}</span>
             </Button>
-            </a>
+            </a> */}
           </div>
 
           {/* Enhanced Stats Section */}
