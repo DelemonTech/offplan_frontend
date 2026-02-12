@@ -7,6 +7,17 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 
+const getFlagUrl = (nationality) => {
+  if (!nationality) return "";
+  
+  // Extract just the code (e.g., 'ae') even if the URL is messy
+  const parts = nationality.split('/');
+  const lastPart = parts[parts.length - 1];
+  const code = lastPart.split('.')[0]; 
+
+  return `https://flagcdn.com/32x24/${code.toLowerCase()}.png`;
+};
+
 const TopRatedAgents = () => {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -450,7 +461,7 @@ const EnhancedAgentCard = ({ agent, actualIndex, t, isHovered, isCenter, handleL
             {agent.name}
           </h3>
           <span className="text-4xl animate-bounce" style={{ animationDuration: '2s' }}>
-            <img src={agent.nationality} alt="flag" />
+            <img src={getFlagUrl(agent.nationality)} alt="flag" />
           </span>
         </div>
 
