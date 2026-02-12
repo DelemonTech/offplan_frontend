@@ -50,9 +50,9 @@ const AgentPageContent = () => {
   }
 
 
-  const [propertyType, setPropertyType] = useState('Residential');
-  const [selectedPropertySubtype, setSelectedPropertySubtype] = useState('Apartment');
-  const [bedrooms, setBedrooms] = useState('1');
+const [propertyType, setPropertyType] = useState('');
+const [selectedPropertySubtype, setSelectedPropertySubtype] = useState('');
+const [bedrooms, setBedrooms] = useState('');
   const [priceRange, setPriceRange] = useState([0, 100000000]);
   const [areaRange, setAreaRange] = useState([0, 50000]);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);

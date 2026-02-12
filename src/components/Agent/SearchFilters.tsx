@@ -81,7 +81,9 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   const getFilteredNeighborhoods = () => {
     if (!selectedCity || citiesData.length === 0) return [];
 
-    const city = citiesData.find((c) => c.name.en === selectedCity); // Match English name
+    const englishCityName = getEnglishCityName();
+
+    const city = citiesData.find((c) => c.name?.en === englishCityName); // Match English name
     if (!city || !Array.isArray(city.districts)) return [];
 
     return city.districts.map((district) => ({
@@ -90,6 +92,11 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     }));
   };
 
+    const getEnglishCityName = () => {
+    if (!selectedCity) return '';
+    const city = citiesData.find((c) => c.name?.[i18n.language] === selectedCity);
+    return city?.name?.en || selectedCity;
+  };
 
 
   // Simulate API call to get max values
@@ -195,60 +202,96 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       return type;
     };
 
-    const filters = {
-      city: selectedCity || '',
-      district: selectedNeighborhood || '',
-      property_type: getEnglishPropertyType(propertyType) || '',
-      unit_type: selectedPropertySubtype || '',
-      rooms: propertyType === t('Residential') ? bedrooms?.toString() : '',
-      delivery_year: deliveryYear ? parseInt(deliveryYear) : 0,
-      low_price: priceRange[0],
-      max_price: priceRange[1],
-      min_area: areaRange[0],
-      max_area: areaRange[1],
-      sales_status: '',
-      title: projectName || '',           // ✅ Include project name
-      developer: developer || '',                // ✅ Include developer
-      ...(statusName !== t('Total') && { property_status: statusName }),
-      // project_status: projectStatus || '',       // ✅ Include project status
+    // ✅ Convert statusName to proper English status value
+  const getEnglishStatus = (status) => {
+    if (!status) return '';
+    
+    // Map filter keys to database values
+    const statusMap = {
+      'offplan': 'Off Plan',
+      'ready': 'Ready',
+      'total': '',  // Don't filter by status
+      'All': '',
+      'Total': ''
     };
 
-
-    // Decide status based on `statusName`
-    // if (statusName.toLowerCase() === 'sold out') {
-    //   filters.sales_status = 'Sold Out';
-    // } 
-    if (propertyStatus) {
-      setStatusName(propertyStatus);
-      filters.property_status = propertyStatus; // ✅ Already English
-    } else {
-      setStatusName('');
+    // Check if it's already a proper English value
+    if (['Off Plan', 'Ready'].includes(status)) {
+      return status;
     }
-
-    try {
-      const csrftoken = getCookie('csrftoken');
-      const response = await fetch(`${hostUrl}/properties/filter/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken,
-        },
-        credentials: 'include',
-        body: JSON.stringify(filters),
-      });
-
-      const result = await response.json();
-
-      if (result?.status && result?.data) {
-        setProperties(result.data.results || []);
-        setNextPageUrl(result.data.next_page_url || null);
-      }
-    } catch (error) {
-      console.error('❌ Search error:', error);
-    } finally {
-      setIsSearchLoading(false);
-    }
+    
+    // Otherwise map from key
+    return statusMap[status.toLowerCase()] || status;
   };
+
+
+ const filters = {};
+  
+  const cityName = getEnglishCityName();
+  if (cityName) filters.city = cityName;
+  
+  if (selectedNeighborhood) filters.district = selectedNeighborhood;
+  
+  const propType = getEnglishPropertyType(propertyType);
+  if (propType) filters.property_type = propType;
+  
+  if (selectedPropertySubtype) filters.unit_type = selectedPropertySubtype;
+  
+  if (propertyType === t('Residential') && bedrooms) {
+    filters.rooms = bedrooms.toString();
+  }
+  
+  if (deliveryYear) filters.delivery_year = parseInt(deliveryYear);
+  
+  // Always include price/area ranges (even if 0)
+  filters.low_price = priceRange[0];
+  filters.max_price = priceRange[1];
+  filters.min_area = areaRange[0];
+  filters.max_area = areaRange[1];
+  
+  if (projectName) filters.title = projectName;
+  if (developer) filters.developer = developer;
+  
+  const englishStatus = getEnglishStatus(statusName);
+  if (englishStatus && englishStatus !== 'Total') {
+    filters.property_status = englishStatus;
+  }
+
+  console.log('🔍 Sending filters:', JSON.stringify(filters, null, 2));
+
+  try {
+    const csrftoken = getCookie('csrftoken');
+    const response = await fetch(`${hostUrl}/properties/filter/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      credentials: 'include',
+      body: JSON.stringify(filters),
+    });
+
+    const result = await response.json();
+    console.log('📦 Received result:', result);
+
+    if (result?.results !== undefined) {
+      const properties = result.results || [];
+      console.log(`✅ Found ${properties.length} properties`);
+      setProperties(properties);
+      setNextPageUrl(result.next || null);
+    } else {
+      console.warn('⚠️ Unexpected response format:', result);
+      setProperties([]);
+      setNextPageUrl(null);
+    }
+  } catch (error) {
+    console.error('❌ Search error:', error);
+    setProperties([]);
+    setNextPageUrl(null);
+  } finally {
+    setIsSearchLoading(false);
+  }
+};
 
   const projectStatuses = [
     { name: t('Ready'), value: 'Ready' },
@@ -272,11 +315,12 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     setPropertyType(type);
 
     // Always set English subtypes for backend
-    if (type === t('Commercial')) {
-      setSelectedPropertySubtype('Office'); // ✅ Always English
-    } else {
-      setSelectedPropertySubtype('Apartment'); // ✅ Always English
-    }
+    // if (type === t('Commercial')) {
+    //   setSelectedPropertySubtype('Office'); // ✅ Always English
+    // } else {
+    //   setSelectedPropertySubtype('Apartment'); // ✅ Always English
+    // }
+    setSelectedPropertySubtype('');
   };
 
   // useEffect(() => {

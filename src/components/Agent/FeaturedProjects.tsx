@@ -696,23 +696,23 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
           setCities(data.data);
         }
 
-        if (data?.data?.length > 0) {
-          const firstCity = data.data[0];
-          setSelectedCity(firstCity);
+        // if (data?.data?.length > 0) {
+        //   const firstCity = data.data[0];
+        //   setSelectedCity(firstCity);
+        //   setIsCityReady(true);
+
+        //   const updatedFilters = {
+        //     city: firstCity.city_name,
+        //     ...(englishStatus !== 'Total' && { property_status: englishStatus })
+        //   };
+
           setIsCityReady(true);
+        //   setSearchFilters(updatedFilters);
 
-          const updatedFilters = {
-            city: firstCity.city_name,
-            ...(englishStatus !== 'Total' && { property_status: englishStatus })
-          };
-
-          setIsCityReady(true);
-          setSearchFilters(updatedFilters);
-
-          navigate(location.pathname, {
-            state: { filters: updatedFilters },
-          });
-        }
+        //   navigate(location.pathname, {
+        //     state: { filters: updatedFilters },
+        //   });
+        // }
       } catch (error) {
         console.error("❌ Failed to fetch city counts:", error);
       } finally {
