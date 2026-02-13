@@ -6,6 +6,17 @@ import Header from "@/components/others/HomeHeader";
 import Footer from "@/components/Agent/Footer";
 import { SEOHead } from "@/components/SEOHead";
 
+const getFlagUrl = (nationality) => {
+  if (!nationality) return "";
+  
+  // Extract just the code (e.g., 'ae') even if the URL is messy
+  const parts = nationality.split('/');
+  const lastPart = parts[parts.length - 1];
+  const code = lastPart.split('.')[0]; 
+
+  return `https://flagcdn.com/32x24/${code.toLowerCase()}.png`;
+};
+
 const AllAgentsPage = () => {
   const { t, i18n } = useTranslation();
   const [agents, setAgents] = useState<any[]>([]);
@@ -226,7 +237,7 @@ const AgentCard = ({ agent, t, handleLanguageChange }) => {
           <div className="text-center mb-6">
             <div className="flex items-center justify-center space-x-3 mb-2">
               <h3 className="font-black text-2xl text-gray-800">{agent.name}</h3>
-              <img src={agent.nationality} alt="flag" className="w-8 h-6" />
+              <img src={getFlagUrl(agent.nationality)} alt="flag" />
             </div>
           </div>
 

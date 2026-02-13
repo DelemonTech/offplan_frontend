@@ -858,65 +858,36 @@ https://offplan.market/${agent.username}/property-details/?id=${project.id}`;
   }
 
   useEffect(() => {
-    const filters = location.state?.filters;
-    if (!filters || !statusName || !isCityReady) return;
+  console.log('🔄 Filter effect triggered:', {
+    activeFilterKey,
+    isCityReady,
+    hasNavFilters: !!location.state?.filters
+  });
+  
+  if (!isCityReady || !activeFilterKey) {
+    console.log('⏸️ Skipping fetch - not ready');
+    return;
+  }
 
-    const fetchFilteredProperties = async () => {
-      setIsSearchLoading(true);
-      try {
-        const csrftoken = getCookie('csrftoken');
-
-        const response = await fetch(`${microserviceUrl}/properties/filter/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken, // send CSRF token header
-          },
-          credentials: 'include', // send cookies
-          body: JSON.stringify(filters),
-        });
-
-        const result = await response.json();
-        if (result.status && result.data) {
-          setProperties(result.data.results || []);
-          setNextPageUrl(result.data.next_page_url || null);
-        }
-        // console.log("Filters being sent:", filters);
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        document.body.style.overflow = 'auto';
-        setIsSearchLoading(false);
-      }
-    };
-
-    fetchFilteredProperties();
-  }, [location.state?.filters, statusName, isCityReady]);
-
-  // Add this new useEffect for initial load
-useEffect(() => {
-  const fetchInitialProperties = async () => {
-    if (!activeFilterKey || !isCityReady) return;
-    
+  const fetchProperties = async () => {
     setIsSearchLoading(true);
     
     try {
+      const navFilters = location.state?.filters;
       const englishStatus = getEnglishStatusFromFilterKey(activeFilterKey);
       
-      // Build initial filters
-      const initialFilters = {
+      console.log('📊 English status for', activeFilterKey, ':', englishStatus);
+      
+      // Build filters - use nav filters if available, otherwise use defaults
+      const filters = navFilters || {
         low_price: 0,
         max_price: 100000000,
         min_area: 0,
         max_area: 50000,
+        ...(englishStatus && englishStatus !== 'Total' && { property_status: englishStatus })
       };
       
-      // Only add status if not "Total"
-      if (englishStatus && englishStatus !== 'Total') {
-        initialFilters.property_status = englishStatus;
-      }
-      
-      console.log('🔍 Fetching initial properties with filters:', initialFilters);
+      console.log('🔍 Fetching properties with filters:', filters);
       
       const csrftoken = getCookie('csrftoken');
       const response = await fetch(`${microserviceUrl}/properties/filter/`, {
@@ -926,30 +897,127 @@ useEffect(() => {
           'X-CSRFToken': csrftoken,
         },
         credentials: 'include',
-        body: JSON.stringify(initialFilters),
+        body: JSON.stringify(filters),
       });
 
       const result = await response.json();
+      console.log('📦 API Response:', result);
       
       if (result.status && result.data) {
         setProperties(result.data.results || []);
         setNextPageUrl(result.data.next_page_url || null);
-        console.log('✅ Loaded', result.data.results?.length || 0, 'initial properties');
+        console.log('✅ Loaded', result.data.results?.length || 0, 'properties');
+      } else {
+        console.warn('⚠️ No data in response');
+        setProperties([]);
+        setNextPageUrl(null);
       }
     } catch (error) {
-      console.error('❌ Error fetching initial properties:', error);
+      console.error('❌ Error fetching properties:', error);
       setProperties([]);
       setNextPageUrl(null);
     } finally {
+      document.body.style.overflow = 'auto';
       setIsSearchLoading(false);
     }
   };
 
-  // Only run on initial mount when cities are ready
-  if (isCityReady && properties.length === 0) {
-    fetchInitialProperties();
-  }
-}, [activeFilterKey, isCityReady]);
+  fetchProperties();
+}, [location.state?.filters, activeFilterKey, isCityReady]);
+
+  // useEffect(() => {
+  //   const filters = location.state?.filters;
+  //   if (!filters || !statusName || !isCityReady) return;
+
+  //   const fetchFilteredProperties = async () => {
+  //     setIsSearchLoading(true);
+  //     try {
+  //       const csrftoken = getCookie('csrftoken');
+
+  //       const response = await fetch(`${microserviceUrl}/properties/filter/`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'X-CSRFToken': csrftoken, // send CSRF token header
+  //         },
+  //         credentials: 'include', // send cookies
+  //         body: JSON.stringify(filters),
+  //       });
+
+  //       const result = await response.json();
+  //       if (result.status && result.data) {
+  //         setProperties(result.data.results || []);
+  //         setNextPageUrl(result.data.next_page_url || null);
+  //       }
+  //       // console.log("Filters being sent:", filters);
+  //     } catch (error) {
+  //       console.error('Error:', error);
+  //     } finally {
+  //       document.body.style.overflow = 'auto';
+  //       setIsSearchLoading(false);
+  //     }
+  //   };
+
+  //   fetchFilteredProperties();
+  // }, [location.state?.filters, statusName, isCityReady]);
+
+  // Add this new useEffect for initial load
+// useEffect(() => {
+//   const fetchInitialProperties = async () => {
+//     if (!activeFilterKey || !isCityReady) return;
+    
+//     setIsSearchLoading(true);
+    
+//     try {
+//       const englishStatus = getEnglishStatusFromFilterKey(activeFilterKey);
+      
+//       // Build initial filters
+//       const initialFilters = {
+//         low_price: 0,
+//         max_price: 100000000,
+//         min_area: 0,
+//         max_area: 50000,
+//       };
+      
+//       // Only add status if not "Total"
+//       if (englishStatus && englishStatus !== 'Total') {
+//         initialFilters.property_status = englishStatus;
+//       }
+      
+//       console.log('🔍 Fetching initial properties with filters:', initialFilters);
+      
+//       const csrftoken = getCookie('csrftoken');
+//       const response = await fetch(`${microserviceUrl}/properties/filter/`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'X-CSRFToken': csrftoken,
+//         },
+//         credentials: 'include',
+//         body: JSON.stringify(initialFilters),
+//       });
+
+//       const result = await response.json();
+      
+//       if (result.status && result.data) {
+//         setProperties(result.data.results || []);
+//         setNextPageUrl(result.data.next_page_url || null);
+//         console.log('✅ Loaded', result.data.results?.length || 0, 'initial properties');
+//       }
+//     } catch (error) {
+//       console.error('❌ Error fetching initial properties:', error);
+//       setProperties([]);
+//       setNextPageUrl(null);
+//     } finally {
+//       setIsSearchLoading(false);
+//     }
+//   };
+
+//   // Only run on initial mount when cities are ready
+//   if (isCityReady && properties.length === 0) {
+//     fetchInitialProperties();
+//   }
+// }, [activeFilterKey, isCityReady]);
 
   // useEffect(() => {
   //   window.scrollTo({ top: 930, behavior: 'smooth' });
@@ -1099,74 +1167,104 @@ useEffect(() => {
         <div className="flex justify-center mb-5">
           {/* Desktop */}
           <div className="hidden sm:flex gap-6">
-            {filters.map((filter, index) => {
-              const IconComponent = filter.icon;
-              const filterCount = totalInventory[filter.key];
-              const isActive = activeFilterKey === filter.key; // Compare keys, not translated labels
+    {filters.map((filter, index) => {
+      const IconComponent = filter.icon;
+      const filterCount = totalInventory[filter.key];
+      const isActive = activeFilterKey === filter.key;
 
-              return (
-                <button
-                  key={filter.key} // Use key instead of label
-                  onClick={() => setActiveFilterKey(filter.key)} // Set key instead of label
-                  className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${isActive
-                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
-                    }`}
-                >
-                  <div className="flex items-center gap-5">
-                    <IconComponent
-                      size={28}
-                      className={`${isActive ? 'text-white' : 'text-gray-600'}`}
-                    />
-                    <div className="text-left">
-                      <div className="text-base font-semibold mb-1">{t(filter.labelKey)}</div>
-                      <div
-                        className={`text-2xl font-bold ${isActive ? 'text-white' : 'text-gray-800'
-                          }`}
-                      >
-                        <CountUp end={filterCount} duration={1.75} delay={index} separator="," />
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
+      return (
+        <button
+          key={filter.key}
+          onClick={() => {
+            console.log('🎯 Clicked filter:', filter.key);
+            
+            // ✅ Update active filter key
+            setActiveFilterKey(filter.key);
+            
+            // ✅ Clear navigation state to force fresh fetch
+            navigate(location.pathname, { 
+              replace: true,
+              state: {} // Clear filters from navigation state
+            });
+            
+            // ✅ Clear selected city to show all cities for this status
+            setSelectedCity(null);
+            
+            // ✅ Clear properties while loading
+            setProperties([]);
+          }}
+          className={`flex items-center justify-center w-48 h-24 rounded-2xl font-semibold transition-all duration-300 text-sm border-2 ${
+            isActive
+              ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+              : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+          }`}
+        >
+          <div className="flex items-center gap-5">
+            <IconComponent
+              size={28}
+              className={`${isActive ? 'text-white' : 'text-gray-600'}`}
+            />
+            <div className="text-left">
+              <div className="text-base font-semibold mb-1">{t(filter.labelKey)}</div>
+              <div
+                className={`text-2xl font-bold ${
+                  isActive ? 'text-white' : 'text-gray-800'
+                }`}
+              >
+                <CountUp end={filterCount} duration={1.75} delay={0} separator="," />
+              </div>
+            </div>
           </div>
+        </button>
+      );
+    })}
+  </div>
 
           {/* Mobile */}
           <div className="sm:hidden flex gap-3 px-4">
-            {filters.map((filter, index) => {
-              const IconComponent = filter.icon;
-              const filterCount = totalInventory[filter.key];
-              const isActive = activeFilterKey === filter.key;
+    {filters.map((filter, index) => {
+      const IconComponent = filter.icon;
+      const filterCount = totalInventory[filter.key];
+      const isActive = activeFilterKey === filter.key;
 
-              return (
-                <button
-                  key={filter.key}
-                  onClick={() => setActiveFilterKey(filter.key)}
-                  className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${isActive
-                    ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
-                    : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
-                    }`}
-                >
-                  <IconComponent
-                    size={18}
-                    className={`mb-1 ${isActive ? 'text-white' : 'text-gray-600'}`}
-                  />
-                  <span className="text-xs font-semibold mb-1 text-center leading-tight">
-                    {t(filter.labelKey)}
-                  </span>
-                  <span
-                    className={`text-lg font-bold ${isActive ? 'text-white' : 'text-gray-800'
-                      }`}
-                  >
-                    <CountUp end={filterCount} duration={1.5} delay={index} separator="," />
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      return (
+        <button
+          key={filter.key}
+          onClick={() => {
+            console.log('🎯 Clicked filter:', filter.key);
+            setActiveFilterKey(filter.key);
+            navigate(location.pathname, { 
+              replace: true,
+              state: {}
+            });
+            setSelectedCity(null);
+            setProperties([]);
+          }}
+          className={`flex flex-col items-center justify-center w-24 h-24 rounded-2xl font-semibold transition-all duration-300 text-xs border-2 ${
+            isActive
+              ? 'bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-xl border-pink-300 transform scale-105'
+              : 'bg-white/90 text-gray-700 border-gray-200 hover:border-pink-200 hover:bg-pink-50 shadow-md'
+          }`}
+        >
+          <IconComponent
+            size={18}
+            className={`mb-1 ${isActive ? 'text-white' : 'text-gray-600'}`}
+          />
+          <span className="text-xs font-semibold mb-1 text-center leading-tight">
+            {t(filter.labelKey)}
+          </span>
+          <span
+            className={`text-lg font-bold ${
+              isActive ? 'text-white' : 'text-gray-800'
+            }`}
+          >
+            <CountUp end={filterCount} duration={1.5} delay={0} separator="," />
+          </span>
+        </button>
+      );
+    })}
+  </div>
+</div>
 
         <div className="flex flex-col items-center px-4 py-6 w-full">
           {rows.length > 0 &&

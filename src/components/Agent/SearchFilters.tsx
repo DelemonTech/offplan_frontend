@@ -192,40 +192,35 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
     setDeliveryYear('');
   };
 
-  const handleSearch = async () => {
-    // window.scrollTo({ top: 930, behavior: 'smooth' });
-    setIsSearchLoading(true);
+const handleSearch = async () => {
+  setIsSearchLoading(true);
 
-    const getEnglishPropertyType = (type) => {
-      if (type === t('Residential')) return 'Residential';
-      if (type === t('Commercial')) return 'Commercial';
-      return type;
-    };
+  const getEnglishPropertyType = (type) => {
+    if (!type) return ''; // ✅ Handle empty
+    if (type === t('Residential')) return 'Residential';
+    if (type === t('Commercial')) return 'Commercial';
+    return type;
+  };
 
-    // ✅ Convert statusName to proper English status value
   const getEnglishStatus = (status) => {
     if (!status) return '';
     
-    // Map filter keys to database values
     const statusMap = {
       'offplan': 'Off Plan',
       'ready': 'Ready',
-      'total': '',  // Don't filter by status
+      'total': '',
       'All': '',
       'Total': ''
     };
 
-    // Check if it's already a proper English value
     if (['Off Plan', 'Ready'].includes(status)) {
       return status;
     }
     
-    // Otherwise map from key
     return statusMap[status.toLowerCase()] || status;
   };
 
-
- const filters = {};
+  const filters = {};
   
   const cityName = getEnglishCityName();
   if (cityName) filters.city = cityName;
@@ -243,7 +238,6 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
   
   if (deliveryYear) filters.delivery_year = parseInt(deliveryYear);
   
-  // Always include price/area ranges (even if 0)
   filters.low_price = priceRange[0];
   filters.max_price = priceRange[1];
   filters.min_area = areaRange[0];
@@ -279,6 +273,19 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
       console.log(`✅ Found ${properties.length} properties`);
       setProperties(properties);
       setNextPageUrl(result.next || null);
+      
+      // ✅ Scroll AFTER properties are set
+      // Use setTimeout to ensure DOM has updated
+      setTimeout(() => {
+        const scrollTarget = document.getElementById('featured-projects');
+        if (scrollTarget) {
+          scrollTarget.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start' 
+          });
+        }
+      }, 100);
+      
     } else {
       console.warn('⚠️ Unexpected response format:', result);
       setProperties([]);
@@ -694,27 +701,19 @@ const SearchFilters = ({ statusName, setStatusName, setProperties, setNextPageUr
           {t('Reset Filters')}
         </Button>
         <Button
-          className="flex-1 h-12 sm:h-14 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
-          onClick={() => {
-
-            // if (propertyStatus?.toLowerCase() === 'ready') {
-            //   setStatusName('Ready');
-            // } else if (propertyStatus?.toLowerCase() === 'off plan') {
-            //   setStatusName('Off Plan');
-            // } else {
-            //   setStatusName('');
-            // }
-
-            const scrollTarget = document.getElementById('featured-projects');
-            if (scrollTarget) {
-              scrollTarget.scrollIntoView({ behavior: 'smooth' });
-            }
-            handleSearch();
-          }
-          }
-        >
-          🔍 {t('Show Properties')}
-        </Button>
+  className="flex-1 h-12 sm:h-14 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+  onClick={() => {
+    // ❌ Remove this scroll - it's too early
+    // const scrollTarget = document.getElementById('featured-projects');
+    // if (scrollTarget) {
+    //   scrollTarget.scrollIntoView({ behavior: 'smooth' });
+    // }
+    
+    handleSearch(); // ✅ Just call handleSearch
+  }}
+>
+  🔍 {t('Show Properties')}
+</Button>
       </div>
     </div>
   );
